@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+</head>
+<body>
+    <div id="nav">
+<a href="/docs/index.md.html">首页</a>
+    </div>
+
+<p>% 如何创建并开发一个WEBAPP
+% hdm258i@gmail.com
+% 2013-04-28
+% 暂不开放, webapp框架</p>
+<h2> 前言</h2>
+<p>培训如何基于ROCKET框架开发一个WEBAPP，包含：</p>
+<ol><li>开发环境搭建</li>
+<li>页面拆分和分工</li>
+<li>开发过程</li></ol>
+<h2> 任务介绍</h2>
+<p>DEMO以百度音乐iOS版本为例子，[music.baidu.com](http://music.baidu.com)</p>
+<p>演示如何使用ROCKET开发百度音乐WEBAPP，例子中只开发首页</p>
+<h2> 第一步、开发环境搭建和验证</h2>
+<p>ROCKET框架使用FIS作为开发环境。</p>
+<ol><li>首先获取框架和脚手架代码：</li></ol>
+<ul><li>git: git clone https://github.com/xspider/workshop.git</li>
+<li>svn: 待补充</li></ul>
+<ol><li>启动FIS，配置项目路径至workshop目录</li>
+<li>切换到**music模块**，访问/music/app.html，正常显示百度音乐首页</li></ol>
+<p>**建议**：请使用chrome浏览器，并开启**“Emulate touch events”**选项，切换成左右布局，方便调试和页面效果查看</p>
+<p>@todo: 非常简要地介绍目录结构、相关文件</p>
+<h2> 第二步、页面拆分和分工</h2>
+<p>此处只开发一个页面－百度音乐首页，单人完成。</p>
+<p>路由配置如下：</p>
+<pre><code>'': 'index'
+</code></pre>
+<p>路由处理函数index如下：</p>
+<pre><code>,index: function(type) {
+    
+    this.doAction('index', {},
+        //禁止发送
+        {disable: true}
+    );
+}     
+</code></pre>
+<h2> 第三步 页面开发</h2>
+<p>主要包含以下几个步骤:</p>
+<ol><li>从脚手架生成首页初始代码</li>
+<li>DOM结构和样式开发</li>
+<li>MVC分解，确定有几个subview</li>
+<li>开发pageview</li>
+<li>开发subview</li></ol>
+</body>
+</html>
+<script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+<script type="text/javascript">
+(function(){
+document.title = $('h1').html() || '技术文档－258i.com';    
+})();
+</script>

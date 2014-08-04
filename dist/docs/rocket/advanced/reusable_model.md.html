@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+</head>
+<body>
+    <div id="nav">
+<a href="/docs/index.md.html">首页</a>
+    </div>
+
+<h1> 模型(model)共享 </h1>
+<p>% 模型(model)共享 
+| hdm258i@gmail.com
+| 2013-03-25
+| 进阶, webapp框架</p>
+<h2> 前言</h2>
+<p>通常存在这样的情况，一个页面中多个功能模块使用同一个数据源，甚至多个页面也共享一个数据源。前者譬如为了节省网络请求个数，一次性把页面的全部数据返回，这些数据被页面的多个功能模块共用，比如新闻首页、视频首页；后者譬如正文页需要横划切换至下一篇文章，就需要与列表页数据共享，又譬如推广数据，推广位分布在不同页面，但是推广数据源只有一个，那么就需要在不同页面共享统一个推广数据。</p>
+<p>本篇介绍如何<code>合理的创建model和view</code>，实现model的共享，也即共享model。</p>
+<h2> 1. 页面内共享model </h2>
+<p>通常会遇到这种情况，一个model（对应一个数据请求）包含多种数据，这些数据被同一个页面内的多个功能模块（subview）共用，每个模块使用其中的一部分。比如，一次请求返回轮播图数据和4个视频类型数据（电影、电视剧、综艺和动漫），这些数据被用于轮播图模块和视频列表模块。这种情况，就需要使用页面内共享model。</p>
+<p>以视频首页为例，我们对页面进行了如下MVC层次分拆：</p>
+<pre><code>pageview.videoindex
+    subview.videoindex_toolbar
+    subview.videoindex_content
+        subview.videoindex_content_tuiguang
+        subview.videoindex_content_imageslider
+        subview.videoindex_content_listwrapper
+            subview.videoindex_content_list
+</code></pre>
+<p>其中，tuiguang使用全局model提供的数据（本篇后面会提及）；imageslider和list使用同一个model提供的数据，该model由content创建，model的变化通过<code>页面事件中心</code>派发给imageslider和list。</p>
+<p>@todo: 页面共享model时，pageloading的设置方式</p>
+<p>具体代码细节摘录如下：</p>
+<h3> 1.1 页面内共享model的创建及派发</h3>
+<p>共享model由父视图content创建，具体代码（from page/videoindex/js/view/rocket.subview.videoindex_content.js）：</p>
+<pre><code>rocket.subview.videoindex_content = rocket.subview.extend({
+
+    ...
+
+    ,init: function(options){
+        var me = this;
+
+        // 包含多数据的模型，整个页面共享
+        me.model = new rocket.model.videoindex_data(null, options);
+
+    }
+
+    ...
+
+    ,onpagebeforechange: function(params){
+
+        ...
+
+        if(to == me.ec) {
+            ...
+            if(me.isFirstLoad){
+                me.model.fetch({
+                    success: function(model, resp){
+                        me.isFirstLoad = false;
+                        me.ec.trigger('dataready', model.toJSON());
+                        me.hideLoading();
+                    }
+                });
+            }
+        }
+
+    }
+
+});
+
+</code></pre>
+<h3> 1.2 页面内共享model的使用</h3>
+<p>以上共享model在imageslider和list中被使用，由于它们都存在于<code>同一个页面</code>，可以使用页面事件中心进行交互：</p>
+<p>imageslider<code>不再创建</code>同级别model，而是通过页面事件中心ec响应dataready事件。</p>
+<pre><code>rocket.subview.videoindex_content_imageslider = rocket.subview.extend({
+    ...
+
+    ,render: function(data){
+        var me = this,
+            arr = data['index_flash'];
+
+        // GMU组件
+        $.ui.slider(me.$el, {
+            content: $.map(arr, function(item, index){
+                var t = {};
+                t.href = item.url;
+                t.pic = item.img_url;
+                t.title = item.title;
+                return t;
+            })
+            ,loop: true
+            ,imgInit: 1
+            ,viewNum: 1
+        });
+
+        return me;
+    }
+
+    ,registerEvents: function(){
+        var me = this, ec = me.ec;
+        ...
+        ec.on("dataready", me.render, me);
+    }
+
+    ...
+
+});
+</code></pre>
+<p>同样，list代码如下：</p>
+<pre><code>rocket.subview.videoindex_content_list = rocket.subview.extend({
+
+    ...
+
+    ,render: function(data){
+        var me = this;
+
+        me.$el.append(
+            me.template({
+                type: me.videotype,
+                typename: rocket.helper.getVideoClassById(me.videotype).title,
+                list: data[me.videotype + '_hot'] 
+            })
+        );
+
+        return me;
+    }
+
+    ,registerEvents: function(){
+        var me = this, ec = me.ec;
+        ...
+        ec.on("dataready", me.render, me);
+    }
+
+    ...
+
+});
+
+</code></pre>
+<h2> 2. 跨页面共享model</h2>
+<p>一般情况下，页面之间是不进行交互的，因为跨页面交互破坏了页面间的独立性，不利于页面功能解耦，对并行开发造成一定的困难。但是，由于业务功能的需要，无法避免在页面间进行数据交互和共享，这种情况下，需要建立跨页面共享model，通过使用<code>固定接口</code>，降低跨页面交互的复杂度。</p>
+<p>跨页面共享model主要通过接口方法<code>getInstance(param)</code>来实现。</p>
+<h3> 2.1 列表页和正文页共享的例子</h3>
+<p>以下代码（来自page/listzaker/js/model/rocket.model.listzaker_nids.js）:</p>
+<pre><code>rocket.model.listzaker_nids = rocket.model.extend({
+
+    initialize: function(models, options){
+        var me = this;
+
+        // 初始化时进行类实例的维护
+        rocket.model.listzaker_nids._instances
+            || (rocket.model.listzaker_nids._instances = {});
+
+        me.type = ( options || {} ).type || 'civilnews';
+
+        rocket.model.listzaker_nids._instances[me.type] = me;
+
+        ...
+    }
+
+    , ...
+
+});
+
+/**
+ * 类方法getInstance
+ * @param type {string} 区分类实例的特征值
+ * @return instance or undefined
+ */
+rocket.model.listzaker_nids.getInstance = function(type){
+    var instances = rocket.model.listzaker_nids._instances;
+    return instances &amp;&amp; instances[type];
+}; 
+
+</code></pre>
+<p>rocket.model.listzaker_nids由listzaker页面创建，但是其数据需要被页面detailmulticolumn共享，以支持连续右滑查看下一条新闻。detailmulticolumn不负责创建该model，也不完全依赖该model，当该model存在就使用，不存在就不使用。</p>
+<p>以下代码说明如何使用共享model（来自page/detailmulticolumn/js/view/rocket.subview.detailmulticolumn_content.js）：</p>
+
+<pre><code>rocket.subview.detailmulticolumn_content = rocket.subview.extend({
+
+    ...
+
+    ,goNext: function(){
+        var me = this,
+            news,
+            info = me.currentNewsInfo,
+            list = rocket.model.listzaker_nids.getInstance(info.type),
+            route;
+
+        list &amp;&amp; (news = list.getNextNews(info.nid));
+        
+        ...
+    }
+
+});
+
+</code></pre>
+<p>使用类静态接口方法getInstance获取对应instance，然后调用接口方法getNextNews。</p>
+
+<h3> 2.2 推广位model共享</h3>
+<p>webapp存在一些推广数据，来自同一数据源，但这些推广数据对应的推广位通常分布在不同页面。需要在不同页面之间共享推广位数据model。</p>
+<p>与正文页例子区别在于，推广位model是一个全局数据，所有页面都可能使用。可以将其放在<code>全局模型</code>中（js/model/rocket.model.tuiguang.js），在<code>app初始化</code>时进行创建。</p>
+<h4> 2.2.1 全局model的定义</h4>
+<p>具体代码片段如下：</p>
+<pre><code>rocket.model.vstuiguang = rocket.model.extend({
+
+    initialize: function(attributes, options){
+        var me = this;
+
+        rocket.model.vstuiguang._instances
+            || (rocket.model.vstuiguang._instances = {});
+
+        rocket.model.vstuiguang._instances['unique'] = me;
+
+        me.dataCache = null;
+    }
+
+    /**
+     * 按位置获取推广内容
+     * @param pos {string} 位置参数，多个位置以空格分隔
+     */
+    ,getByPos: function(pos){
+        var me = this,
+            tmp = pos.split(/\s+/),
+            cache = me.dataCache,
+            result = {};
+        
+        $.each(tmp, function(index, item){
+            $.each(cache, function(index1, item1){
+                if(item1.pos == item){
+                    result[item] = item1;
+                }
+            });   
+        });
+
+        return result;
+    }
+
+    ...
+
+});
+
+// 通用model interface: getInstance
+rocket.model.vstuiguang.getInstance = function(){
+    var instances = rocket.model.vstuiguang._instances;
+    return instances &amp;&amp; instances['unique'];
+}; 
+</code></pre>
+<p>以上是全局模型vstuiguang的定义，实现了静态类接口方法getInstance，使用<code>dataCache</code>作为数据缓存。</p>
+<h4> 2.2.2 全局model的初始化</h4>
+<p>具体代码（from /app/js/rocket.init.js）：</p>
+<pre><code>$.extend(app, {
+    init: function() {
+
+        ...
+
+        // 全局model
+        var modelvstuiguang = new rocket.model.vstuiguang();
+
+        new rocket.router.vs();
+        Backbone.history.start();
+
+        ...
+
+        setTimeout(function(){
+            modelvstuiguang.fetch({
+                callback: 'vstuiguangCalllback'
+            }); 
+        }, 300);
+    }
+
+});
+</code></pre>
+<h4> 2.2.3 全局模型的使用</h4>
+<p>以下代码展示如何在首页推广位中使用全局模型（from /app/page/index/js/view/rocket.subview.index_content_vstuiguang.js）。</p>
+<pre><code>rocket.subview.index_content_tuiguang = rocket.subview.extend({
+
+    ...
+
+    ,init: function(options){
+
+        ...
+
+        // 通用model
+        me.model = rocket.model.vstuiguang.getInstance();
+
+        if(me.model.dataCache){
+            me.render();
+        }
+
+    }
+
+    ,render: function(){
+
+        ...
+
+        me.$el.append(me.template({
+            tuiguang: me.model.getByPos('407')['407']
+        }));
+    }
+
+    ,registerEvents: function(){
+        ...
+        me.model.on('change', me.render, me);
+    }
+
+    ...
+
+});
+
+</code></pre>
+<p>以下代码展示如何在帮助首页推广位中使用全局模型（from /app/page/index/js/view/rocket.subview.howtoindex_header.js）。</p>
+<pre><code>rocket.subview.howtoindex_header = rocket.subview.extend({
+
+    ...
+
+    ,init: function(options){
+
+        ...
+
+        // 通用model
+        me.model = rocket.model.vstuiguang.getInstance();
+
+        if(me.model.dataCache){
+            me.render();
+        }
+    }
+
+    ,registerEvents: function(){
+
+        ...
+
+        me.model.on('change', me.render, me);
+    }
+
+    ,render: function(){
+
+        ...
+
+        me.$el.append(me.template({
+            tuiguang: me.model.getByPos('501')['501']
+        }));
+    }
+
+    ...
+
+});
+
+</code></pre>
+</body>
+</html>
+<script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+<script type="text/javascript">
+(function(){
+document.title = $('h1').html() || '技术文档－258i.com';    
+})();
+</script>

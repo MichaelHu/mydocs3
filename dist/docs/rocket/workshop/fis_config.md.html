@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+</head>
+<body>
+    <div id="nav">
+<a href="/docs/index.md.html">首页</a>
+    </div>
+
+<p>% FIS配置 
+% hdm258i@gmail.com
+% 2013-04-10
+% 入门, webapp框架</p>
+<h2> 前言</h2>
+<p>webapp v1.0是基于wpp(向春哥致敬) + shell的项目building方式，v2.0转向了FIS，使用FIS webapp业务模型进行代码构建。本文介绍如何进行FIS配置。</p>
+<p>FIS的要求：使用FIS webapp业务模型，**版本1.3.6及以上**</p>
+<p>webapp v2.0包含两个模块：common和app，分模块介绍如下：</p>
+<h2> 1. common模块配置 </h2>
+<p>common模块提供webapp框架核心代码，定位框架通用部分，开发者不建议修改该部分的代码。以下列出fis配置文件的**merge部分**：</p>
+<pre><code>&lt;merge>
+    &lt;lib>
+        &lt;import>/css-reset/reset.css&lt;/import>
+
+        &lt;import>/zepto-1.0rc1/zepto.js&lt;/import>
+        &lt;import>/underscore-1.4.4/underscore.js&lt;/import>
+        &lt;import>/backbone-0.9.10/backbone.js&lt;/import>
+
+        &lt;import>/gmu-GMU_2.0.3_TAG1/_src/core/zepto.extend.js&lt;/import>
+        &lt;import>/gmu-GMU_2.0.3_TAG1/_src/core/zepto.ui.js&lt;/import>
+        &lt;import>/gmu-GMU_2.0.3_TAG1/_src/core/zepto.iscroll.js&lt;/import>
+        &lt;import>/gmu-GMU_2.0.3_TAG1/_src/core/zepto.fx.js&lt;/import>
+        &lt;import>/gmu-GMU_2.0.3_TAG1/_src/core/zepto.fix.js&lt;/import>
+        &lt;import>/gmu-GMU_2.0.3_TAG1/_src/core/zepto.highlight.js&lt;/import>
+
+        &lt;import>/gmu-GMU_2.0.3_TAG1/_src/widget/slider.js&lt;/import>
+        &lt;import>/gmu-GMU_2.0.3_TAG1/assets/widget/slider/slider.css&lt;/import>
+        &lt;import>/gmu-GMU_2.0.3_TAG1/assets/widget/slider/slider.default.css&lt;/import>
+
+        &lt;!--...-->
+    &lt;/lib>
+
+    &lt;app>
+        &lt;import>/webapp-2.0/rocket.js&lt;/import>
+        &lt;import>/webapp-2.0/*.js&lt;/import>
+    &lt;/app>
+&lt;/merge>
+</code></pre>
+<h2> 2. app模块配置</h2>
+<p>app模块包含产品线webapp代码，同样列出fis配置文件的merge部分：</p>
+<pre><code>&lt;merge>
+    &lt;app>
+        &lt;!-- app -->
+        &lt;import>/js/*.js&lt;/import>
+
+        &lt;!-- page -->
+        &lt;import>/page/*.js&lt;/import>
+
+    &lt;/app>
+
+&lt;/merge>
+
+</code></pre>
+</body>
+</html>
+<script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+<script type="text/javascript">
+(function(){
+document.title = $('h1').html() || '技术文档－258i.com';    
+})();
+</script>

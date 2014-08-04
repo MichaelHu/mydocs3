@@ -1,0 +1,19 @@
+#nav {
+    padding: 0 6px;
+    height: 26px;
+    text-align: right;
+}
+
+#nav a,
+#nav a:link,
+#nav a:hover,
+#nav a:active,
+#nav a:visited {
+    float: right;
+    padding: 0 20px;
+    background-color: #3e98f0;
+
+    text-decoration: none;
+    color: #fff;
+    font: normal normal 14px/26px Sans-Serif;
+}

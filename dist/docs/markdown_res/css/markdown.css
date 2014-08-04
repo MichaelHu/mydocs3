@@ -1,0 +1,45 @@
+body {
+    width: 800px;
+    margin: 30px auto;
+
+    font-family: Arial;
+    font-size: 14px;
+    line-height: 26px;
+}
+
+h1 {
+    font-size: 20px; 
+    line-height: 30px;
+}
+
+h2 {
+    font-size: 18px; 
+    line-height: 28px;
+}
+
+h3 {
+    font-size: 16px; 
+    line-height: 26px;
+}
+
+
+
+
+
+
+
+pre, code {
+    font-family: monospace;
+    color: #048ebd;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+pre {
+    padding-left: 10px;
+    border-left: 2px solid #048ebd;
+}
+
+img {
+    max-width: 100%;
+}

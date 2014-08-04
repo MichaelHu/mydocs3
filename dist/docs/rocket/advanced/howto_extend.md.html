@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+</head>
+<body>
+    <div id="nav">
+<a href="/docs/index.md.html">首页</a>
+    </div>
+
+<p>% 如何扩展 
+% hdm258i@gmail.com
+% 2013-03-25
+% 进阶, webapp框架</p>
+<p>@todo: 切换动画</p>
+<h2> 前言</h2>
+<p>[概览：webapp framework整体介绍](#howto/概览：webapp framework整体介绍)一文提到框架为扩展提供了足够的空间。本文介绍常用的几个扩展。</p>
+<h2> 1. 页面切换动画</h2>
+<p>页面切换动画的实现文件在以下目录中：</p>
+<pre><code>▾ common/
+  ▾ webapp-2.0/
+    ▾ pageanimations/
+        rocket.pageanimation_fade.js
+        rocket.pageanimation_simple.js
+        rocket.pageanimation_slide.js
+</code></pre>
+<p>文件名遵守[编码规范](#howto/编码规范)中所提到的文件命名规范。</p>
+<pre><code>rocket.pageanimation_动画名.js
+</code></pre>
+<p>其中前缀**rocket.pageanimation_**是固定的，**动画名**指明动画类型，可以用于rocket.router中**pageTransition**配置项。</p>
+<h3> 1.1 需实现的接口</h3>
+<p>该文件实现二级命名空间，同文件名所示，比如slide动画，实现二级命名空间rocket.pageanimation_slide。同时需要实现动画接口**animate**，具体代码如下：</p>
+<pre><code>/**
+ * 过门动画
+ * @param currentEle 当前需要移走的元素
+ * @param nextEle 需要移入的元素
+ * @param dir 动画方向，0:无方向， 1:向左， 2:向右
+ * @param restore 是否恢复原位置
+ * @param callback 动画完成后的回调函数
+ */
+rocket.pageanimation_slide.animate = function(
+    currentEle, nextEle, dir, 
+    callback, restore) {
+
+    ...
+
+};
+</code></pre>
+<h3> 1.2 扩展方式</h3>
+<ol><li>确定动画名称，比如newanim</li>
+<li>在目录结构中添加动画实现文件： rocket.pageanimation_newanim.js</li>
+<li>实现动画接口：rocket.pageanimation_newanim.animate</li></ol>
+<p>完成以上步骤以后，就可以在rocket.router中通过pageTransition配置项使用新动画了</p>
+<p>具体还可以查看其他几类动画：simple, fade, dropdown的实现</p>
+
+
+
+</body>
+</html>
+<script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+<script type="text/javascript">
+(function(){
+document.title = $('h1').html() || '技术文档－258i.com';    
+})();
+</script>
