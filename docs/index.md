@@ -15,7 +15,7 @@
 ## web前端 
 
 * <a href="./frontend/backbone.md.html">Backbone解析</a> 
-* <a href="./frontend/commjs.md.html">CommonJS Modules/1.1.1</a>
+* <a href="./frontend/commonjs.md.html">CommonJS Modules/1.1.1</a>
 * <a href="./frontend/requirejs.md.html">requirejs相关资料</a>
 * <a href="./frontend/useful_javascript_frameworks.md.html">有用的js框架</a>
 
