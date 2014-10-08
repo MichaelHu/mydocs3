@@ -11,6 +11,7 @@
         li>p {display: block;}
         p>code, li>code {padding:0; font-size: 13px; color: red;}
     </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
 </head>
 <body>
     <div id="nav">
@@ -176,9 +177,9 @@ rocket.collection.index_news = rocket.collection.extend({
 </code></pre>
 </li>
 <li><code>全局视图控制器</code>，通过继承<code>rocket.globalview</code>，可直接相应路由事件，持有页面视图控制器，可按需向页面控视图控制器发送事件。<pre><code>(function($){
- 
+
 rocket.globalview.sidenav = rocket.globalview.extend({
-     
+
     el: '#sidenav_globalview'
 
     ,init: function(options){
@@ -240,7 +241,7 @@ rocket.subview.search_content = rocket.subview.extend({
     }
 
     ...
-    
+
 });
 
 })(Zepto);
@@ -290,19 +291,18 @@ rocket.subpageview.search_subpage = rocket.subpageview.extend({
             targetSubpage = params.targetSubpage,
             key = e.which,
             hit = false;
-        
+
         ...
     }
 
 });
- 
+
 })(Zepto);
 
 </code></pre>
 </li></ul>
 </body>
 </html>
-<script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
 <script type="text/javascript">
 (function(){
 document.title = $('h1').html() || '技术文档－258i.com';    

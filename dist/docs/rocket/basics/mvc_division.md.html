@@ -11,6 +11,7 @@
         li>p {display: block;}
         p>code, li>code {padding:0; font-size: 13px; color: red;}
     </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
 </head>
 <body>
     <div id="nav">
@@ -90,12 +91,12 @@ UI Controller同时还承担<code>Model与View的同步</code>。</p>
 <h3> 3.2 view tree 代码示例</h3>
 <p>pageview.detail在其<code>init方法</code>中创建subview.detail_toolbar以及subview.detail_content，并进行<code>setup（预先存在）</code>。具体如下：</p>
 <pre><code>rocket.pageview.detail = rocket.pageview.extend({
-    
+
     ...
 
     ,init: function(options){
         var me = this;
-        
+
         // 创建toolbar视图
         me.setup(new rocket.subview.detail_toolbar(options, me));
 
@@ -160,7 +161,6 @@ UI Controller同时还承担<code>Model与View的同步</code>。</p>
 </li></ul>
 </body>
 </html>
-<script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
 <script type="text/javascript">
 (function(){
 document.title = $('h1').html() || '技术文档－258i.com';    

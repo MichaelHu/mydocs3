@@ -11,17 +11,47 @@
         li>p {display: block;}
         p>code, li>code {padding:0; font-size: 13px; color: red;}
     </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
 </head>
 <body>
     <div id="nav">
 <a href="/">返回</a>
     </div>
 
-<h2> hello, 258i docs</h2>
+
+<script>
+
+    $('#nav').hide();
+
+</script>
+
+<style type="text/css">
+
+@import url("./markdown_res/css/index.css")
+
+</style>
+
+
+
+<div class="title"><h1>我的技术文章</h1></div>
+
+<div class="list">
+<h2> web前端 </h2>
+<ul><li><a href="./frontend/backbone.md.html">Backbone解析</a> </li>
+<li><a href="./frontend/commjs.md.html">CommonJS Modules/1.1.1</a></li>
+<li><a href="./frontend/requirejs.md.html">requirejs相关资料</a></li>
+<li><a href="./frontend/useful_javascript_frameworks.md.html">有用的js框架</a></li></ul>
+</div>
+
+
+
+<div class="list">
+<h2> Web Server相关 </h2>
+<ul><li><a href="./mcwebserver/introduce.md.html">提供简单CGI功能的自制Web Server</a> </li></ul>
+</div>
 
 </body>
 </html>
-<script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
 <script type="text/javascript">
 (function(){
 document.title = $('h1').html() || '技术文档－258i.com';    

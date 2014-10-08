@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="/">返回</a>
+    </div>
+
+<h1> Backbone解析</h1>
+<p>2014-09-29</p>
+<h2> AMD、CMD支持</h2>
+<pre><code>(function(root, factory){
+    if(typeof define === 'function' &amp;&amp; define.amd){
+        define(['underscore', 'jquery', 'exports'], function(_, $, exports){
+            root.Backbone = factory(root, exports, _, $);
+        });
+    } 
+    else if(typeof exports !== 'undefined'){
+        var _ = require('underscore');
+        factory(root, exports, _);
+    }
+    else {
+        root.Backbone = factory(root
+            , {}, root._
+            , ( root.jQuery || root.Zepto || root.ender || root.$ )
+        );
+    }
+})(this, function(root, Backbone, _, $){
+    ...
+});
+</code></pre>
+<h2> Events，可以mixin到任何一个对象，提供自定义事件的功能。</h2>
+<ol><li>on/bind: function(name, callback, context)</li>
+<li>once: function(name, callback, context)</li>
+<li>off/unbind: function(name, callback, context)</li>
+<li>trigger: function(name)</li>
+<li>stopListening: function(obj, name, callback)</li>
+<li>listenTo: function(obj, name, callback)</li>
+<li>listenToOnce: function(obj, name, callback)</li></ol>
+<h2> Model，通常表示数据表的一行</h2>
+<ol><li>constructor:<ol><li>cid: _.uniqueId('c')</li>
+<li>attributes: {...}</li>
+<li>collection: Backbone.Collection</li>
+<li>changed: {...}</li></ol>
+</li>
+<li>prototype:<ol><li>changed: null</li>
+<li>validationError: null</li>
+<li>idAttribute: 'id'</li>
+<li>initialize: function(){}</li>
+<li>toJSON: funciton(options)</li>
+<li>sync: function()</li>
+<li>get: function(attr)</li>
+<li>escape: function(attr)</li>
+<li>has: function(attr)</li>
+<li>set: function(key, val, options)<ul><li>trigger('change:KEYNAME', this, value, options)</li></ul>
+</li>
+<li>unset: function(attr, options)</li>
+<li>clear: function(options)</li>
+<li>hasChanged: function(attr)</li>
+<li>changedAttributes: function(diff)</li>
+<li>previous: function(attr)</li>
+<li>previousAttributes: function()</li>
+<li>fetch: function(options)<ul><li>trigger('read', this, options)</li>
+<li>trigger('sync', model, resp, options)</li></ul>
+</li>
+<li>save: function(key, val, options)<ul><li>trigger('sync', model, resp, options)</li></ul>
+</li>
+<li>destroy: function(options)</li>
+<li>url: function()</li>
+<li>parse: function(resp, options)</li>
+<li>clone: function()</li>
+<li>isNew: function()</li>
+<li>isValid: function(options)</li>
+<li>_validate: function(attrs, options)</li>
+<li>keys: function() </li>
+<li>values: function()</li>
+<li>pairs: function()</li>
+<li>invert: function()</li>
+<li>pick: function()</li>
+<li>omit: function()</li>
+<li>chain: function()</li>
+<li>isEmpty: function()</li></ol>
+</li></ol>
+<h2> Collection: rows </h2>
+
+<h2> View</h2>
+<ol><li>constructor<ol><li>cid: _.unique('view')</li>
+<li>attrs maybe:<ul><li>model</li>
+<li>collection</li>
+<li>el</li>
+<li>id</li>
+<li>attributes</li>
+<li>className</li>
+<li>tagName</li>
+<li>events</li></ul>
+</li>
+<li>this._ensureElement()</li>
+<li>this.initialize.apply(this, arguments)</li></ol>
+</li>
+<li>vars<pre><code>var delegateEventSplitter = /^(\S+)\s*(.*)$/;
+</code></pre>
+</li>
+<li>prototype<ol><li>tagName: 'div'</li>
+<li>$: function(selector)</li>
+<li>initialize: function()</li>
+<li>render: function()</li>
+<li>remove: function()</li>
+<li>_removeElement: function()</li>
+<li>setElement: function(element)</li>
+<li>_setElement: function(el)</li>
+<li>delegateEvents: function(events)</li>
+<li>delegate: funciton(eventName, selector, listener) </li>
+<li>undelegateEvents: function()</li>
+<li>undelegate: funciton(eventName, selector, listener)</li>
+<li>_createElement: function(tagName)</li>
+<li>_ensureElement: function()</li>
+<li>_setAttributes: function(attributes)</li></ol>
+</li></ol>
+<h2> Router</h2>
+<ol><li>constructor<ol><li>this.routes = options.routes</li>
+<li>this._bindRoutes()</li>
+<li>this.initialize.apply(this, arguments)</li></ol>
+</li>
+<li>vars:<pre><code>optionalParam = /\((.*?)\)/g 
+namedParam = /(\(\?)?:\w+/g 
+splatParam = /\*\w+/g 
+escapeRegExp = /[\-{}\[\]+?.,\\\^$|#\s]/g 
+</code></pre>
+</li>
+<li>prototype<ol><li>initialize: function() </li>
+<li>route: funciton(route, name, callback)</li>
+<li>execute: function(callback, args, name)</li>
+<li>navigate: function(fragment, options)<p>如果是hash，fragment为hash值（不包含#），如果是pushState，fragment为path值（出去root部分）</p>
+</li>
+<li>_bindRoutes: function()</li>
+<li>_routeToRegExp: function(route)</li>
+<li>_extractParameters: function(route, fragment)</li></ol>
+</li></ol>
+<h2> History</h2>
+<ol><li>constructor<ol><li>this.handlers = []</li>
+<li>_.bindAll(this, 'checkUrl')</li>
+<li>this.location = window.location</li>
+<li>this.history = window.history</li></ol>
+</li>
+<li>vars<pre><code>routeStripper = /^[#\/]|\s+$/g
+rootStripper = /^\/+|\/+$/g
+pathStripper = /#.*$/
+</code></pre>
+</li>
+<li>static<ol><li>History.started = false</li></ol>
+</li>
+<li>prototype<ol><li>interval: 50</li>
+<li>atRoot: function()</li>
+<li>getSearch: function()</li>
+<li>getHash: function(window)</li>
+<li>getPath: function()</li>
+<li>getFragment: function(fragment)</li>
+<li>start: function(options)<ul><li>this.options</li>
+<li>this.root</li>
+<li>this._wantsHashChange</li>
+<li>this._hasHashChange</li>
+<li>this._wantsPushState</li>
+<li>this._hasPushState</li>
+<li>this.fragment</li></ul>
+</li>
+<li>stop: function()</li>
+<li>route: function(route, callback)</li>
+<li>checkUrl: function(e)</li>
+<li>loadUrl: function(fragment)</li>
+<li>navigate: function(fragment, options)</li>
+<li>_updateHash: function(location, fragment, replace)</li></ol>
+</li></ol>
+<h2> vars</h2>
+<pre><code>var previousBackbone = root.Backbone
+var slice = array.slice
+var urlError = function()
+var wrapError = function(model, options)
+</code></pre>
+<p>比较特殊的<code>extend</code>方法，生成一个子类：</p>
+<pre><code>var extend = function(protoProps, staticProps){
+    var parent = this;
+    var child;
+
+    // The constructor function for the new subclass is either defined by you
+    // (the "constructor" property in your `extend` definition), or defaulted
+    // by us to simply call the parent's constructor.
+    if (protoProps &amp;&amp; _.has(protoProps, 'constructor')) {
+      child = protoProps.constructor;
+    } else {
+      child = function(){ return parent.apply(this, arguments); };
+    }
+
+    // Add static properties to the constructor function, if supplied.
+    _.extend(child, parent, staticProps);
+
+    // Set the prototype chain to inherit from `parent`, without calling
+    // `parent`'s constructor function.
+    var Surrogate = function(){ this.constructor = child; };
+    Surrogate.prototype = parent.prototype;
+    child.prototype = new Surrogate;
+
+    // Add prototype properties (instance properties) to the subclass,
+    // if supplied.
+    if (protoProps) _.extend(child.prototype, protoProps);
+
+    // Set a convenience property in case the parent's prototype is needed
+    // later.
+    child.__super__ = parent.prototype;
+
+    return child;
+};
+</code></pre>
+<h2> static attrs and methods</h2>
+<ol><li>Backbone.sync: function(method, model, options)</li>
+<li>Backbone.ajax: function()</li>
+<li>Backbone.history = new History</li>
+<li>Backbone.VERSION = '1.1.2';</li>
+<li>Backbone.$ = $;</li>
+<li>Backbone.noConflict = function()</li>
+<li>Backbone.emulateHTTP = false</li>
+<li>Backbone.emulateJSON = false</li></ol>
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+document.title = $('h1').html() || '技术文档－258i.com';    
+})();
+</script>

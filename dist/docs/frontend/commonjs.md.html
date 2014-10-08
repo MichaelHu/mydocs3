@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="/">返回</a>
+    </div>
+
+<h1> CommonJS Modules/1.1.1</h1>
+<h2> require</h2>
+<ul><li>require是一个函数<ul><li>接收模块标识参数</li>
+<li>返回外部模块导出的API</li>
+<li>如果存在循环依赖，。。。</li>
+<li>请求的模块如果不能返回，必须抛出错误</li>
+<li>函数可能有<code>main</code>属性<ul><li><code>main</code>属性如果可行，应该是只读的，不能删除</li>
+<li><code>main</code>属性要么<code>undefined</code>，要么等同于上下文中的一个已加载模块的<code>module</code>对象 </li></ul>
+</li>
+<li>函数可能有<code>paths</code>属性，是一个路径字符串组成的优先级数组，从高到低排列<ul><li>该属性必须不能存在与<code>sandbox</code>（一个安全模块系统） </li>
+<li>该属性必须在所有模块中引用一致 </li>
+<li>将<code>paths</code>对象替换成另一对象无法生效</li>
+<li>如果<code>paths</code>属性存在，原地修改其对象内容必须影响其对应模块的搜索行为</li>
+<li>...</li></ul>
+</li></ul>
+</li></ul>
+<h2> module上下文</h2>
+<ol><li>有一个自由变量<code>require</code></li>
+<li>有一个自由变量<code>exports</code>，在模块执行过程中，可能将其API添加到该对象中<p>使用<code>exports</code>必须是模块导出API的唯一方法</p>
+</li>
+<li>有一个自由变量<code>module</code>，该变量是一个对象，代表模块本身<ul><li>module必须有一个<code>id</code>属性作为该对象的顶级属性，可用于类似调用<pre><code>require (module.id )
+</code></pre>
+</li>
+<li>module可能有一个<code>uri</code>属性，该属性不能存在于sandbox中</li></ul>
+</li></ol>
+<h2> module标识</h2>
+<p>...</p>
+
+<h2> 例子</h2>
+<ol><li>math.js<pre><code>exports.add = function() {
+    var sum = 0, i = 0, args = arguments, l = args.length;
+    while (i &lt; l) {
+        sum += args[i++];
+    }
+    return sum;
+};
+</code></pre>
+</li>
+<li>increment.js<pre><code>var add = require('math').add;
+exports.increment = function(val) {
+    return add(val, 1);
+};
+</code></pre>
+</li>
+<li>program.js<pre><code>var inc = require('increment').increment;
+var a = 1;
+inc(a); // 2
+
+module.id == "program";
+
+</code></pre>
+</li></ol>
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+document.title = $('h1').html() || '技术文档－258i.com';    
+})();
+</script>

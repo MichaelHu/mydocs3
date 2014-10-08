@@ -1,3 +1,5 @@
+# 有用的js框架
+
 ## 2D渲染引擎
 
 * pixi.js
@@ -6,11 +8,38 @@
     3. <img src="./img/pixi.jpg">
     4. <a href="http://www.theleisuresociety.co.uk/fightforeveryone/">fight for everyone</a>
 
+
+
+
+## CSS3动画库
+
+* PageTransitions
+    1. <a href="http://tympanus.net/Development/PageTransitions/">PageTransitions</a>
+
+* animate.css
+    1. animate.css is a bunch of cool, fun, and cross-browser animations for you to use in your projects. Great for emphasis, home pages, sliders, and general just-add-water-awesomeness.
+    2. https://github.com/daneden/animate.css
+
+
+
+
 ## slides
 * mdp 
     1. A command-line based markdown presentation tool
     1. https://github.com/visit1985/mdp
     2. <img src="./img/mdp.gif"> 
+
+* skrollr
+    1. Stand-alone parallax scrolling library for mobile (Android + iOS) and desktop. No jQuery. Just plain JavaScript (and some love).
+    2. Designer friendly. No JavaScript skills needed. Just plain CSS and HTML.
+    3. <a href="http://prinzhorn.github.io/skrollr/">skrollr example</a>
+    3. <a href="http://prinzhorn.github.io/skrollr/examples/gradientsmotherfucker.html">gradient smother</a>
+    3. <a href="http://prinzhorn.github.io/skrollr/examples/circular_motion.html">circular motion</a>
+
+
+
+
+
 
 ## 3D渲染引擎
 

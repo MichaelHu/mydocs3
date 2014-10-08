@@ -11,6 +11,7 @@
         li>p {display: block;}
         p>code, li>code {padding:0; font-size: 13px; color: red;}
     </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
 </head>
 <body>
     <div id="nav">
@@ -195,7 +196,7 @@ rocket.model.listzaker_nids.getInstance = function(type){
             route;
 
         list &amp;&amp; (news = list.getNextNews(info.nid));
-        
+
         ...
     }
 
@@ -231,7 +232,7 @@ rocket.model.listzaker_nids.getInstance = function(type){
             tmp = pos.split(/\s+/),
             cache = me.dataCache,
             result = {};
-        
+
         $.each(tmp, function(index, item){
             $.each(cache, function(index1, item1){
                 if(item1.pos == item){
@@ -356,7 +357,6 @@ rocket.model.vstuiguang.getInstance = function(){
 </code></pre>
 </body>
 </html>
-<script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
 <script type="text/javascript">
 (function(){
 document.title = $('h1').html() || '技术文档－258i.com';    

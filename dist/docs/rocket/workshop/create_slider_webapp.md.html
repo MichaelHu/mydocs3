@@ -11,6 +11,7 @@
         li>p {display: block;}
         p>code, li>code {padding:0; font-size: 13px; color: red;}
     </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
 </head>
 <body>
     <div id="nav">
@@ -683,7 +684,7 @@ rocket.subview.outline_content = rocket.subview.extend({
             k;
 
         k = ranges.length;
-        
+
         $.each(tiles, function(index, item){
             var range = ranges[index%k]; 
             $(item).css(
@@ -699,7 +700,7 @@ rocket.subview.outline_content = rocket.subview.extend({
             k;
 
         k = ranges.length;
-        
+
         $.each(tiles, function(index, item){
             var range = ranges[index%k]; 
             $(item).css(
@@ -812,7 +813,7 @@ rocket.subview.outline_content_tile = rocket.subview.extend({
         var me = this,
             tile = $(e.target).closest('.outline-page-content-tile'),
             sliderIndex = tile.data('index');
-       
+
         // tile.css('z-index', me.maxZIndex++); 
         Backbone.history.navigate(
             '#slide'
@@ -1222,7 +1223,7 @@ rocket.pageview.slide = rocket.pageview.extend({
 <pre><code>(function($){
 
 rocket.subview.slide_content = rocket.subview.extend({
-    
+
     el: '#slide_page_content'
 
     ,init: function(options){
@@ -1456,7 +1457,7 @@ rocket.subview.slide_pageslider = rocket.subview.extend({
             instance 
                 = rocket.collection.outline_sections
                     .getInstance(me.title);
-    
+
         me.section = instance 
             ? instance.getSection(me.sliderIndex)
                 : null;
@@ -1478,7 +1479,7 @@ rocket.subview.slide_pageslider = rocket.subview.extend({
         var me = this,
             target = params.target,
             key = params.key;
-        
+
         // @note: 仅当活动子页面才响应
         if(me == target 
             &amp;&amp; me.ec.$el.css('display') == 'block'){
@@ -1534,7 +1535,7 @@ rocket.subview.slide_pageslider = rocket.subview.extend({
 
     ,gooutlinepage: function(){
         var me = this;
-        
+
         Backbone.history.navigate(
             '#outline'
             + '/' + encodeURIComponent(me.title)
@@ -1561,7 +1562,6 @@ rocket.subview.slide_pageslider = rocket.subview.extend({
 @todo: 公共部分出一个demo</p>
 </body>
 </html>
-<script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
 <script type="text/javascript">
 (function(){
 document.title = $('h1').html() || '技术文档－258i.com';    

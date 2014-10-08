@@ -11,6 +11,7 @@
         li>p {display: block;}
         p>code, li>code {padding:0; font-size: 13px; color: red;}
     </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
 </head>
 <body>
     <div id="nav">
@@ -44,14 +45,14 @@ spm = me.getSubpageManager({
     subpageClass: rocket.subview.howto_content_article
     ,maxSubpages: 2
 });                
-                
+
 // 创建第一个子页面
 subView = new rocket.subview.howto_content_article(
     $.extend({}, options),          
     me             
 );
 me.append(subView);
-                
+
 spm.registerSubpage(me.featureString, subView);
 ...</code></pre>
 <p>}</p>
@@ -71,7 +72,6 @@ spm.registerSubpage(me.featureString, subView);
 <ol><li>单个数据使用model，多个数据集合使用collection</li></ol>
 </body>
 </html>
-<script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
 <script type="text/javascript">
 (function(){
 document.title = $('h1').html() || '技术文档－258i.com';    
