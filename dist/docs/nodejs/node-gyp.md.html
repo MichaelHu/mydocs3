@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="javascript:history.back()">返回</a>
+    </div>
+
+<h1> node-gyp</h1>
+<blockquote><p> Node.js <code>native addon</code> build tool</p></blockquote><p>Generates Your Projects</p>
+<p>nodejs编写的跨平台命令行工具。</p>
+<p>nodejs的C++模块的编译工具，node的0.8版本之前，用的是node-waf编译，该版本之后，就进入使用node-gyp编译工具。</p>
+<p><code>GITHUB</code>: <a href="https://github.com/TooTallNate/node-gyp/">node-gyp</a></p>
+<p>其配置文件名为<code>binding.gyp</code></p>
+<h2> 安装方式</h2>
+<pre><code>$ npm install -g node-gyp
+
+</code></pre>
+<h2> 举例</h2>
+<h3> C++模块，binding.cc</h3>
+<pre><code>#include &lt;node.h>
+#include &lt;v8.h>
+
+using namespace v8;
+
+Handle&lt;Value> Method(const Arguments&amp; args) {
+  HandleScope scope;
+  return scope.Close(String::New("world"));
+}
+
+void init(Handle&lt;Object> target) {
+  NODE_SET_METHOD(target, "hello", Method);
+}
+
+NODE_MODULE(binding, init);
+</code></pre>
+<h3> binding.gyp文件</h3>
+<pre><code>{
+  'targets': [
+    {
+      'target_name': 'binding',
+      'sources': [ 'binding.cc' ]
+    }
+  ]
+}
+
+
+</code></pre>
+<h3> js调用代码</h3>
+<pre><code>var assert = require('assert');
+var binding = require('./build/Release/binding');
+assert.equal('world', binding.hello());
+console.log('binding.hello() =', binding.hello());
+</code></pre>
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+document.title = $('h1').html() || '技术文档－258i.com';    
+})();
+</script>

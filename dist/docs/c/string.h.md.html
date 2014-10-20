@@ -18,38 +18,23 @@
 <a href="javascript:history.back()">返回</a>
     </div>
 
-
-<script>
-
-    $('#nav').hide();
-
-</script>
-
-<style type="text/css">
-
-@import url("./markdown_res/css/index.css")
-
-</style>
-
-
-
-<div class="title"><h1>我的技术文章</h1></div>
-
-<div class="list">
-<h2> web前端 </h2>
-<ul><li><a href="./frontend/backbone.md.html">Backbone解析</a> </li>
-<li><a href="./frontend/commonjs.md.html">CommonJS Modules/1.1.1</a></li>
-<li><a href="./frontend/requirejs.md.html">requirejs相关资料</a></li>
-<li><a href="./frontend/useful_javascript_frameworks.md.html">有用的js框架</a></li></ul>
-</div>
-
-
-
-<div class="list">
-<h2> Web Server相关 </h2>
-<ul><li><a href="./mcwebserver/introduce.md.html">提供简单CGI功能的自制Web Server</a> </li></ul>
-</div>
-
+<h1> string.h备忘</h1>
+<h2> constants</h2>
+<ul><li>NULL</li></ul>
+<h2> types</h2>
+<ul><li>size_t</li></ul>
+<h2> functions</h2>
+<ul><li>char *strcpy(char *s, const char *ct);</li>
+<li>char *strncpy(char *s, const char *ct, size_t n); <ul><li>拷贝至多n个字符到s，剩余空间用空字符填充</li>
+<li>注意：若ct含少于n个字符，则s不会以空字符结束</li></ul>
+</li>
+<li>char *strcat(char *s, const char *ct);</li>
+<li>...</li>
+<li>char *strstr(const char *cs, const char *ct);</li>
+<li>size_t strlen(const char *cs);</li>
+<li>char *strerror(int n);</li>
+<li>...</li>
+<li>void *memset(void *s, int c, size_t n);</li></ul>
 </body>
 </html>
 <script type="text/javascript">

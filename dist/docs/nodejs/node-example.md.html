@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="javascript:history.back()">返回</a>
+    </div>
+
+<h1> Nodejs Examples</h1>
+<h2> webserver</h2>
+<p>nodejs编写的简易web server，每次请求其返回<code>Hello World</code>：</p>
+<ol><li>webserver.js<pre><code>var http = require('http');
+http.createServer(function (req, res) {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.end('Hello World\n');
+}).listen(1337, '127.0.0.1');
+console.log('Server running at http://127.0.0.1:1337/');
+</code></pre>
+</li>
+<li>command line<pre><code>% node webserver.js
+Server running at http://127.0.0.1:1337/
+
+
+
+</code></pre>
+</li></ol>
+<h2> simple TCP Server</h2>
+<ol><li>tcpserver.js<pre><code>var net = require('net');
+
+var server = net.createServer(function (socket) {
+  socket.write('Echo server\r\n');
+  socket.pipe(socket);
+});
+
+server.listen(1337, '127.0.0.1');
+</code></pre>
+</li>
+<li>command line<pre><code>% node tcpserver.js
+
+</code></pre>
+</li></ol>
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+document.title = $('h1').html() || '技术文档－258i.com';    
+})();
+</script>

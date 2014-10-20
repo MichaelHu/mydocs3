@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="javascript:history.back()">返回</a>
+    </div>
+
+<h1> lesscss备忘</h1>
+
+<blockquote><p style="color:green;font-size:18px">Leaner CSS</p></blockquote><p><code>github</code>: <a href="https://github.com/less/less.js">https://github.com/less/less.js</a></p>
+<p><code>docs</code>: <a href="http://lesscss.org">http://lesscss.org</a></p>
+<p>Less是一个CSS预处理器，扩展了CSS语言，添加了新的特性：允许变量、mixin、
+函数以及其他使得css更加容易维护和扩展的技术。</p>
+<h2> 安装和使用</h2>
+<ol><li>nodejs命令行方式<pre><code>> npm install -g less
+> lessc style.less > style.css
+</code></pre>
+<p>如若需要压缩格式：</p>
+<pre><code>> lessc -x style.less > style.css
+</code></pre>
+<p>如若需要压缩得更干净：</p>
+<pre><code>> lessc --clean-css style.less > style.css
+</code></pre>
+</li>
+<li>第三方工具使用，比如nodejs<pre><code>var less = require('less');
+
+less.render('.class { width: (1 + 1) }', function (e, css) {
+  console.log(css);
+});
+</code></pre>
+</li>
+<li>浏览器中使用，不推荐用于产品<pre><code>&lt;head>
+    &lt;link rel="stylesheet/less" type="text/css" href="styles.less" />
+    &lt;script src="less.js" type="text/javascript">&lt;/script>
+&lt;/head>        
+</code></pre>
+<p>编译选项通过设置全局<code>less</code>变量，该设置需要在<code>less.js</code>调用前：</p>
+<pre><code>&lt;script>
+  less = {
+    env: "development",
+    async: false,
+    fileAsync: false,
+    poll: 1000,
+    functions: {},
+    dumpLineNumbers: "comments",
+    relativeUrls: false,
+    rootpath: ":/a.com/"
+  };
+&lt;/script>
+&lt;script src="less.js">&lt;/script>
+</code></pre>
+<p><code>小贴士：</code></p>
+<ul><li><code>link</code>标签需要在<code>script</code>标签前</li>
+<li>多个less文件的编译是独立的，它们之间的变量，函数等不能共享</li></ul>
+</li></ol>
+<h2> Functions</h2>
+
+
+<h3> Misc Functions</h3>
+
+<h4> color</h4>
+<p><code>color("#aaa")</code> => <code>#aaa</code></p>
+
+
+<h4> convert</h4>
+<pre><code>convert(9s, "ms")
+convert(14cm, mm)
+convert(8, mm) // incompatible unit types
+</code></pre>
+<p>输出：</p>
+<pre><code>9000ms
+140mm
+8
+
+</code></pre>
+<h4> data-uri</h4>
+<p><code>不指定MIME</code>：</p>
+<pre><code>data-uri('../data/image.jpg');
+</code></pre>
+<p>第三方或命令行输出：</p>
+<pre><code>url('data:image/jpeg;base64,bm90IGFjdHVhbGx5IGEganBlZyBmaWxlCg==');
+</code></pre>
+<p>浏览器输出：</p>
+<pre><code>url('../data/image.jpg');
+</code></pre>
+<p><code>指定MIME</code>：</p>
+<pre><code>data-uri('image/jpeg;base64', '../data/image.jpg');
+</code></pre>
+<p>输出：</p>
+<pre><code>url('data:image/jpeg;base64,bm90IGFjdHVhbGx5IGEganBlZyBmaWxlCg==');
+
+</code></pre>
+<h4> default</h4>
+<blockquote><p> Available <code>only</code> inside guard conditions and returns <code>true</code>  only if no other <code>mixin</code> matches, false otherwise.</p></blockquote><pre><code>.x {
+  .m(red)                                    {case-1: darkred}
+  .m(blue)                                   {case-2: darkblue}
+  .m(@x) when (iscolor(@x)) and (default())  {default-color: @x}
+  .m('foo')                                  {case-1: I am 'foo'}
+  .m('bar')                                  {case-2: I am 'bar'}
+  .m(@x) when (isstring(@x)) and (default()) {default-string: and I am the default}
+
+  &amp;-blue  {.m(blue)}
+  &amp;-green {.m(green)}
+  &amp;-foo   {.m('foo')}
+  &amp;-baz   {.m('baz')}
+}
+</code></pre>
+<p>输出：</p>
+<pre><code>.x-blue {
+  case-2: #00008b;
+}
+.x-green {
+  default-color: #008000;
+}
+.x-foo {
+  case-1: I am 'foo';
+}
+.x-baz {
+  default-string: and I am the default;
+}
+</code></pre>
+<h4> unit</h4>
+<blockquote><p> Remove or change the unit of a dimension</p></blockquote><p><code>unit(5, px)</code>  => <code>5px</code></p>
+<p><code>unit(5em)</code>    => <code>5</code></p>
+
+
+<h4> get-unit</h4>
+<blockquote><p> Returns units of a number.</p></blockquote><p><code>get-unit(5px)</code> => <code>5</code></p>
+<p><code>get-unit(5)</code> => <code>//nothing</code></p>
+
+
+<h4> svg-gradient</h4>
+<blockquote><p> Generates multi-stop svg gradients.</p></blockquote><pre><code>div {
+    background-image: svg-gradient(to right, red, green 30%, blue);
+}
+</code></pre>
+<p>输出：</p>
+<pre><code>div {
+    background-image: url('data:image/svg+xml;base64,....')
+}
+
+</code></pre>
+<p><code>direction参数</code>：必须为以下值之一，</p>
+<ul><li><code>to bottom</code></li>
+<li><code>to right</code></li>
+<li><code>to bottom right</code></li>
+<li><code>to top right</code></li>
+<li><code>ellipse</code></li>
+<li><code>ellipse at center</code></li></ul>
+<h3> 字符串函数</h3>
+<h4> escape</h4>
+<p><code>escape('a=1')</code> => <code>a%3D1</code></p>
+
+<h4> e</h4>
+<blockquote><p> CSS escaping, replaced with <code>~"value"</code> syntax. Returned string  is an escaped string, <code>without quotes</code>.</p></blockquote><pre><code>filter: e("ms:alwaysHasItsOwnSyntax.For.Stuff()");
+</code></pre>
+<p>输出：</p>
+<pre><code>filter: ms:alwaysHasItsOwnSyntax.For.Stuff();
+
+</code></pre>
+<h4> % format</h4>
+<blockquote><p> Thr function <code>%(string, arguments, ...)</code> formats a string.</p></blockquote><pre><code>format-a-d: %("repetitions: %a file: %d", 1 + 2, "directory/file.less");
+format-a-d-upper: %('repetitions: %A file: %D', 1 + 2, "directory/file.less");
+format-s: %("repetitions: %s file: %s", 1 + 2, "directory/file.less");
+format-s-upper: %('repetitions: %S file: %S', 1 + 2, "directory/file.less");
+</code></pre>
+<p>Output:</p>
+<pre><code>format-a-d: "repetitions: 3 file: "directory/file.less"";
+format-a-d-upper: "repetitions: 3 file: %22directory%2Ffile.less%22";
+format-s: "repetitions: 3 file: directory/file.less";
+format-s-upper: "repetitions: 3 file: directory%2Ffile.less";
+</code></pre>
+<h4> replace</h4>
+<blockquote><p> <code>replace(string, pattern, replacement, flags)</code></p></blockquote><pre><code>replace("Hello, Mars?", "Mars\?", "Earth!");
+replace("One + one = 4", "one", "2", "gi");
+replace('This is a string.', "(string)\.$", "new $1.");
+replace(~"bar-1", '1', '2');
+</code></pre>
+<p>Output:</p>
+<pre><code>"Hello, Earth!";
+"2 + 2 = 4";
+'This is a new string.';
+bar-2;
+</code></pre>
+<p><b></b></p>
+
+
+
+
+<h3> List Functions</h3>
+<h4> length</h4>
+<p><code>参数</code>: 逗号或者空格分隔的列表。</p>
+<p><code>length(1px solid #0080ff);</code>  =>  <code>3</code></p>
+<pre><code>@list: "banana", "tomato", "potato", "peach";
+n: length(@list);
+</code></pre>
+<p>Output:</p>
+<pre><code>n: 4;
+</code></pre>
+<h4> extract</h4>
+<blockquote><p> Returns the value at a specified position in a list.</p></blockquote><p><code>extract(8px dotted red, 2);</code>   =>  <code>dotted</code></p>
+<pre><code>@list: apple, pear, coconut, orange;
+value: extract(@list, 3);
+</code></pre>
+<p>Output:</p>
+<pre><code>value: coconut;
+
+
+
+
+
+</code></pre>
+<h3> Math Functions</h3>
+<ul><li><code>ceil(number)</code></li>
+<li><code>floor(number)</code> </li>
+<li><code>percentage(number)</code> </li>
+<li><code>round(number)</code> </li>
+<li><code>sqrt(number)</code> </li>
+<li><code>abs(number)</code> </li>
+<li><code>sin(number)</code> </li>
+<li><code>asin(number)</code> </li>
+<li><code>cos(number)</code> <pre><code>cos(1) // cosine of 1 radian
+cos(1deg) // cosine of 1 degree
+cos(1grad) // cosine of 1 gradian
+</code></pre>
+<p>Output:</p>
+<pre><code>0.5403023058681398 // cosine of 1 radian
+0.9998476951563913 // cosine of 1 degree
+0.9998766324816606 // cosine of 1 gradian
+</code></pre>
+</li>
+<li><code>acos(number)</code> </li>
+<li><code>tan(number)</code> </li>
+<li><code>atan(number)</code> </li>
+<li><code>pi()</code> </li>
+<li><code>pow(base, exponent)</code> <pre><code>pow(0cm, 0px)
+pow(25, -2)
+pow(25, 0.5)
+pow(-25, 0.5)
+pow(-25%, -0.5)
+</code></pre>
+<p>Output:</p>
+<pre><code>1cm
+0.0016
+5
+NaN
+NaN%
+
+
+</code></pre>
+</li>
+<li><code>mod(a, b)</code> <pre><code>mod(0cm, 0px)
+mod(11cm, 6px);
+mod(-26%, -5);
+</code></pre>
+<p>Output:</p>
+<pre><code>NaNcm;
+5cm
+-1%;
+</code></pre>
+</li>
+<li><code>min(arguments, ...)</code> <pre><code>min(3px, 42px, 1px, 16px);
+</code></pre>
+<p>Output:</p>
+<pre><code>1px
+</code></pre>
+</li>
+<li><code>max(arguments, ...)</code> </li></ul>
+<h3> Type Functions</h3>
+<ul><li><code>isnumber(value)</code><pre><code>isnumber(#ff0);     // false
+isnumber(blue);     // false
+isnumber("string"); // false
+isnumber(1234);     // true
+isnumber(56px);     // true
+isnumber(7.8%);     // true
+isnumber(keyword);  // false
+isnumber(url(...)); // false
+</code></pre>
+</li>
+<li><code>isstring(value)</code></li>
+<li><code>iscolor(value)</code></li>
+<li><code>iskeyword(value)</code></li>
+<li><code>isurl(value)</code><pre><code>isurl(#ff0);     // false
+isurl(blue);     // false
+isurl("string"); // false
+isurl(1234);     // false
+isurl(56px);     // false
+isurl(7.8%);     // false
+isurl(keyword);  // false
+isurl(url(...)); // true
+</code></pre>
+</li>
+<li><code>ispixel(value)</code></li>
+<li><code>isem(value)</code></li>
+<li><code>ispercentage(value)</code></li>
+<li><code>isunit(value)</code></li></ul>
+<h3> Color Definition Functions</h3>
+<h4> rgb</h4>
+<p><code>rgb(90, 129, 32)</code> => <code>#5a8120</code></p>
+<p><code>rgb(90%, 29%, 32%)</code> => todo</p>
+
+<h4> rgba</h4>
+<p><code>rgba(90, 129, 32, 0.5)</code> => <code>rgba(90, 129, 32, 0.5)</code> </p>
+
+<h4> argb</h4>
+<blockquote><p> Creates a hex representation of a color in <code>#AARRGGBB</code> format (NOT <code>#RRGGBBAA</code>!).</p></blockquote><pre><code>argb(rgba(90, 23, 148, 0.5));
+</code></pre>
+<p>Output: </p>
+<pre><code>#805a1794
+</code></pre>
+<h4> hsl</h4>
+<blockquote><p> Creates an opaque color object from <code>hue(色调), saturation(饱和度) 
+> and lightness(亮度)(HSL)</code> values.</p></blockquote><p><code>hsl(90, 100%, 50%)</code> => <code>#80ff00</code></p>
+<p>这个很有用，如果你想基于一个颜色的色道创建新的颜色，比如：</p>
+<pre><code>@new: hsl(hue(@old), 45%, 90%);
+</code></pre>
+<p>@new拥有@old的hue值，但有自己独特的saturation和lightness。</p>
+
+<h4> hsla</h4>
+<blockquote><p> Creates an transparent color object from <code>hue, saturation, lightness and alpha(HSLA)</code> values.</p></blockquote><pre><code>hsla(90, 100%, 50%, 0.5)
+</code></pre>
+<p>Output: </p>
+<pre><code>rgba(128, 255, 0, 0.5)
+</code></pre>
+<h4> hsv</h4>
+<blockquote><p> Creates an opaque color object from <code>hue, saturation and value(HSV)</code> values. </p></blockquote><pre><code>hsv(90, 100%, 50%)
+</code></pre>
+<p>Output: </p>
+<pre><code>#408000
+</code></pre>
+<h4> hsva</h4>
+<blockquote><p> Creates an transparent color object from <code>hue, saturation, value and alpha(HSVA)</code> values. </p></blockquote><pre><code>hsva(90, 100%, 50%, 0.5)
+</code></pre>
+<p>Output: </p>
+<pre><code>rgba(64, 128, 0, 0.5)
+</code></pre>
+<h3> Color Channel Functions</h3>
+<h4> hue</h4>
+<pre><code>hue(hsl(90, 100%, 50%))
+</code></pre>
+<p>Output: </p>
+<pre><code>90
+</code></pre>
+<h4> saturation</h4>
+<pre><code>saturation(hsl(90, 100%, 50%))
+</code></pre>
+<p>Output: </p>
+<pre><code>100%
+</code></pre>
+<h4> lightness</h4>
+<pre><code>lightness(hsl(90, 100%, 50%))
+</code></pre>
+<p>Output: </p>
+<pre><code>50%
+</code></pre>
+<h4> hsvhue</h4>
+<h4> hsvsaturation</h4>
+<h4> hsvvalue</h4>
+<h4> red</h4>
+<h4> green</h4>
+<h4> blue</h4>
+<h4> alpha</h4>
+<h4> luma</h4>
+<h4> luminance</h4>
+
+
+<h3> Color Operation Functions</h3>
+<h4> saturate</h4>
+<h4> desaturate</h4>
+<h4> lighten</h4>
+<h4> darken</h4>
+<h4> faden</h4>
+<h4> spin</h4>
+<h4> mix</h4>
+<h4> greyscale</h4>
+<h4> contrast</h4>
+
+
+<h3> Color Blending Functions</h3>
+<h4> multiply </h4>
+<h4> screen </h4>
+<h4> overlay </h4>
+<h4> softlight </h4>
+<h4> hardlight </h4>
+<h4> exclusion </h4>
+<h4> average </h4>
+<h4> negation </h4>
+
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+document.title = $('h1').html() || '技术文档－258i.com';    
+})();
+</script>

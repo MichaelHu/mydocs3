@@ -49,6 +49,7 @@ h1 {
 
 .list ul {
     margin-left: 0;
+    padding-left: 0;
 }
 
 .list ul:after {
@@ -61,6 +62,7 @@ h1 {
 
 .list li{
     float: left;
+    margin-top: 7px;
     margin-right: 20px;
     padding: 0 10px;
 

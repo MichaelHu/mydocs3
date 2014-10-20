@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="javascript:history.back()">返回</a>
+    </div>
+
+<h1> bootstrap</h1>
+<blockquote><p style="color:green;font-size:18px">The most popular HTML, CSS, and JavaScript  framework for developing responsive, mobile first projects on the web.</p></blockquote><p><code>github</code>: <a href="https://github.com/twbs/bootstrap">https://github.com/twbs/bootstrap</a></p>
+<p><code>docs</code>: <a href="http://getbootstrap.com">http://getbootstrap.com</a></p>
+<blockquote><p> 为每一人每一处而设计</p></blockquote><p>CSS<code>预处理器</code>［Sass和less］；<code>一个框架任何设备</code>；拥有<code>各类特性</code>：文档、组件以及jQuery插件</p>
+<h2> CSS</h2>
+<blockquote><p> Global CSS settings, fundamental HTML elements styled and enhanced with extensible classes, and an advanced grid system.</p></blockquote><p><code>全局CSS</code>设置，通过扩展类强化了的<code>基础HTML元素</code>，高级<code>栅格系统</code>。</p>
+<p><code>CSS体系说明</code>：<a href="http://getbootstrap.com/css">http://getbootstrap.com/css</a></p>
+<h3> HTML规范</h3>
+<ol><li>DOCTYPE<pre><code>&lt;!DOCTYPE html>
+&lt;html>
+  ...
+&lt;/html>
+</code></pre>
+</li>
+<li>Mobole First，使移动设备更友好展示和zooming，加上以下meta：<pre><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1">
+</code></pre>
+<p>如若不允许缩放，加上以下meta：</p>
+<pre><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+</code></pre>
+</li>
+<li>排版和链接，参考less文件：<code>scaffolding.less</code></li>
+<li>跨浏览器渲染，使用reset css： <a href="http://necolas.github.io/normalize.css/">Normalize.css</a></li>
+<li>容器，两个类：<code>.container</code>和<code>.container-fluid</code><p><code>固定宽度</code>容器：</p>
+<pre><code>&lt;div class="container">
+  ...
+&lt;/div>
+</code></pre>
+<p><code>流式（全宽度）</code>容器：</p>
+<pre><code>&lt;div class="container-fluid">
+  ...
+&lt;/div>  
+</code></pre>
+</li></ol>
+<h3> 栅格系统</h3>
+<p>Bootstrap包含一套响应式、移动优先的流式栅格系统，随着设备或者视窗尺寸的增加适当地按比例增加到12列。</p>
+<p>包含预定义CSS类，以及功能强大的mixin。</p>
+<ul><li>行必须放在<code>.container</code>或者<code>.container-fluid</code>中</li>
+<li>使用行来创建水平列组</li>
+<li>内容必须放在列中，只有列能作为行的最近孩子节点</li>
+<li>预定义栅格类，诸如<code>.row</code>和<code>.col-xs-4</code>可以帮助迅速建立栅格布局；同时，使用less mixin<p>也可以用来创建更多语义化的布局</p>
+</li>
+<li>列通过<code>padding</code>创建间距</li>
+<li>负margin使内容外凸</li>
+<li>栅格列通过指定跨越列的个数来创建，比如4个跨越列的样式类：<code>.col-xs-4</code></li>
+<li>如果一行里放了超过12个列，那么超出的列会作为一个单位放到下一行中</li>
+<li>某一尺寸的栅格类会影响大于或等于该尺寸的设备，会覆盖小于该尺寸的栅格类<p>比如<code>.col-md-</code>类不仅影响中间尺寸的设备，同时还会影响大尺寸的设备，如果<code>.col-lg-</code>未指定的话</p>
+</li></ul>
+<h3> 栅格举例</h3>
+
+
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+document.title = $('h1').html() || '技术文档－258i.com';    
+})();
+</script>

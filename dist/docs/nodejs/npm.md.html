@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="javascript:history.back()">返回</a>
+    </div>
+
+<h1> npm备忘</h1>
+<blockquote><p style="color:green;font-size:18px">Node Packaged Modules.  <a href="http://www.npmjs.org"> [ npmjs ] </a></p></blockquote><h2> 常用命令</h2>
+<h3> npm install, npm i</h3>
+<pre><code>npm install &lt;name>
+npm install -g &lt;name>
+npm install --save &lt;name>
+npm install --verbose -g &lt;name>
+
+
+</code></pre>
+<h3> npm init</h3>
+<pre><code>npm init [-f|--force|-y|--yes]
+
+</code></pre>
+<h3> npm rm</h3>
+<pre><code>npm rm &lt;name>
+npm r &lt;name>
+npm uninstall &lt;name>
+npm un &lt;name>
+
+</code></pre>
+<h3> npm update</h3>
+<pre><code>npm update &lt;name>
+</code></pre>
+<h3> npm ls</h3>
+<pre><code>npm ls
+npm ls -g
+</code></pre>
+<h3> npm root</h3>
+<pre><code>npm root
+npm root -g
+</code></pre>
+<h3> npm help</h3>
+<pre><code>npm help
+</code></pre>
+<h3> npm config</h3>
+<pre><code>npm config list
+npm config set &lt;key> &lt;value> [-g]
+npm config get &lt;key>
+npm config delete &lt;key>
+npm get &lt;key>
+npm set &lt;key> &lt;value> [--global]
+</code></pre>
+<h3> npm link</h3>
+
+
+
+
+
+<h2> package.json</h2>
+<p>必须是一个<code>纯JSON</code>，而不能是JS的object literal。</p>
+<ul><li>name</li>
+<li>version</li>
+<li>description</li>
+<li>keywords</li>
+<li>homepage</li>
+<li>bugs<pre><code>{ "url" : "http://github.com/owner/project/issues"
+, "email" : "project@hostname.com"
+}</code></pre>
+</li>
+<li>license</li>
+<li>author, contributors (数组) </li>
+<li>files，受.npmignore影响</li>
+<li>main</li>
+<li>bin<pre><code>{ "bin" : { "npm" : "./cli.js" } }</code></pre>
+</li>
+<li>man</li>
+<li>directories</li>
+<li>directories.lib</li>
+<li>directories.bin</li>
+<li>directories.man</li>
+<li>directories.doc</li>
+<li>directories.example</li>
+<li>repository<pre><code>"repository" :
+  { "type" : "git"
+  , "url" : "http://github.com/npm/npm.git"
+  }
+
+"repository" :
+  { "type" : "svn"
+  , "url" : "http://v8.googlecode.com/svn/trunk/"
+  }
+</code></pre>
+</li>
+<li>scripts: 定义包生命周期中各个阶段调用执行的脚本命令</li>
+<li>config</li>
+<li>dependencies<pre><code>{ "dependencies" :
+  { "foo" : "1.0.0 - 2.9999.9999"
+  , "bar" : ">=1.0.2 &lt;2.1.2"
+  , "baz" : ">1.0.2 &lt;=2.3.4"
+  , "boo" : "2.0.1"
+  , "qux" : "&lt;1.0.0 || >=2.3.1 &lt;2.4.5 || >=2.5.2 &lt;3.0.0"
+  , "asd" : "http://asdf.com/asdf.tar.gz"
+  , "til" : "~1.2"
+  , "elf" : "~1.2.3"
+  , "two" : "2.x"
+  , "thr" : "3.3.x"
+  , "lat" : "latest"
+  , "dyl" : "~/projects/dyl"
+  }
+}
+</code></pre>
+</li>
+<li>devDependencies<pre><code>{ "name": "ethopia-waza",
+  "description": "a delightfully fruity coffee varietal",
+  "version": "1.2.3",
+  "devDependencies": {
+    "coffee-script": "~1.6.3"
+  },
+  "scripts": {
+    "prepublish": "coffee -o lib/ -c src/waza.coffee"
+  },
+  "main": "lib/waza.js"
+}
+</code></pre>
+</li>
+<li>peerDependencies<pre><code>{
+  "name": "tea-latte",
+  "version": "1.3.5"
+  "peerDependencies": {
+    "tea": "2.x"
+  }
+}
+</code></pre>
+</li>
+<li>bundledDependencies</li>
+<li>bundleDependencies</li>
+<li>optionalDependencies</li>
+<li>engines<pre><code>{ "engines" : { "node" : ">=0.10.3 &lt;0.12" } }
+</code></pre>
+</li>
+<li>engineStrict </li>
+<li>os<pre><code>"os" : [ "darwin", "linux" ]
+</code></pre>
+<p>or</p>
+<pre><code>"os" : [ "darwin", "!win32" ]
+</code></pre>
+</li>
+<li>cpu<pre><code>"cpu": [ "x64", "ia32" ] 
+</code></pre>
+<p>or</p>
+<pre><code>"cpu": [ "!arm", "!mips" ] 
+</code></pre>
+</li>
+<li>preferGlobal，如果希望安装成global的，那么当被安装成local的时候，给出warning </li>
+<li>private</li>
+<li>publishConfig</li></ul>
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+document.title = $('h1').html() || '技术文档－258i.com';    
+})();
+</script>

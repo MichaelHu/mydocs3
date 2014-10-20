@@ -18,38 +18,23 @@
 <a href="javascript:history.back()">返回</a>
     </div>
 
+<h1> C语言的可变参数列表</h1>
+<h2> header files</h2>
+<pre><code>#include &lt;stdarg.h>
+</code></pre>
+<h2> examples</h2>
+<pre><code>char *str_format(char *format, ...){
+    char *_str = NULL;
+    va_list args;
 
-<script>
+    _str = (char *)malloc(1000000);
+    va_start(args, format);
+    vsprintf(_str, format, args);
+    va_end(args);
+    return _str;
+}
 
-    $('#nav').hide();
-
-</script>
-
-<style type="text/css">
-
-@import url("./markdown_res/css/index.css")
-
-</style>
-
-
-
-<div class="title"><h1>我的技术文章</h1></div>
-
-<div class="list">
-<h2> web前端 </h2>
-<ul><li><a href="./frontend/backbone.md.html">Backbone解析</a> </li>
-<li><a href="./frontend/commonjs.md.html">CommonJS Modules/1.1.1</a></li>
-<li><a href="./frontend/requirejs.md.html">requirejs相关资料</a></li>
-<li><a href="./frontend/useful_javascript_frameworks.md.html">有用的js框架</a></li></ul>
-</div>
-
-
-
-<div class="list">
-<h2> Web Server相关 </h2>
-<ul><li><a href="./mcwebserver/introduce.md.html">提供简单CGI功能的自制Web Server</a> </li></ul>
-</div>
-
+</code></pre>
 </body>
 </html>
 <script type="text/javascript">
