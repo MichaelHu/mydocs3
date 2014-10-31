@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="javascript:history.back()">返回</a>
+    </div>
+
+<h1> box2dweb</h1>
+<blockquote><p> 大名鼎鼎的物理引擎box2d基本上大家都听说过，网上有两个javascript版本的box2d库， 一个是<code>box2djs</code>，已经停止维护，一个是<code>box2dweb</code>。 </p></blockquote><p>在Google Code上维护：
+<code>Source URL:</code> <a href="https://code.google.com/p/box2dweb/">box2dweb</a></p>
+<p><code>Slide URL:</code> <a href="http://www.slideshare.net/szafranek/slides-en">Box2D</a></p>
+<p><code>box2dflash实现的游戏：</code><a href="http://www.gibbetsgame.com">Gibbets</a></p>
+<h2> box2d</h2>
+<blockquote><p> 多平台支持的2d物理引擎</p></blockquote><ol><li>multiplatform：c++, c#, ActionScript, Java</li>
+<li>2D: x, y</li>
+<li>physics engine: gravity, friction, collision detection, motion simulation</li></ol>
+<blockquote><p> Box2D library is agnostic about rendering.</p></blockquote><p>Box2D库独立于渲染，只做计算。</p>
+
+<h2> 关键字</h2>
+<ul><li>rigid body - 刚体</li>
+<li>shape - 形状</li>
+<li>fixture</li>
+<li>constraint - 约束</li>
+<li>contact constraint - 接触约束</li>
+<li>joint - 关节</li>
+<li>joint limit - 关节限制</li>
+<li>joint motor - 关节马达</li>
+<li>world - 世界</li>
+<li>friction - 摩擦</li>
+<li>restitution - 恢复</li>
+<li>body - 物体</li>
+<li>collision geometry - 碰撞几何结构</li>
+<li>damping - 阻尼</li>
+<li>body definition - 物体定义</li>
+<li>solver</li>
+<li>kinematic - 运动学的</li>
+<li>torque - 扭力，扭矩</li>
+<li>inertia - 惯性</li>
+<li>discrete simulation - 分立式模拟 </li>
+<li>tunneling - 穿透</li>
+<li>CCD - continuous collision detection </li></ul>
+<h2> 模块</h2>
+<p>三个模块:</p>
+<ul><li>Common<ul><li>code for allocation, math and settings</li></ul>
+</li>
+<li>Collision<ul><li>define shapes, a broad-phase, andcollision functions/queries</li></ul>
+</li>
+<li>Dynamics<ul><li>provides the simulation world, bodies, fixtures, and joints</li></ul>
+</li></ul>
+<p><code>Module Hierarchy：</code></p>
+<p><img src="./img/module-hierarchy.png"></p>
+
+<h2> 一、Collision Module</h2>
+
+<h3> b2Shape</h3>
+<ul><li>测试点与shape是否重叠</li>
+<li>处理灯光投射</li>
+<li>计算AABB</li>
+<li>计算质量属性</li></ul>
+<p>Note: Keep in mind that a shape does not know about bodies and stand apart from the dynamics system.</p>
+<ul><li>When a shape is not attached to a body, you can view it’s vertices as being expressed in world- space.</li>
+<li>When a shape is attached to a body, you can view it’s vertices as being expressed in local coordinates.</li></ul>
+<ol><li>Circle Shapes</li>
+<li>Polygon Shapes<p>Convex and Concave</p>
+<p><img src="./img/polygon.png"></p>
+<p>多边形是Convex，而不是Concave。Convex的任意两个顶点的连线不会与任何一条边相交。</p>
+<p>多边形的顶点必须以CCW(Counter Clockwise Winding)顺序给出，这与右手坐标系统相适应。</p>
+<p><img src="./img/ccw.png"></p>
+<p>Convex hull computation</p>
+<p>默认最大顶点数为8，满足大部分需求，也保证了计算性能</p>
+<p>从shape中继承了radius属性，形成polygon skin：</p>
+<p><img src="./img/polygon-skin.png"></p>
+</li>
+<li>Edge Shapes<p>即线段。辅助创建静态环境，无体积，可以与circle或polygon碰撞，但不会与自身碰撞。</p>
+<p>碰撞算法要求碰撞的两者至少有一个是有体积的，所以Edge－Edge都无体积，所以无法碰撞</p>
+<pre><code>// This an edge shape. 
+b2Vec2 v1(0.0f, 0.0f); 
+b2Vec2 v2(1.0f, 0.0f);
+b2EdgeShape edge;
+edge.Set(v1, v2);
+</code></pre>
+<p>注意<code>ghost collision</code>，可以使用chain shapes</p>
+</li>
+<li>Chain Shapes<p>多个Edge连接成。</p>
+<p><img src="./img/chain-shape.png"></p>
+<p>self-intersection不支持，顶点很接近也可能会出问题，Edge长于b2_linearSlop(5mm)</p>
+<p><img src="./img/self-intersection.png"></p>
+</li></ol>
+<p><code>一元几何查询</code></p>
+<ol><li>点测试，Shape Point Test<pre><code>b2Transfrom transform; 
+transform.SetIdentity(); 
+b2Vec2 point(5.0f, 2.0f);
+bool hit = shape->TestPoint(transform, point);
+</code></pre>
+<p>Edge和Chain总是返回false，即使chain是闭合的。</p>
+</li>
+<li>光测试<pre><code>b2Transfrom transform; 
+transform.SetIdentity(); 
+b2RayCastInput input; 
+input.p1.Set(0.0f, 0.0f, 0.0f); 
+input.p2.Set(1.0f, 0.0f, 0.0f); 
+input.maxFraction = 1.0f; 
+int32 childIndex = 0; 
+b2RayCastOutput output;
+bool hit = shape->RayCast(&amp;output, input, transform, childIndex); 
+if (hit)
+{
+    b2Vec2 hitPoint = input.p1 + output.fraction * (input.p2 – input.p1);
+    ... 
+}  
+
+</code></pre>
+</li></ol>
+<p><code>二元函数</code></p>
+<ol><li>Overlap<pre><code>b2Transform xfA = ..., xfB = ...;
+bool overlap = b2TestOverlap(shapeA, indexA, shapeB, indexB, xfA, xfB);
+</code></pre>
+</li>
+<li>Contact Manifolds<p><img src="./img/contact-manifolds.png"></p>
+</li>
+<li>Distance<p><img src="./img/distance.png"></p>
+</li>
+<li>Time of Impact<p><code>b2TimeOfImpact</code>用于计算两个移动物体发生碰撞的时间，称为<code>TOI(time of impact)</code>，该函数的主要
+目的就是穿透避免（tunnel prevention）</p>
+<p><img src="./img/tunnel-prevention.png"></p>
+</li></ol>
+<p><code>动态树 Dynamic Tree</code></p>
+<p>类b2DynamicTree用于有效组织大量shapes，其不关心也不知道shapes，</p>
+<p>而是操作AABBs (axis-aligned bounding boxes)</p>
+
+
+<p><code>广义碰撞检测－Broad-phase</code></p>
+<p>碰撞处理有狭义和广义之分，狭义方式两两进行交点计算，N个Shape，需要执行N * N / 2次。</p>
+<p><code>b2BroadPhase</code>类使用动态树，大大减少狭义方式的计算量</p>
+
+
+
+<h2> 二、Dynamics Module</h2>
+<p>最复杂的部分，包含以下类：</p>
+<ul><li>fixture class</li>
+<li>rigid body class</li>
+<li>contact class</li>
+<li>joint classes</li>
+<li>world class</li>
+<li>listener classes</li></ul>
+<h3> 2.1 Bodies</h3>
+<blockquote><p> Bodies have position and velocity. You can apply forces, torques, and impulses to bodies.  Bodies can be static, kinematic, or dynamic.</p></blockquote><p>位置和加速度，可应用力、扭力和脉冲于其上。</p>
+
+<p><code>类型</code>：
+b2_staticBody
+b2_kinematicBody
+b2_dynamicBody</p>
+<blockquote><p> Box2D使用CCD碰撞检测，避免物体穿透。计算碰撞的第一次TOI，物体会被先移动到该TOI， 再行计算剩余sub step。一个step可能会分为多个sub step</p></blockquote><p>不过CCD耗损性能，dynamic物体的默认是不启用的。没有CCD，高速射击的子弹可能会穿透砖墙。</p>
+<pre><code>bodyDef.bullet = true;
+</code></pre>
+<p>以上开启dynamic body的CCD属性。只对dynamic body有效。</p>
+
+<p><code>Activation</code></p>
+<pre><code>bodyDef.active = true;
+</code></pre>
+<p>希望物体创建以后，但不参与碰撞。可以先创建一个inactive的物体，然后再激活之，用以上方法。</p>
+
+
+
+<p><code>User Data</code></p>
+<p>用户hook，可以自己设定数据。C++里面，它是一个void型指针。</p>
+<pre><code>b2BodyDef bodyDef;
+bodyDef.userData = &amp;myActor;
+
+</code></pre>
+<p><code>Body Factory - 工厂</code></p>
+<p>物体的创建和销毁都有b2World来完成，如下：</p>
+<pre><code>b2Body * dynamicBody = myWorld -> CreateBody(&amp;bodyDef);
+... do stuff ...
+myWorld -> Destroy(dynamicBody);
+dynamicBody = NULL;
+</code></pre>
+<p>避免使用new或者malloc创建body，那样不work</p>
+<p>body销毁时，依附其上的fixtures和joints自动销毁。</p>
+
+
+<p><code>使用物体</code></p>
+<blockquote><p> After creating a body, there are many operations you can perform on the body. These include setting  mass properties, accessing position and velocity, applying forces, and transforming points and vectors.</p></blockquote><ol><li>mass properties:<p>mass ( scalar ), center of mass ( 2-vector ), rotational inertia ( scalar )</p>
+<p>质量，中心，旋转惯性</p>
+<p>静态物体，质量和转动惯性设置为0.</p>
+<pre><code>void SetMassData(const b2MassData * data);
+
+void ResetMassData();
+
+float32 GetMass() const;
+float32 GetInertia() const;
+const b2Vec2&amp; GetLocalCenter() const; 
+void GetMassData(b2MassData* data) const;
+</code></pre>
+</li>
+<li>状态信息<pre><code>void SetType(b2BodyType type);
+b2BodyType GetType();
+
+void SetBullet(bool flag); 
+bool IsBullet() const;
+
+void SetSleepingAllowed(bool flag); 
+bool IsSleepingAllowed() const;
+
+void SetAwake(bool flag); 
+bool IsAwake() const;
+
+void SetActive(bool flag); 
+bool IsActive() const;
+
+void SetFixedRotation(bool flag); 
+bool IsFixedRotation() const;
+
+
+
+
+
+
+</code></pre>
+</li></ol>
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+document.title = $('h1').html() || '技术文档－258i.com';    
+})();
+</script>

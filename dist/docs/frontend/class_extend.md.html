@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="javascript:history.back()">返回</a>
+    </div>
+
+<h1> js类扩展方式</h1>
+<blockquote><p> 从已存在的父类中派生出一个子类的实现方式 </p></blockquote><h2> Backbone实现</h2>
+<p>支持通过<code>this.__super__</code>调用父类的原型链，比如子类的init方法中调用父类的init方法：</p>
+<pre><code>...
+this.__super__.init &amp;&amp;
+    this.__super__.init.apply(this, arguments);
+... 
+</code></pre>
+<p>具体实现如下：</p>
+<pre><code>// Helper function to correctly set up the prototype chain, for subclasses.
+// Similar to `goog.inherits`, but uses a hash of prototype properties and
+// class properties to be extended.
+var extend = function(protoProps, staticProps) {
+  var parent = this;
+  var child;
+
+  // The constructor function for the new subclass is either defined by you
+  // (the "constructor" property in your `extend` definition), or defaulted
+  // by us to simply call the parent's constructor.
+  if (protoProps &amp;&amp; _.has(protoProps, 'constructor')) {
+    child = protoProps.constructor;
+  } else {
+    child = function(){ return parent.apply(this, arguments); };
+  }
+
+  // Add static properties to the constructor function, if supplied.
+  _.extend(child, parent, staticProps);
+
+  // Set the prototype chain to inherit from `parent`, without calling
+  // `parent`'s constructor function.
+  var Surrogate = function(){ this.constructor = child; };
+  Surrogate.prototype = parent.prototype;
+  child.prototype = new Surrogate;
+
+  // Add prototype properties (instance properties) to the subclass,
+  // if supplied.
+  if (protoProps) _.extend(child.prototype, protoProps);
+
+  // Set a convenience property in case the parent's prototype is needed
+  // later.
+  child.__super__ = parent.prototype;
+
+  return child;
+};
+
+
+
+</code></pre>
+<h2> Quintus实现</h2>
+<p>支持<code>this._super()</code>方法，通过该方法可以调用<code>同名</code>的父类方法，比如子类的init方法中调用父类的init方法：</p>
+<pre><code>...
+this._super(...);
+... 
+</code></pre>
+<p>具体实现如下：</p>
+
+<pre><code>/**
+ * Create a new Class that inherits from this class
+ *
+ * @method extend
+ * @param {String} className
+ * @param {Object} properties - hash of properties (init will be the constructor)
+ * @param {Object} [classMethods] - optional class methods to add to the class
+ */
+Q.Class.extend = function(className, prop, classMethods) {
+  /* No name, don't add onto Q */
+  if(!Q._isString(className)) {
+    classMethods = prop;
+    prop = className;
+    className = null;
+  }
+  var _super = this.prototype,
+      ThisClass = this;
+
+  /* Instantiate a base class (but only create the instance, */
+  /* don't run the init constructor) */
+  initializing = true;
+  var prototype = new ThisClass();
+  initializing = false;
+
+  function _superFactory(name,fn) {
+    return function() {
+      var tmp = this._super;
+
+      /* Add a new ._super() method that is the same method */
+      /* but on the super-class */
+      this._super = _super[name];
+
+      /* The method only need to be bound temporarily, so we */
+      /* remove it when we're done executing */
+      var ret = fn.apply(this, arguments);
+      this._super = tmp;
+
+      return ret;
+    };
+  }
+
+  /* Copy the properties over onto the new prototype */
+  for (var name in prop) {
+    /* Check if we're overwriting an existing function */
+    prototype[name] = typeof prop[name] === "function" &amp;&amp;
+      typeof _super[name] === "function" &amp;&amp;
+        fnTest.test(prop[name]) ?
+          _superFactory(name,prop[name]) :
+          prop[name];
+  }
+  /* The dummy class constructor */
+  function Class() {
+    /* All construction is actually done in the init method */
+    if ( !initializing &amp;&amp; this.init ) {
+      this.init.apply(this, arguments);
+    }
+  }
+
+  /* Populate our constructed prototype object */
+  Class.prototype = prototype;
+
+  /* Enforce the constructor to be what we expect */
+  Class.prototype.constructor = Class;
+  /* And make this class extendable */
+  Class.extend = Q.Class.extend;
+
+  /* If there are class-level Methods, add them to the class */
+  if(classMethods) {
+    Q._extend(Class,classMethods);
+  }
+
+  if(className) {
+    /* Save the class onto Q */
+    Q[className] = Class;
+
+    /* Let the class know its name */
+    Class.prototype.className = className;
+    Class.className = className;
+  }
+
+  return Class;
+};
+));
+
+
+
+
+</code></pre>
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+document.title = $('h1').html() || '技术文档－258i.com';    
+})();
+</script>

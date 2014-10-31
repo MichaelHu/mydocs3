@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="javascript:history.back()">返回</a>
+    </div>
+
+<h1> user group</h1>
+
+<h2> 文件</h2>
+<ul><li><code>/etc/group</code>：包含所有组 </li>
+<li><code>/etc/passwd</code>及<code>/etc/shadow</code>：包含系统存在的所有用户名</li></ul>
+<h2> usermod</h2>
+<p>修改当前用户所属组</p>
+<p>[<code>Mac OS不存在该命令</code>]。</p>
+<p>或者可以直接修改<code>/etc/passwd</code></p>
+<h2> userconf</h2>
+<p>[<code>Mac OS不存在该命令</code>]。</p>
+<h2> useradd</h2>
+<p>添加用户账号</p>
+<p>[<code>Mac OS不存在该命令</code>]。</p>
+<h2> userdel</h2>
+<p>删除用户账号</p>
+<p>[<code>Mac OS不存在该命令</code>]。</p>
+
+
+
+<h2> whois</h2>
+<pre><code>whois [options] name
+</code></pre>
+<p>whois指令会去查找并显示指定帐号的用户相关信息，因为它是到Network Solutions 的WHOIS数据库去查找，所以该帐号名称必须在上面注册方能寻获，且名称没有大小写的差别。</p>
+<pre><code>$ whois 258i.com
+</code></pre>
+<h2> whoami</h2>
+<p>显示自身用户名称</p>
+<pre><code>$ whoami
+hudamin
+</code></pre>
+<h2> who</h2>
+<p>显示目前登录系统的用户信息</p>
+<pre><code>$ who
+hudamin  console  Oct 29 09:56 
+hudamin  ttys000  Oct 29 10:13 
+hudamin  ttys001  Oct 29 10:14 
+hudamin  ttys002  Oct 29 10:16 
+hudamin  ttys003  Oct 29 10:18 
+hudamin  ttys004  Oct 29 10:22 
+hudamin  ttys005  Oct 29 10:22 
+hudamin  ttys006  Oct 29 13:46 
+hudamin  ttys007  Oct 29 14:01 
+hudamin  ttys008  Oct 29 14:08 
+hudamin  ttys009  Oct 29 14:38 
+$ who -m
+hudamin  ttys009  Oct 29 14:38
+$ who am i
+hudamin  ttys009  Oct 29 14:38
+$ who -Hm
+USER     LINE     WHEN         
+hudamin  ttys009  Oct 29 14:38
+
+</code></pre>
+<h2> w</h2>
+<p>显示目前登录系统的用户信息</p>
+<pre><code>$ w
+14:54  up  4:59, 11 users, load averages: 0.95 1.18 1.22
+USER     TTY      FROM              LOGIN@  IDLE WHAT
+hudamin  console  -                 9:56    4:58 -
+hudamin  s000     -                10:13    4:40 /Users/hudamin/softwares/mysql-5.6.13-osx10.7-x86_64/bin//mysqld
+hudamin  s001     -                10:14    4:40 python proxy.py
+hudamin  s002     -                10:16    4:35 -bash
+hudamin  s003     -                10:18    4:35 -bash
+hudamin  s004     -                10:22       2 vim box2dweb.md
+hudamin  s005     -                10:22    2:10 -bash
+hudamin  s006     -                13:46      44 -bash
+hudamin  s007     -                14:01      44 vim conf/httpd.conf
+hudamin  s008     -                14:08      44 -bash
+hudamin  s009     -                14:38       - w 
+</code></pre>
+<p>mac os新版本已经不支持options</p>
+<h1> finger</h1>
+<p>查询用户的信息，通常会显示系统中某个用户的用户名、主目录、停滞时间、登录时间、登录shell等信息。如果要查询远程机上的用户信息，需要在用户名后面接“@主机名”，采用[用户名@主机名]的格式，不过要查询的网络主机需要运行finger守护进程。</p>
+<pre><code>$ finger
+Login    Name                 TTY  Idle  Login  Time   Office  Phone
+hudamin  hudamin             *con  5:00  三    09:56
+hudamin  hudamin              s00  4:42  三    10:13
+hudamin  hudamin              s00  4:42  三    10:14
+hudamin  hudamin              s00  4:37  三    10:16
+hudamin  hudamin              s00  4:37  三    10:18
+hudamin  hudamin              s00        三    10:22
+hudamin  hudamin              s00  2:12  三    10:22
+hudamin  hudamin              s00    47  三    13:46
+hudamin  hudamin              s00    46  三    14:01
+hudamin  hudamin              s00    47  三    14:08
+hudamin  hudamin              s00        三    14:38
+
+$ finger -l
+Login: hudamin                  Name: hudamin
+Directory: /Users/hudamin               Shell: /bin/bash
+On since 三 10 29 09:56 (CST) on console, idle 5:01 (messages off)
+On since 三 10 29 10:13 (CST) on ttys000, idle 4:43
+On since 三 10 29 10:14 (CST) on ttys001, idle 4:42
+On since 三 10 29 10:16 (CST) on ttys002, idle 4:38
+On since 三 10 29 10:18 (CST) on ttys003, idle 4:38
+On since 三 10 29 10:22 (CST) on ttys004
+On since 三 10 29 10:22 (CST) on ttys005, idle 2:13
+On since 三 10 29 13:46 (CST) on ttys006, idle 0:47
+On since 三 10 29 14:01 (CST) on ttys007, idle 0:47
+On since 三 10 29 14:08 (CST) on ttys008, idle 0:47
+On since 三 10 29 14:38 (CST) on ttys009
+No Mail.
+No Plan.
+
+</code></pre>
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+document.title = $('h1').html() || '技术文档－258i.com';    
+})();
+</script>

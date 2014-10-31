@@ -18,13 +18,30 @@
 <a href="javascript:history.back()">返回</a>
     </div>
 
-<h1> BAE - Baidu App Engine</h1>
-<blockquote><p> 提供多语言、弹性的服务端运行环境，能帮助开发者快速开发并部署应用。是百度开放云的一部分。</p></blockquote><p>首先注册成为百度开发者。</p>
-<p>数据库支持MySQL，MongoDB和Redis</p>
-<p>MySQL支持<code>phpMyAdmin</code>管理</p>
+<h1> Linux分卷压缩</h1>
+<blockquote><p> 单个文件过大，可以通过split命令进行分拆</p></blockquote><h2> 压缩</h2>
+<pre><code>$ tar zcf files.tar.gz files
+$ split -b 300m files.tar.gz files.tar.gz.
+$ ls
+files.tar.gz
+files.tar.gz.aa
+files.tar.gz.ab
+</code></pre>
+<p>或者</p>
+<pre><code>$ tar zcf files | split -b 300m - files.tar.gz.
+$ ls
+files.tar.gz.aa
+files.tar.gz.ab
 
+</code></pre>
+<h2> 解压</h2>
+<pre><code>$ cat files.tar.gz.* > files.tar.gz
+$ tar zxf files.tar.gz
+</code></pre>
+<p>或者</p>
+<pre><code>$ cat files.tar.gz.* | tar zxf
 
-
+</code></pre>
 </body>
 </html>
 <script type="text/javascript">

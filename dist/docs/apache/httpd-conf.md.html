@@ -18,10 +18,11 @@
 <a href="javascript:history.back()">返回</a>
     </div>
 
-<h1> BAE - Baidu App Engine</h1>
-<blockquote><p> 提供多语言、弹性的服务端运行环境，能帮助开发者快速开发并部署应用。是百度开放云的一部分。</p></blockquote><p>首先注册成为百度开发者。</p>
-<p>数据库支持MySQL，MongoDB和Redis</p>
-<p>MySQL支持<code>phpMyAdmin</code>管理</p>
+<h1> httpd-conf</h1>
+<blockquote><p> 2.2到2.4的升级，变化不少，需要查看changelog来进行修改</p></blockquote><p><a href="http://httpd.apache.org/docs/2.4/en/upgrading.html">Upgrading to 2.4 from 2.2</a></p>
+<ol><li>User需要mod_unixd</li>
+<li>DefaultType警告，先简单改成<code>DefaultType none</code></li></ol>
+<p>其他更多的参考changelog</p>
 
 
 

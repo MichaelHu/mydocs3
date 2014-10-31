@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="javascript:history.back()">返回</a>
+    </div>
+
+<h1> Canvas</h1>
+<blockquote><p> The HTML5 <code>&lt;canvas></code> tag is used to draw graphics, on the fly, via scripting (usually JavaScript). </p></blockquote><p><code>W3C Schools Ref:</code> http://www.w3schools.com/tags/ref_canvas.asp</p>
+<h2> Small Canvas Lib below</h2>
+<ul><li>getContext: function()</li>
+<li>getTextWidth: function(text)</li>
+<li>getWidth: function()</li>
+<li>getHeight: function()</li>
+<li>strokeStyle: function(s)</li>
+<li>fillStyle: function(s)</li>
+<li>lineCap: function(lc)</li>
+<li>lineJoin: function(lj)</li>
+<li>lineWidth: function(lw)</li>
+<li>rect: function(x, y, width, height)</li>
+<li>fillRect: function(x, y, width, height)</li>
+<li>strokeRect: function(x, y, width, height)</li>
+<li>clearRect: function(x, y, width, height)</li>
+<li>fill: function()</li>
+<li>stroke: function()</li>
+<li>beginPath: function()</li>
+<li>closePath: function()</li>
+<li>moveTo: function(x, y)</li>
+<li>lineTo: function(x, y)</li>
+<li>clip: function()</li>
+<li>arc: function(x, y, r, sAngle, eAngle, counterclickwise)<p><code>圆弧绘制</code></p>
+<p><img src="./img/img_arc.gif"></p>
+<ul><li>Center: arc(<code>100, 75</code>, 50, 0*Math.PI, 1.5*Math.PI)</li>
+<li>Radius: arc(100, 75, <code>50</code>, 0*Math.PI, 1.5*Math.PI)</li>
+<li>Start angle:  arc(100, 75, 50, <code>0*Math.PI</code>, 1.5*Math.PI)</li>
+<li>End angle:  arc(100, 75, 50, 0*Math.PI, <code>1.5*Math.PI</code>) </li></ul>
+</li>
+<li>quadraticCurveTo: function(cpx, cpy, x, y)<p><code>1个控制点</code></p>
+<p><img src="./img/img_quadraticcurve.gif"></p>
+<ul><li>Start point: moveTo(<code>20, 20</code>) </li>
+<li>Control point: quadraticCurveTo(<code>20, 100</code>, 200, 20)</li>
+<li>End point: quadraticCurveTo(20, 100, <code>200, 20</code>)</li></ul>
+</li>
+<li>bezierCurveTo: function(cp1x, cp1y, cp2x, cp2y, x, y)<p><code>2个控制点</code></p>
+<p><img src="./img/img_beziercurve.gif"></p>
+<ul><li>Start point: moveTo(<code>20, 20</code>) </li>
+<li>Control point 1: bezierCurveTo(<code>20, 100</code>, 200, 100, 200, 20)</li>
+<li>Control point 2: bezierCurveTo(20, 100, <code>200, 100</code>, 200, 20)</li>
+<li>End point: bezierCurveTo(20, 100, 200, 100, <code>200, 20</code>)</li></ul>
+</li>
+<li>arcTo: function(x1, y1, x2, y2, r)<p><code>两条切线间绘制圆弧：</code>
+The arcTo() method creates an arc/curve between two tangents(切线) on the canvas.</p>
+<p>以<code style="color:#ff0; background:#000">(200, 100)</code>为控制点，
+从<code style="color:#0f0; background:#000">(100, 100)</code>
+到<code style="color:#0f0; background:#000">(200, 200)</code>绘制一条圆弧，半径分别为100，50， 150，
+如下图所示：</p>
+<ol><li>目标点刚好为切点 <p><img src="./img/arcto_radius-100.png"></p>
+</li>
+<li>半径太小，圆弧不过目标点 <p><img src="./img/arcto_radius-50.png"></p>
+</li>
+<li>半径太大，圆弧不过目标点 <p><img src="./img/arcto_radius-150.png"></p>
+</li></ol>
+</li>
+<li>isPointInPath: function(x, y)</li>
+<li>scale: function(scaleWidth, scaleHeight)</li>
+<li>rotate: function(angle)</li>
+<li>translate: function(x, y)</li>
+<li>transform: function(a, b, c, d, e, f)</li>
+<li>setTransform: function(a, b, c, d, e, f)</li>
+<li>font: function(cssFont)</li>
+<li>textAlign: function(align)</li>
+<li>textBaseline: function(align)</li>
+<li>fillText: function(text, x, y, maxWidth)</li>
+<li>strokeText: function(text, x, y, maxWidth)</li>
+<li>globalAlpha: function(alpha)</li>
+<li>globalCompositeOperation: function(gco)</li>
+<li>save: function()</li>
+<li>restore: function()</li>
+<li>width: function(w)</li>
+<li>height: function(h)</li>
+<li>css: function()</li></ul>
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+document.title = $('h1').html() || '技术文档－258i.com';    
+})();
+</script>

@@ -676,91 +676,147 @@ dir /a:d
 dir /ad
 
 
-11 del命令
-文件（不包含目录）删除命令，同erase。
-DEL [/P] [/F] [/S] [/Q] [/A[[:]attributes]] names
-ERASE [/P] [/F] [/S] [/Q] [/A[[:]attributes]] names
+## 11. del命令
+
+`文件（不包含目录）`删除命令，同erase。
+
+    DEL [/P] [/F] [/S] [/Q] [/A[[:]attributes]] names
+    ERASE [/P] [/F] [/S] [/Q] [/A[[:]attributes]] names
+
 强制删除只读文件。
-del /f
+
+    del /f
 
 
-12 findstr命令
+## 12. findstr命令
+
 先恶作剧一下，进入到c:\windows\system32目录，输入以下命令：
-findstr a *
-嘀嘀声还不错吧，哈哈。千万别在这么大的目录下做这种事情，findstr会循环打开各种文件（包括二进制文件），而且a这种字符太常见了，这时，很有可能你的cmd变成未响应状态，而且还kill不掉。当然只是命令行不响应，其他程序仍然正常使用，也可以新开一个命令行。如果等不了，可以重启电脑。
+
+    $ findstr a *
+
+嘀嘀声还不错吧，哈哈。千万别在这么大的目录下做这种事情，findstr会循环打开各种文件（包括二进制文件），
+而且a这种字符太常见了，这时，很有可能你的cmd变成未响应状态，而且还kill不掉。
+
+当然只是命令行不响应，其他程序仍然正常使用，也可以新开一个命令行。如果等不了，可以重启电脑。
+
 进入正题，findstr用于从文件中查找指定字符串，有以下格式：
-FINDSTR [/B] [/E] [/L] [/R] [/S] [/I] [/X] [/V] [/N] [/M] [/O] [/P] [/F:file] [/C:string] [/G:file] [/D:dir list] [/A:color attributes] [/OFF[LINE]] strings [[drive:][path]filename[ ...]]
+
+    FINDSTR [/B] [/E] [/L] [/R] [/S] [/I] [/X] [/V] [/N] [/M] [/O] [/P] [/F:file] [/C:string] [/G:file] [/D:dir list] [/A:color attributes] [/OFF[LINE]] strings [[drive:][path]filename[ ...]]
+
 1.  查找文件中以四个数字开头的行。
-#findstr /n “^[0-9][0-9][0-9][0-9]” *
-a.  正则表达式需用双引号括起来，否则行首限定符”^”不起作用；
-b.  行首开始查找，还可以使用/b开关
-2.  
+
+        $ findstr /n “^[0-9][0-9][0-9][0-9]” *
+
+    * 正则表达式需用`双引号括起来`，否则行首限定符`”^”`不起作用；
+    * 行首开始查找，还可以使用`/b开关`
+
+2. todo
+
+
+## 13. setlocal
 
 todo
-13 setlocal
-todo
-setlocal enabledelayedexpansion
+
+    setlocal enabledelayedexpansion
 
 
-14 type命令
-#type file_name
+
+## 14. type命令
+
+    $ type file_name
+
 将file_name文件的内容输出到标准输出，类似于Linux下的cat命令。
 
-15 shell字符串处理
+
+
+
+
+## 15. shell字符串处理
+
 一些特殊字符：
-1.  第一类：^, |, &, &&, ||，如果放在引号外，需要用^转义；否则不需要转义
-2.  第二类：%, "，在引号内，需要进行转义。转义方式为%%, ""。
+
+1.  第一类：`^, |, &, &&, ||`，如果放在引号外，需要用`^`转义；否则不需要转义
+2.  第二类：`%, "`，在引号内，需要进行转义。转义方式为`%%, ""`。
     
     
     
     
     
 
-16 编程建议
+## 16. 编程建议
+
 1.  参数传递时，如果参数内部含有空白符，记得添加引号，避免解析失败
 2.  todo
 
 
-17 如何编写子例程
-17.1 子例程结构
-goto :eof的使用
+
+
+
+## 17. 如何编写子例程
+
+### 17.1 子例程结构
+
+`goto :eof`的使用
 todo
-17.2 参数传递
-如果传递的参数内部含有双引号，会导致脚本解析器出错。这种情况下，要么手动去掉双引号，要么使用变量的扩展特性。环境变量可以使用子串替换扩展，普通变量可以使用%~I扩展。
-set LogInfo="%WGET%" --referer="%~3" -o %WGET_LOG_FILE% -O "..\%~1" "%~2"
 
-rem 使用环境变量替换扩展，将双引号替换成单引号，再作为参数传递
-call:log "!LogInfo:"='!" 2 1
+### 17.2 参数传递
+
+如果传递的`参数内部含有双引号`，会导致脚本解析器出错。这种情况下，要么手动去掉双引号，要么使用变量的扩展特性。
+
+* 环境变量可以使用子串替换扩展
+* 普通变量可以使用`%~I`扩展
+
+举例如下：
+
+    set LogInfo="%WGET%" --referer="%~3" -o %WGET_LOG_FILE% -O "..\%~1" "%~2"
+
+    rem 使用环境变量替换扩展，将双引号替换成单引号，再作为参数传递
+    call:log "!LogInfo:"='!" 2 1
 
 
 
-18 如何输出空行
+## 18. 如何输出空行
+
 echo后面紧跟一个ASCII实心点号。
+
+`
 echo.
+`
 
-19 关于mshta
+## 19. 关于mshta
+
 todo
-#mshta javascript:alert(1)
 
-#mshta javascript:encodeURIComponent('百度')
+    $ mshta javascript:alert(1)
 
-#mshta javascript:"<input type='text' value='笃行天下'>"
+    $ mshta javascript:encodeURIComponent('百度')
 
-#mshta javascript:alert(0xa0fe-0x8140)
+    $ mshta javascript:"<input type='text' value='笃行天下'>"
 
-20 右键菜单添加命令行通道
-新建一个.reg文件，内容如下：
-Windows Registry Editor Version 5.00
+    $ mshta javascript:alert(0xa0fe-0x8140)
 
-[HKEY_CLASSES_ROOT\folder\shell\cmd]
-@="DOS Prompt"
 
-[HKEY_CLASSES_ROOT\folder\shell\cmd\command]
-@="cmd.exe /k cd %1" 
-保存，双击运行即可。
+# 20. 右键菜单添加命令行通道
+
+1. 新建一个`.reg`文件，内容如下：
+
+        Windows Registry Editor Version 5.00
+
+        [HKEY_CLASSES_ROOT\folder\shell\cmd]
+        @="DOS Prompt"
+
+        [HKEY_CLASSES_ROOT\folder\shell\cmd\command]
+        @="cmd.exe /k cd %1" 
+
+2. 保存，双击运行即可。
+
 以上动作会在资源管理器文件夹的右键菜单新建一个子菜单项，点击以后打开命令行，并以当前文件夹为工作目录。
-在Windows XP和Windows 7测试通过。另外，Windows 7下本身提供类似功能，只需按住shift键再右键点击，可以调出命令行功能。所以Windows 7不需要人为添加了。
-21 建议
+在Windows XP和Windows 7测试通过。
+
+另外，Windows 7下本身提供类似功能，只需`按住shift键再右键点击`，可以调出命令行功能。所以Windows 7不需要人为添加了。
+
+## 21. 建议
+
 1.  命令不区分大小写，包括命令名、变量名、开关选项名。
 2.  好习惯：字符串都用双引号包围。
 

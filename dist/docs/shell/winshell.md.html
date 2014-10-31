@@ -592,69 +592,99 @@ dir /a:d
 或
 dir /ad</p>
 
-<p>11 del命令
-文件（不包含目录）删除命令，同erase。
-DEL [/P] [/F] [/S] [/Q] [/A[[:]attributes]] names
+<h2> 11. del命令</h2>
+<p><code>文件（不包含目录）</code>删除命令，同erase。</p>
+<pre><code>DEL [/P] [/F] [/S] [/Q] [/A[[:]attributes]] names
 ERASE [/P] [/F] [/S] [/Q] [/A[[:]attributes]] names
-强制删除只读文件。
-del /f</p>
+</code></pre>
+<p>强制删除只读文件。</p>
+<pre><code>del /f
 
-<p>12 findstr命令
-先恶作剧一下，进入到c:windowssystem32目录，输入以下命令：
-findstr a *
-嘀嘀声还不错吧，哈哈。千万别在这么大的目录下做这种事情，findstr会循环打开各种文件（包括二进制文件），而且a这种字符太常见了，这时，很有可能你的cmd变成未响应状态，而且还kill不掉。当然只是命令行不响应，其他程序仍然正常使用，也可以新开一个命令行。如果等不了，可以重启电脑。
-进入正题，findstr用于从文件中查找指定字符串，有以下格式：
-FINDSTR [/B] [/E] [/L] [/R] [/S] [/I] [/X] [/V] [/N] [/M] [/O] [/P] [/F:file] [/C:string] [/G:file] [/D:dir list] [/A:color attributes] [/OFF[LINE]] strings [[drive:][path]filename[ ...]]</p>
-<ol><li>查找文件中以四个数字开头的行。</li></ol>
-<h1>findstr /n “^[0-9][0-9][0-9][0-9]” *</h1>
-<p>a.  正则表达式需用双引号括起来，否则行首限定符”^”不起作用；
-b.  行首开始查找，还可以使用/b开关</p>
-<p>todo
-13 setlocal
-todo
-setlocal enabledelayedexpansion</p>
+</code></pre>
+<h2> 12. findstr命令</h2>
+<p>先恶作剧一下，进入到c:windowssystem32目录，输入以下命令：</p>
+<pre><code>$ findstr a *
+</code></pre>
+<p>嘀嘀声还不错吧，哈哈。千万别在这么大的目录下做这种事情，findstr会循环打开各种文件（包括二进制文件），
+而且a这种字符太常见了，这时，很有可能你的cmd变成未响应状态，而且还kill不掉。</p>
+<p>当然只是命令行不响应，其他程序仍然正常使用，也可以新开一个命令行。如果等不了，可以重启电脑。</p>
+<p>进入正题，findstr用于从文件中查找指定字符串，有以下格式：</p>
+<pre><code>FINDSTR [/B] [/E] [/L] [/R] [/S] [/I] [/X] [/V] [/N] [/M] [/O] [/P] [/F:file] [/C:string] [/G:file] [/D:dir list] [/A:color attributes] [/OFF[LINE]] strings [[drive:][path]filename[ ...]]
+</code></pre>
+<ol><li>查找文件中以四个数字开头的行。<pre><code>$ findstr /n “^[0-9][0-9][0-9][0-9]” *
+</code></pre>
+<ul><li>正则表达式需用<code>双引号括起来</code>，否则行首限定符<code>”^”</code>不起作用；</li>
+<li>行首开始查找，还可以使用<code>/b开关</code></li></ul>
+</li>
+<li>todo</li></ol>
+<h2> 13. setlocal</h2>
+<p>todo</p>
+<pre><code>setlocal enabledelayedexpansion
 
-<p>14 type命令</p>
-<h1>type file_name</h1>
+
+</code></pre>
+<h2> 14. type命令</h2>
+<pre><code>$ type file_name
+</code></pre>
 <p>将file_name文件的内容输出到标准输出，类似于Linux下的cat命令。</p>
-<p>15 shell字符串处理
-一些特殊字符：</p>
-<ol><li>第一类：^, |, &, &&, ||，如果放在引号外，需要用^转义；否则不需要转义</li>
-<li>第二类：%, "，在引号内，需要进行转义。转义方式为%%, ""。</li></ol>
-<p>16 编程建议</p>
+
+
+
+
+<h2> 15. shell字符串处理</h2>
+<p>一些特殊字符：</p>
+<ol><li>第一类：<code>^, |, &amp;, &amp;&amp;, ||</code>，如果放在引号外，需要用<code>^</code>转义；否则不需要转义</li>
+<li>第二类：<code>%, "</code>，在引号内，需要进行转义。转义方式为<code>%%, ""</code>。</li></ol>
+<h2> 16. 编程建议</h2>
 <ol><li>参数传递时，如果参数内部含有空白符，记得添加引号，避免解析失败</li>
 <li>todo</li></ol>
-<p>17 如何编写子例程
-17.1 子例程结构
-goto :eof的使用
-todo
-17.2 参数传递
-如果传递的参数内部含有双引号，会导致脚本解析器出错。这种情况下，要么手动去掉双引号，要么使用变量的扩展特性。环境变量可以使用子串替换扩展，普通变量可以使用%~I扩展。
-set LogInfo="%WGET%" --referer="%~3" -o %WGET_LOG_FILE% -O "..%~1" "%~2"</p>
-<p>rem 使用环境变量替换扩展，将双引号替换成单引号，再作为参数传递
-call:log "!LogInfo:"='!" 2 1</p>
-
-
-<p>18 如何输出空行
-echo后面紧跟一个ASCII实心点号。
-echo.</p>
-<p>19 关于mshta
+<h2> 17. 如何编写子例程</h2>
+<h3> 17.1 子例程结构</h3>
+<p><code>goto :eof</code>的使用
 todo</p>
-<h1>mshta javascript:alert(1)</h1>
-<h1>mshta javascript:encodeURIComponent('百度')</h1>
-<h1>mshta javascript:"<input type='text' value='笃行天下'>"</h1>
-<h1>mshta javascript:alert(0xa0fe-0x8140)</h1>
-<p>20 右键菜单添加命令行通道
-新建一个.reg文件，内容如下：
-Windows Registry Editor Version 5.00</p>
-<p>[HKEY_CLASSES_ROOTfoldershellcmd]
-@="DOS Prompt"</p>
-<p>[HKEY_CLASSES_ROOTfoldershellcmdcommand]
+<h3> 17.2 参数传递</h3>
+<p>如果传递的<code>参数内部含有双引号</code>，会导致脚本解析器出错。这种情况下，要么手动去掉双引号，要么使用变量的扩展特性。</p>
+<ul><li>环境变量可以使用子串替换扩展</li>
+<li>普通变量可以使用<code>%~I</code>扩展</li></ul>
+<p>举例如下：</p>
+<pre><code>set LogInfo="%WGET%" --referer="%~3" -o %WGET_LOG_FILE% -O "..\%~1" "%~2"
+
+rem 使用环境变量替换扩展，将双引号替换成单引号，再作为参数传递
+call:log "!LogInfo:"='!" 2 1
+
+
+</code></pre>
+<h2> 18. 如何输出空行</h2>
+<p>echo后面紧跟一个ASCII实心点号。</p>
+<p><code>
+echo.
+</code></p>
+<h2> 19. 关于mshta</h2>
+<p>todo</p>
+<pre><code>$ mshta javascript:alert(1)
+
+$ mshta javascript:encodeURIComponent('百度')
+
+$ mshta javascript:"&lt;input type='text' value='笃行天下'>"
+
+$ mshta javascript:alert(0xa0fe-0x8140)
+
+</code></pre>
+<h1> 20. 右键菜单添加命令行通道</h1>
+<ol><li>新建一个<code>.reg</code>文件，内容如下：<pre><code>Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\folder\shell\cmd]
+@="DOS Prompt"
+
+[HKEY_CLASSES_ROOT\folder\shell\cmd\command]
 @="cmd.exe /k cd %1" 
-保存，双击运行即可。
-以上动作会在资源管理器文件夹的右键菜单新建一个子菜单项，点击以后打开命令行，并以当前文件夹为工作目录。
-在Windows XP和Windows 7测试通过。另外，Windows 7下本身提供类似功能，只需按住shift键再右键点击，可以调出命令行功能。所以Windows 7不需要人为添加了。
-21 建议</p>
+</code></pre>
+</li>
+<li>保存，双击运行即可。</li></ol>
+<p>以上动作会在资源管理器文件夹的右键菜单新建一个子菜单项，点击以后打开命令行，并以当前文件夹为工作目录。
+在Windows XP和Windows 7测试通过。</p>
+<p>另外，Windows 7下本身提供类似功能，只需<code>按住shift键再右键点击</code>，可以调出命令行功能。所以Windows 7不需要人为添加了。</p>
+<h2> 21. 建议</h2>
 <ol><li>命令不区分大小写，包括命令名、变量名、开关选项名。</li>
 <li>好习惯：字符串都用双引号包围。</li></ol>
 </body>
