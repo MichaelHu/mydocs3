@@ -701,7 +701,7 @@ todo ...
 
 
     To test for presence of buffer-local autocommands use the |exists()| function
-as follows:
+    as follows:
 
         :if exists("#CursorHold#<buffer=12>") | ... | endif
         :if exists("#CursorHold#<buffer>") | ... | endif    " for current buffer

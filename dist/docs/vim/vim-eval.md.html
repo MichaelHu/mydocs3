@@ -530,23 +530,21 @@ r?      A |:confirm| query of some sort
         \ else &lt;Bar>
         \   syntax enable &lt;Bar>
         \ endif &lt;CR>  </code></pre>
-<p>To test for presence of buffer-local autocommands use the |exists()| function</p>
-</li></ol>
-<p>as follows:</p>
-<pre><code>    :if exists("#CursorHold#&lt;buffer=12>") | ... | endif
-    :if exists("#CursorHold#&lt;buffer>") | ... | endif    " for current buffer
+<p>To test for presence of buffer-local autocommands use the |exists()| function
+as follows:</p>
+<pre><code>:if exists("#CursorHold#&lt;buffer=12>") | ... | endif
+:if exists("#CursorHold#&lt;buffer>") | ... | endif    " for current buffer
 
-    :if exists("did_load_filetypes")
-    :  finish
-    :endif
-
-判断：
-
-    :if exists("g:loaded_typecorr")
-    :   finish
-    :endif
-    :let g:loaded_typecorr = 1    </code></pre>
-<ol><li>taglist({expr}) </li>
+:if exists("did_load_filetypes")
+:  finish
+:endif </code></pre>
+<p>判断：</p>
+<pre><code>:if exists("g:loaded_typecorr")
+:   finish
+:endif
+:let g:loaded_typecorr = 1    </code></pre>
+</li>
+<li>taglist({expr}) </li>
 <li>tagfiles()</li></ol>
 <h2> Examples</h2>
 <pre><code>:let index = 0
