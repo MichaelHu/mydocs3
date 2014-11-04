@@ -74,8 +74,7 @@ UI Controller同时还承担<code>Model与View的同步</code>。</p>
     pageview.detail
         subview.detail_toolbar
         subview.detail_content
-            subview.detail_content_news
-</code></pre>
+            subview.detail_content_news </code></pre>
 <ul><li>router.vs创建pageview.detail</li>
 <li>pageview.detail创建subview.detail_toolbar, subview.detail_content</li>
 <li>subview.detail_content创建subview.detail_content_news</li></ul>
@@ -85,8 +84,7 @@ UI Controller同时还承担<code>Model与View的同步</code>。</p>
     pageview.detail
         subview.detail_toolbar
         subview.detail_content
-            subview.detail_content_news => model.detail_news
-</code></pre>
+            subview.detail_content_news => model.detail_news </code></pre>
 <p>每个页面都有一棵view tree，根结点是pageview类型，其它节点都是subview类型。</p>
 <h3> 3.2 view tree 代码示例</h3>
 <p>pageview.detail在其<code>init方法</code>中创建subview.detail_toolbar以及subview.detail_content，并进行<code>setup（预先存在）</code>。具体如下：</p>
@@ -106,8 +104,7 @@ UI Controller同时还承担<code>Model与View的同步</code>。</p>
 
     ,...
 
-});
-</code></pre>
+}); </code></pre>
 <p>subview.detail_content在其init方法中创建subview.detail_content_news，并进行<code>append（动态生成）</code>，具体如下：</p>
 <pre><code>rocket.subview.detail_content = rocket.subview.extend({
 
@@ -125,9 +122,7 @@ UI Controller同时还承担<code>Model与View的同步</code>。</p>
     }
 
     ,...
-});
-
-</code></pre>
+});  </code></pre>
 <p>subview.detail_content_news在其<code>init方法</code>中创建model.detail_news，具体如下：</p>
 <pre><code>rocket.subview.detail_content_news = rocket.subview.extend({
 
@@ -143,9 +138,7 @@ UI Controller同时还承担<code>Model与View的同步</code>。</p>
     }
 
     ,...
-});
-
-</code></pre>
+});  </code></pre>
 <h3> 3.3 视图与DOM节点的关系</h3>
 <p>视图<code>总对应某个DOM节点</code>，该节点可以是已经存在与DOM Tree的某个DOM节点，也可以通过动态创建的节点。
 视图创建时，所对应的DOM节点<code>初始状态都为隐藏</code>，须由视图控制器在适当的时候展现。</p>

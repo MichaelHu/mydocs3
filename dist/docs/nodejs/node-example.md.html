@@ -26,15 +26,10 @@ http.createServer(function (req, res) {
   res.writeHead(200, {'Content-Type': 'text/plain'});
   res.end('Hello World\n');
 }).listen(1337, '127.0.0.1');
-console.log('Server running at http://127.0.0.1:1337/');
-</code></pre>
+console.log('Server running at http://127.0.0.1:1337/'); </code></pre>
 </li>
 <li>command line<pre><code>% node webserver.js
-Server running at http://127.0.0.1:1337/
-
-
-
-</code></pre>
+Server running at http://127.0.0.1:1337/    </code></pre>
 </li></ol>
 <h2> simple TCP Server</h2>
 <ol><li>tcpserver.js<pre><code>var net = require('net');
@@ -44,12 +39,9 @@ var server = net.createServer(function (socket) {
   socket.pipe(socket);
 });
 
-server.listen(1337, '127.0.0.1');
-</code></pre>
+server.listen(1337, '127.0.0.1'); </code></pre>
 </li>
-<li>command line<pre><code>% node tcpserver.js
-
-</code></pre>
+<li>command line<pre><code>% node tcpserver.js  </code></pre>
 </li></ol>
 </body>
 </html>

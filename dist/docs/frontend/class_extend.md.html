@@ -24,8 +24,7 @@
 <pre><code>...
 this.__super__.init &amp;&amp;
     this.__super__.init.apply(this, arguments);
-... 
-</code></pre>
+...  </code></pre>
 <p>具体实现如下：</p>
 <pre><code>// Helper function to correctly set up the prototype chain, for subclasses.
 // Similar to `goog.inherits`, but uses a hash of prototype properties and
@@ -61,17 +60,12 @@ var extend = function(protoProps, staticProps) {
   child.__super__ = parent.prototype;
 
   return child;
-};
-
-
-
-</code></pre>
+};    </code></pre>
 <h2> Quintus实现</h2>
 <p>支持<code>this._super()</code>方法，通过该方法可以调用<code>同名</code>的父类方法，比如子类的init方法中调用父类的init方法：</p>
 <pre><code>...
 this._super(...);
-... 
-</code></pre>
+...  </code></pre>
 <p>具体实现如下：</p>
 
 <pre><code>/**
@@ -156,12 +150,7 @@ Q.Class.extend = function(className, prop, classMethods) {
 
   return Class;
 };
-));
-
-
-
-
-</code></pre>
+));     </code></pre>
 </body>
 </html>
 <script type="text/javascript">

@@ -54,6 +54,7 @@ Box2D库独立于渲染，只做计算。
 * axis - 轴，轴线
 * pulley - 滑轮
 * contraption - 新发明，奇妙的装置
+* AABBs (axis-aligned bounding boxes)
 
 ## 模块
 
@@ -237,6 +238,10 @@ b2_dynamicBody
     bodyDef.bullet = true;
 
 以上开启dynamic body的CCD属性。只对dynamic body有效。
+
+
+
+`Position and Angle`
 
 
 `Activation`
@@ -751,3 +756,150 @@ kinematic-static, static-static情况下，我们获取不到contact。
 
 ...
 
+
+
+
+
+
+### 2.4 Contacts
+
+
+todo
+
+
+
+## 三、Wrold Class
+
+大部分与Box2D的交互都是通过b2World类
+
+    b2World* myWorld = new b2World(gravity, doSleep);
+    ... do stuff ...
+    delete myWorld;
+
+
+`模拟`
+
+    float32 timeStep = 1.0f / 60.f;
+    int32 velocityIterations = 10;
+    int32 positionIterations = 8;
+    myWorld->Step(timeStep, velocityIterations, positionIterations);
+
+> The iteration count controls how many times the constraint solver sweeps over all the 
+> contacts and joints in the world. More iteration always yields a better simulation. 
+> But don't trade a small time step for a large iteration count. 60Hz and 10 iterations 
+> is far better than 30Hz and 20 iterations.
+
+
+`b2World::ClearForces()`
+
+    myWorld->ClearForces();
+
+> This lets you take multiple sub-steps with the same force field
+
+
+`Exploring the world`
+
+如何安全删除body：
+
+    b2Body* node = myWorld->GetBodyList(); 
+    while (node)
+    {
+        b2Body* b = node;
+        node = node->GetNext();
+        GameActor* myActor = (GameActor*)b->GetUserData(); 
+        if (myActor->IsDead())
+        {
+            myWorld->DestroyBody(b);
+        } 
+    }
+
+解决同时删除多个body的问题：
+
+    b2Body* node = myWorld->GetBodyList(); 
+    while (node)
+    {
+        b2Body* b = node;
+        node = node->GetNext();
+        GameActor* myActor = (GameActor*)b->GetUserData(); 
+        if (myActor->IsDead())
+        {
+            bool otherBodiesDestroyed = GameCrazyBodyDestroyer(b); 
+            if (otherBodiesDestroyed)
+            {
+                node = myWorld->GetBodyList(); 
+            }
+        } 
+    }
+
+
+
+`AABB Queries`
+
+以下代码找出会与指定AABB相交的所有fixtures，并唤醒与这些fixture关联的body：
+
+    class MyQueryCallback : public b2QueryCallback
+    { 
+    public:
+        bool ReportFixture(b2Fixture* fixture)
+        {
+            b2Body* body = fixture->GetBody(); 
+            body->SetAwake(true);
+
+            // Return true to continue the query.
+            return true;
+        }
+    }; 
+
+    ...
+
+    MyQueryCallback callback;
+    b2AABB aabb;
+    aabb.lowerBound.Set(-1.0f, -1.0f); 
+    aabb.upperBound.Set(1.0f, 1.0f); 
+    myWorld->Query(&callback, aabb);
+
+
+`Ray Casts`
+
+> You control the continuation of the ray cast by returning a fraction. Returning a 
+> fraction of zero indicates the ray cast should be terminated. A fraction of one indicates 
+> the ray cast should continue as if no hit occurred. 
+
+    // This class captures the closest hit shape.
+    class MyRayCastCallback : public b2RayCastCallback {
+
+    public:
+
+        MyRayCastCallback()
+        {
+            m_fixture = NULL;
+        }
+
+        float32 ReportFixture(b2Fixture* fixture, const b2Vec2& point,
+            const b2Vec2& normal, float32 fraction)
+        {
+            m_fixture = fixture;
+            m_point = point; 
+            m_normal = normal; 
+            m_fraction = fraction; 
+            return fraction;
+        }
+
+        b2Fixture* m_fixture;
+        b2Vec2 m_point;
+        b2Vec2 m_normal;
+        float32 m_fraction;
+    };
+
+    MyRayCastCallback callback;
+
+    b2Vec2 point1(-1.0f, 0.0f);
+    b2Vec2 point2(3.0f, 1.0f); 
+    myWorld->RayCast(&callback, point1, point2);
+
+
+> You may also return of fraction of -1 to filter the fixture. Then the ray 
+> cast will proceed as if the fixture does not exist.
+
+
+todo

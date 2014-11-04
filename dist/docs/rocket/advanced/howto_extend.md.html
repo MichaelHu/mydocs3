@@ -32,11 +32,9 @@
     ▾ pageanimations/
         rocket.pageanimation_fade.js
         rocket.pageanimation_simple.js
-        rocket.pageanimation_slide.js
-</code></pre>
+        rocket.pageanimation_slide.js </code></pre>
 <p>文件名遵守[编码规范](#howto/编码规范)中所提到的文件命名规范。</p>
-<pre><code>rocket.pageanimation_动画名.js
-</code></pre>
+<pre><code>rocket.pageanimation_动画名.js </code></pre>
 <p>其中前缀**rocket.pageanimation_**是固定的，**动画名**指明动画类型，可以用于rocket.router中**pageTransition**配置项。</p>
 <h3> 1.1 需实现的接口</h3>
 <p>该文件实现二级命名空间，同文件名所示，比如slide动画，实现二级命名空间rocket.pageanimation_slide。同时需要实现动画接口**animate**，具体代码如下：</p>
@@ -54,8 +52,7 @@ rocket.pageanimation_slide.animate = function(
 
     ...
 
-};
-</code></pre>
+}; </code></pre>
 <h3> 1.2 扩展方式</h3>
 <ol><li>确定动画名称，比如newanim</li>
 <li>在目录结构中添加动画实现文件： rocket.pageanimation_newanim.js</li>

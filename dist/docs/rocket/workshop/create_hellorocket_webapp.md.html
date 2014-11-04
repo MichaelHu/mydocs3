@@ -67,8 +67,7 @@ sayhello->index: slide right</p>
 <h3> 2.3 完成公共部分编码</h3>
 <p>完成以上问题的解答之后，我们开始公共部分编码，由**一个同学完成**即可。由于一开始就已经将成品代码放出，而我们的目标是从零开始，所以可以放心的在键盘上敲下:</p>
 <pre><code>cd DEVELOP_DIR
-rm -rf hellorocket
-</code></pre>
+rm -rf hellorocket </code></pre>
 <h4> 2.3.1 基础代码和入口页原型</h4>
 <ul><li>2.3.1.1 获取webapp脚手架代码，checkout到hellorocket目录，也即hellorocket模块：<p>cd DEVELOP_DIR
 svn co "http://tc-apptest-img08.vm.baidu.com:8021/svn/repos/projects/rocket_workshop/scaffold" hellorocket</p>
@@ -121,8 +120,7 @@ svn co "http://tc-apptest-img08.vm.baidu.com:8021/svn/repos/projects/rocket_work
 ...
 ,sayhello: function() {
     this.doAction('sayhello', {});
-}    
-</code></pre>
+}     </code></pre>
 <p>**页面框架和模板**，在文件DEVELOP_DIR/hellorocket/hellorocket.html中的<!--page view-->和<!--front template-->位置下方，分别添加页面框架和模板代码，添加以后，大致如下所示：</p>
 <pre><code>&lt;!--page view-->
 /*{fis-inline file="./page/index/html/index.html"}*/ 
@@ -132,13 +130,11 @@ svn co "http://tc-apptest-img08.vm.baidu.com:8021/svn/repos/projects/rocket_work
 
 &lt;!--front template-->
 /*{fis-inline file="./page/index/tpl/index.tpl.html"}*/ 
-/*{fis-inline file="./page/sayhello/tpl/sayhello.tpl.html"}*/ 
-</code></pre>
+/*{fis-inline file="./page/sayhello/tpl/sayhello.tpl.html"}*/  </code></pre>
 <p>**CSS文件**，在文件DEVELOP_DIR/hellorocket/css/rocket.css中的/*page*/位置下方，添加CSS import代码，添加以后，大致如下图所示：</p>
 <pre><code>/*page*/                       
 @import url("../page/index/css/index.css")
-@import url("../page/sayhello/css/sayhello.css")
-</code></pre>
+@import url("../page/sayhello/css/sayhello.css") </code></pre>
 <ul><li>2.3.2.4 至此，完成sayhello页面的原型代码添加，可以验证sayhello页的正确性了：<ol><li>清空缓存（如有必要）</li>
 <li>访问http://localhost[:port]/hellorocket/hellorocket.html#sayhello, I am page sayhello**"，控制台无报错</li></ol>
 </li></ul>
@@ -247,13 +243,11 @@ height:18px;</code></pre>
 <p>控制器负责将模型和视图关联起来，并处理页面交互功能逻辑。视图控制器树如下设计：</p>
 <pre><code>rocket.pageview.index
     rocket.subview.index_content
-    rocket.subview.index_header
-</code></pre>
+    rocket.subview.index_header </code></pre>
 <p>对应的页面DOM节点为：</p>
 <pre><code>#index_page
     #index_page_header
-    #index_page_content
-</code></pre>
+    #index_page_content </code></pre>
 <ul><li>pageview.index为页面控制器，对应页面框架#index_page，同时是页面事件中心</li>
 <li>subview.index_content与subview.index_header为子视图控制器，分别负责容器#index_page_content与头部#index_page_header的控制逻辑</li></ul>
 <p>pageview相对简单，主要功能是创建一级子视图控制器。只需实现init方法，完成后代码如下所示：</p>
@@ -274,8 +268,7 @@ height:18px;</code></pre>
         ,me
     ));
 
-}
-</code></pre>
+} </code></pre>
 <p>});</p>
 <p>})(Zepto);</p>
 </li></ul>
@@ -322,8 +315,7 @@ height:18px;</code></pre>
         me.$el.show();
         // todo
     }
-}
-</code></pre>
+} </code></pre>
 <p>});</p>
 <p>})(Zepto);</p>
 </li></ul>
@@ -359,8 +351,7 @@ height:18px;</code></pre>
         me.$el.show();
         // todo
     }
-}
-</code></pre>
+} </code></pre>
 <p>});</p>
 <p>})(Zepto);</p>
 </li></ul>
@@ -368,8 +359,7 @@ height:18px;</code></pre>
 <p>至此，index页面已经开发完成，可以输入URL预览一下效果了：</p>
 <pre><code>http://localhost[:port]/hellorocket/hellorocket.html#index
 或直接输入
-http://localhost[:port]/hellorocket/hellorocket.html
-</code></pre>
+http://localhost[:port]/hellorocket/hellorocket.html </code></pre>
 <p>幸运的话，能看到和第一部分首页快照相同的页面，否则，得辛苦一下从3.1.1到3.1.4check一遍</p>
 <p>符合预期效果的话，index页面就已经开发完了，只要没有代码报错，就可以放心checkin了。</p>
 <p>细心的你会发现，subview.index_header貌似是多余的，因为该部分没有实现任何复杂逻辑，实际上也是这样。不过之所以仍然给出，是为方便后续增加新功能提供基础的，都到这一步了，你不想自己试着往里面增加点新内容么^_^。</p>
@@ -465,13 +455,11 @@ text-shadow:rgba(64, 64, 64, 0.3) 3px -3px 2px;</code></pre>
 <p>控制器负责将模型和视图关联起来，并处理页面交互功能逻辑。视图控制器树如下设计：</p>
 <pre><code>rocket.pageview.sayhello
     rocket.subview.sayhello_content
-    rocket.subview.sayhello_header
-</code></pre>
+    rocket.subview.sayhello_header </code></pre>
 <p>对应的页面DOM节点为：</p>
 <pre><code>#sayhello_page
     #sayhello_page_header
-    #sayhello_page_content
-</code></pre>
+    #sayhello_page_content </code></pre>
 <ul><li>pageview.sayhello为页面控制器，对应页面框架#sayhello_page，同时是页面事件中心</li>
 <li>subview.sayhello_content与subview.sayhello_header为子视图控制器，分别负责容器#sayhello_page_content与头部#sayhello_page_header的控制逻辑</li></ul>
 <p>pageview相对简单，主要功能是创建一级子视图控制器。只需实现init方法，完成后代码如下所示：</p>
@@ -492,8 +480,7 @@ text-shadow:rgba(64, 64, 64, 0.3) 3px -3px 2px;</code></pre>
         ,me
     ));
 
-}
-</code></pre>
+} </code></pre>
 <p>});</p>
 <p>})(Zepto);</p>
 </li></ul>
@@ -532,8 +519,7 @@ text-shadow:rgba(64, 64, 64, 0.3) 3px -3px 2px;</code></pre>
         me.$el.show();
         // todo
     }
-}
-</code></pre>
+} </code></pre>
 <p>});</p>
 <p>})(Zepto);</p>
 </li></ul>
@@ -585,8 +571,7 @@ text-shadow:rgba(64, 64, 64, 0.3) 3px -3px 2px;</code></pre>
 </li></ul>
 <h4> 3.2.5 sayhello页面开发小结</h4>
 <p>至此，index页面已经开发完成，可以输入URL预览一下效果了：</p>
-<pre><code>http://localhost[:port]/hellorocket/hellorocket.html#sayhello
-</code></pre>
+<pre><code>http://localhost[:port]/hellorocket/hellorocket.html#sayhello </code></pre>
 <p>幸运的话，能看到和第一部分详情页快照相同的页面，否则，得辛苦一下从3.2.1到3.2.4check一遍</p>
 <p>符合预期效果的话，sayhello页面就已经全部开发完了，只要没有代码报错，就可以放心checkin了。</p>
 <p>细心的你会发现，subview.sayhello_content貌似是多余的，因为该部分没有实现任何复杂逻辑，实际上也是这样。不过之所以仍然给出，是为方便后续增加新功能提供基础的，都到这一步了，你不想自己试着往里面增加点新内容么^_^。</p>

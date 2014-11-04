@@ -320,86 +320,113 @@ cmd.exe的/v:on开关打开，并用`叹号(!)替代百分号(%)`来引用环境
 附带地注意一下，子句起始符`左括号”(”必须有前导空白符`。
 
 ## 6. @前缀
+
 命令前加上@，可以关闭该命令的回显信息。
-#rem echo前未加@
-#for %i in (*) do echo %i
->a.txt
->C:\Windows\System32>echo devmgr.dll
->devmgr.dll
->
->C:\Windows\System32>echo devobj.dll
->devobj.dll
 
-#rem echo前添加@前缀
-#for %i in (*) do @echo %i
->devmgr.dll
->devobj.dll
+    # rem echo前未加@
+    # for %i in (*) do echo %i
+    > a.txt
+    > C:\Windows\System32>echo devmgr.dll
+    > devmgr.dll
+    > 
+    > C:\Windows\System32>echo devobj.dll
+    > devobj.dll
+
+    # rem echo前添加@前缀
+    # for %i in (*) do @echo %i
+    > devmgr.dll
+    > devobj.dll
+
 若要关闭整个子句的回显信息，可以在子句前面添加@。
-#for %i in (*) do @(if %i == zipfldr.dll echo ok)
->ok
+    # for %i in (*) do @(if %i == zipfldr.dll echo ok)
+    > ok
+
 若要关闭所有命令的回显信息，使用echo的off开关。
-#rem 关闭所有命令的回显
-#echo off
+
+    # rem 关闭所有命令的回显
+    # echo off
+
 恢复命令回显，使用on开关
-#rem 打开所有命令的回显
-#echo on
-7 判断语句
-7.1 if子句
-IF [NOT] ERRORLEVEL number command
-IF [NOT] string1==string2 command
-IF [NOT] EXIST filename command
-1.  not，逻辑取非
-2.  errorlevel number，上一个命令的退出代码不小于指定数字number则为true
-3.  string1==string2，判断两个字符串是否相等，相等则true，否则为false。若string内部含有的空白符会破坏语句结构，则在前后添加双引号（”），使其成为一个整体。建议字符串最好以双引号包围，避免破环复合语句结构。当然，等号（==）前后是可以包含空白符的。比如：
-#set t=abc
-#rem 环境变量t的值内部不含空白符，可以直接比较
-#if %t%==abc echo ok
->ok
 
-#set t=ab c
-#rem if语句执行前，会进行t环境变量的替换，
-#rem 替换后成为if ab c == abc echo ok，破坏了if语句结构，解析器报错
-#if %t% == abc echo ok
->此时不应有c
-正确的做法应该是添加双引号，
-#set t=ab c
-#if "%t%" == "ab c" echo ok
->ok
-举个例子，判断目录中是否含有指定文件zipfldr.dll，可以这么写：
-#for %i in (*) do @(if %i == zipfldr.dll echo ok)
->ok
+    # rem 打开所有命令的回显
+    # echo on
 
-or
+## 7 判断语句
 
-#for %i in (*) do @(if “%i” == “zipfldr.dll” echo ok)
->ok
-当然，这是不取巧的方法，因为这个功能一个语句就可以搞定，请看后面。
-4.  exist filename，判断指定文件是否存在，若存在则为true，否则为false。例如以上功能可以写成：
-#if exist zipfldr.dll echo ok
->ok
+### 7.1 if子句
 
-如果命令扩展启用，if语句还支持以下格式的语法：
-IF [/I] string1 compare-op string2 command
-IF CMDEXTVERSION number command
-IF DEFINED variable command
-第一种格式，进行字符串比较，/i表示case insensitive。compare-op支持的操作包括：
-EQU equal
-NEQ not equal
-LSS less than
-LEQ less than and equal
-GTR greater than
-GEQ greater than and equal
-以上比较操作实际是通用比较，如果string1和string2都是数字，两者都会先转换成数字，再进行比较。例如：
-#if 1a lss 2a (echo less) else (echo big)
->less
+    IF [NOT] ERRORLEVEL number command
+    IF [NOT] string1==string2 command
+    IF [NOT] EXIST filename command
 
-#if 123a lss 2a (echo less) else (echo big)
->less
+1.  `not`，逻辑取非
+2.  `errorlevel number`，上一个命令的退出代码`不小于`指定数字number则为true
+3.  `string1==string2`，判断两个字符串是否相等，相等则true，否则为false。
+    若string内部含有的空白符会破坏语句结构，则在前后添加双引号（”），使其成为一个整体。
+    建议字符串最好以`双引号包围`，避免破环复合语句结构。当然，等号（==）前后是可以包含空白符的。比如：
 
-#if 123 lss 23 (echo less) else (echo big)
->big
+        # set t=abc
+        # rem 环境变量t的值内部不含空白符，可以直接比较
+        # if %t%==abc echo ok
+        > ok
 
-7.2 else子句
+        # set t=ab c
+        # rem if语句执行前，会进行t环境变量的替换，
+        # rem 替换后成为if ab c == abc echo ok，破坏了if语句结构，解析器报错
+        # if %t% == abc echo ok
+        > 此时不应有c
+
+    正确的做法应该是添加双引号，
+
+        # set t=ab c
+        # if "%t%" == "ab c" echo ok
+        > ok
+
+    举个例子，判断目录中是否含有指定文件zipfldr.dll，可以这么写：
+
+        # for %i in (*) do @(if %i == zipfldr.dll echo ok)
+        > ok
+
+    or
+
+        # for %i in (*) do @(if "%i" == "zipfldr.dll" echo ok)
+        > ok
+
+    当然，这是不取巧的方法，因为这个功能一个语句就可以搞定，请看后面。
+
+4.  `exist filename`，判断指定文件是否存在，若存在则为true，否则为false。例如以上功能可以写成：
+
+        # if exist zipfldr.dll echo ok
+        > ok
+
+    如果命令扩展启用，if语句还支持以下格式的语法：
+
+        IF [/I] string1 compare-op string2 command
+        IF CMDEXTVERSION number command
+        IF DEFINED variable command
+
+    第一种格式，进行字符串比较，`/i`表示`case insensitive`。compare-op支持的操作包括：
+
+        EQU equal
+        NEQ not equal
+        LSS less than
+        LEQ less than and equal
+        GTR greater than
+        GEQ greater than and equal
+
+    以上比较操作实际是通用比较，`如果string1和string2都是数字，两者都会先转换成数字，再进行比较`。例如：
+
+        # if 1a lss 2a (echo less) else (echo big)
+        > less
+
+        # if 123a lss 2a (echo less) else (echo big)
+        > less
+
+        # if 123 lss 23 (echo less) else (echo big)
+        > big
+
+### 7.2 else子句
+
 else子句必须出现在if子句结束的同一行上面。
 rem 第一种写法，都在同一行
 if exist zipfldr.dll @( echo ok) else (echo no)

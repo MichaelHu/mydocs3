@@ -82,14 +82,11 @@ dos的if语句如何支持and和or的逻辑表达式  胡大民  2012/10/14</p>
 
 <h2> 1. 如何设定运行的环境变量？</h2>
 <p>先敲入</p>
-<pre><code>help
-</code></pre>
+<pre><code>help </code></pre>
 <p>命令行界面会粗略列出批处理程序支持的各种命令。跟环境变量设置有关的是<code>set</code>命令。再输入命令</p>
-<pre><code>help set
-</code></pre>
+<pre><code>help set </code></pre>
 <p>以具体了解set命令的语法。以下列出了set命令的语法：</p>
-<pre><code>set [variable=[string]]
-</code></pre>
+<pre><code>set [variable=[string]] </code></pre>
 <ol><li>vairable，指定的<code>环境变量名</code>，变量名<code>不能含有等号，不区分大小写</code>；string，字符串</li>
 <li>不带等号和任何参数时，set命令显示当前所有环境变量</li>
 <li>紧贴等号前后建议不要包含任何空白字符，string部分可以含有空白符。若紧贴等号前后含有空白符，等号前面的部分（包含空白符）都属于环境变量名部分，等号后面的部分（包含空白符）都属于字符串部分，也即环境变量名可以含空白符。比如：<pre><code>$ set t =abc
@@ -110,26 +107,21 @@ t = abc
 t 1 = abcd
 
 $ if %t 1 % == abcd echo ok
-ok
-</code></pre>
+ok </code></pre>
 <p>以上语句分别定义了三个环境变量（若以下划线表示空格）分别为<code>t_，t__, t_1_</code>。虽然可以定义含有空白符的环境变量，但是可阅读性太差，不建议使用。</p>
 </li>
-<li>命令<pre><code>$ set p
-</code></pre>
+<li>命令<pre><code>$ set p </code></pre>
 <p>显示所有以p为前缀的环境变量的值（会进行前缀匹配，并且不区分大小写）</p>
 </li>
-<li>命令<pre><code>$ set p=
-</code></pre>
+<li>命令<pre><code>$ set p= </code></pre>
 <p>清除环境变量p，这时如果输入set p，会提示环境变量p没有设定。</p>
 </li>
 <li>获取一个未定义的环境变量，不进行任何解析，如下：<pre><code>$ set v=
 $ set m=%v%abc
 $ echo %m%
-%v%abc
-</code></pre>
+%v%abc </code></pre>
 </li>
-<li>开关扩展<code>/a</code><pre><code>set /a expression
-</code></pre>
+<li>开关扩展<code>/a</code><pre><code>set /a expression </code></pre>
 <p>expression支持表达式格式，包括<code>算术运算符、逻辑运算符、位运算符、赋值操作符以及逗号表达式</code>等。
 expression里的环境变量名会以<code>数字格式</code>看待：</p>
 <ul><li>如果环境变量未定义，则返回0，</li>
@@ -157,11 +149,9 @@ $ set /a t_1=t
 
 $ set t
 t=12345
-t_1=12345
-</code></pre>
+t_1=12345 </code></pre>
 </li>
-<li>开关扩展<code>/p</code><pre><code>set /p variable=[prompString]
-</code></pre>
+<li>开关扩展<code>/p</code><pre><code>set /p variable=[prompString] </code></pre>
 <p>按用户输入设置环境变量的值。variable的含义同上所述。
 promptString是可以自定义的提示字符串。等号不能省略，否则提示语法错误。</p>
 <pre><code>$ set /p t=
@@ -173,11 +163,9 @@ $ set /p t=[input:]
 [input:]7890
 
 $ set /a t
-7890
-</code></pre>
+7890 </code></pre>
 </li>
-<li>环境变量替换扩展<pre><code>%t:str1=str2%
-</code></pre>
+<li>环境变量替换扩展<pre><code>%t:str1=str2% </code></pre>
 <p>以上变量引用会将环境变量t内所有的str1替换成str2，并返回</p>
 <pre><code>$ set t=utabcut
 utabcut
@@ -186,8 +174,7 @@ $ echo %t:ut=mt%
 mtabcmt
 
 $ echo %t%
-utabcut
-</code></pre>
+utabcut </code></pre>
 <p>再加一些特殊的环境变量替换：</p>
 <pre><code>$ set t="ABC"
 $ echo %t:"=+%
@@ -202,26 +189,22 @@ rem 启用延时绑定
 $ set t=%kif%
 rem 百分号需要用两个
 $ echo !t:%%=+!
-+kif+
-</code></pre>
++kif+ </code></pre>
 </li>
-<li>环境变量子串值扩展<pre><code>%t:~10,5%
-</code></pre>
+<li>环境变量子串值扩展<pre><code>%t:~10,5% </code></pre>
 <p>以上变量引用会将环境变量t从第11个开始的5个字符返回。</p>
 <pre><code>$ set t=12345abcdehello
 $ echo %t:~10,5%
 hello
 
 $ set /a t=%t:~0,5%
-12345
-</code></pre>
+12345 </code></pre>
 <p>索引值也支持负数，如下</p>
 <pre><code>$ set t=12345
 $ rem t的除了最后两个字符的字串
 $ set t=%t:~0,-2%
 $ echo %t%
-123
-</code></pre>
+123 </code></pre>
 </li></ol>
 <h2> 2. 命令扩展</h2>
 <p>命令扩展<code>默认启用</code>。开启或关闭命令扩展，使用cmd.exe的开关<code>/e:on或/e:off</code>。
@@ -229,8 +212,7 @@ $ echo %t%
 意即这些功能生效的前提是启用了命令扩展。</p>
 <h2> 3. 延迟环境变量扩展</h2>
 <pre><code>$ C:\Windows\System32\cmd.exe /v:on
-$ C:\Windows\System32\cmd.exe /v:off
-</code></pre>
+$ C:\Windows\System32\cmd.exe /v:off </code></pre>
 <p>延迟环境变量扩展，就是环境变量的<code>动态计算</code>，或者说是变量的<code>晚绑定（late binding）</code>。
 默认情况下，该功能是<code>关闭</code>的，可以通过/v:on开关开启该功能。举例说明如下：</p>
 <pre><code>set VAR=before
@@ -238,18 +220,15 @@ $ C:\Windows\System32\cmd.exe /v:off
 if "%VAR%" == "before" (
     set VAR=after
     if "%VAR%" == "after" @echo If you see this, it worked
-)
-</code></pre>
+) </code></pre>
 <p>以上代码，你不会看到”If you see this, it worked”，因为if作为一个<code>复合语句</code>，在执行之前，
 环境变量一次性先替换成before，在执行的时候%VAR%的部分已经是before，永远不会等于after。再看下面的例子：</p>
 <pre><code>rem 清除环境变量LIST
 set LIST=
 for %i in (*) do set LIST=%LIST% %i
-echo %LIST%
-</code></pre>
+echo %LIST% </code></pre>
 <p>假设当前目录最后一个文件名为abc.dll，则以上脚本输出：</p>
-<pre><code>%LIST% abc.dll
-</code></pre>
+<pre><code>%LIST% abc.dll </code></pre>
 <p>LIST不会不断拼接，因为复合语句for在执行之前，就已经进行了环境变量替换，
 将%LIST%部分替换成对未定义环境变量的引用。若要达到预期的效果，可以使用
 cmd.exe的/v:on开关打开，并用<code>叹号(!)替代百分号(%)</code>来引用环境变量的值。</p>
@@ -258,15 +237,12 @@ cmd.exe的/v:on开关打开，并用<code>叹号(!)替代百分号(%)</code>来�
 if "%VAR%" == "before" (
     set VAR=after
     if "!VAR!" == "after" @echo If you see this, it worked
-)
-</code></pre>
+) </code></pre>
 <p>和</p>
 <pre><code>rem 清除环境变量LIST
 set LIST=
 for %i in (*) do set LIST=!LIST! %i
-echo %LIST%
-
-</code></pre>
+echo %LIST%  </code></pre>
 <h2> 4. 特定环境变量</h2>
 <p>如果命令扩展被启用，以下<code>预定义环境变量</code>会被扩展，但是当你输入<code>set</code>时，不会作为环境变量显示：</p>
 <ul><li><code>%CD%</code> - 扩展到当前目录字符串。</li>
@@ -285,75 +261,91 @@ echo %LIST%
     echo hello
     set b=ok
     echo , world !!
-) else (echo okay !!)
-</code></pre>
+) else (echo okay !!) </code></pre>
 <p>若要在一行上完成，则可以使用命令分隔符，如下：</p>
-<pre><code>if abc == Abc ( echo hello &amp;&amp; set b=ok &amp;&amp; echo “, world !!”) else (echo “okay !!”)
-</code></pre>
+<pre><code>if abc == Abc ( echo hello &amp;&amp; set b=ok &amp;&amp; echo “, world !!”) else (echo “okay !!”) </code></pre>
 <blockquote><p> 若要正常无忧地使用命令分隔符，请将命令的字符串都用双引号包围。</p></blockquote><p>还有其他命令分隔符：<code>&amp;</code>, <code>||</code>。</p>
 <p>附带地注意一下，子句起始符<code>左括号”(”必须有前导空白符</code>。</p>
 <h2> 6. @前缀</h2>
 <p>命令前加上@，可以关闭该命令的回显信息。</p>
-<h1>rem echo前未加@</h1>
-<h1>for %i in (*) do echo %i</h1>
-<blockquote><p>a.txtC:WindowsSystem32>echo devmgr.dlldevmgr.dll</p></blockquote>
-<blockquote><p>C:WindowsSystem32>echo devobj.dlldevobj.dll</p></blockquote><h1>rem echo前添加@前缀</h1>
-<h1>for %i in (*) do @echo %i</h1>
-<blockquote><p>devmgr.dlldevobj.dll</p></blockquote>
+<pre><code># rem echo前未加@
+# for %i in (*) do echo %i
+> a.txt
+> C:\Windows\System32>echo devmgr.dll
+> devmgr.dll
+> 
+> C:\Windows\System32>echo devobj.dll
+> devobj.dll
+
+# rem echo前添加@前缀
+# for %i in (*) do @echo %i
+> devmgr.dll
+> devobj.dll </code></pre>
 <p>若要关闭整个子句的回显信息，可以在子句前面添加@。</p>
-<h1>for %i in (*) do @(if %i == zipfldr.dll echo ok)</h1>
-<blockquote><p>ok</p></blockquote>
+<pre><code># for %i in (*) do @(if %i == zipfldr.dll echo ok)
+> ok </code></pre>
 <p>若要关闭所有命令的回显信息，使用echo的off开关。</p>
-<h1>rem 关闭所有命令的回显</h1>
-<h1>echo off</h1>
+<pre><code># rem 关闭所有命令的回显
+# echo off </code></pre>
 <p>恢复命令回显，使用on开关</p>
-<h1>rem 打开所有命令的回显</h1>
-<h1>echo on</h1>
-<p>7 判断语句
-7.1 if子句
-IF [NOT] ERRORLEVEL number command
+<pre><code># rem 打开所有命令的回显
+# echo on </code></pre>
+<h2> 7 判断语句</h2>
+<h3> 7.1 if子句</h3>
+<pre><code>IF [NOT] ERRORLEVEL number command
 IF [NOT] string1==string2 command
-IF [NOT] EXIST filename command</p>
-<ol><li>not，逻辑取非</li>
-<li>errorlevel number，上一个命令的退出代码不小于指定数字number则为true</li>
-<li>string1==string2，判断两个字符串是否相等，相等则true，否则为false。若string内部含有的空白符会破坏语句结构，则在前后添加双引号（”），使其成为一个整体。建议字符串最好以双引号包围，避免破环复合语句结构。当然，等号（==）前后是可以包含空白符的。比如：</li></ol>
-<h1>set t=abc</h1>
-<h1>rem 环境变量t的值内部不含空白符，可以直接比较</h1>
-<h1>if %t%==abc echo ok</h1>
-<blockquote><p>ok</p></blockquote><h1>set t=ab c</h1>
-<h1>rem if语句执行前，会进行t环境变量的替换，</h1>
-<h1>rem 替换后成为if ab c == abc echo ok，破坏了if语句结构，解析器报错</h1>
-<h1>if %t% == abc echo ok</h1>
-<blockquote><p>此时不应有c</p></blockquote>
+IF [NOT] EXIST filename command </code></pre>
+<ol><li><code>not</code>，逻辑取非</li>
+<li><code>errorlevel number</code>，上一个命令的退出代码<code>不小于</code>指定数字number则为true</li>
+<li><code>string1==string2</code>，判断两个字符串是否相等，相等则true，否则为false。<p>若string内部含有的空白符会破坏语句结构，则在前后添加双引号（”），使其成为一个整体。
+建议字符串最好以<code>双引号包围</code>，避免破环复合语句结构。当然，等号（==）前后是可以包含空白符的。比如：</p>
+<pre><code># set t=abc
+# rem 环境变量t的值内部不含空白符，可以直接比较
+# if %t%==abc echo ok
+> ok
+
+# set t=ab c
+# rem if语句执行前，会进行t环境变量的替换，
+# rem 替换后成为if ab c == abc echo ok，破坏了if语句结构，解析器报错
+# if %t% == abc echo ok
+> 此时不应有c </code></pre>
 <p>正确的做法应该是添加双引号，</p>
-<h1>set t=ab c</h1>
-<h1>if "%t%" == "ab c" echo ok</h1>
-<blockquote><p>ok</p></blockquote>
+<pre><code># set t=ab c
+# if "%t%" == "ab c" echo ok
+> ok </code></pre>
 <p>举个例子，判断目录中是否含有指定文件zipfldr.dll，可以这么写：</p>
-<h1>for %i in (*) do @(if %i == zipfldr.dll echo ok)</h1>
-<blockquote><p>ok</p></blockquote><p>or</p>
-<h1>for %i in (*) do @(if “%i” == “zipfldr.dll” echo ok)</h1>
-<blockquote><p>ok</p></blockquote>
+<pre><code># for %i in (*) do @(if %i == zipfldr.dll echo ok)
+> ok </code></pre>
+<p>or</p>
+<pre><code># for %i in (*) do @(if "%i" == "zipfldr.dll" echo ok)
+> ok </code></pre>
 <p>当然，这是不取巧的方法，因为这个功能一个语句就可以搞定，请看后面。</p>
-<ol><li>exist filename，判断指定文件是否存在，若存在则为true，否则为false。例如以上功能可以写成：</li></ol>
-<h1>if exist zipfldr.dll echo ok</h1>
-<blockquote><p>ok</p></blockquote><p>如果命令扩展启用，if语句还支持以下格式的语法：
-IF [/I] string1 compare-op string2 command
+</li>
+<li><code>exist filename</code>，判断指定文件是否存在，若存在则为true，否则为false。例如以上功能可以写成：<pre><code># if exist zipfldr.dll echo ok
+> ok </code></pre>
+<p>如果命令扩展启用，if语句还支持以下格式的语法：</p>
+<pre><code>IF [/I] string1 compare-op string2 command
 IF CMDEXTVERSION number command
-IF DEFINED variable command
-第一种格式，进行字符串比较，/i表示case insensitive。compare-op支持的操作包括：
-EQU equal
+IF DEFINED variable command </code></pre>
+<p>第一种格式，进行字符串比较，<code>/i</code>表示<code>case insensitive</code>。compare-op支持的操作包括：</p>
+<pre><code>EQU equal
 NEQ not equal
 LSS less than
 LEQ less than and equal
 GTR greater than
-GEQ greater than and equal
-以上比较操作实际是通用比较，如果string1和string2都是数字，两者都会先转换成数字，再进行比较。例如：</p>
-<h1>if 1a lss 2a (echo less) else (echo big)</h1>
-<blockquote><p>less</p></blockquote><h1>if 123a lss 2a (echo less) else (echo big)</h1>
-<blockquote><p>less</p></blockquote><h1>if 123 lss 23 (echo less) else (echo big)</h1>
-<blockquote><p>big</p></blockquote><p>7.2 else子句
-else子句必须出现在if子句结束的同一行上面。
+GEQ greater than and equal </code></pre>
+<p>以上比较操作实际是通用比较，<code>如果string1和string2都是数字，两者都会先转换成数字，再进行比较</code>。例如：</p>
+<pre><code># if 1a lss 2a (echo less) else (echo big)
+> less
+
+# if 123a lss 2a (echo less) else (echo big)
+> less
+
+# if 123 lss 23 (echo less) else (echo big)
+> big </code></pre>
+</li></ol>
+<h3> 7.2 else子句</h3>
+<p>else子句必须出现在if子句结束的同一行上面。
 rem 第一种写法，都在同一行
 if exist zipfldr.dll @( echo ok) else (echo no)</p>
 <p>rem 第二种写法，else部分用子句方式
@@ -595,37 +587,27 @@ dir /ad</p>
 <h2> 11. del命令</h2>
 <p><code>文件（不包含目录）</code>删除命令，同erase。</p>
 <pre><code>DEL [/P] [/F] [/S] [/Q] [/A[[:]attributes]] names
-ERASE [/P] [/F] [/S] [/Q] [/A[[:]attributes]] names
-</code></pre>
+ERASE [/P] [/F] [/S] [/Q] [/A[[:]attributes]] names </code></pre>
 <p>强制删除只读文件。</p>
-<pre><code>del /f
-
-</code></pre>
+<pre><code>del /f  </code></pre>
 <h2> 12. findstr命令</h2>
 <p>先恶作剧一下，进入到c:windowssystem32目录，输入以下命令：</p>
-<pre><code>$ findstr a *
-</code></pre>
+<pre><code>$ findstr a * </code></pre>
 <p>嘀嘀声还不错吧，哈哈。千万别在这么大的目录下做这种事情，findstr会循环打开各种文件（包括二进制文件），
 而且a这种字符太常见了，这时，很有可能你的cmd变成未响应状态，而且还kill不掉。</p>
 <p>当然只是命令行不响应，其他程序仍然正常使用，也可以新开一个命令行。如果等不了，可以重启电脑。</p>
 <p>进入正题，findstr用于从文件中查找指定字符串，有以下格式：</p>
-<pre><code>FINDSTR [/B] [/E] [/L] [/R] [/S] [/I] [/X] [/V] [/N] [/M] [/O] [/P] [/F:file] [/C:string] [/G:file] [/D:dir list] [/A:color attributes] [/OFF[LINE]] strings [[drive:][path]filename[ ...]]
-</code></pre>
-<ol><li>查找文件中以四个数字开头的行。<pre><code>$ findstr /n “^[0-9][0-9][0-9][0-9]” *
-</code></pre>
+<pre><code>FINDSTR [/B] [/E] [/L] [/R] [/S] [/I] [/X] [/V] [/N] [/M] [/O] [/P] [/F:file] [/C:string] [/G:file] [/D:dir list] [/A:color attributes] [/OFF[LINE]] strings [[drive:][path]filename[ ...]] </code></pre>
+<ol><li>查找文件中以四个数字开头的行。<pre><code>$ findstr /n “^[0-9][0-9][0-9][0-9]” * </code></pre>
 <ul><li>正则表达式需用<code>双引号括起来</code>，否则行首限定符<code>”^”</code>不起作用；</li>
 <li>行首开始查找，还可以使用<code>/b开关</code></li></ul>
 </li>
 <li>todo</li></ol>
 <h2> 13. setlocal</h2>
 <p>todo</p>
-<pre><code>setlocal enabledelayedexpansion
-
-
-</code></pre>
+<pre><code>setlocal enabledelayedexpansion   </code></pre>
 <h2> 14. type命令</h2>
-<pre><code>$ type file_name
-</code></pre>
+<pre><code>$ type file_name </code></pre>
 <p>将file_name文件的内容输出到标准输出，类似于Linux下的cat命令。</p>
 
 
@@ -650,10 +632,7 @@ todo</p>
 <pre><code>set LogInfo="%WGET%" --referer="%~3" -o %WGET_LOG_FILE% -O "..\%~1" "%~2"
 
 rem 使用环境变量替换扩展，将双引号替换成单引号，再作为参数传递
-call:log "!LogInfo:"='!" 2 1
-
-
-</code></pre>
+call:log "!LogInfo:"='!" 2 1   </code></pre>
 <h2> 18. 如何输出空行</h2>
 <p>echo后面紧跟一个ASCII实心点号。</p>
 <p><code>
@@ -667,9 +646,7 @@ $ mshta javascript:encodeURIComponent('百度')
 
 $ mshta javascript:"&lt;input type='text' value='笃行天下'>"
 
-$ mshta javascript:alert(0xa0fe-0x8140)
-
-</code></pre>
+$ mshta javascript:alert(0xa0fe-0x8140)  </code></pre>
 <h1> 20. 右键菜单添加命令行通道</h1>
 <ol><li>新建一个<code>.reg</code>文件，内容如下：<pre><code>Windows Registry Editor Version 5.00
 
@@ -677,8 +654,7 @@ $ mshta javascript:alert(0xa0fe-0x8140)
 @="DOS Prompt"
 
 [HKEY_CLASSES_ROOT\folder\shell\cmd\command]
-@="cmd.exe /k cd %1" 
-</code></pre>
+@="cmd.exe /k cd %1"  </code></pre>
 </li>
 <li>保存，双击运行即可。</li></ol>
 <p>以上动作会在资源管理器文件夹的右键菜单新建一个子菜单项，点击以后打开命令行，并以当前文件夹为工作目录。

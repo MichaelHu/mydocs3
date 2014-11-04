@@ -25,9 +25,7 @@
 <p><code>GITHUB</code>: <a href="https://github.com/TooTallNate/node-gyp/">node-gyp</a></p>
 <p>其配置文件名为<code>binding.gyp</code></p>
 <h2> 安装方式</h2>
-<pre><code>$ npm install -g node-gyp
-
-</code></pre>
+<pre><code>$ npm install -g node-gyp  </code></pre>
 <h2> 举例</h2>
 <h3> C++模块，binding.cc</h3>
 <pre><code>#include &lt;node.h>
@@ -44,8 +42,7 @@ void init(Handle&lt;Object> target) {
   NODE_SET_METHOD(target, "hello", Method);
 }
 
-NODE_MODULE(binding, init);
-</code></pre>
+NODE_MODULE(binding, init); </code></pre>
 <h3> binding.gyp文件</h3>
 <pre><code>{
   'targets': [
@@ -54,16 +51,12 @@ NODE_MODULE(binding, init);
       'sources': [ 'binding.cc' ]
     }
   ]
-}
-
-
-</code></pre>
+}   </code></pre>
 <h3> js调用代码</h3>
 <pre><code>var assert = require('assert');
 var binding = require('./build/Release/binding');
 assert.equal('world', binding.hello());
-console.log('binding.hello() =', binding.hello());
-</code></pre>
+console.log('binding.hello() =', binding.hello()); </code></pre>
 </body>
 </html>
 <script type="text/javascript">

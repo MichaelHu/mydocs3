@@ -35,8 +35,7 @@
         subview.videoindex_content_tuiguang
         subview.videoindex_content_imageslider
         subview.videoindex_content_listwrapper
-            subview.videoindex_content_list
-</code></pre>
+            subview.videoindex_content_list </code></pre>
 <p>其中，tuiguang使用全局model提供的数据（本篇后面会提及）；imageslider和list使用同一个model提供的数据，该model由content创建，model的变化通过<code>页面事件中心</code>派发给imageslider和list。</p>
 <p>@todo: 页面共享model时，pageloading的设置方式</p>
 <p>具体代码细节摘录如下：</p>
@@ -75,9 +74,7 @@
 
     }
 
-});
-
-</code></pre>
+});  </code></pre>
 <h3> 1.2 页面内共享model的使用</h3>
 <p>以上共享model在imageslider和list中被使用，由于它们都存在于<code>同一个页面</code>，可以使用页面事件中心进行交互：</p>
 <p>imageslider<code>不再创建</code>同级别model，而是通过页面事件中心ec响应dataready事件。</p>
@@ -113,8 +110,7 @@
 
     ...
 
-});
-</code></pre>
+}); </code></pre>
 <p>同样，list代码如下：</p>
 <pre><code>rocket.subview.videoindex_content_list = rocket.subview.extend({
 
@@ -142,9 +138,7 @@
 
     ...
 
-});
-
-</code></pre>
+});  </code></pre>
 <h2> 2. 跨页面共享model</h2>
 <p>一般情况下，页面之间是不进行交互的，因为跨页面交互破坏了页面间的独立性，不利于页面功能解耦，对并行开发造成一定的困难。但是，由于业务功能的需要，无法避免在页面间进行数据交互和共享，这种情况下，需要建立跨页面共享model，通过使用<code>固定接口</code>，降低跨页面交互的复杂度。</p>
 <p>跨页面共享model主要通过接口方法<code>getInstance(param)</code>来实现。</p>
@@ -178,9 +172,7 @@
 rocket.model.listzaker_nids.getInstance = function(type){
     var instances = rocket.model.listzaker_nids._instances;
     return instances &amp;&amp; instances[type];
-}; 
-
-</code></pre>
+};   </code></pre>
 <p>rocket.model.listzaker_nids由listzaker页面创建，但是其数据需要被页面detailmulticolumn共享，以支持连续右滑查看下一条新闻。detailmulticolumn不负责创建该model，也不完全依赖该model，当该model存在就使用，不存在就不使用。</p>
 <p>以下代码说明如何使用共享model（来自page/detailmulticolumn/js/view/rocket.subview.detailmulticolumn_content.js）：</p>
 
@@ -200,9 +192,7 @@ rocket.model.listzaker_nids.getInstance = function(type){
         ...
     }
 
-});
-
-</code></pre>
+});  </code></pre>
 <p>使用类静态接口方法getInstance获取对应instance，然后调用接口方法getNextNews。</p>
 
 <h3> 2.2 推广位model共享</h3>
@@ -252,8 +242,7 @@ rocket.model.listzaker_nids.getInstance = function(type){
 rocket.model.vstuiguang.getInstance = function(){
     var instances = rocket.model.vstuiguang._instances;
     return instances &amp;&amp; instances['unique'];
-}; 
-</code></pre>
+};  </code></pre>
 <p>以上是全局模型vstuiguang的定义，实现了静态类接口方法getInstance，使用<code>dataCache</code>作为数据缓存。</p>
 <h4> 2.2.2 全局model的初始化</h4>
 <p>具体代码（from /app/js/rocket.init.js）：</p>
@@ -277,8 +266,7 @@ rocket.model.vstuiguang.getInstance = function(){
         }, 300);
     }
 
-});
-</code></pre>
+}); </code></pre>
 <h4> 2.2.3 全局模型的使用</h4>
 <p>以下代码展示如何在首页推广位中使用全局模型（from /app/page/index/js/view/rocket.subview.index_content_vstuiguang.js）。</p>
 <pre><code>rocket.subview.index_content_tuiguang = rocket.subview.extend({
@@ -314,9 +302,7 @@ rocket.model.vstuiguang.getInstance = function(){
 
     ...
 
-});
-
-</code></pre>
+});  </code></pre>
 <p>以下代码展示如何在帮助首页推广位中使用全局模型（from /app/page/index/js/view/rocket.subview.howtoindex_header.js）。</p>
 <pre><code>rocket.subview.howtoindex_header = rocket.subview.extend({
 
@@ -352,9 +338,7 @@ rocket.model.vstuiguang.getInstance = function(){
 
     ...
 
-});
-
-</code></pre>
+});  </code></pre>
 </body>
 </html>
 <script type="text/javascript">

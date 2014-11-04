@@ -25,6 +25,39 @@
 
 <div class="list">
 
+## VIM 
+
+* <a href="./vim/vim-memo.md.html">VIM备忘</a> 
+* <a href="./vim/vim-eval.md.html">VIM编程</a> 
+
+</div>
+
+
+
+
+<div class="list">
+
+## Shell编程 
+
+* <a href="./shell/winshell.md.html">Windows Shell编程</a> 
+* <a href="./shell/compress_by_pieces.md.html">Linux 分卷压缩</a> 
+
+</div>
+
+
+<div class="list">
+
+## H5游戏 
+
+* <a href="./h5games/box2dweb/box2dweb.md.html">Box2D备忘</a> 
+* <a href="./h5games/canvas.md.html">Canvas备忘</a> 
+* <a href="./h5games/engines.md.html">Game Engines - Quintus</a> 
+
+</div>
+
+
+<div class="list">
+
 ## Web Server相关 
 
 * <a href="./mcwebserver/introduce.md.html">提供简单CGI功能的自制Web Server</a> 

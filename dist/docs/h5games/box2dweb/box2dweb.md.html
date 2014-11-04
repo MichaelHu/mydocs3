@@ -58,7 +58,8 @@
 <li>eternal - 永恒的，没完没了的</li>
 <li>axis - 轴，轴线</li>
 <li>pulley - 滑轮</li>
-<li>contraption - 新发明，奇妙的装置</li></ul>
+<li>contraption - 新发明，奇妙的装置</li>
+<li>AABBs (axis-aligned bounding boxes)</li></ul>
 <h2> 模块</h2>
 <p>三个模块:</p>
 <ul><li>Common<ul><li>code for allocation, math and settings</li></ul>
@@ -97,8 +98,7 @@
 b2Vec2 v1(0.0f, 0.0f); 
 b2Vec2 v2(1.0f, 0.0f);
 b2EdgeShape edge;
-edge.Set(v1, v2);
-</code></pre>
+edge.Set(v1, v2); </code></pre>
 <p>注意<code>ghost collision</code>，可以使用chain shapes</p>
 </li>
 <li>Chain Shapes<p>多个Edge连接成。</p>
@@ -110,8 +110,7 @@ edge.Set(v1, v2);
 <ol><li>点测试，Shape Point Test<pre><code>b2Transfrom transform; 
 transform.SetIdentity(); 
 b2Vec2 point(5.0f, 2.0f);
-bool hit = shape->TestPoint(transform, point);
-</code></pre>
+bool hit = shape->TestPoint(transform, point); </code></pre>
 <p>Edge和Chain总是返回false，即使chain是闭合的。</p>
 </li>
 <li>光测试<pre><code>b2Transfrom transform; 
@@ -127,14 +126,11 @@ if (hit)
 {
     b2Vec2 hitPoint = input.p1 + output.fraction * (input.p2 – input.p1);
     ... 
-}  
-
-</code></pre>
+}    </code></pre>
 </li></ol>
 <p><code>二元函数</code></p>
 <ol><li>Overlap<pre><code>b2Transform xfA = ..., xfB = ...;
-bool overlap = b2TestOverlap(shapeA, indexA, shapeB, indexB, xfA, xfB);
-</code></pre>
+bool overlap = b2TestOverlap(shapeA, indexA, shapeB, indexB, xfA, xfB); </code></pre>
 </li>
 <li>Contact Manifolds<p><img src="./img/contact-manifolds.png"></p>
 </li>
@@ -171,13 +167,14 @@ b2_staticBody
 b2_kinematicBody
 b2_dynamicBody</p>
 <blockquote><p> Box2D使用CCD碰撞检测，避免物体穿透。计算碰撞的第一次TOI，物体会被先移动到该TOI， 再行计算剩余sub step。一个step可能会分为多个sub step</p></blockquote><p>不过CCD耗损性能，dynamic物体的默认是不启用的。没有CCD，高速射击的子弹可能会穿透砖墙。</p>
-<pre><code>bodyDef.bullet = true;
-</code></pre>
+<pre><code>bodyDef.bullet = true; </code></pre>
 <p>以上开启dynamic body的CCD属性。只对dynamic body有效。</p>
 
+
+<p><code>Position and Angle</code></p>
+
 <p><code>Activation</code></p>
-<pre><code>bodyDef.active = true;
-</code></pre>
+<pre><code>bodyDef.active = true; </code></pre>
 <p>希望物体创建以后，但不参与碰撞。可以先创建一个inactive的物体，然后再激活之，用以上方法。</p>
 
 
@@ -185,16 +182,13 @@ b2_dynamicBody</p>
 <p><code>User Data</code></p>
 <p>用户hook，可以自己设定数据。C++里面，它是一个void型指针。</p>
 <pre><code>b2BodyDef bodyDef;
-bodyDef.userData = &amp;myActor;
-
-</code></pre>
+bodyDef.userData = &amp;myActor;  </code></pre>
 <p><code>Body Factory - 工厂</code></p>
 <p>物体的创建和销毁都有b2World来完成，如下：</p>
 <pre><code>b2Body * dynamicBody = myWorld -> CreateBody(&amp;bodyDef);
 ... do stuff ...
 myWorld -> Destroy(dynamicBody);
-dynamicBody = NULL;
-</code></pre>
+dynamicBody = NULL; </code></pre>
 <p>避免使用new或者malloc创建body，那样不work</p>
 <p>body销毁时，依附其上的fixtures和joints自动销毁。</p>
 
@@ -210,8 +204,7 @@ void ResetMassData();
 float32 GetMass() const;
 float32 GetInertia() const;
 const b2Vec2&amp; GetLocalCenter() const; 
-void GetMassData(b2MassData* data) const;
-</code></pre>
+void GetMassData(b2MassData* data) const; </code></pre>
 </li>
 <li>状态信息<pre><code>void SetType(b2BodyType type);
 b2BodyType GetType();
@@ -229,8 +222,7 @@ void SetActive(bool flag);
 bool IsActive() const;
 
 void SetFixedRotation(bool flag); 
-bool IsFixedRotation() const;
-</code></pre>
+bool IsFixedRotation() const; </code></pre>
 </li>
 <li>位置与速度<pre><code>bool SetTransform(const b2Vec2&amp; position, float32 angle);
 const b2Transform&amp; GetTransform() const; 
@@ -238,9 +230,7 @@ const b2Vec2&amp; GetPosition() const;
 float32 GetAngle() const;
 
 const b2Vec2&amp; GetWorldCenter() const; 
-const b2Vec2&amp; GetLocalCenter() const;
-
-</code></pre>
+const b2Vec2&amp; GetLocalCenter() const;  </code></pre>
 </li></ol>
 <h3> 2.2 Fixtures</h3>
 <blockquote><p> Box2D provides the b2Fixture class to attach shapes to bodies</p></blockquote><p>一个物体拥有零个或多个装置，拥有多个装置的物体叫做组合物体。</p>
@@ -256,15 +246,11 @@ const b2Vec2&amp; GetLocalCenter() const;
 <pre><code>b2FixtureDef fixtureDef; 
 fixtureDef.shape = &amp;myShape;
 fixtureDef.density = 1.0f;
-b2Fixture* myFixture = myBody->CreateFixture(&amp;fixtureDef);
-</code></pre>
-<blockquote><p> the fixture will automatically be destroyed when the parent body is destroyed. You can destroy a fixture on the parent body. You may do this to model a breakable object. </p></blockquote><pre><code>myBody->DestroyFixture(myFixture);
-
-</code></pre>
+b2Fixture* myFixture = myBody->CreateFixture(&amp;fixtureDef); </code></pre>
+<blockquote><p> the fixture will automatically be destroyed when the parent body is destroyed. You can destroy a fixture on the parent body. You may do this to model a breakable object. </p></blockquote><pre><code>myBody->DestroyFixture(myFixture);  </code></pre>
 <p><code>Density－密度：</code></p>
 <blockquote><p> The fixture density is used to <code>compute the mass properties</code> of the parent body.  The density can be zero or positive. You should generally use similar densities for  all your fixtures. This will improve stacking stability.</p></blockquote><pre><code>fixture->SetDensity(5.0f);
-body->ResetMassData();
-</code></pre>
+body->ResetMassData(); </code></pre>
 <p>物体质量不会改变，必须调用ResetMassData()。 </p>
 
 
@@ -275,8 +261,7 @@ body->ResetMassData();
 <p>一般为<code>[0, 1]</code></p>
 <p>计算两个shape之间的摩擦力时，Box2D会综合考虑两者的父fixture的摩擦系数，按以下方式计算：</p>
 <pre><code>float32 friction;
-friction = sqrtf( fixtureA->friction * fixtureB->friction );
-</code></pre>
+friction = sqrtf( fixtureA->friction * fixtureB->friction ); </code></pre>
 <p>如果一个表面的摩擦系数为0，则它们之间没有摩擦力。</p>
 <p>可以覆盖该默认计算方式，通常在<code>b2ContactListener回调</code>中，使用<code>b2Contact::SetFriction</code>来改变。</p>
 
@@ -286,8 +271,7 @@ friction = sqrtf( fixtureA->friction * fixtureB->friction );
 <p>用于对象反弹。通常取值[0, 1]，取值0，为非弹性碰撞（inelastic collision），取值大于0，为弹性碰撞。</p>
 <p>restitution使用以下公式计算：</p>
 <pre><code>float32 restitution;
-restitution = b2Max( fixtureA->restitution, fixtureB->restitution );
-</code></pre>
+restitution = b2Max( fixtureA->restitution, fixtureB->restitution ); </code></pre>
 <p>覆盖方式类似friction，使用<code>b2Contact::SetRestitution</code></p>
 <p>当速度很小的情况，会进行非弹性碰撞，这个取决于<code>b2_velocityThreshold</code></p>
 
@@ -309,15 +293,13 @@ uint16 maskB = fixtureB.filter.maskBits;
 
 if ((catA &amp; maskB) != 0 &amp;&amp; (catB &amp; maskA) != 0) {
   // fixtures can collide
-}
-</code></pre>
+} </code></pre>
 <p>碰撞组，正数组索引的fixture总是碰撞，负数组索引的总是不碰撞。
 碰撞组索引用于一些相关的物体，比如自行车部件。</p>
 <pre><code>fixture1Def.filter.groupIndex = 2; 
 fixture2Def.filter.groupIndex = 2; 
 fixture3Def.filter.groupIndex = -8; 
-fixture4Def.filter.groupIndex = -8
-</code></pre>
+fixture4Def.filter.groupIndex = -8 </code></pre>
 <p>以上例子，fixture1和fixture2碰撞，fixture3和fixture4不碰撞。</p>
 <p>组索引不一致的对象间按照碰撞类型和mask bits进行碰撞。换句话说，组索引的优先级
 高于碰撞类型和mask bits。</p>
@@ -336,10 +318,7 @@ kinematic-static, static-static情况下，我们获取不到contact。</p>
 <p>获取感应器状态的方法：</p>
 <pre><code>b2Contact::IsTouching()
 b2ContactListener::BeginContact()
-b2ContactListener::EndContact()
-
-
-</code></pre>
+b2ContactListener::EndContact()   </code></pre>
 <h3> 2.3 Joints</h3>
 <p><code>Joint Factory</code></p>
 <p>使用world提供的方法创建和销毁，不要自己new或者malloc</p>
@@ -353,8 +332,7 @@ b2RevoluteJoint* joint = (b2RevoluteJoint*)myWorld->CreateJoint(&amp;jointDef);
 ... do stuff ...
 
 myWorld->DestroyJoint(joint);
-joint = NULL;
-</code></pre>
+joint = NULL; </code></pre>
 <blockquote><p> Caution: Joints are destroyed when an attached body is destroyed.</p></blockquote>
 <p><code>使用Joint</code></p>
 <p>模拟过程中可能joint创建以后，到被销毁，都不再被使用，但是其包含很多有用数据，帮助
@@ -364,25 +342,20 @@ joint = NULL;
 b2Body* GetBodyB();
 b2Vec2 GetAnchorA();
 b2Vec2 GetAnchorB();
-void* GetUserData();
-
-</code></pre>
+void* GetUserData();  </code></pre>
 <blockquote><p> You can use reaction forces to break joints or trigger other game events. </p></blockquote><pre><code>b2Vec2 GetReactionForce(); 
-float32 GetReactionTorque();
-</code></pre>
+float32 GetReactionTorque(); </code></pre>
 <p><code>Distance Joint</code></p>
 <p>距离关节</p>
 <blockquote><p> One of the simplest joint is a distance joint which says that the distance between  two points on two bodies must be constant. </p></blockquote><p>分别存在于两个物体上的两个点之间的距离是定值。</p>
 <p><img src="./img/distance-joint.png"></p>
 <pre><code>b2DistanceJointDef jointDef;
 jointDef.Initialize(myBodyA, myBodyB, worldAnchorOnBodyA, worldAnchorOnBodyB); 
-jointDef.collideConnected = true;
-</code></pre>
+jointDef.collideConnected = true; </code></pre>
 <p>通过改变频率（frequency）和阻尼率（damping ratio），可以讲距离关节变成
 软关节，就像<code>spring-damper(弹簧阻尼)</code></p>
 <pre><code>jointDef.frequencyHz = 4.0f; 
-jointDef.dampingRatio = 0.5f;
-</code></pre>
+jointDef.dampingRatio = 0.5f; </code></pre>
 <p>注意：</p>
 <ol><li>frequency < step frequency / 2，比如step frequency为60Hz，那么需要小于30Hz。<p>原因是Nyquist frequency，奈奎斯特频率</p>
 </li>
@@ -394,8 +367,7 @@ jointDef.dampingRatio = 0.5f;
 <p>两个物体只有单一的角度自由。</p>
 <p>需要提供两个物体和一个锚点，初始化函数默认物体已经在正确的位置。</p>
 <pre><code>b2RevoluteJointDef jointDef;
-jointDef.Initialize(myBodyA, myBodyB, myBodyA->GetWorldCenter());
-</code></pre>
+jointDef.Initialize(myBodyA, myBodyB, myBodyA->GetWorldCenter()); </code></pre>
 <p>以上代码将两个物体用其中一个物体的重心作为铰链点连接起来。</p>
 <p>如果bodyB按CCW旋转，那么关节角度（joint angle）就是正的，关节角度如果Box2D规定，都是按
 弧度为单位，关节角度使用<code>Initialize()</code>创建时，默认为1，不管两个物体当前的旋转位置。</p>
@@ -415,33 +387,23 @@ jointDef.lowerAngle = -0.5f * b2_pi;
 
 jointDef.maxMotorTorque = 10.0f;
 jointDef.motorSpeed = 0.0f;
-jointDef.enableMotor = true;
-</code></pre>
+jointDef.enableMotor = true; </code></pre>
 <p>获取关节的角度、速度和马达扭力等参数：</p>
 <pre><code>float32 GetJointAngle() const; 
 float32 GetJointSpeed() const; 
-float32 GetMotorTorque() const;
-</code></pre>
+float32 GetMotorTorque() const; </code></pre>
 <p>更新关节马达参数：</p>
 <pre><code>void SetMotorSpeed(float32 speed); 
-void SetMaxMotorTorque(float32 torque);
-</code></pre>
+void SetMaxMotorTorque(float32 torque); </code></pre>
 <p>有趣的能力，让关节速度按正弦波变化，来回移动，或者任何你需要的函数改变其关节速度：</p>
 <pre><code>... Game Loop Begin ... 
 myJoint->SetMotorSpeed(cosf(0.5f * time));
-... Game Loop End ...
-</code></pre>
+... Game Loop End ... </code></pre>
 <blockquote><p> You can also use joint motors to track a desired joint angle</p></blockquote><pre><code>... Game Loop Begin ...
 float32 angleError = myJoint->GetJointAngle() - angleTarget; 
 float32 gain = 0.1f;
 myJoint->SetMotorSpeed(-gain * angleError);
-... Game Loop End ...
-
-
-
-
-
-</code></pre>
+... Game Loop End ...      </code></pre>
 <p><code>Prismatic joint</code></p>
 <p>移动关节允许两个物体沿着指定轴线(axis)相对移动，它不允许相对转动。</p>
 <p><img src="./img/prismatic-joint.png"></p>
@@ -455,8 +417,7 @@ jointDef.upperTranslation = 2.5f;
 jointDef.enableLimit = true;
 jointDef.maxMotorForce = 1.0f;
 jointDef.motorSpeed = 0.0f;
-jointDef.enableMotor = true;
-</code></pre>
+jointDef.enableMotor = true; </code></pre>
 <p>旋转关节的轴线从屏幕穿出，是隐式的；而移动关节的轴线需要显式给出，平行于屏幕，固定于两个
 物体，沿着它们的移动方向。</p>
 <p>与旋转关节类似，创建时，其translation为0，需要确保translation的范围包含0值。</p>
@@ -465,19 +426,14 @@ jointDef.enableMotor = true;
 float32 GetJointSpeed() const; 
 float32 GetMotorForce() const; 
 void SetMotorSpeed(float32 speed); 
-void SetMotorForce(float32 force);
-
-
-</code></pre>
+void SetMotorForce(float32 force);   </code></pre>
 <p><code>Pulley Joint</code></p>
 <blockquote><p> 滑轮关节用于创建一个理想化滑轮。</p></blockquote><p><img src="./img/pulley-joint.png"></p>
 <p>滑轮关节将两个物体连接到ground，同时相互连接，一个上去，另一个下来。滑轮线长度保持初始设置，如：</p>
-<pre><code>length1 + length2 == constant
-</code></pre>
+<pre><code>length1 + length2 == constant </code></pre>
 <p>可以提供比率来模拟滑轮索具，这会使的一边的绳子比另一边伸展得快，同时一边的受力比另一边的受力小。
 用这种方式，可以创建机械杠杆（mechanical leverage）。</p>
-<pre><code>length1 + ratio * length2 == constant
-</code></pre>
+<pre><code>length1 + ratio * length2 == constant </code></pre>
 <p>当一边的绳索<code>长度为0时</code>，绳长公式就出问题了，需要配置碰撞形状避免这种情况。</p>
 <pre><code>b2Vec2 anchor1 = myBody1->GetWorldCenter(); 
 b2Vec2 anchor2 = myBody2->GetWorldCenter(); 
@@ -487,30 +443,23 @@ float32 ratio = 1.0f;
 
 b2PulleyJointDef jointDef;
 jointDef.Initialize(myBody1, myBody2, groundAnchor1, groundAnchor2, anchor1,
-anchor2, ratio);
-</code></pre>
+anchor2, ratio); </code></pre>
 <p>以下方法可获取状态：</p>
 <pre><code>float32 GetLengthA() const; 
-float32 GetLengthB() const;
-
-
-
-</code></pre>
+float32 GetLengthB() const;    </code></pre>
 <p><code>Gear Joint</code></p>
 <p>齿轮关节<code>只能</code>连接旋转和（或）移动关节。</p>
 <p><img src="./img/gear-joint.png"></p>
 <p>同样有比率，但该比率可以为负数。</p>
 <p>需要记住的是，</p>
-<blockquote><p> Also keep in mind that when one joint is a revolute joint (angular) and the other joint   is prismatic (translation), and then the gear ratio will have units of length or one over length.</p></blockquote><pre><code>coordinate1 + ratio * coordinate2 == constant
-</code></pre>
+<blockquote><p> Also keep in mind that when one joint is a revolute joint (angular) and the other joint   is prismatic (translation), and then the gear ratio will have units of length or one over length.</p></blockquote><pre><code>coordinate1 + ratio * coordinate2 == constant </code></pre>
 <p>以下代码定义一个齿轮关节：</p>
 <pre><code>b2GearJointDef jointDef;
 jointDef.bodyA = myBodyA;
 jointDef.bodyB = myBodyB; 
 jointDef.joint1 = myRevoluteJoint; 
 jointDef.joint2 = myPrismaticJoint; 
-jointDef.ratio = 2.0f * b2_pi / myLength;
-</code></pre>
+jointDef.ratio = 2.0f * b2_pi / myLength; </code></pre>
 <p>另，必须在转动或移动关节销毁前将齿轮关节销毁，否则程序可能crash。</p>
 
 <p><code>Mouse Joint</code></p>
@@ -540,6 +489,114 @@ jointDef.ratio = 2.0f * b2_pi / myLength;
 <p><code>Motor Joint</code></p>
 <p>...</p>
 
+
+
+
+
+<h3> 2.4 Contacts</h3>
+
+<p>todo</p>
+
+
+<h2> 三、Wrold Class</h2>
+<p>大部分与Box2D的交互都是通过b2World类</p>
+<pre><code>b2World* myWorld = new b2World(gravity, doSleep);
+... do stuff ...
+delete myWorld;  </code></pre>
+<p><code>模拟</code></p>
+<pre><code>float32 timeStep = 1.0f / 60.f;
+int32 velocityIterations = 10;
+int32 positionIterations = 8;
+myWorld->Step(timeStep, velocityIterations, positionIterations); </code></pre>
+<blockquote><p> The iteration count controls how many times the constraint solver sweeps over all the  contacts and joints in the world. More iteration always yields a better simulation.  But don't trade a small time step for a large iteration count. 60Hz and 10 iterations  is far better than 30Hz and 20 iterations.</p></blockquote>
+<p><code>b2World::ClearForces()</code></p>
+<pre><code>myWorld->ClearForces(); </code></pre>
+<blockquote><p> This lets you take multiple sub-steps with the same force field</p></blockquote>
+<p><code>Exploring the world</code></p>
+<p>如何安全删除body：</p>
+<pre><code>b2Body* node = myWorld->GetBodyList(); 
+while (node)
+{
+    b2Body* b = node;
+    node = node->GetNext();
+    GameActor* myActor = (GameActor*)b->GetUserData(); 
+    if (myActor->IsDead())
+    {
+        myWorld->DestroyBody(b);
+    } 
+} </code></pre>
+<p>解决同时删除多个body的问题：</p>
+<pre><code>b2Body* node = myWorld->GetBodyList(); 
+while (node)
+{
+    b2Body* b = node;
+    node = node->GetNext();
+    GameActor* myActor = (GameActor*)b->GetUserData(); 
+    if (myActor->IsDead())
+    {
+        bool otherBodiesDestroyed = GameCrazyBodyDestroyer(b); 
+        if (otherBodiesDestroyed)
+        {
+            node = myWorld->GetBodyList(); 
+        }
+    } 
+}   </code></pre>
+<p><code>AABB Queries</code></p>
+<p>以下代码找出会与指定AABB相交的所有fixtures，并唤醒与这些fixture关联的body：</p>
+<pre><code>class MyQueryCallback : public b2QueryCallback
+{ 
+public:
+    bool ReportFixture(b2Fixture* fixture)
+    {
+        b2Body* body = fixture->GetBody(); 
+        body->SetAwake(true);
+
+        // Return true to continue the query.
+        return true;
+    }
+}; 
+
+...
+
+MyQueryCallback callback;
+b2AABB aabb;
+aabb.lowerBound.Set(-1.0f, -1.0f); 
+aabb.upperBound.Set(1.0f, 1.0f); 
+myWorld->Query(&amp;callback, aabb);  </code></pre>
+<p><code>Ray Casts</code></p>
+<blockquote><p> You control the continuation of the ray cast by returning a fraction. Returning a  fraction of zero indicates the ray cast should be terminated. A fraction of one indicates  the ray cast should continue as if no hit occurred. </p></blockquote><pre><code>// This class captures the closest hit shape.
+class MyRayCastCallback : public b2RayCastCallback {
+
+public:
+
+    MyRayCastCallback()
+    {
+        m_fixture = NULL;
+    }
+
+    float32 ReportFixture(b2Fixture* fixture, const b2Vec2&amp; point,
+        const b2Vec2&amp; normal, float32 fraction)
+    {
+        m_fixture = fixture;
+        m_point = point; 
+        m_normal = normal; 
+        m_fraction = fraction; 
+        return fraction;
+    }
+
+    b2Fixture* m_fixture;
+    b2Vec2 m_point;
+    b2Vec2 m_normal;
+    float32 m_fraction;
+};
+
+MyRayCastCallback callback;
+
+b2Vec2 point1(-1.0f, 0.0f);
+b2Vec2 point2(3.0f, 1.0f); 
+myWorld->RayCast(&amp;callback, point1, point2);  </code></pre>
+<blockquote><p> You may also return of fraction of -1 to filter the fixture. Then the ray  cast will proceed as if the fixture does not exist.</p></blockquote>
+<p>todo</p>
 </body>
 </html>
 <script type="text/javascript">

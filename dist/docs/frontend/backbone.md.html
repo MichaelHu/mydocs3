@@ -39,8 +39,7 @@
     }
 })(this, function(root, Backbone, _, $){
     ...
-});
-</code></pre>
+}); </code></pre>
 <h2> Events，可以mixin到任何一个对象，提供自定义事件的功能。</h2>
 <ol><li>on/bind: function(name, callback, context)</li>
 <li>once: function(name, callback, context)</li>
@@ -109,8 +108,7 @@
 <li>this._ensureElement()</li>
 <li>this.initialize.apply(this, arguments)</li></ol>
 </li>
-<li>vars<pre><code>var delegateEventSplitter = /^(\S+)\s*(.*)$/;
-</code></pre>
+<li>vars<pre><code>var delegateEventSplitter = /^(\S+)\s*(.*)$/; </code></pre>
 </li>
 <li>prototype<ol><li>tagName: 'div'</li>
 <li>$: function(selector)</li>
@@ -136,8 +134,7 @@
 <li>vars:<pre><code>optionalParam = /\((.*?)\)/g 
 namedParam = /(\(\?)?:\w+/g 
 splatParam = /\*\w+/g 
-escapeRegExp = /[\-{}\[\]+?.,\\\^$|#\s]/g 
-</code></pre>
+escapeRegExp = /[\-{}\[\]+?.,\\\^$|#\s]/g  </code></pre>
 </li>
 <li>prototype<ol><li>initialize: function() </li>
 <li>route: funciton(route, name, callback)</li>
@@ -156,8 +153,7 @@ escapeRegExp = /[\-{}\[\]+?.,\\\^$|#\s]/g
 </li>
 <li>vars<pre><code>routeStripper = /^[#\/]|\s+$/g
 rootStripper = /^\/+|\/+$/g
-pathStripper = /#.*$/
-</code></pre>
+pathStripper = /#.*$/ </code></pre>
 </li>
 <li>static<ol><li>History.started = false</li></ol>
 </li>
@@ -186,8 +182,7 @@ pathStripper = /#.*$/
 <pre><code>var previousBackbone = root.Backbone
 var slice = array.slice
 var urlError = function()
-var wrapError = function(model, options)
-</code></pre>
+var wrapError = function(model, options) </code></pre>
 <p>比较特殊的<code>extend</code>方法，生成一个子类：</p>
 <pre><code>var extend = function(protoProps, staticProps){
     var parent = this;
@@ -220,8 +215,7 @@ var wrapError = function(model, options)
     child.__super__ = parent.prototype;
 
     return child;
-};
-</code></pre>
+}; </code></pre>
 <h2> static attrs and methods</h2>
 <ol><li>Backbone.sync: function(method, model, options)</li>
 <li>Backbone.ajax: function()</li>

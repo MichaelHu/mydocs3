@@ -87,8 +87,7 @@ rocket.router.vs = rocket.router.extend({
 
 }); 
 
-})(Zepto);
-</code></pre>
+})(Zepto); </code></pre>
 </li>
 <li><code>页面视图控制器</code>，通过继承<code>rocket.pageview</code><pre><code>(function($) {
 
@@ -109,10 +108,7 @@ rocket.pageview.index = rocket.pageview.extend({
 
 });
 
-})(Zepto);
-
-
-</code></pre>
+})(Zepto);   </code></pre>
 </li>
 <li><code>页面子视图控制器</code>，通过继承<code>rocket.subview</code>；不直接使用<code>rocket.baseview</code><pre><code>(function($) {
 
@@ -151,9 +147,7 @@ rocket.subview.index_content = rocket.subview.extend({
 
 });
 
-})(Zepto);
-
-</code></pre>
+})(Zepto);  </code></pre>
 </li>
 <li><code>页面模型</code>，通过继承<code>rocket.model</code>或<code>rocket.collection</code> <pre><code>(function($){
 
@@ -173,8 +167,7 @@ rocket.collection.index_news = rocket.collection.extend({
 
 });
 
-})(Zepto);
-</code></pre>
+})(Zepto); </code></pre>
 </li>
 <li><code>全局视图控制器</code>，通过继承<code>rocket.globalview</code>，可直接相应路由事件，持有页面视图控制器，可按需向页面控视图控制器发送事件。<pre><code>(function($){
 
@@ -210,9 +203,7 @@ rocket.globalview.sidenav = rocket.globalview.extend({
 
 });
 
-})(Zepto);
-
-</code></pre>
+})(Zepto);  </code></pre>
 </li>
 <li><code>子页面管理器</code>，是<code>rocket.subpagemanager</code>的实例，管理子页面的创建、回收、动画切换效果等。使用时rocket.baseview子类通过调用getSubpageManager()方法获取<pre><code>(function($){
 
@@ -244,8 +235,7 @@ rocket.subview.search_content = rocket.subview.extend({
 
 });
 
-})(Zepto);
-</code></pre>
+})(Zepto); </code></pre>
 </li>
 <li><code>子页面视图控制器</code>，通过继承<code>rocket.subpageview</code>，作为子页面的事件中心，其子视图控制器可以通过subec引用<pre><code>(function($){
 
@@ -297,9 +287,7 @@ rocket.subpageview.search_subpage = rocket.subpageview.extend({
 
 });
 
-})(Zepto);
-
-</code></pre>
+})(Zepto);  </code></pre>
 </li></ul>
 </body>
 </html>

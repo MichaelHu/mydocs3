@@ -108,8 +108,7 @@ svn co "http://tc-apptest-img08.vm.baidu.com:8021/svn/repos/projects/rocket_work
             ,sliderindex: decodeURIComponent(sliderindex)
         }
     );
-}    
-</code></pre>
+}     </code></pre>
 <p>**页面框架和模板**，在文件DEVELOP_DIR/slider/slider.html中的<!--page view-->和<!--front template-->位置下方，分别添加页面框架和模板代码，添加以后，大致如下所示：</p>
 <pre><code>&lt;!--page view-->
 /*{fis-inline file="./page/outline/html/outline.html"}*/ 
@@ -119,13 +118,11 @@ svn co "http://tc-apptest-img08.vm.baidu.com:8021/svn/repos/projects/rocket_work
 
 &lt;!--front template-->
 /*{fis-inline file="./page/outline/tpl/outline.tpl.html"}*/ 
-/*{fis-inline file="./page/slide/tpl/slide.tpl.html"}*/ 
-</code></pre>
+/*{fis-inline file="./page/slide/tpl/slide.tpl.html"}*/  </code></pre>
 <p>**CSS文件**，在文件DEVELOP_DIR/slider/css/rocket.css中的/*page*/位置下方，添加CSS import代码，添加以后，大致如下图所示：</p>
 <pre><code>/*page*/                       
 @import url("../page/outline/css/outline.css")
-@import url("../page/slide/css/slide.css")
-</code></pre>
+@import url("../page/slide/css/slide.css") </code></pre>
 <ul><li>2.3.2.4 至此，完成slide页面的原型代码添加，可以验证slide页的正确性了：<ol><li>清空缓存（如有必要）</li>
 <li>访问http://localhost[:port]/slider/slider.html#slide/title/1，展示"**Hello, I am page slide**"，控制台无报错</li></ol>
 </li></ul>
@@ -394,8 +391,7 @@ font:normal 14px/22px normal;</code></pre>
 
 ,getSectionCount: function(){
     return this.getSections().length;
-}
-</code></pre>
+} </code></pre>
 <p>});</p>
 <p>// 通用model，提供跨页面访问
 rocket.collection.outline_sections.getInstance = function(title){</p>
@@ -414,8 +410,7 @@ return instances &amp;&amp; instances[title];</code></pre>
 &lt;% _.each(item.content, function(item1, index1){ %>
     &lt;span>&lt;%= slider.helper.escapeMarkdownText(item.type, item1) %>&lt;/span>
 &lt;% }); %>
-&lt;/p>
-</code></pre>
+&lt;/p> </code></pre>
 <p><% } else if( 'docinfo' == item.type){ %></p>
 <pre><code>&lt;div class="markdown-docinfo">
 &lt;% _.each(item.content, function(item1, index1){ %>
@@ -425,18 +420,15 @@ return instances &amp;&amp; instances[title];</code></pre>
     &lt;span>&lt;%- item1 %>&lt;/span>
     &lt;% } %>
 &lt;% }); %>
-&lt;/div>
-</code></pre>
+&lt;/div> </code></pre>
 <p><% } else if( 'paragraph' == item.type){ %></p>
 <pre><code>&lt;p class="markdown-paragraph">
 &lt;%= slider.helper.escapeMarkdownText(item.type, item.content) %>
-&lt;/p>
-</code></pre>
+&lt;/p> </code></pre>
 <p><% } else if( 'headline' == item.type){ %></p>
 <pre><code>&lt;h&lt;%= item.level %>>
 &lt;%- item.content %>
-&lt;/h&lt;%= item.level %>>
-</code></pre>
+&lt;/h&lt;%= item.level %>> </code></pre>
 <p><% } else if( 'ul' == item.type){ %></p>
 <pre><code>&lt;ul class="markdown-ul">
 &lt;% _.each(item.content, function(item1, index1){ %>
@@ -444,8 +436,7 @@ return instances &amp;&amp; instances[title];</code></pre>
 &lt;%= slider.helper.escapeMarkdownText(item.type, item1) %>
     &lt;/li>
 &lt;% }); %>
-&lt;/ul>
-</code></pre>
+&lt;/ul> </code></pre>
 <p><% } else if( 'ol' == item.type){ %></p>
 <pre><code>&lt;ol class="markdown-ol">
 &lt;% _.each(item.content, function(item1, index1){ %>
@@ -453,8 +444,7 @@ return instances &amp;&amp; instances[title];</code></pre>
 &lt;%= slider.helper.escapeMarkdownText(item.type, item1) %>
     &lt;/li>
 &lt;% }); %>
-&lt;/ol>
-</code></pre>
+&lt;/ol> </code></pre>
 <p><% } else if( 'image' == item.type){ %></p>
 <pre><code>&lt;p class="markdown-imagewrapper">
     &lt;img src="&lt;%= item.url %>"
@@ -462,8 +452,7 @@ return instances &amp;&amp; instances[title];</code></pre>
         title="&lt;%= item.title %>"
         >
     &lt;p class="markdown-imagecaption">图： &lt;%= item.title %>&lt;/p>
-&lt;/p>
-</code></pre>
+&lt;/p> </code></pre>
 <p><% } %></p>
 <p><% }); %></p>
 <p></div>
@@ -475,13 +464,11 @@ return instances &amp;&amp; instances[title];</code></pre>
 <p>控制器负责将模型和视图关联起来，并处理页面交互功能逻辑。视图控制器树如下设计：</p>
 <pre><code>rocket.pageview.outline
     rocket.subview.outline_content
-        rocket.subview.outline_content_tile
-</code></pre>
+        rocket.subview.outline_content_tile </code></pre>
 <p>对应的页面DOM节点为：</p>
 <pre><code>#outline_page
     #outline_page_content
-        .outline-page-content-tile
-</code></pre>
+        .outline-page-content-tile </code></pre>
 <ul><li>pageview.outline为页面控制器，对应页面框架#outline_page，同时是页面事件中心</li>
 <li>subview.outline_content与subview.outline_content_tile为子视图控制器，分别负责容器#outline_page_content与方块儿.outline-page-content-tile的控制逻辑</li></ul>
 <p>pageview相对简单，主要功能是创建一级子视图控制器。只需实现init方法，完成后代码如下所示：</p>
@@ -530,8 +517,7 @@ rocket.pageview.outline = rocket.pageview.extend({
 
 });
 
-})(Zepto);
-</code></pre>
+})(Zepto); </code></pre>
 <p>subview.outline_content，处理触发数据获取和分发、创建子视图、容器渲染、方块布局等。代码如下所示：</p>
 <pre><code>(function($){
 
@@ -742,8 +728,7 @@ rocket.subview.outline_content = rocket.subview.extend({
 
 });
 
-})(Zepto);
-</code></pre>
+})(Zepto); </code></pre>
 <p>subview.outline_content_tile，处理方块渲染、拖动、用户事件响应等。代码如下所示：</p>
 <pre><code>(function($){
 
@@ -916,9 +901,7 @@ rocket.subview.outline_content_tile = rocket.subview.extend({
 
 });
 
-})(Zepto);
-
-</code></pre>
+})(Zepto);  </code></pre>
 <p>@todo: 如果觉得模块太大了，可以考虑mvc分解，600 ＝ 400 ＋ 200</p>
 <h3> 3.2 slide页面开发（同学B）</h3>
 <p>slide页面采用子页面模型(@link)，利用子页面的管理器，方便地实现子页面地创建、自动回收、切换效果等。同时可以做到hash穿透（子页面特性）。</p>
@@ -1113,8 +1096,7 @@ font:normal 14px/22px normal;</code></pre>
 &lt;% }); %>
 
     &lt;/div>
-&lt;/div>
-</code></pre>
+&lt;/div> </code></pre>
 <p><% }); %></p>
 <p><% } else { %></p>
 <pre><code>&lt;div class="markdown-slidewrapper">
@@ -1122,26 +1104,22 @@ font:normal 14px/22px normal;</code></pre>
         &lt;div class="markdown-slide-navigator-left">prev&lt;/div>
         &lt;div class="markdown-slide-navigator-right">next&lt;/div>
     &lt;/div-->
-    &lt;div class="markdown-slide-main">
-</code></pre>
+    &lt;div class="markdown-slide-main"> </code></pre>
 <p><% _.each(section, function(item, index){ %></p>
 <p><% if( 'code' == item.type ){ %></p>
 <pre><code>&lt;p class="markdown-slide-codeblock">
 &lt;% _.each(item.content, function(item1, index1){ %>
     &lt;span>&lt;%= slider.helper.escapeMarkdownText(item.type, item1) %>&lt;/span>
 &lt;% }); %>
-&lt;/p>
-</code></pre>
+&lt;/p> </code></pre>
 <p><% } else if( 'paragraph' == item.type){ %></p>
 <pre><code>&lt;p class="markdown-slide-paragraph">
 &lt;%= slider.helper.escapeMarkdownText(item.type, item.content) %>
-&lt;/p>
-</code></pre>
+&lt;/p> </code></pre>
 <p><% } else if( 'headline' == item.type){ %></p>
 <pre><code>&lt;h&lt;%= item.level %> &lt;% if(item.level == 2){ %>class="markdown-slide-title"&lt;% } %>>
 &lt;%- item.content %>
-&lt;/h&lt;%= item.level %>>
-</code></pre>
+&lt;/h&lt;%= item.level %>> </code></pre>
 <p><% } else if( 'ul' == item.type){ %></p>
 <pre><code>&lt;ul class="markdown-slide-ul">
 &lt;% _.each(item.content, function(item1, index1){ %>
@@ -1149,8 +1127,7 @@ font:normal 14px/22px normal;</code></pre>
 &lt;%= slider.helper.escapeMarkdownText(item.type, item1) %>
     &lt;/li>
 &lt;% }); %>
-&lt;/ul>
-</code></pre>
+&lt;/ul> </code></pre>
 <p><% } else if( 'ol' == item.type){ %></p>
 <pre><code>&lt;ol class="markdown-slide-ol">
 &lt;% _.each(item.content, function(item1, index1){ %>
@@ -1158,8 +1135,7 @@ font:normal 14px/22px normal;</code></pre>
 &lt;%= slider.helper.escapeMarkdownText(item.type, item1) %>
     &lt;/li>
 &lt;% }); %>
-&lt;/ol>
-</code></pre>
+&lt;/ol> </code></pre>
 <p><% } else if( 'image' == item.type){ %></p>
 <pre><code>&lt;p class="markdown-slide-imagewrapper">
     &lt;img src="&lt;%= item.url %>"
@@ -1167,8 +1143,7 @@ font:normal 14px/22px normal;</code></pre>
         title="&lt;%= item.title %>"
         >
     &lt;p class="markdown-slide-imagecaption">图： &lt;%= item.title %>&lt;/p>
-&lt;/p>
-</code></pre>
+&lt;/p> </code></pre>
 <p><% } %></p>
 <p><% }); %></p>
 <pre><code>&lt;/div></code></pre>
@@ -1181,13 +1156,11 @@ font:normal 14px/22px normal;</code></pre>
 <p>控制器负责将模型和视图关联起来，并处理页面交互功能逻辑。视图控制器树如下设计：</p>
 <pre><code>rocket.pageview.slide.js
     rocket.subview.slide_content.js
-        rocket.subview.slide_pageslider.js
-</code></pre>
+        rocket.subview.slide_pageslider.js </code></pre>
 <p>对应的页面DOM节点为：</p>
 <pre><code>#slide_page
     #slide_page_content
-        .slide-page-content-pageslider
-</code></pre>
+        .slide-page-content-pageslider </code></pre>
 <ul><li>pageview.slide为页面控制器，对应页面框架#slidepage，同时是页面事件中心</li>
 <li>subview.slide_content与subview.slide_pageslider为子视图控制器，分别负责容器#slide_page_content与子页面.slide-page-pageslider的控制逻辑</li></ul>
 <p>pageview相对简单，主要功能是创建一级子视图控制器。只需实现init方法，完成后代码如下所示：</p>
@@ -1217,8 +1190,7 @@ rocket.pageview.slide = rocket.pageview.extend({
 
 });
 
-})(Zepto);
-</code></pre>
+})(Zepto); </code></pre>
 <p>subview.slide_content，处理创建子页面、容器渲染和相关用户事件响应等。代码如下所示：</p>
 <pre><code>(function($){
 
@@ -1322,8 +1294,7 @@ rocket.subview.slide_content = rocket.subview.extend({
 
 });
 
-})(Zepto);
-</code></pre>
+})(Zepto); </code></pre>
 <p>subview.slide_pageslider，处理子页面渲染、相关用户事件响应等。代码如下所示：</p>
 <pre><code>(function($){
 
@@ -1552,9 +1523,7 @@ rocket.subview.slide_pageslider = rocket.subview.extend({
 
 });
 
-})(Zepto);
-
-</code></pre>
+})(Zepto);  </code></pre>
 <p>@note: 先把成品给大家看一下
 @note: MVC分拆说明
 @note: 垃圾回收针对子页面

@@ -63,14 +63,12 @@ make</code></pre>
 <li>部署该文件，比如最简单的：<pre><code>mv webserver.out ~/bin/webserver
 chmod +x ~/bin/webserver</code></pre>
 </li>
-<li>使用，最简单的方式为将任意一个目录变为htdocs：<pre><code>webserver /some/dir 8000
-</code></pre>
+<li>使用，最简单的方式为将任意一个目录变为htdocs：<pre><code>webserver /some/dir 8000 </code></pre>
 </li></ol>
 <h2> 高级使用方式</h2>
 <p>确保本地安装了php-cgi，然后将请求映射到某个php文件，该文件的作用为请求远程内容，并返回。</p>
 <pre><code>export PHP_CGI=/usr/bin/php-cgi
-webserver /some/dir 8900 debug
-</code></pre>
+webserver /some/dir 8900 debug </code></pre>
 <p>这时，请求的结果将会被缓存，当第二次发起同样的请求时，不再需要向远程发送请求。
 所以，只需要在网络好的时候做一次请求，如果有多种数据，也都请求一遍，web server自动将请求内容缓存住，
 那么当你的电脑不能连接网络时，仍然可以使用这些数据。</p>

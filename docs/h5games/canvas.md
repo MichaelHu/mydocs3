@@ -105,3 +105,27 @@
 * width: function(w)
 * height: function(h)
 * css: function()
+
+
+## globalCompositeOperation
+
+该属性设置或返回如何将一个源（新的）图像绘制到目标（已有）的图像上。
+
+可取以下值：
+
+* source-over
+* source-atop
+* source-in
+* source-out
+* destination-over
+* destination-atop
+* destination-in
+* destination-out
+* lighter
+* darker
+* copy
+* xor
+
+对应效果如下：
+
+<img src="./img/canvas-gco.png">

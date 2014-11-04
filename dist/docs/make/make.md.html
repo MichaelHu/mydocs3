@@ -29,8 +29,7 @@
 <blockquote><p> Makefile(s) are text files written in a certain prescribed syntax.  Together with Make Utility, it helps build a software from its source files,  a way to organize code, and its compilation and linking.</p></blockquote><p>大部分情况下，Makefile作用就是告诉<code>make</code>如何<code>编译和链接</code>一个程序。</p>
 <pre><code>target: dependencies 
 [tab] system command(s)
-...
-</code></pre>
+... </code></pre>
 <ul><li>target是一个目标文件，可以是Object File，也可以是可执行文件。还可以是一个标签（Label）。</li>
 <li>dependencies为生成那个target所需要的文件或目标。</li>
 <li>command为make需要执行的命令，可以是任意shell命令。</li></ul>
@@ -54,20 +53,11 @@ display.o : display.c defs.h
     cc -c display.c
 
 clean :
-     rm edit main.o kbd.o command.o display.o
-
-</code></pre>
+     rm edit main.o kbd.o command.o display.o  </code></pre>
 <p>编译并链接，生成可执行文件<code>edit</code>，命令行中输入：</p>
-<pre><code>$ make
-</code></pre>
+<pre><code>$ make </code></pre>
 <p>删除可执行文件以及中间目标文件，命令行中输入：</p>
-<pre><code>$ make clean
-
-
-
-
-
-</code></pre>
+<pre><code>$ make clean      </code></pre>
 <h3> examples 2</h3>
 <p>长行使用<code>反斜线</code>作为行分隔符。</p>
 <p>Makefile: </p>
@@ -95,19 +85,13 @@ utils.o : utils.c defs.h
 
 clean :
     rm edit main.o kbd.o command.o display.o \
-       insert.o search.o files.o utils.o
-
-
-
-</code></pre>
+       insert.o search.o files.o utils.o    </code></pre>
 <h3> example 3</h3>
 <p>变量使用，可以使Makefile变得更简单。</p>
 <p>定义变量：</p>
-<pre><code>objects = ...
-</code></pre>
+<pre><code>objects = ... </code></pre>
 <p>使用变量：</p>
-<pre><code>$(objects)
-</code></pre>
+<pre><code>$(objects) </code></pre>
 <p>Makefile: </p>
 <pre><code>objects = main.o kbd.o command.o display.o \
           insert.o search.o files.o utils.o
@@ -131,11 +115,7 @@ files.o : files.c defs.h buffer.h command.h
 utils.o : utils.c defs.h
         cc -c utils.c
 clean :
-        rm edit $(objects)
-
-
-
-</code></pre>
+        rm edit $(objects)    </code></pre>
 <h3> example 4</h3>
 <p>在dependencies中省略<code>.c</code>文件</p>
 <p>Makefile: </p>
@@ -154,12 +134,7 @@ files.o : defs.h buffer.h command.h
 utils.o : defs.h
 
 clean :
-        rm edit $(objects)
-
-
-
-
-</code></pre>
+        rm edit $(objects)     </code></pre>
 <h3> example 5</h3>
 <p>以dependencies分组，将相同dependencies的target合并。稍显别扭。</p>
 <p>Makefile: </p>
@@ -174,9 +149,7 @@ kbd.o command.o files.o : command.h
 display.o insert.o search.o files.o : buffer.h
 
 clean :
-        rm edit $(objects)
-
-</code></pre>
+        rm edit $(objects)  </code></pre>
 </body>
 </html>
 <script type="text/javascript">

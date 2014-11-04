@@ -24,43 +24,31 @@
 <pre><code>npm install &lt;name>
 npm install -g &lt;name>
 npm install --save &lt;name>
-npm install --verbose -g &lt;name>
-
-
-</code></pre>
+npm install --verbose -g &lt;name>   </code></pre>
 <h3> npm init</h3>
-<pre><code>npm init [-f|--force|-y|--yes]
-
-</code></pre>
+<pre><code>npm init [-f|--force|-y|--yes]  </code></pre>
 <h3> npm rm</h3>
 <pre><code>npm rm &lt;name>
 npm r &lt;name>
 npm uninstall &lt;name>
-npm un &lt;name>
-
-</code></pre>
+npm un &lt;name>  </code></pre>
 <h3> npm update</h3>
-<pre><code>npm update &lt;name>
-</code></pre>
+<pre><code>npm update &lt;name> </code></pre>
 <h3> npm ls</h3>
 <pre><code>npm ls
-npm ls -g
-</code></pre>
+npm ls -g </code></pre>
 <h3> npm root</h3>
 <pre><code>npm root
-npm root -g
-</code></pre>
+npm root -g </code></pre>
 <h3> npm help</h3>
-<pre><code>npm help
-</code></pre>
+<pre><code>npm help </code></pre>
 <h3> npm config</h3>
 <pre><code>npm config list
 npm config set &lt;key> &lt;value> [-g]
 npm config get &lt;key>
 npm config delete &lt;key>
 npm get &lt;key>
-npm set &lt;key> &lt;value> [--global]
-</code></pre>
+npm set &lt;key> &lt;value> [--global] </code></pre>
 <h3> npm link</h3>
 
 
@@ -99,8 +87,7 @@ npm set &lt;key> &lt;value> [--global]
 "repository" :
   { "type" : "svn"
   , "url" : "http://v8.googlecode.com/svn/trunk/"
-  }
-</code></pre>
+  } </code></pre>
 </li>
 <li>scripts: 定义包生命周期中各个阶段调用执行的脚本命令</li>
 <li>config</li>
@@ -118,8 +105,7 @@ npm set &lt;key> &lt;value> [--global]
   , "lat" : "latest"
   , "dyl" : "~/projects/dyl"
   }
-}
-</code></pre>
+} </code></pre>
 </li>
 <li>devDependencies<pre><code>{ "name": "ethopia-waza",
   "description": "a delightfully fruity coffee varietal",
@@ -131,8 +117,7 @@ npm set &lt;key> &lt;value> [--global]
     "prepublish": "coffee -o lib/ -c src/waza.coffee"
   },
   "main": "lib/waza.js"
-}
-</code></pre>
+} </code></pre>
 </li>
 <li>peerDependencies<pre><code>{
   "name": "tea-latte",
@@ -140,27 +125,21 @@ npm set &lt;key> &lt;value> [--global]
   "peerDependencies": {
     "tea": "2.x"
   }
-}
-</code></pre>
+} </code></pre>
 </li>
 <li>bundledDependencies</li>
 <li>bundleDependencies</li>
 <li>optionalDependencies</li>
-<li>engines<pre><code>{ "engines" : { "node" : ">=0.10.3 &lt;0.12" } }
-</code></pre>
+<li>engines<pre><code>{ "engines" : { "node" : ">=0.10.3 &lt;0.12" } } </code></pre>
 </li>
 <li>engineStrict </li>
-<li>os<pre><code>"os" : [ "darwin", "linux" ]
-</code></pre>
+<li>os<pre><code>"os" : [ "darwin", "linux" ] </code></pre>
 <p>or</p>
-<pre><code>"os" : [ "darwin", "!win32" ]
-</code></pre>
+<pre><code>"os" : [ "darwin", "!win32" ] </code></pre>
 </li>
-<li>cpu<pre><code>"cpu": [ "x64", "ia32" ] 
-</code></pre>
+<li>cpu<pre><code>"cpu": [ "x64", "ia32" ]  </code></pre>
 <p>or</p>
-<pre><code>"cpu": [ "!arm", "!mips" ] 
-</code></pre>
+<pre><code>"cpu": [ "!arm", "!mips" ]  </code></pre>
 </li>
 <li>preferGlobal，如果希望安装成global的，那么当被安装成local的时候，给出warning </li>
 <li>private</li>

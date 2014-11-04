@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="javascript:history.back()">返回</a>
+    </div>
+
+<h1> Vim programing</h1>
+<h2> 一、六种变量类型</h2>
+<h3> 1.1 类型</h3>
+<ul><li>Number</li>
+<li>Float</li>
+<li>String: <pre><code>"ab\txx\"--"
+'x-z''a,c' </code></pre>
+</li>
+<li>Funcref: <pre><code>function("strlen") </code></pre>
+</li>
+<li>List: <pre><code>[1, 2, ['a', 'b']] </code></pre>
+</li>
+<li>Dictionary: <pre><code>{'blue': '#0000ff', 'red': "#ff0000"}  </code></pre>
+</li></ul>
+<p>Number和String之间依据使用场景自动转换。</p>
+
+
+<h3> 1.2 命名空间</h3>
+<blockquote><p> 开始于<code>let</code>， 销毁于<code>unlet</code></p></blockquote><ul><li><code>无前缀</code>，若在函数内，则为函数局部变量；否则就是全局变量</li>
+<li><code>b:</code>前缀，当前缓冲区变量</li>
+<li><code>w:</code>前缀，当前窗口变量</li>
+<li><code>t:</code>前缀，当前tag page变量</li>
+<li><code>g:</code>前缀，全局变量</li>
+<li><code>l:</code>前缀，函数局部变量</li>
+<li><code>s:</code>前缀，vim script局部变量</li>
+<li><code>a:</code>前缀，函数参数，仅在函数内部</li>
+<li><code>v:</code>前缀，全局变量，Vim预定义</li></ul>
+<h2> 二、Command-line</h2>
+<blockquote><p> 注意命令行与函数的区别</p></blockquote><pre><code>:let
+:unlet
+:set
+:echo
+:call </code></pre>
+<h2> 三、Built-in Functions</h2>
+<blockquote><p> 查询内建函数概要用法：<code>:help functions</code><br> 查询内建函数具体用法：<code>:help funcname()</code><br> 查询内建函数列表：<code>:help function-list</code></p></blockquote><p><code>call()函数</code>使用函数引用作为第一个参数，函数引用需要使用<code>function()</code>来获取。</p>
+<p>函数引用必须<code>首字母大写</code>。</p>
+<pre><code>:let F_max = function("max")
+:echo F_max([1, 2, 3, 4]) </code></pre>
+<p>同时还有<code>:call命令</code>，注意这两者的区别：</p>
+<pre><code>:call F_max([1,2,3])
+:let m = call(F_max, [ [10,5] ]) </code></pre>
+<p>注意<code>不是以下写法</code>：</p>
+<pre><code>:let m = call(F_max, [10, 5]) </code></pre>
+<p>第二个参数是一个列表，按序存储参数，call函数的格式：</p>
+<pre><code>call({func}, {arglist} [, {dict} ]) </code></pre>
+<p>比如要计算列表mylist的最大值，应该这么调用：</p>
+<pre><code>:let m = call(F_max, [ mylist ])  
+:let m = call(function('max'), [ mylist ])  </code></pre>
+<ul><li>len</li>
+<li>strlen</li>
+<li>empty</li>
+<li>string</li>
+<li>字符串拼接符：<code>.</code></li></ul>
+<h3> 3.1 列表常用函数</h3>
+<pre><code>:let r = call(funcname, list)
+:if empty(list)
+:let l = len(list)
+:let big = max(list)
+:let small = min(list)
+:let xs = count(list, 'x')
+:let i = index(list, 'x')
+:let lines = getline(1, 10)
+:call append('$', lines)
+:let list = split("a b c")
+:let string = join(list, ', ')
+:let s = string(list)
+:call map(list, '">> " . v:val') </code></pre>
+<p>将列表数据相加的简单办法：</p>
+<pre><code>:exe 'let sum = ' . join(list, ' + ')
+:echo sum </code></pre>
+<h3> 3.2 String manipulation</h3>
+<pre><code>nr2char()               get a character by its ASCII value
+char2nr()               get ASCII value of a character
+str2nr()                convert a string to a Number
+str2float()             convert a string to a Float
+printf()                format a string according to % items
+escape()                escape characters in a string with a '\'
+shellescape()           escape a string for use with a shell command
+fnameescape()           escape a file name for use with a Vim command
+tr()                    translate characters from one set to another
+strtrans()              translate a string to make it printable
+tolower()               turn a string to lowercase
+toupper()               turn a string to uppercase
+match()                 position where a pattern matches in a string
+matchend()              position where a pattern match ends in a string
+matchstr()              match of a pattern in a string
+matchlist()             like matchstr() and also return submatches
+stridx()                first index of a short string in a long string
+strridx()               last index of a short string in a long string
+strlen()                length of a string
+substitute()            substitute a pattern match with a string
+submatch()              get a specific match in a ":substitute"
+strpart()               get part of a string
+expand()                expand special keywords
+iconv()                 convert text from one encoding to another
+byteidx()               byte index of a character in a string
+repeat()                repeat a string multiple times
+eval()                  evaluate a string expression  </code></pre>
+<h3> 3.3 List manipulation:</h3>
+<pre><code>get()                   get an item without error for wrong index     
+len()                   number of items in a List
+empty()                 check if List is empty
+insert()                insert an item somewhere in a List            
+add()                   append an item to a List
+extend()                append a List to a List
+remove()                remove one or more items from a List          
+copy()                  make a shallow copy of a List                 
+deepcopy()              make a full copy of a List
+filter()                remove selected items from a List             
+map()                   change each List item 
+sort()                  sort a List
+reverse()               reverse the order of a List
+split()                 split a String into a List
+join()                  join List items into a String                 
+range()                 return a List with a sequence of numbers
+string()                String representation of a List
+call()                  call a function with List as arguments
+index()                 index of a value in a List
+max()                   maximum value in a List
+min()                   minimum value in a List
+count()                 count number of times a value appears in a List
+repeat()                repeat a List multiple times </code></pre>
+<ol><li>map()<pre><code>:call map(mylist, '"> " . v:val . " &lt;"')   </code></pre>
+</li></ol>
+<h3> 3.4 Dictionary manipulation</h3>
+<pre><code>get()                   get an entry without an error for a wrong key
+len()                   number of entries in a Dictionary
+has_key()               check whether a key appears in a Dictionary
+empty()                 check if Dictionary is empty
+remove()                remove an entry from a Dictionary
+extend()                add entries from one Dictionary to another
+filter()                remove selected entries from a Dictionary
+map()                   change each Dictionary entry
+keys()                  get List of Dictionary keys
+values()                get List of Dictionary values
+items()                 get List of Dictionary key-value pairs
+copy()                  make a shallow copy of a Dictionary
+deepcopy()              make a full copy of a Dictionary
+string()                String representation of a Dictionary
+max()                   maximum value in a Dictionary
+min()                   minimum value in a Dictionary
+count()                 count number of times a value appears   </code></pre>
+<h3> 3.5 Floating point computation</h3>
+<pre><code>float2nr()              convert Float to Number
+abs()                   absolute value (also works for Number)
+round()                 round off
+ceil()                  round up
+floor()                 round down
+trunc()                 remove value after decimal point
+log10()                 logarithm to base 10
+pow()                   value of x to the exponent y
+sqrt()                  square root
+sin()                   sine
+cos()                   cosine
+atan()                  arc tangent    </code></pre>
+<h3> 3.6 Variables</h3>
+<pre><code>type()                  type of a variable
+islocked()              check if a variable is locked
+function()              get a Funcref for a function name
+getbufvar()             get a variable value from a specific buffer
+setbufvar()             set a variable in a specific buffer
+getwinvar()             get a variable from specific window
+gettabvar()             get a variable from specific tab page
+gettabwinvar()          get a variable from specific window &amp; tab page
+setwinvar()             set a variable in a specific window
+settabvar()             set a variable in a specific tab page
+settabwinvar()          set a variable in a specific window &amp; tab page
+garbagecollect()        possibly free memory </code></pre>
+<ol><li>type()<ul><li>Number: 0</li>
+<li>String: 1</li>
+<li>Funcref: 2</li>
+<li>List: 3</li>
+<li>Dictionary: 4</li>
+<li>Float: 5</li></ul>
+</li></ol>
+<h3> 3.7 Cursor and mark position</h3>
+<pre><code>col()                   column number of the cursor or a mark
+virtcol()               screen column of the cursor or a mark
+line()                  line number of the cursor or mark
+wincol()                window column number of the cursor
+winline()               window line number of the cursor
+cursor()                position the cursor at a line/column
+getpos()                get position of cursor, mark, etc.
+setpos()                set position of cursor, mark, etc.
+byte2line()             get line number at a specific byte count
+line2byte()             byte count at a specific line
+diff_filler()           get the number of filler lines above a line </code></pre>
+<ol><li>col()<pre><code>:echo col('.')      " the cursor position
+:echo col('$')      " the end of the cursor line
+:echo col("'x")     " position of mark x </code></pre>
+</li>
+<li>line()<pre><code>:echo line('.')     " the cursor position
+:echo line('$')     " the last line in the current buffer
+:echo line("'x")    " position of mark x
+:echo line('w0')    " first line visible in current window
+:echo line('w$')    " last line visible in current window
+:echo line('v')     " the start of the Visual area in visual mode, and the
+                    " cursor position when not in visual mode   </code></pre>
+</li></ol>
+<h3> 3.8 Working with text in the current buffer</h3>
+<pre><code>getline()               get a line or list of lines from the buffer
+setline()               replace a line in the buffer
+append()                append line or list of lines in the buffer
+indent()                indent of a specific line
+cindent()               indent according to C indenting
+lispindent()            indent according to Lisp indenting 
+nextnonblank()          find next non-blank line
+prevnonblank()          find previous non-blank line
+search()                find a match for a pattern
+searchpos()             find a match for a pattern
+searchpair()            find the other end of a start/skip/end
+searchpairpos()         find the other end of a start/skip/end
+searchdecl()            search for the declaration of a name </code></pre>
+<ol><li>getline({lnum} [, {end}])<pre><code>:echo getline(1)
+:echo getline('.')
+:echo getline('$')
+:echo getline('.', '$')
+:echo getline(1, '$')
+
+
+:let start = line('.')
+" search the last non-blank line
+:let end = search("^$") - 1
+:let lines = getline(start, end) </code></pre>
+</li>
+<li>search({pattern} [, {flags} [, {stopline} [, {timeout}]]])<p>pattern是一个regexp，其开启<code>ignorecase</code>, <code>smartcase</code> and <code>magic</code></p>
+<p>以下代码循环参数列表中列出的所有文件，并做替换更新。</p>
+<pre><code>:let n = 1
+:while n &lt;= argc()      " loop over all files in arglist
+:  exe "argument " . n
+:  " start at the last char in the file and wrap for the
+:  " first search to find match at start of file
+:  normal G$
+:  let flags = "w"
+:  while search("foo", flags) > 0
+:    s/foo/bar/g
+:    let flags = "W"
+:  endwhile
+:  update               " write the file if modified
+:  let n = n + 1
+:endwhile  </code></pre>
+</li></ol>
+<h3> 3.9 System functions and manipulation of files</h3>
+<pre><code>glob()                  expand wildcards
+globpath()              expand wildcards in a number of directories
+findfile()              find a file in a list of directories
+finddir()               find a directory in a list of directories
+resolve()               find out where a shortcut points to
+fnamemodify()           modify a file name
+pathshorten()           shorten directory names in a path
+simplify()              simplify a path without changing its meaning
+executable()            check if an executable program exists
+filereadable()          check if a file can be read
+filewritable()          check if a file can be written to
+getfperm()              get the permissions of a file
+getftype()              get the kind of a file
+isdirectory()           check if a directory exists
+getfsize()              get the size of a file
+getcwd()                get the current working directory
+haslocaldir()           check if current window used |:lcd|
+tempname()              get the name of a temporary file
+mkdir()                 create a new directory
+delete()                delete a file
+rename()                rename a file
+system()                get the result of a shell command
+hostname()              name of the system
+readfile()              read a file into a List of lines
+writefile()             write a List of lines into a file </code></pre>
+<ol><li>glob({expr} [, {flag}])<pre><code>:echo glob("*.md")  </code></pre>
+</li>
+<li>globpath({path}, {expr} [, {flag}])<pre><code>:echo globpath(".", "**/*.md") </code></pre>
+</li>
+<li>system({expr} [, {input}])<pre><code>:echo system("date")  </code></pre>
+</li></ol>
+<h3> 3.10 Date and Time</h3>
+<pre><code>getftime()              get last modification time of a file
+localtime()             get current time in seconds
+strftime()              convert time to a string
+reltime()               get the current or elapsed time accurately
+reltimestr()            convert reltime() result to a string </code></pre>
+<ol><li>getftime({fname})<pre><code>:echo getftime(@%)
+1415090230 </code></pre>
+</li>
+<li>strftime({format} [, {time}])<p>{format}乍一看与shell之date的format一样。</p>
+<pre><code>:let t = getftime(@%)
+:echo strftime("%c", t)
+:echo strftime("%Y%m%d %T", t) </code></pre>
+</li>
+<li>localtime()<pre><code>:echo localtime()   </code></pre>
+</li></ol>
+<h3> 3.11 Buffers, windows and the argument list</h3>
+<pre><code>argc()                  number of entries in the argument list
+argidx()                current position in the argument list
+argv()                  get one entry from the argument list
+bufexists()             check if a buffer exists
+buflisted()             check if a buffer exists and is listed
+bufloaded()             check if a buffer exists and is loaded
+bufname()               get the name of a specific buffer
+bufnr()                 get the buffer number of a specific buffer
+tabpagebuflist()        return List of buffers in a tab page
+tabpagenr()             get the number of a tab page
+tabpagewinnr()          like winnr() for a specified tab page
+winnr()                 get the window number for the current window
+bufwinnr()              get the window number of a specific buffer
+winbufnr()              get the buffer number of a specific window
+getbufline()            get a list of lines from the specified buffer  </code></pre>
+<ol><li>bufname({expr})<pre><code>" name of current buffer
+:bufname("")
+:bufname("%")
+
+" name of the alternate buffer
+:bufname("#")
+
+:bufname(3) </code></pre>
+</li>
+<li>bufnr({expr} [, {create}]))<pre><code>:echo bufnr(bufname("")) </code></pre>
+</li>
+<li>getbufline({expr}, {lnum} [, {end}])<p>{expr}同bufname</p>
+<pre><code>:echo getbufline("", 10, 20)  </code></pre>
+</li></ol>
+<h3> 3.12 Command line</h3>
+<pre><code>getcmdline()            get the current command line
+getcmdpos()             get position of the cursor in the command line
+setcmdpos()             set position of the cursor in the command line
+getcmdtype()            return the current command-line type   </code></pre>
+<ol><li>getcmdline()<p>返回当前的命令行，仅当命令行正在编辑的时候有效。这时需要使用
+<code>c_CTRL-\_e</code> 或者 <code>c_CTRL-R_=</code></p>
+<p>例如：</p>
+<pre><code>:cmap &lt;F7> &lt;C-\>eescape(getcmdline(), ' \')&lt;CR>  </code></pre>
+</li></ol>
+<h3> 3.13 Quickfix and location lists</h3>
+<pre><code>getqflist()             list of quickfix errors
+setqflist()             modify a quickfix list 
+getloclist()            list of location list items
+setloclist()            modify a location list  </code></pre>
+<ol><li>getqflist()<pre><code>:echo getqflist() </code></pre>
+</li>
+<li>getloclist({nr}) <p>returns a list with all the entries in the location list for window {nr}.
+when {nr} is zero the current window is used.</p>
+<pre><code>:echo getloclist(0)    </code></pre>
+</li></ol>
+<h3> 3.14 Syntax and highlighting</h3>
+<pre><code>clearmatches()          clear all matches defined by |matchadd()| and
+                        the |:match| commands
+getmatches()            get all matches defined by |matchadd()| and
+                        the |:match| commands
+hlexists()              check if a highlight group exists
+hlID()                  get ID of a highlight group
+synID()                 get syntax ID at a specific position
+synIDattr()             get a specific attribute of a syntax ID
+synIDtrans()            get translated syntax ID
+diff_hlID()             get highlight ID for diff mode at a position
+matchadd()              define a pattern to highlight (a "match")
+matcharg()              get info about |:match| arguments
+matchdelete()           delete a match defined by |matchadd()| or a
+                        |:match| command
+setmatches()            restore a list of matches saved by
+                        |getmatches()|  </code></pre>
+<p>todo ...</p>
+
+<h3> 3.15 Spelling</h3>
+<pre><code>spellbadword()          locate badly spelled word at or after cursor
+spellsuggest()          return suggested spelling corrections
+soundfold()             return the sound-a-like equivalent of a word </code></pre>
+<p>todo ...</p>
+
+<h3> 3.16 History</h3>
+<pre><code>histadd()               add an item to a history
+histdel()               delete an item from a history
+histget()               get an item from a history
+histnr()                get highest index of a history list </code></pre>
+<p>todo ...</p>
+
+<h3> 3.17 Interactive</h3>
+<pre><code>browse()                put up a file requester
+browsedir()             put up a directory requester
+confirm()               let the user make a choice
+getchar()               get a character from the user
+getcharmod()            get modifiers for the last typed character
+feedkeys()              put characters in the typeahead queue
+input()                 get a line from the user
+inputlist()             let the user pick an entry from a list
+inputsecret()           get a line from the user without showing it
+inputdialog()           get a line from the user in a dialog
+inputsave()             save and clear typeahead
+inputrestore()          restore typeahead </code></pre>
+<p><code>ONLY in</code> some GUI versions</p>
+
+<h3> 3.18 GUI</h3>
+<pre><code>getfontname()           get name of current font being used
+getwinposx()            X position of the GUI Vim window
+getwinposy()            Y position of the GUI Vim window </code></pre>
+<p><code>ONLY in</code> some GUI versions</p>
+
+<h3> 3.19 Vim server</h3>
+<pre><code>serverlist()            return the list of server names
+remote_send()           send command characters to a Vim server
+remote_expr()           evaluate an expression in a Vim server
+server2client()         send a reply to a client of a Vim server
+remote_peek()           check if there is a reply from a Vim server
+remote_read()           read a reply from a Vim server
+foreground()            move the Vim window to the foreground
+remote_foreground()     move the Vim server window to the foreground </code></pre>
+<p>todo ...</p>
+
+
+<h3> 3.20 Window size and position</h3>
+<pre><code>winheight()             get height of a specific window
+winwidth()              get width of a specific window
+winrestcmd()            return command to restore window sizes
+winsaveview()           get view of current window
+winrestview()           restore saved view of current window </code></pre>
+<ol><li>winheight({nr}<pre><code>:echo winheight(0)
+48 </code></pre>
+</li></ol>
+<p>todo ...</p>
+
+<h3> 3.21 Various</h3>
+<pre><code>mode()                  get current editing mode
+visualmode()            last visual mode used
+hasmapto()              check if a mapping exists
+mapcheck()              check if a matching mapping exists 
+maparg()                get rhs of a mapping
+exists()                check if a variable, function, etc. exists
+has()                   check if a feature is supported in Vim
+changenr()              return number of most recent change
+cscope_connection()     check if a cscope connection exists
+did_filetype()          check if a FileType autocommand was used
+eventhandler()          check if invoked by an event handler 
+getpid()                get process ID of Vim 
+
+libcall()               call a function in an external library
+libcallnr()             idem, returning a number
+
+getreg()                get contents of a register
+getregtype()            get type of a register
+setreg()                set contents and type of a register
+
+taglist()               get list of matching tags
+tagfiles()              get a list of tags files
+
+mzeval()                evaluate |MzScheme| expression  </code></pre>
+<ol><li>getpid()<pre><code>:echo getpid()
+874 </code></pre>
+</li>
+<li>has({feature})<p>the result is a Number, which is 1 if the feature {feature} is supported, zero otherwise.</p>
+<p>show feature list, type:</p>
+<pre><code>:help feature-list </code></pre>
+<p><code>example 1:</code></p>
+<pre><code>:if has("multi_byte")
+:    digraph oe 339
+:elseif &amp;encoding == "iso-8859-15"
+:    digraph oe 189
+:endif   </code></pre>
+<p><code>example 2:</code></p>
+<pre><code>:if v:version > 602 || v:version == 602 &amp;&amp; has("patch148") </code></pre>
+<p><code>example 3: setting-guifont</code></p>
+<pre><code>:if has("gui_running")
+:    if has("gui_gtk2")
+:        :set guifont=Luxi\ Mono\ 12
+:    elseif has("x11")
+:        " Also for GTK 1
+:        :set guifont=*-lucidatypewriter-medium-r-normal-*-*-180-*-*-m-*-*
+:    elseif has("gui_win32")
+:        :set guifont=Luxi_Mono:h12:cANSI
+:    endif       
+:endif  </code></pre>
+<p><code>example 4:</code></p>
+<pre><code>:if has("multi_byte_encoding")
+... </code></pre>
+</li>
+<li>mode([expr])<pre><code>:echo mode() 
+n </code></pre>
+<p>mode lists:</p>
+<pre><code>n       Normal
+no      Operator-pending        
+v       Visual by character
+V       Visual by line 
+CTRL-V  Visual blockwise
+s       Select by character
+S       Select by line          
+CTRL-S  Select blockwise 
+i       Insert 
+R       Replace |R|
+Rv      Virtual Replace |gR|
+c       Command-line
+cv      Vim Ex mode |gQ|
+ce      Normal Ex mode |Q|
+r       Hit-enter prompt
+rm      The -- more -- prompt
+r?      A |:confirm| query of some sort
+!       Shell or external command is executing  </code></pre>
+</li>
+<li>exists()<p>the result is a Number, which is non-zero if {expr} is defined, zero otherwise.</p>
+<p>{expr}是字符串，可以包含以下内容：</p>
+<ul><li>&option-name </li>
+<li>+option-name</li>
+<li>$ENVNAME</li>
+<li>*funcname</li>
+<li>varname</li></ul>
+<p>判断函数是否存在：</p>
+<pre><code>:if exists('*funcname') 
+: ...
+:endif </code></pre>
+<p>切换语法高亮功能：</p>
+<pre><code>:if exists("g:syntax_on") | syntax off | else | syntax enable | endif </code></pre>
+<p>将该功能制作成map：</p>
+<pre><code>:nmap &lt;F9> :if exists("g:syntax_on") &lt;Bar>
+        \   syntax off &lt;Bar>
+        \ else &lt;Bar>
+        \   syntax enable &lt;Bar>
+        \ endif &lt;CR>  </code></pre>
+<p>To test for presence of buffer-local autocommands use the |exists()| function</p>
+</li></ol>
+<p>as follows:</p>
+<pre><code>    :if exists("#CursorHold#&lt;buffer=12>") | ... | endif
+    :if exists("#CursorHold#&lt;buffer>") | ... | endif    " for current buffer
+
+    :if exists("did_load_filetypes")
+    :  finish
+    :endif
+
+判断：
+
+    :if exists("g:loaded_typecorr")
+    :   finish
+    :endif
+    :let g:loaded_typecorr = 1    </code></pre>
+<ol><li>taglist({expr}) </li>
+<li>tagfiles()</li></ol>
+<h2> Examples</h2>
+<pre><code>:let index = 0
+:while index &lt; len(mylist)
+:   let item = mylist[index]
+:   call Doit(item)
+:   let index = index + 1
+:endwhile </code></pre>
+<p>or</p>
+<pre><code>:for item in mylist
+:   call Doit(item)
+:endfor </code></pre>
+<p>注意mylist中所有item必须是同一类型的，否则会报错。如果确实存在类型不一致，可以在
+循环体尾部，将item <code>:unlet</code>掉。</p>
+<p>支持<code>变量列表</code>，举例如下：</p>
+<pre><code>:for [lnum, col] in [[1,3], [2,8], [3,0]]
+:   call Doit(lnum, col)
+:endfor  </code></pre>
+<p>变量还支持<code>剩余项</code>，举例如下：</p>
+<pre><code>:for [i, j; rest] in listlist
+:   call Doit(i, j)
+:   if !empty(rest)
+:       echo "remainder: " . string(rest)
+:   endif
+:endfor  </code></pre>
+<h2> Tips</h2>
+
+
+
+
+
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+document.title = $('h1').html() || '技术文档－258i.com';    
+})();
+</script>

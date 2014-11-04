@@ -25,23 +25,17 @@ $ split -b 300m files.tar.gz files.tar.gz.
 $ ls
 files.tar.gz
 files.tar.gz.aa
-files.tar.gz.ab
-</code></pre>
+files.tar.gz.ab </code></pre>
 <p>或者</p>
 <pre><code>$ tar zcf files | split -b 300m - files.tar.gz.
 $ ls
 files.tar.gz.aa
-files.tar.gz.ab
-
-</code></pre>
+files.tar.gz.ab  </code></pre>
 <h2> 解压</h2>
 <pre><code>$ cat files.tar.gz.* > files.tar.gz
-$ tar zxf files.tar.gz
-</code></pre>
+$ tar zxf files.tar.gz </code></pre>
 <p>或者</p>
-<pre><code>$ cat files.tar.gz.* | tar zxf
-
-</code></pre>
+<pre><code>$ cat files.tar.gz.* | tar zxf  </code></pre>
 </body>
 </html>
 <script type="text/javascript">

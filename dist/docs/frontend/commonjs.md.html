@@ -38,8 +38,7 @@
 <ol><li>有一个自由变量<code>require</code></li>
 <li>有一个自由变量<code>exports</code>，在模块执行过程中，可能将其API添加到该对象中<p>使用<code>exports</code>必须是模块导出API的唯一方法</p>
 </li>
-<li>有一个自由变量<code>module</code>，该变量是一个对象，代表模块本身<ul><li>module必须有一个<code>id</code>属性作为该对象的顶级属性，可用于类似调用<pre><code>require (module.id )
-</code></pre>
+<li>有一个自由变量<code>module</code>，该变量是一个对象，代表模块本身<ul><li>module必须有一个<code>id</code>属性作为该对象的顶级属性，可用于类似调用<pre><code>require (module.id ) </code></pre>
 </li>
 <li>module可能有一个<code>uri</code>属性，该属性不能存在于sandbox中</li></ul>
 </li></ol>
@@ -53,22 +52,18 @@
         sum += args[i++];
     }
     return sum;
-};
-</code></pre>
+}; </code></pre>
 </li>
 <li>increment.js<pre><code>var add = require('math').add;
 exports.increment = function(val) {
     return add(val, 1);
-};
-</code></pre>
+}; </code></pre>
 </li>
 <li>program.js<pre><code>var inc = require('increment').increment;
 var a = 1;
 inc(a); // 2
 
-module.id == "program";
-
-</code></pre>
+module.id == "program";  </code></pre>
 </li></ol>
 </body>
 </html>

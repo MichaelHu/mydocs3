@@ -46,8 +46,7 @@ collisionMask</p>
         // And turn on default input controls and touch input (for UI)
         .controls(true).touch()
         // Enable sounds.
-        .enableSound();
-</code></pre>
+        .enableSound(); </code></pre>
 <h3> 模块与组件</h3>
 <blockquote><p> core＋extend modules的方式，分布在以下文件中。包含模块使用Q.include方式。包含组件使用this.add方式。</p></blockquote><pre><code>quintus.js
 quintus_2d.js
@@ -58,8 +57,7 @@ quintus_scenes.js
 quintus_sprites.js
 quintus_tmx.js
 quintus_touch.js
-quintus_ui.js 
-</code></pre>
+quintus_ui.js  </code></pre>
 <p>包含模块列出如下：</p>
 <h4> 1. 2D</h4>
 <p>包含组件：</p>
@@ -130,8 +128,7 @@ draw: function(ctx) {
     ctx.fillRect(-p.cx,-p.cy,p.w,p.h);
   }
 },
-...
-</code></pre>
+... </code></pre>
 </li></ul>
 <p>扩展Sprite类：</p>
 <ul><li>MovingSprite</li></ul>
@@ -250,25 +247,18 @@ draw: function(ctx) {
         progressCallback: function(loaded,total) {
             ...
         }
-    }
-
-</code></pre>
+    }  </code></pre>
 </li>
 <li>Q.compileSheets()</li>
 <li>Q.stageTMX()<p>从.tmx文件中装载场景</p>
-<pre><code>Q.stageTMX("level1.tmx",stage); 
-</code></pre>
+<pre><code>Q.stageTMX("level1.tmx",stage);  </code></pre>
 </li>
 <li>Q.compileSheets()</li>
 <li>Q.input.on()<p>添加<code>Input</code>组件以后，可以调用，比如:</p>
-<pre><code>Q.input.on("down",this,"checkDoor");
-</code></pre>
+<pre><code>Q.input.on("down",this,"checkDoor"); </code></pre>
 </li>
 <li>Q.audio.play()<p>添加<code>Audio</code>组件以后，可以调用，比如:</p>
-<pre><code>Q.audio.play('jump.mp3');
-
-
-</code></pre>
+<pre><code>Q.audio.play('jump.mp3');   </code></pre>
 </li></ul>
 <h2> Crafty</h2>
 <ul><li>官网：<a href="http://craftyjs.com">http://craftyjs.com</a>，不太容易打开</li>
