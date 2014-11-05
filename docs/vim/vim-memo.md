@@ -1,6 +1,24 @@
 # VIM 备忘
 
+2014-11-05 hudamin
+
+> 向编辑神器VIM致敬 
+
+## 拎出来放在前面的内容
+
+1. 编辑模式搞清楚，记住`normal, insert, visual, command-line`
+2. `normal`模式下，`单引号'`用于访问mark，`双引号"`用于设置下一delete，yank或者put操作使用的寄存器
+3. `normal`以及`command-line`模式下，`@`用于访问寄存器
+4. 带`g前缀`的命令原来功能这么强大，比如：`g0, g^, g$, gm, gp, gP, gJ, ge, gE, 
+    ga, g8, g CTRL-G, gk, gj`，
+    你知道几个？会用几个？
+5. `insert`模式下，`CTRL-N`能用于输入补全提示
+    
+
+
 ## Help
+
+记住不同模式的help前缀，`:helpgrep`全文查找功能很赞。
 
     :help
 
@@ -32,6 +50,74 @@
 
     " option
     :help 'x'
+
+
+
+## Left-right motions
+
+常用的：`h, l, 0, ^, t{char}, T{char}`
+
+值得注意的：`g0, g^, g$, gm, |, f{char}, F{char}`
+
+
+    [N]h            left (also: CTRL-H, <BS>, or <Left> key)
+    [N]l            right (also: <Space> or <Right> key)
+    0               to first character in the line (also: <Home> key)
+    ^               to first non-blank character in the line
+    [N]$            to the last character in the line (N-1 lines lower) (also: <End> key)
+    g0              to first character in screen line (differs from "0" when lines wrap)
+    g^              to first non-blank character in screen line (differs from "^" when lines wrap)
+    [N]g$           to last character in screen line (differs from "$" when lines wrap)
+    gm              to middle of the screen line
+    [N}|            to column N (default: 1)
+
+    [N]f{char}      to the Nth occurrence of {char} to the right
+    [N]F{char}      to the Nth occurrence of {char} to the left
+    [N]t{char}      till before the Nth occurrence of {char} to the right
+    [N]T{char}      till before the Nth occurrence of {char} to the left
+    [N];            repeat the last "f", "F", "t", or "T" N times
+    [N],            repeat the last "f", "F", "t", or "T" N times in opposite direction
+
+
+
+
+
+## Up-down motions
+    
+
+常用的：`k, j, gg, G, H, M, L, %`
+
+值得注意的：`-, +, _, G, N%, gk, gj`
+
+    
+    [N]k            up N lines (also: CTRL-P and <Up>)
+    [N]j            down N lines (also: CTRL-J, CTRL-N, <NL>, and <Down>
+    [N]-            up N lines, on the first non-blank character
+    [N]+            down N lines, on the first non-blank character (also: CTRL-M and <CR>)
+
+    [N}_            down N-1 lines, on the first non-blank character
+    [N]G            goto line N (default: last line), on the first non-blank character 
+    [N]gg           goto line N (default: first line), on the first non-blank character
+    N%              goto line N percentage down in the file; N must be given, otherwise 
+                    it is the "%" command
+    [N]gk           up N screen lines (differs from "k" when line wraps) 
+    [N]gj           down N screen lines (differs from "j" when line wraps)
+    
+    H               To line [count] from top of window (default: first line
+                    on the window) on the first non-blank character.
+    M               to Middle line of window, on the first non-blank character.
+    L               to line [count] from bottom of window (default: last line
+                    on the window) on the first non-blank character
+
+    %               Find the next item in this line after or under the cursor and
+                    jump to its match. Items can be: ([{}]), /* */
+
+
+
+
+
+
+
 
 ## External Commands
 
@@ -105,6 +191,105 @@
 
 
 ## Maps
+
+
+
+
+## Deleting text
+
+常用的如：`x, X, d, dd, D, J`
+
+注意，Mac下的`<Del> ＝ Fn_<Del>`
+
+    [N]x                    delete N characters under and after the cursor
+    [N]<Del>                same as "[N]x"
+    [N]X                    delete N characters before the cursor
+    [N]d{motion}            delete the text that is moved over with {motion}
+    {visual}                delete the highlighted text
+    [N]dd                   delete N lines
+    [N]D                    delete to the end of the line (and N-1 more lines)
+    [N]J                    join N-1 lines (delete <EOL>s)
+    {visual}J               join the highlighted lines
+    [N]gJ                   like "J", but without inserting spaces
+    {visual}gJ              like "{visual}J", but without inserting spaces
+    [N]:[range]d [x]        delete [range] lines [into register x]
+
+1. `[N]d$` 等价于 `[N]D`
+2. `[N]:[range]d [x]`可以将删除文件放入指定寄存器
+
+
+
+
+
+## Copying and moving text
+
+有用的如：`"{char}, :reg, :reg {arg}, y, p, P`
+
+    "{char}         use register {char} for the next delete, yank, or put
+    :reg            show the contents of all registers
+    :reg {arg}      show the contents of registers mentioned in {arg}
+    [N]y{motion}
+    {visual}y
+    [N]yy
+    [N]Y
+    [N]p
+    [N]P
+    [N]]p
+    [N][p
+    [N]gp
+    [N]gP
+
+
+1. :reg {arg}
+
+        " 查看寄存器", 0, 1, 2的内容
+        :reg "012
+
+2. 使用好寄存器解决剪切内容丢失问题：
+        
+        " show retisters 
+        :reg
+        " use register 3 for the next delete, yank or put 
+        "3
+        " put 
+        p
+         
+
+
+## Text Motions
+
+常用的如`w, W, b, B, ), (, }, {`
+
+    [N]w            N words forward
+    [N]W            N blank-separated WORDs forward
+    [N]e            forward to the end of the Nth word
+    [N]E            forward to the end of the Nth blank-separated WORD
+
+    [N]b            N words backward
+    [N]B            N blank-separated WORDs backward
+    [N]ge           backward to the end of the Nth word
+    [N]gE           backward to the end of the Nth blank-separated WORD
+
+    [N])            N sentences forward
+    [N](            N sentences backward
+    [N]}            N paragraphs forward
+    [N]{            N paragraphs backward
+    [N]]]           N sections forward, at start of section
+    [N][[           N sections backward, at start of section
+    [N]][           N sections forward, at end of section
+    [N][]           N sections backward, at end of section
+    [N][(
+    [N][{
+    [N][m
+    [N][M
+    [N]])
+    [N]]}
+    [N]]m
+    [N]]M
+    [N][#
+    [N]]#
+    [N][*           N times back to start of comment "/*"
+    [N]]*           N times forward to end of comment "*/"
 
 
 
@@ -258,6 +443,9 @@
     :echo @-
     :echo @.
     :echo @=
+
+
+
     
 
 ## Marks

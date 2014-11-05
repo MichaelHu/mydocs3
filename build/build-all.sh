@@ -13,6 +13,10 @@ cp -r $DOCDIR/* __tmp/docs
 pushd __tmp/docs
 
 find . -type f \
+    -name "*.md.preview.html" \
+    -exec rm -f {} \;
+
+find . -type f \
     -regex "\..*\.md" \
     -exec sh $ROOT/build/build-markdown.sh {} \;
 
