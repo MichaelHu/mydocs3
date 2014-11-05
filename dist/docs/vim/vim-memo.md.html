@@ -19,7 +19,17 @@
     </div>
 
 <h1> VIM 备忘</h1>
+<p>2014-11-05 hudamin</p>
+<blockquote><p> 向编辑神器VIM致敬 </p></blockquote><h2> 拎出来放在前面的内容</h2>
+<ol><li>编辑模式搞清楚，记住<code>normal, insert, visual, command-line</code></li>
+<li><code>normal</code>模式下，<code>单引号'</code>用于访问mark，<code>双引号"</code>用于设置下一delete，yank或者put操作使用的寄存器</li>
+<li><code>normal</code>以及<code>command-line</code>模式下，<code>@</code>用于访问寄存器</li>
+<li>带<code>g前缀</code>的命令原来功能这么强大，比如：<code>g0, g^, g$, gm, gp, gP, gJ, ge, gE, 
+    ga, g8, g CTRL-G, gk, gj</code>，<p>你知道几个？会用几个？</p>
+</li>
+<li><code>insert</code>模式下，<code>CTRL-N</code>能用于输入补全提示</li></ol>
 <h2> Help</h2>
+<p>记住不同模式的help前缀，<code>:helpgrep</code>全文查找功能很赞。</p>
 <pre><code>:help
 
 :helpgrep {word}
@@ -49,7 +59,54 @@ CTRL-T or CTRL-O
 :help -x
 
 " option
-:help 'x' </code></pre>
+:help 'x'   </code></pre>
+<h2> Left-right motions</h2>
+<p>常用的：<code>h, l, 0, ^, t{char}, T{char}</code></p>
+<p>值得注意的：<code>g0, g^, g$, gm, |, f{char}, F{char}</code></p>
+
+<pre><code>[N]h            left (also: CTRL-H, &lt;BS>, or &lt;Left> key)
+[N]l            right (also: &lt;Space> or &lt;Right> key)
+0               to first character in the line (also: &lt;Home> key)
+^               to first non-blank character in the line
+[N]$            to the last character in the line (N-1 lines lower) (also: &lt;End> key)
+g0              to first character in screen line (differs from "0" when lines wrap)
+g^              to first non-blank character in screen line (differs from "^" when lines wrap)
+[N]g$           to last character in screen line (differs from "$" when lines wrap)
+gm              to middle of the screen line
+[N}|            to column N (default: 1)
+
+[N]f{char}      to the Nth occurrence of {char} to the right
+[N]F{char}      to the Nth occurrence of {char} to the left
+[N]t{char}      till before the Nth occurrence of {char} to the right
+[N]T{char}      till before the Nth occurrence of {char} to the left
+[N];            repeat the last "f", "F", "t", or "T" N times
+[N],            repeat the last "f", "F", "t", or "T" N times in opposite direction     </code></pre>
+<h2> Up-down motions</h2>
+
+<p>常用的：<code>k, j, gg, G, H, M, L, %</code></p>
+<p>值得注意的：<code>-, +, _, G, N%, gk, gj</code></p>
+
+<pre><code>[N]k            up N lines (also: CTRL-P and &lt;Up>)
+[N]j            down N lines (also: CTRL-J, CTRL-N, &lt;NL>, and &lt;Down>
+[N]-            up N lines, on the first non-blank character
+[N]+            down N lines, on the first non-blank character (also: CTRL-M and &lt;CR>)
+
+[N}_            down N-1 lines, on the first non-blank character
+[N]G            goto line N (default: last line), on the first non-blank character 
+[N]gg           goto line N (default: first line), on the first non-blank character
+N%              goto line N percentage down in the file; N must be given, otherwise 
+                it is the "%" command
+[N]gk           up N screen lines (differs from "k" when line wraps) 
+[N]gj           down N screen lines (differs from "j" when line wraps)
+
+H               To line [count] from top of window (default: first line
+                on the window) on the first non-blank character.
+M               to Middle line of window, on the first non-blank character.
+L               to line [count] from bottom of window (default: last line
+                on the window) on the first non-blank character
+
+%               Find the next item in this line after or under the cursor and
+                jump to its match. Items can be: ([{}]), /* */        </code></pre>
 <h2> External Commands</h2>
 <pre><code>:sh[ell]
 :!{command}
@@ -109,6 +166,80 @@ v_o   </code></pre>
 
 
 
+<h2> Deleting text</h2>
+<p>常用的如：<code>x, X, d, dd, D, J</code></p>
+<p>注意，Mac下的<code>&lt;Del> ＝ Fn_&lt;Del></code></p>
+<pre><code>[N]x                    delete N characters under and after the cursor
+[N]&lt;Del>                same as "[N]x"
+[N]X                    delete N characters before the cursor
+[N]d{motion}            delete the text that is moved over with {motion}
+{visual}                delete the highlighted text
+[N]dd                   delete N lines
+[N]D                    delete to the end of the line (and N-1 more lines)
+[N]J                    join N-1 lines (delete &lt;EOL>s)
+{visual}J               join the highlighted lines
+[N]gJ                   like "J", but without inserting spaces
+{visual}gJ              like "{visual}J", but without inserting spaces
+[N]:[range]d [x]        delete [range] lines [into register x] </code></pre>
+<ol><li><code>[N]d$</code> 等价于 <code>[N]D</code></li>
+<li><code>[N]:[range]d [x]</code>可以将删除文件放入指定寄存器</li></ol>
+<h2> Copying and moving text</h2>
+<p>有用的如：<code>"{char}, :reg, :reg {arg}, y, p, P</code></p>
+<pre><code>"{char}         use register {char} for the next delete, yank, or put
+:reg            show the contents of all registers
+:reg {arg}      show the contents of registers mentioned in {arg}
+[N]y{motion}
+{visual}y
+[N]yy
+[N]Y
+[N]p
+[N]P
+[N]]p
+[N][p
+[N]gp
+[N]gP  </code></pre>
+<ol><li>:reg {arg}<pre><code>" 查看寄存器", 0, 1, 2的内容
+:reg "012 </code></pre>
+</li>
+<li>使用好寄存器解决剪切内容丢失问题：<pre><code>" show retisters 
+:reg
+" use register 3 for the next delete, yank or put 
+"3
+" put 
+p   </code></pre>
+</li></ol>
+<h2> Text Motions</h2>
+<p>常用的如<code>w, W, b, B, ), (, }, {</code></p>
+<pre><code>[N]w            N words forward
+[N]W            N blank-separated WORDs forward
+[N]e            forward to the end of the Nth word
+[N]E            forward to the end of the Nth blank-separated WORD
+
+[N]b            N words backward
+[N]B            N blank-separated WORDs backward
+[N]ge           backward to the end of the Nth word
+[N]gE           backward to the end of the Nth blank-separated WORD
+
+[N])            N sentences forward
+[N](            N sentences backward
+[N]}            N paragraphs forward
+[N]{            N paragraphs backward
+[N]]]           N sections forward, at start of section
+[N][[           N sections backward, at start of section
+[N]][           N sections forward, at end of section
+[N][]           N sections backward, at end of section
+[N][(
+[N][{
+[N][m
+[N][M
+[N]])
+[N]]}
+[N]]m
+[N]]M
+[N][#
+[N]]#
+[N][*           N times back to start of comment "/*"
+[N]]*           N times forward to end of comment "*/"    </code></pre>
 <h2> Recording</h2>
 <p>记录操作序列至寄存器，在需要的时候直接输入<code>@{register}</code>，操作序列会执行一遍。</p>
 <pre><code>" start recording into register 'a' 
@@ -221,7 +352,7 @@ q
 
 :echo @-
 :echo @.
-:echo @=  </code></pre>
+:echo @=     </code></pre>
 <h2> Marks</h2>
 <blockquote><p> <code>a-z</code> for buffer markers, <code>A-Z0-9</code> for file markers</p></blockquote><h3> Normal mode commands</h3>
 <p><code>Set marker</code></p>
