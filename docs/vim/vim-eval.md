@@ -675,8 +675,8 @@ todo ...
 
     {expr}是字符串，可以包含以下内容：
 
-    * &option-name 
-    * +option-name
+    * &option-name ：判断option是否存在 
+    * +option-name ：判断option是否生效
     * $ENVNAME
     * *funcname
     * varname

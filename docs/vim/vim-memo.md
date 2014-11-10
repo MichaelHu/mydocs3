@@ -192,6 +192,8 @@
 
 ## Maps
 
+    :map <F8> <Esc>:g/^#/<CR>
+
 
 
 
@@ -576,6 +578,20 @@
     :au filetypedetect BufEnter
     :au filetypedetect BufNewFile
 
+
+
+
+## User-defined commands
+
+    :com[mand]
+    :com[mand] {cmd}
+    :com[mand][!] [{attr}...] {cmd} {rep}
+    :delc[ommand] {cmd}
+    :comc[lear]
+
+1. :W命令
+
+        command W w !sudo tee % > /dev/null
 
 
 
