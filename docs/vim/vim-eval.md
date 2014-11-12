@@ -362,6 +362,14 @@ Number和String之间依据使用场景自动转换。
 
         :echo system("date")
 
+4. readfile({fname} [, {binary} [, {max}]])
+
+    return value: `List`
+
+        :for line in readfile(fname, '', 10)
+        :   if line =~ 'Date' | echo line | endif
+        :endfor
+
 
 ### 3.10 Date and Time
 

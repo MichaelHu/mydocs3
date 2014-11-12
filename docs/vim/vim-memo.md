@@ -227,19 +227,24 @@
 
 有用的如：`"{char}, :reg, :reg {arg}, y, p, P`
 
-    "{char}         use register {char} for the next delete, yank, or put
-    :reg            show the contents of all registers
-    :reg {arg}      show the contents of registers mentioned in {arg}
-    [N]y{motion}
-    {visual}y
-    [N]yy
-    [N]Y
-    [N]p
-    [N]P
-    [N]]p
-    [N][p
-    [N]gp
-    [N]gP
+    "{char}             use register {char} ( {a-zA-Z0-9.%#:-"} ) for the next delete, yank, or put
+                        (use uppercase character to append with delete and yank)
+                        ({.%#:} only work with put)
+    :reg                show the contents of all registers
+    :reg {arg}          show the contents of registers mentioned in {arg}
+    :di[splay]          same as :registers
+    :di {arg}           same as :reg {arg}
+    [N]["x]y{motion}
+    {visual}["x]y
+    :[range]y[ank] [x]
+    [N]["x]yy
+    [N]["x]Y
+    [N]["x]p
+    [N]["x]P
+    [N]["x]]p
+    [N]["x][p
+    [N]["x]gp
+    [N]["x]gP
 
 
 1. :reg {arg}
@@ -256,6 +261,9 @@
         " put 
         p
          
+3. 将指定行保存到寄存器中：
+
+        :10,15y a
 
 
 ## Text Motions
@@ -424,7 +432,21 @@
     
 
 
-## Special Register
+## Registers
+
+9种类型的寄存器，共48个：
+
+1. 未命名寄存器`""`
+2. 10个数字寄存器`"0` - `"9`
+3. 小删除寄存器`"-`
+4. 26个命名寄存器`"a` - `"z`或者`"A` - `"Z`
+5. 4个只读寄存器`":`, `".`, `"%`, `"#`
+6. 表达式寄存器`"=`
+7. selection and drop 寄存器`"*`, `"+`, `"~`
+8. 黑洞寄存器`"_`
+9. 上一检索模式寄存器`"/`
+
+特殊寄存器举例如下：
 
     " the unnamed register, containing the text of the last delete or yank
     :echo @"

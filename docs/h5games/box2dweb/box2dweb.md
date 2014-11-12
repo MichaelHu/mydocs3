@@ -55,8 +55,12 @@ Box2D库独立于渲染，只做计算。
 * pulley - 滑轮
 * contraption - 新发明，奇妙的装置
 * AABBs (axis-aligned bounding boxes)
+* tolerance - 限度，公差，容忍
 
-## 模块
+## 概览
+
+
+### 1. 模块
 
 三个模块:
 
@@ -70,6 +74,163 @@ Box2D库独立于渲染，只做计算。
 `Module Hierarchy：`
 
 <img src="./img/module-hierarchy.png">
+
+
+
+### 2. Units
+
+1. 长度使用`MKS (meters-kilogram-second) units`
+
+    Box2D适宜与`0.1m - 10m`大小的形状，也就是说对象如小至肥皂盒大到公共汽车都可以。
+    静态形状则可以达到`50m`也没问题。
+
+    作为物理引擎，我们可能趋向于用像素作为单位，不幸的是，这样会导致很差的模拟效果，一个200像素的对象，
+    对于Box2D来说就像一个45层的摩天大楼。
+
+    所以，`不要使用像素单位`，m可以通过scale系数转换成像素单位，通过像素单位放置装置于物体上。
+
+2. 角度使用`弧度`，而不是度数。
+
+
+
+### 3. 工厂和定义
+
+为C++实现方案提供更快速的内存管理。
+
+比如创建b2Body或者b2Joint，你需要调用b2World的工厂方法。
+
+`创建函数：`
+
+    b2Body* b2World::CreateBody(const b2BodyDef *def)
+    b2Joint* b2World::CreateJoint(const b2JointDef *def)
+
+`销毁函数：`
+
+    void b2World::DestroyBody(b2Body* body)
+    void b2World::DestroyJoint(b2Joint* joint)
+
+而装备(shapes)必须以body为父节点，所以b2Body则提供了创建和销毁的工厂方法：
+
+    b2Fixture* b2Body::CreateFixture(const b2FixtureDef *def)
+    void b2Body::DestroyFixture(b2Fixture *fixture)
+
+还有一个快捷方式创建装备的：
+
+    b2Fixture *b2Body::CreateFixture(const b2Shape *shape, float32 density)
+
+
+
+
+### 4. Hello Box2D
+
+`1. 创建world对象`
+
+总是从创建b2World对象开始。world对象是管理内存、对象和模拟的物理桩。
+
+创建前，`先定义重力向量`：
+
+    b2Vec2 gravity(0.0f, -10.0f);
+
+然后创建world对象：
+
+    b2World world(gravity);
+
+这时，我们拥有了一个物理世界，可以开始添加东西进去了。
+
+
+`2. 创建地面物体`
+
+创建物体的四步骤：
+
+1. 定义物体，使用位置position，阻尼damping等
+2. 使用world对象创建物体
+3. 定义装备，使用形状、摩擦、密度等
+4. 在物体上创建装备
+
+创建过程如下：
+
+    b2BodyDef groundBodyDef;
+    groundBodyDef.position.Set(0.0f, -10.0f);
+
+    b2Body *groundBody = world.CreateBody(groundBodyDef);
+
+    b2PolygonShape groundBox;
+    groundBox.SetAsBox(50.0f, 10.0f);
+
+    groundBody->CreateFixture(&groundBox, 0.0f);
+
+当使用装备将形状添加到物体上以后，形状的坐标就属于物体的内部坐标，物体怎么动，形状就
+跟着怎么动，形状在物体上不能移动，这也是Box2D所定义的`刚体引擎`所要求的。
+
+
+`3. 创建动态物体`
+
+有了地面物体以后，我们可以用同样的方法创建动态物体。创建的主要不同之处在于：
+
+除了`尺寸dimension`之外，我们还必须提供物体的`质量mass`属性。
+
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position.Set(0.0f, 4.0f);
+    b2Body *body = world.CreateBody(&bodyDef);
+
+> 如果希望物体随着力而移动，我们必须将物体的类型设置成`b2_dynamicBody`
+
+接下来我们创建并添加一个多边形到物体上：
+
+    b2PolygonShape dynamicBox;
+    dynamitBox.SetAsBox(1.0f, 1.0f);
+
+默认密度是0，我们设置为1：
+
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &dynamicBox;
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.3f;
+
+> 动态物体必须拥有`至少一个密度不为0`的装备，否则该物体的行为将会很诡异。
+
+    body->CreateFixture(&fixtrueDef);
+
+
+`4. 模拟世界`
+
+创建好世界，地面物体和动态物体后，我们就可以开始模拟世界了，让牛顿定律产生作用。
+
+真正开始模拟前，我们还需要考虑几个问题：
+
+1. 时间步长( time step )或者帧率: `至少60Hz， 或者1/60s`
+
+        float32 timeStep = 1.0f / 60.0f;
+
+    每帧的计算由integrator来进行。
+
+2. 除了综合器，还有一个`限制求解器（Constraint Solver）`，包含两个阶段：速度阶段和位置阶段。
+    
+    `速度阶段保证物体移动正确，位置阶段避免物体重叠和关节脱落`。
+
+    每个阶段都有自己的循环次数，速度阶段8次，位置阶段3次。也可以自行调整。
+
+        int32 velocityIterations = 6;
+        int32 positionIterations = 2;
+
+    时间步长与循环次数完全没有关系。
+
+考虑完时间步长与两个求解器循环次数外，就可以开始模拟循环了。
+
+模拟循环可以和游戏循环结合起来，只需在游戏循环里面调用`b2World::Step`
+
+简单的循环如下实现：
+
+
+    for( int32 i=0; i<60; i++){
+        world.Step(timeStep, velocityIterations, positionIterations);
+        b2Vec position = body->GetPosition();
+        float32 angle = body->GetAngle();
+        printf("%4.2f %4.2f %4.2f\n", position.x, position.y, angle);
+    }
+
+
 
 
 ## 一、Collision Module
