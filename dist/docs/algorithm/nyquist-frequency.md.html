@@ -43,6 +43,7 @@ $(document).on('keydown', function(e){
         || BACKSPACE == e.which
         || LEFT == e.keyCode
         || LEFT == e.which){
+        e.preventDefault();
         history.back();
     }
 });
