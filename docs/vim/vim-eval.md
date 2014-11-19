@@ -1,5 +1,7 @@
 # Vim programing
 
+hudamin - 转载请注明出处
+
 ## 一、六种变量类型
 
 ### 1.1 类型

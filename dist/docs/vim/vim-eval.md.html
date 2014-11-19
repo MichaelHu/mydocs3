@@ -19,6 +19,7 @@
     </div>
 
 <h1> Vim programing</h1>
+<p>hudamin - 转载请注明出处</p>
 <h2> 一、六种变量类型</h2>
 <h3> 1.1 类型</h3>
 <ul><li>Number</li>
@@ -290,7 +291,12 @@ writefile()             write a List of lines into a file </code></pre>
 </li>
 <li>globpath({path}, {expr} [, {flag}])<pre><code>:echo globpath(".", "**/*.md") </code></pre>
 </li>
-<li>system({expr} [, {input}])<pre><code>:echo system("date")  </code></pre>
+<li>system({expr} [, {input}])<pre><code>:echo system("date") </code></pre>
+</li>
+<li>readfile({fname} [, {binary} [, {max}]])<p>return value: <code>List</code></p>
+<pre><code>:for line in readfile(fname, '', 10)
+:   if line =~ 'Date' | echo line | endif
+:endfor  </code></pre>
 </li></ol>
 <h3> 3.10 Date and Time</h3>
 <pre><code>getftime()              get last modification time of a file
@@ -513,8 +519,8 @@ r?      A |:confirm| query of some sort
 </li>
 <li>exists()<p>the result is a Number, which is non-zero if {expr} is defined, zero otherwise.</p>
 <p>{expr}是字符串，可以包含以下内容：</p>
-<ul><li>&option-name </li>
-<li>+option-name</li>
+<ul><li>&option-name ：判断option是否存在 </li>
+<li>+option-name ：判断option是否生效</li>
 <li>$ENVNAME</li>
 <li>*funcname</li>
 <li>varname</li></ul>
@@ -576,6 +582,8 @@ as follows:</p>
 
 
 
+
+    <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>
 </html>
 <script type="text/javascript">
@@ -583,3 +591,4 @@ as follows:</p>
 document.title = $('h1').html() || '技术文档－258i.com';    
 })();
 </script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>

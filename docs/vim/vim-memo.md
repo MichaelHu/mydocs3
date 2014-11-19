@@ -1,6 +1,6 @@
 # VIM 备忘
 
-2014-11-05 hudamin
+2014-11-05 hudamin - 转载请注明出处
 
 > 向编辑神器VIM致敬 
 
@@ -375,6 +375,8 @@
 ## Ranges
 
 > 查看输入：`help :range`
+
+常用的如：`*, '<, '>`
 
     " from line 4 till match with ":sign" after the cursor line
     :4,/:sign/

@@ -59,8 +59,11 @@
 <li>axis - 轴，轴线</li>
 <li>pulley - 滑轮</li>
 <li>contraption - 新发明，奇妙的装置</li>
-<li>AABBs (axis-aligned bounding boxes)</li></ul>
-<h2> 模块</h2>
+<li>AABBs (axis-aligned bounding boxes)</li>
+<li>tolerance - 限度，公差，容忍</li></ul>
+<h2> 概览</h2>
+
+<h3> 1. 模块</h3>
 <p>三个模块:</p>
 <ul><li>Common<ul><li>code for allocation, math and settings</li></ul>
 </li>
@@ -71,6 +74,95 @@
 <p><code>Module Hierarchy：</code></p>
 <p><img src="./img/module-hierarchy.png"></p>
 
+
+<h3> 2. Units</h3>
+<ol><li>长度使用<code>MKS (meters-kilogram-second) units</code><p>Box2D适宜与<code>0.1m - 10m</code>大小的形状，也就是说对象如小至肥皂盒大到公共汽车都可以。
+静态形状则可以达到<code>50m</code>也没问题。</p>
+<p>作为物理引擎，我们可能趋向于用像素作为单位，不幸的是，这样会导致很差的模拟效果，一个200像素的对象，
+对于Box2D来说就像一个45层的摩天大楼。</p>
+<p>所以，<code>不要使用像素单位</code>，m可以通过scale系数转换成像素单位，通过像素单位放置装置于物体上。</p>
+</li>
+<li>角度使用<code>弧度</code>，而不是度数。</li></ol>
+<h3> 3. 工厂和定义</h3>
+<p>为C++实现方案提供更快速的内存管理。</p>
+<p>比如创建b2Body或者b2Joint，你需要调用b2World的工厂方法。</p>
+<p><code>创建函数：</code></p>
+<pre><code>b2Body* b2World::CreateBody(const b2BodyDef *def)
+b2Joint* b2World::CreateJoint(const b2JointDef *def) </code></pre>
+<p><code>销毁函数：</code></p>
+<pre><code>void b2World::DestroyBody(b2Body* body)
+void b2World::DestroyJoint(b2Joint* joint) </code></pre>
+<p>而装备(shapes)必须以body为父节点，所以b2Body则提供了创建和销毁的工厂方法：</p>
+<pre><code>b2Fixture* b2Body::CreateFixture(const b2FixtureDef *def)
+void b2Body::DestroyFixture(b2Fixture *fixture) </code></pre>
+<p>还有一个快捷方式创建装备的：</p>
+<pre><code>b2Fixture *b2Body::CreateFixture(const b2Shape *shape, float32 density)    </code></pre>
+<h3> 4. Hello Box2D</h3>
+<p><code>1. 创建world对象</code></p>
+<p>总是从创建b2World对象开始。world对象是管理内存、对象和模拟的物理桩。</p>
+<p>创建前，<code>先定义重力向量</code>：</p>
+<pre><code>b2Vec2 gravity(0.0f, -10.0f); </code></pre>
+<p>然后创建world对象：</p>
+<pre><code>b2World world(gravity); </code></pre>
+<p>这时，我们拥有了一个物理世界，可以开始添加东西进去了。</p>
+
+<p><code>2. 创建地面物体</code></p>
+<p>创建物体的四步骤：</p>
+<ol><li>定义物体，使用位置position，阻尼damping等</li>
+<li>使用world对象创建物体</li>
+<li>定义装备，使用形状、摩擦、密度等</li>
+<li>在物体上创建装备</li></ol>
+<p>创建过程如下：</p>
+<pre><code>b2BodyDef groundBodyDef;
+groundBodyDef.position.Set(0.0f, -10.0f);
+
+b2Body *groundBody = world.CreateBody(groundBodyDef);
+
+b2PolygonShape groundBox;
+groundBox.SetAsBox(50.0f, 10.0f);
+
+groundBody->CreateFixture(&amp;groundBox, 0.0f); </code></pre>
+<p>当使用装备将形状添加到物体上以后，形状的坐标就属于物体的内部坐标，物体怎么动，形状就
+跟着怎么动，形状在物体上不能移动，这也是Box2D所定义的<code>刚体引擎</code>所要求的。</p>
+
+<p><code>3. 创建动态物体</code></p>
+<p>有了地面物体以后，我们可以用同样的方法创建动态物体。创建的主要不同之处在于：</p>
+<p>除了<code>尺寸dimension</code>之外，我们还必须提供物体的<code>质量mass</code>属性。</p>
+<pre><code>b2BodyDef bodyDef;
+bodyDef.type = b2_dynamicBody;
+bodyDef.position.Set(0.0f, 4.0f);
+b2Body *body = world.CreateBody(&amp;bodyDef); </code></pre>
+<blockquote><p> 如果希望物体随着力而移动，我们必须将物体的类型设置成<code>b2_dynamicBody</code></p></blockquote><p>接下来我们创建并添加一个多边形到物体上：</p>
+<pre><code>b2PolygonShape dynamicBox;
+dynamitBox.SetAsBox(1.0f, 1.0f); </code></pre>
+<p>默认密度是0，我们设置为1：</p>
+<pre><code>b2FixtureDef fixtureDef;
+fixtureDef.shape = &amp;dynamicBox;
+fixtureDef.density = 1.0f;
+fixtureDef.friction = 0.3f; </code></pre>
+<blockquote><p> 动态物体必须拥有<code>至少一个密度不为0</code>的装备，否则该物体的行为将会很诡异。</p></blockquote><pre><code>body->CreateFixture(&amp;fixtrueDef);  </code></pre>
+<p><code>4. 模拟世界</code></p>
+<p>创建好世界，地面物体和动态物体后，我们就可以开始模拟世界了，让牛顿定律产生作用。</p>
+<p>真正开始模拟前，我们还需要考虑几个问题：</p>
+<ol><li>时间步长( time step )或者帧率: <code>至少60Hz， 或者1/60s</code><pre><code>float32 timeStep = 1.0f / 60.0f; </code></pre>
+<p>每帧的计算由integrator来进行。</p>
+</li>
+<li>除了综合器，还有一个<code>限制求解器（Constraint Solver）</code>，包含两个阶段：速度阶段和位置阶段。<p><code>速度阶段保证物体移动正确，位置阶段避免物体重叠和关节脱落</code>。</p>
+<p>每个阶段都有自己的循环次数，速度阶段8次，位置阶段3次。也可以自行调整。</p>
+<pre><code>int32 velocityIterations = 6;
+int32 positionIterations = 2; </code></pre>
+<p>时间步长与循环次数完全没有关系。</p>
+</li></ol>
+<p>考虑完时间步长与两个求解器循环次数外，就可以开始模拟循环了。</p>
+<p>模拟循环可以和游戏循环结合起来，只需在游戏循环里面调用<code>b2World::Step</code></p>
+<p>简单的循环如下实现：</p>
+
+<pre><code>for( int32 i=0; i&lt;60; i++){
+    world.Step(timeStep, velocityIterations, positionIterations);
+    b2Vec position = body->GetPosition();
+    float32 angle = body->GetAngle();
+    printf("%4.2f %4.2f %4.2f\n", position.x, position.y, angle);
+}    </code></pre>
 <h2> 一、Collision Module</h2>
 
 <h3> b2Shape</h3>
@@ -597,6 +689,8 @@ b2Vec2 point2(3.0f, 1.0f);
 myWorld->RayCast(&amp;callback, point1, point2);  </code></pre>
 <blockquote><p> You may also return of fraction of -1 to filter the fixture. Then the ray  cast will proceed as if the fixture does not exist.</p></blockquote>
 <p>todo</p>
+
+    <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>
 </html>
 <script type="text/javascript">
@@ -604,3 +698,4 @@ myWorld->RayCast(&amp;callback, point1, point2);  </code></pre>
 document.title = $('h1').html() || '技术文档－258i.com';    
 })();
 </script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>

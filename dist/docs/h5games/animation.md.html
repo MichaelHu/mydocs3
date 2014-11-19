@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="javascript:history.back()">返回</a>
+    </div>
+
+<h1> 动画</h1>
+
+<h2> 相关概念 </h2>
+<ul><li><code>频率(Hz)</code>，刷新率，60Hz，每秒刷新60次，每次间隔1/60 s</li>
+<li><code>动画持续时间(s)</code>，完成动画所需要的时间，比如2s</li>
+<li><code>每次刷新完成的百分比</code> <pre><code>1 / ( 动画时长(s) * 频率 ) </code></pre>
+</li>
+<li><code>脉冲器</code>，根据当前动画百分比进行绘制行为<p>脉冲器实现举例如下：</p>
+<pre><code>function impulse(percent, duration, render, callback){
+
+    var steps = duration / 1000 * freq;
+
+    if(percent &lt; 1){
+        if(1 - percent &lt;= 1 / steps){
+            render(1);
+            callback &amp;&amp; callback();
+            return;
+        }
+
+        render(percent); 
+        setTimeout(function(){
+            impulse(percent + 1 / steps, duration, render, callback)
+        }, 1000 / freq);
+    } 
+}   </code></pre>
+</li></ul>
+
+    <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+document.title = $('h1').html() || '技术文档－258i.com';    
+})();
+</script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>

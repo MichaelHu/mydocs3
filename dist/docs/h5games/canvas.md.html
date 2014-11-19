@@ -21,47 +21,72 @@
 <h1> Canvas</h1>
 <blockquote><p> The HTML5 <code>&lt;canvas></code> tag is used to draw graphics, on the fly, via scripting (usually JavaScript). </p></blockquote><p><code>W3C Schools Ref:</code> http://www.w3schools.com/tags/ref_canvas.asp</p>
 <h2> Small Canvas Lib below</h2>
-<ul><li>getContext: function()</li>
-<li>getTextWidth: function(text)</li>
-<li>getWidth: function()</li>
-<li>getHeight: function()</li>
-<li>strokeStyle: function(s)</li>
-<li>fillStyle: function(s)</li>
-<li>lineCap: function(lc)</li>
-<li>lineJoin: function(lj)</li>
-<li>lineWidth: function(lw)</li>
-<li>rect: function(x, y, width, height)</li>
-<li>fillRect: function(x, y, width, height)</li>
-<li>strokeRect: function(x, y, width, height)</li>
-<li>clearRect: function(x, y, width, height)</li>
-<li>fill: function()</li>
-<li>stroke: function()</li>
-<li>beginPath: function()</li>
-<li>closePath: function()</li>
-<li>moveTo: function(x, y)</li>
-<li>lineTo: function(x, y)</li>
-<li>clip: function()</li>
-<li>arc: function(x, y, r, sAngle, eAngle, counterclickwise)<p><code>圆弧绘制</code></p>
+<ul><li><code>getContext</code>: function()</li>
+<li><code>getTextWidth</code>: function(text)</li>
+<li><code>getWidth</code>: function()</li>
+<li><code>getHeight</code>: function()</li>
+<li><code>strokeStyle</code>: function(s)<p>属性，设置或者返回用于笔触的颜色、渐变或模式。</p>
+<pre><code>context.strokeStyle=color|gradient|pattern; </code></pre>
+<p><code>color:</code></p>
+<pre><code>var c=document.getElementById("myCanvas");
+var ctx=c.getContext("2d");
+ctx.strokeStyle="#0000ff";
+ctx.strokeRect(20,20,150,100);  </code></pre>
+<p><code>gradient:</code></p>
+<pre><code>var c=document.getElementById("myCanvas");
+var ctx=c.getContext("2d");
+
+var gradient=ctx.createLinearGradient(0,0,170,0);
+gradient.addColorStop("0","magenta");
+gradient.addColorStop("0.5","blue");
+gradient.addColorStop("1.0","red");
+
+// 用渐变进行填充
+ctx.strokeStyle=gradient;
+ctx.lineWidth=5;
+ctx.strokeRect(20,20,150,100);   </code></pre>
+</li>
+<li><code>fillStyle</code>: function(s)<p>设置或返回用于填充绘画的颜色、渐变或模式。</p>
+<pre><code>context.fillStyle = color | gradient | pattern; </code></pre>
+<ol><li><code>color</code>：css颜色值，默认#000000</li>
+<li><code>gradient</code>: 渐变对象（linear or radial） </li>
+<li><code>pattern</code>: pattern对象 </li></ol>
+</li>
+<li><code>lineCap</code>: function(lc)</li>
+<li><code>lineJoin</code>: function(lj)</li>
+<li><code>lineWidth</code>: function(lw)</li>
+<li><code>rect</code>: function(x, y, width, height)</li>
+<li><code>fillRect</code>: function(x, y, width, height)</li>
+<li><code>strokeRect</code>: function(x, y, width, height)</li>
+<li><code>clearRect</code>: function(x, y, width, height)</li>
+<li><code>fill</code>: function()</li>
+<li><code>stroke</code>: function()</li>
+<li><code>beginPath</code>: function()</li>
+<li><code>closePath</code>: function()</li>
+<li><code>moveTo</code>: function(x, y)</li>
+<li><code>lineTo</code>: function(x, y)</li>
+<li><code>clip</code>: function()</li>
+<li><code>arc</code>: function(x, y, r, sAngle, eAngle, counterclickwise)<p><code>圆弧绘制</code></p>
 <p><img src="./img/img_arc.gif"></p>
 <ul><li>Center: arc(<code>100, 75</code>, 50, 0*Math.PI, 1.5*Math.PI)</li>
 <li>Radius: arc(100, 75, <code>50</code>, 0*Math.PI, 1.5*Math.PI)</li>
 <li>Start angle:  arc(100, 75, 50, <code>0*Math.PI</code>, 1.5*Math.PI)</li>
 <li>End angle:  arc(100, 75, 50, 0*Math.PI, <code>1.5*Math.PI</code>) </li></ul>
 </li>
-<li>quadraticCurveTo: function(cpx, cpy, x, y)<p><code>1个控制点</code></p>
+<li><code>quadraticCurveTo</code>: function(cpx, cpy, x, y)<p><code>1个控制点</code></p>
 <p><img src="./img/img_quadraticcurve.gif"></p>
 <ul><li>Start point: moveTo(<code>20, 20</code>) </li>
 <li>Control point: quadraticCurveTo(<code>20, 100</code>, 200, 20)</li>
 <li>End point: quadraticCurveTo(20, 100, <code>200, 20</code>)</li></ul>
 </li>
-<li>bezierCurveTo: function(cp1x, cp1y, cp2x, cp2y, x, y)<p><code>2个控制点</code></p>
+<li><code>bezierCurveTo</code>: function(cp1x, cp1y, cp2x, cp2y, x, y)<p><code>2个控制点</code></p>
 <p><img src="./img/img_beziercurve.gif"></p>
 <ul><li>Start point: moveTo(<code>20, 20</code>) </li>
 <li>Control point 1: bezierCurveTo(<code>20, 100</code>, 200, 100, 200, 20)</li>
 <li>Control point 2: bezierCurveTo(20, 100, <code>200, 100</code>, 200, 20)</li>
 <li>End point: bezierCurveTo(20, 100, 200, 100, <code>200, 20</code>)</li></ul>
 </li>
-<li>arcTo: function(x1, y1, x2, y2, r)<p><code>两条切线间绘制圆弧：</code>
+<li><code>arcTo</code>: function(x1, y1, x2, y2, r)<p><code>两条切线间绘制圆弧：</code>
 The arcTo() method creates an arc/curve between two tangents(切线) on the canvas.</p>
 <p>以<code style="color:#ff0; background:#000">(200, 100)</code>为控制点，
 从<code style="color:#0f0; background:#000">(100, 100)</code>
@@ -74,24 +99,137 @@ The arcTo() method creates an arc/curve between two tangents(切线) on the canv
 <li>半径太大，圆弧不过目标点 <p><img src="./img/arcto_radius-150.png"></p>
 </li></ol>
 </li>
-<li>isPointInPath: function(x, y)</li>
-<li>scale: function(scaleWidth, scaleHeight)</li>
-<li>rotate: function(angle)</li>
-<li>translate: function(x, y)</li>
-<li>transform: function(a, b, c, d, e, f)</li>
-<li>setTransform: function(a, b, c, d, e, f)</li>
-<li>font: function(cssFont)</li>
-<li>textAlign: function(align)</li>
-<li>textBaseline: function(align)</li>
-<li>fillText: function(text, x, y, maxWidth)</li>
-<li>strokeText: function(text, x, y, maxWidth)</li>
-<li>globalAlpha: function(alpha)</li>
-<li>globalCompositeOperation: function(gco)</li>
-<li>save: function()</li>
-<li>restore: function()</li>
-<li>width: function(w)</li>
-<li>height: function(h)</li>
-<li>css: function()</li></ul>
+<li><code>isPointInPath</code>: function(x, y)<p>如果指定点位于当前路径中，返回true，否则false：</p>
+<pre><code>var c=document.getElementById("myCanvas");
+var ctx=c.getContext("2d");
+ctx.rect(20,20,150,100);
+if (ctx.isPointInPath(20,50)){
+    ctx.stroke();
+} </code></pre>
+</li>
+<li><code>scale</code>: function(scaleWidth, scaleHeight)<p><img src="./img/canvas_scale.png"></p>
+<p><code>例子：</code>绘制一个矩形；放大到 200%，再次绘制矩形；放大到 200%，
+然后再次绘制矩形；放大到 200%，再次绘制矩形：</p>
+<pre><code>var c=document.getElementById("myCanvas");
+var ctx=c.getContext("2d");
+ctx.strokeRect(5,5,25,15);
+ctx.scale(2,2);
+ctx.strokeRect(5,5,25,15);
+ctx.scale(2,2);
+ctx.strokeRect(5,5,25,15);
+ctx.scale(2,2);
+ctx.strokeRect(5,5,25,15); </code></pre>
+</li>
+<li><code>rotate</code>: function(angle)<p><img src="./img/canvas_rotate.png"></p>
+<p>旋转坐标系，比如旋转20度：</p>
+<pre><code>var c=document.getElementById("myCanvas");
+var ctx=c.getContext("2d");
+ctx.rotate(20*Math.PI/180);
+ctx.fillRect(50,20,100,50);         </code></pre>
+</li>
+<li><code>translate</code>: function(tx, ty)<p>平移</p>
+</li>
+<li><code>transform</code>: function(a, b, c, d, e, f)<p><img src="./img/canvas_transform.png"></p>
+<p>变换矩阵会叠加，不同于<code>setTransform</code>的重置</p>
+<p>参考： http://sumsung753.blog.163.com/blog/static/146364501201281311522752/</p>
+<p>http://shawphy.com/2011/01/transformation-matrix-in-front-end.html</p>
+<p><code>平移</code>：</p>
+<pre><code>matrix(1, 0, 0, 1, tx, ty)
+
+x' = 1x + 0y + tx = x + tx
+y' = 0x + 1y + ty = x + ty  </code></pre>
+<p>等价于：</p>
+<pre><code>translate(tx, ty)  </code></pre>
+<p><code>缩放</code>：</p>
+<pre><code>matrix(sx, 0, 0, sy, 0, 0)
+
+x' = sx * x + 0 * y + 0 = sx * x
+y' = 0 * x + sy * y + 0 = sy * y </code></pre>
+<p>等价于：</p>
+<pre><code>scale(sx, sy)  </code></pre>
+<p><code>旋转</code>：</p>
+<pre><code>matrix(cosθ, sinθ, -sinθ, cosθ, 0, 0)
+
+x' = x * cosθ - y * sinθ + 0 = x * cosθ - y * sinθ
+y' = x * sinθ + y * cosθ + 0 = x * sinθ + y * cosθ </code></pre>
+<p>等价于：</p>
+<pre><code>rotate(θ)  </code></pre>
+<p><code>切变</code>：</p>
+<pre><code>matrix(1, tan(θy), tan(θx), 1, 0, 0)
+
+x' = x + y * tan(θx)
+y' = x * tan(θy) + y </code></pre>
+<p>θx和θy分别代表往x轴正方向和往y轴正方向倾斜的角度，两者是相互独立的。</p>
+<p>比如：</p>
+<pre><code>matrix(1, 0, tan(45deg), 1, 0, 0)
+
+x' = x + y * tan(45deg)
+y' = y </code></pre>
+<p>表示向x轴倾斜45度。</p>
+<p><code>镜像反射</code>：todo</p>
+</li>
+<li><code>setTransform</code>: function(a, b, c, d, e, f)<p>重置并重新创建新的变换矩阵</p>
+</li>
+<li><code>font</code>: function(cssFont)<p><code>CSS Font:</code> </p>
+<pre><code>font-style font-variant font-weight font-size/line-height font-family </code></pre>
+<p><code>举例：</code></p>
+<pre><code>italic small-caps bold 12px arial,sans-serif
+normal normal normal   </code></pre>
+<p><code>关于font-variant：</code></p>
+<p>设置小型大写字母的字体显示文本，所有小写字母会被转换为答谢，但是相比其余字幕，尺寸更小。</p>
+<pre><code>normal | small-caps | inherit </code></pre>
+<p><code>关于font-style：</code></p>
+<pre><code>normal | italic | oblique | inherit </code></pre>
+<p><code>关于font-weight：</code></p>
+<pre><code>normal | bold | bolder | lighter | inherit | 100 - 900
+
+400 = normal
+700 = bold  </code></pre>
+</li>
+<li><code>textAlign</code>: function(align)</li>
+<li><code>textBaseline</code>: function(align)</li>
+<li><code>fillText</code>: function(text, x, y, maxWidth)</li>
+<li><code>strokeText</code>: function(text, x, y, maxWidth)</li>
+<li><code>globalAlpha</code>: function(alpha)</li>
+<li><code>globalCompositeOperation</code>: function(gco)</li>
+<li><code>save</code>: function()</li>
+<li><code>restore</code>: function()</li>
+<li><code>width</code>: function(w)</li>
+<li><code>height</code>: function(h)</li>
+<li><code>css</code>: function()</li></ul>
+<h2> createPattern</h2>
+<p><code>语法：</code></p>
+<pre><code>context.createPattern(image,"repeat|repeat-x|repeat-y|no-repeat"); </code></pre>
+<p><code>例子：</code></p>
+<pre><code>var c=document.getElementById("myCanvas");
+var ctx=c.getContext("2d");
+var img=document.getElementById("lamp");
+var pat=ctx.createPattern(img,"repeat");
+ctx.rect(0,0,150,100);
+ctx.fillStyle=pat;
+ctx.fill();  </code></pre>
+<h2> createLinearGradient</h2>
+<p><code>语法：</code></p>
+<pre><code>context.createLinearGradient(x0,y0,x1,y1); </code></pre>
+<p>x0,y0为渐变起始点，x1,y1为渐变结束点。</p>
+<p><code>例子：</code></p>
+<pre><code>var c=document.getElementById("myCanvas");
+var ctx=c.getContext("2d");
+var my_gradient=ctx.createLinearGradient(0,0,0,170);
+my_gradient.addColorStop(0,"black");
+my_gradient.addColorStop(1,"white");
+ctx.fillStyle=my_gradient;
+ctx.fillRect(20,20,150,100);   </code></pre>
+<h2> createRadialGradient </h2>
+<p><code>语法：</code></p>
+<pre><code>context.createRadialGradient(x0,y0,r0,x1,y1,r1);     </code></pre>
+<h2> drawImage</h2>
+<ol><li>画布上定位图像<pre><code>context.drawImage(img,x,y); </code></pre>
+</li>
+<li>画布上定位图像，并规定图像的宽度和高度<pre><code>context.drawImage(img,x,y,width,height); </code></pre>
+</li>
+<li>剪切图像，并在画布上定位被剪切的部分<pre><code>context.drawImage(img,sx,sy,swidth,sheight,x,y,width,height);   </code></pre>
+</li></ol>
 <h2> globalCompositeOperation</h2>
 <p>该属性设置或返回如何将一个源（新的）图像绘制到目标（已有）的图像上。</p>
 <p>可取以下值：</p>
@@ -109,6 +247,8 @@ The arcTo() method creates an arc/curve between two tangents(切线) on the canv
 <li>xor</li></ul>
 <p>对应效果如下：</p>
 <p><img src="./img/canvas-gco.png"></p>
+
+    <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>
 </html>
 <script type="text/javascript">
@@ -116,3 +256,4 @@ The arcTo() method creates an arc/curve between two tangents(切线) on the canv
 document.title = $('h1').html() || '技术文档－258i.com';    
 })();
 </script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>

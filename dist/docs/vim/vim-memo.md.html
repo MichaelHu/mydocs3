@@ -19,7 +19,7 @@
     </div>
 
 <h1> VIM 备忘</h1>
-<p>2014-11-05 hudamin</p>
+<p>2014-11-05 hudamin - 转载请注明出处</p>
 <blockquote><p> 向编辑神器VIM致敬 </p></blockquote><h2> 拎出来放在前面的内容</h2>
 <ol><li>编辑模式搞清楚，记住<code>normal, insert, visual, command-line</code></li>
 <li><code>normal</code>模式下，<code>单引号'</code>用于访问mark，<code>双引号"</code>用于设置下一delete，yank或者put操作使用的寄存器</li>
@@ -163,9 +163,7 @@ v_o   </code></pre>
 :fix[del]
 :opt[ions]    </code></pre>
 <h2> Maps</h2>
-
-
-
+<pre><code>:map &lt;F8> &lt;Esc>:g/^#/&lt;CR>    </code></pre>
 <h2> Deleting text</h2>
 <p>常用的如：<code>x, X, d, dd, D, J</code></p>
 <p>注意，Mac下的<code>&lt;Del> ＝ Fn_&lt;Del></code></p>
@@ -185,19 +183,24 @@ v_o   </code></pre>
 <li><code>[N]:[range]d [x]</code>可以将删除文件放入指定寄存器</li></ol>
 <h2> Copying and moving text</h2>
 <p>有用的如：<code>"{char}, :reg, :reg {arg}, y, p, P</code></p>
-<pre><code>"{char}         use register {char} for the next delete, yank, or put
-:reg            show the contents of all registers
-:reg {arg}      show the contents of registers mentioned in {arg}
-[N]y{motion}
-{visual}y
-[N]yy
-[N]Y
-[N]p
-[N]P
-[N]]p
-[N][p
-[N]gp
-[N]gP  </code></pre>
+<pre><code>"{char}             use register {char} ( {a-zA-Z0-9.%#:-"} ) for the next delete, yank, or put
+                    (use uppercase character to append with delete and yank)
+                    ({.%#:} only work with put)
+:reg                show the contents of all registers
+:reg {arg}          show the contents of registers mentioned in {arg}
+:di[splay]          same as :registers
+:di {arg}           same as :reg {arg}
+[N]["x]y{motion}
+{visual}["x]y
+:[range]y[ank] [x]
+[N]["x]yy
+[N]["x]Y
+[N]["x]p
+[N]["x]P
+[N]["x]]p
+[N]["x][p
+[N]["x]gp
+[N]["x]gP  </code></pre>
 <ol><li>:reg {arg}<pre><code>" 查看寄存器", 0, 1, 2的内容
 :reg "012 </code></pre>
 </li>
@@ -206,7 +209,9 @@ v_o   </code></pre>
 " use register 3 for the next delete, yank or put 
 "3
 " put 
-p   </code></pre>
+p </code></pre>
+</li>
+<li>将指定行保存到寄存器中：<pre><code>:10,15y a  </code></pre>
 </li></ol>
 <h2> Text Motions</h2>
 <p>常用的如<code>w, W, b, B, ), (, }, {</code></p>
@@ -291,7 +296,8 @@ q
 :write !
 :[range]!   </code></pre>
 <h2> Ranges</h2>
-<blockquote><p> 查看输入：<code>help :range</code></p></blockquote><pre><code>" from line 4 till match with ":sign" after the cursor line
+<blockquote><p> 查看输入：<code>help :range</code></p></blockquote><p>常用的如：<code>*, '&lt;, '></code></p>
+<pre><code>" from line 4 till match with ":sign" after the cursor line
 :4,/:sign/
 
 " from line 4 till match with ":sign" after line 5 
@@ -333,7 +339,18 @@ q
 <p>更换当前目录下的c文件的文件格式：</p>
 <pre><code>:args *.c
 :argdo set ff=unix | update     </code></pre>
-<h2> Special Register</h2>
+<h2> Registers</h2>
+<p>9种类型的寄存器，共48个：</p>
+<ol><li>未命名寄存器<code>""</code></li>
+<li>10个数字寄存器<code>"0</code> - <code>"9</code></li>
+<li>小删除寄存器<code>"-</code></li>
+<li>26个命名寄存器<code>"a</code> - <code>"z</code>或者<code>"A</code> - <code>"Z</code></li>
+<li>4个只读寄存器<code>":</code>, <code>".</code>, <code>"%</code>, <code>"#</code></li>
+<li>表达式寄存器<code>"=</code></li>
+<li>selection and drop 寄存器<code>"*</code>, <code>"+</code>, <code>"~</code></li>
+<li>黑洞寄存器<code>"_</code></li>
+<li>上一检索模式寄存器<code>"/</code></li></ol>
+<p>特殊寄存器举例如下：</p>
 <pre><code>" the unnamed register, containing the text of the last delete or yank
 :echo @"
 
@@ -447,6 +464,14 @@ g CTRL-G
 <pre><code>:au filetypedetect
 :au filetypedetect BufEnter
 :au filetypedetect BufNewFile    </code></pre>
+<h2> User-defined commands</h2>
+<pre><code>:com[mand]
+:com[mand] {cmd}
+:com[mand][!] [{attr}...] {cmd} {rep}
+:delc[ommand] {cmd}
+:comc[lear] </code></pre>
+<ol><li>:W命令<pre><code>command W w !sudo tee % > /dev/null   </code></pre>
+</li></ol>
 <h2> Various Commands</h2>
 <p>有用的如：<code>CTRL-L, CTRL-G, ga, g8, :ve</code></p>
 <pre><code>CTRL-L                      clear and redraw the screen
@@ -465,6 +490,8 @@ Q
 :browse {command}
 CTRL-Break
 :mode N   </code></pre>
+
+    <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>
 </html>
 <script type="text/javascript">
@@ -472,3 +499,4 @@ CTRL-Break
 document.title = $('h1').html() || '技术文档－258i.com';    
 })();
 </script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>

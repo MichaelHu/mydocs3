@@ -17,3 +17,49 @@
     color: #fff;
     font: normal normal 14px/26px Sans-Serif;
 }
+
+
+
+
+
+
+
+
+
+#navbar-auto {
+    border-top: 2px solid #9c6; 
+    border-radius: 4px;
+}
+
+#navbar-auto ul{
+    list-style: none;
+}
+
+
+.nav {
+    padding-left: 10px;
+}
+
+#navbar-auto li{
+    height: 20px; 
+}
+
+#navbar-auto li.active a {
+    color: #f66;
+}
+
+
+#navbar-auto a,
+#navbar-auto a:link,
+#navbar-auto a:hover,
+#navbar-auto a:active,
+#navbar-auto a:visited {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    text-decoration: none;
+    color: #999;
+    font: normal normal normal 12px/20px Arial;
+}

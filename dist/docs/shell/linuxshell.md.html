@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="javascript:history.back()">返回</a>
+    </div>
+
+<h1> Linux Shell Memo</h1>
+<p>hudamin 2014</p>
+
+<h2> IO重定向</h2>
+<ul><li>1 - stdout</li>
+<li>2 - stderr</li>
+<li>& - stdout and stderr</li>
+<li><code>>, >>, &lt;, &lt;&lt;, &amp;n, &amp;-, /dev/null</code></li></ul>
+<h3> Examples</h3>
+<blockquote><p> <code>>, >>, &lt;, &lt;&lt;</code>与文件描述符（不是文件名）相连接的时候，注意<code>不能有空格</code>！文件描述符 若在右侧，需要添加<code>&amp;</code>前缀。</p></blockquote><p>描述符的重设置<code>作用范围</code>，使用<code>exec</code>是全局的，其他都是临时的。</p>
+<ol><li>basics<pre><code>1> filename
+1>> filename
+2> filename
+2>> filename
+&amp;> filename
+&amp;>> filename
+&amp;> /dev/null
+
+# stderr 指向 stdout 
+2>&amp;1
+
+0&lt; filename
+&lt; filename
+
+grep search-word &lt; filename </code></pre>
+</li>
+<li><code>[j]&lt;>filename</code> <p>打开文件用于读写，并将该文件赋值给描述符j。如果filename不存在，则创建之。
+如果没有提供描述符j，则默认使用0，即stdin</p>
+<pre><code>echo 1234567890 > File
+exec 3&lt;>File
+read -n 4&lt;&amp;3
+echo -n . >&amp;3
+exec 3>&amp;-
+cat File </code></pre>
+</li>
+<li>关闭文件描述符<pre><code># 关闭输入描述符n
+n&lt;&amp;-
+
+# 关闭stdin
+0&lt;&amp;-
+&lt;&amp;-
+
+# 关闭输出描述符n
+n>&amp;-
+
+# 关闭stdout
+1>&amp;-
+>&amp;-
+
+cat /etc/passwd >&amp;-
+cat: standard output: Bad file descriptor </code></pre>
+</li>
+<li>多个IO重定向可合并<pre><code>command &lt; input-file > output-file
+command1 | command2 | command3 > output-file  </code></pre>
+</li>
+<li>多路输出流可重定向至一个文件<pre><code>ls -yz >> command.log 2>&amp;1 </code></pre>
+<p>以上代码可将错误选项信息也输出到command.log。但是，以下代码却不可以，<code>注意区别</code>：</p>
+<pre><code>ls -yz 2>&amp;1 >> command.log </code></pre>
+<p><code>如果是管道，又是另一种情况了：</code></p>
+<pre><code>ls -yz | less 2>&amp;1 </code></pre>
+<p>以上代码less中不会接收到错误信息，以下代码可以：</p>
+<pre><code>ls -yz 2>&amp;1 | less  </code></pre>
+<p>具体原因暂不明白，注意区别。</p>
+</li>
+<li><code>Child processes inherit open file descriptors. This is why pipes work</code>. To prevent <p>an fd from being inherited, close it.</p>
+<p>以下代码<code>只重定向</code>stderr到pipe：</p>
+<pre><code>exec 3>&amp;1
+ls -l 2>&amp;1 >&amp;3 3>&amp;- | grep bad 3>&amp;-
+exec 3>&amp;-  </code></pre>
+</li></ol>
+
+    <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+document.title = $('h1').html() || '技术文档－258i.com';    
+})();
+</script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>

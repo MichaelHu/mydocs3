@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="javascript:history.back()">返回</a>
+    </div>
+
+<h1> CSS3 Memo</h1>
+<h2> JSAPI: RequestAnimationFrame</h2>
+
+<p>最早由Mozilla的Reboert O'Callahan提出，他指出CSS transitions和animation的优势
+在于浏览器知道哪些动画将会发生，所以得到正确的间隔来刷新UI。</p>
+<p>而javascript动画，浏览器不知道动画正在发生，通过setTimeout或者setInterval定期操作DOM样式，js的这种
+操作只是将渲染要求添加到UI渲染队列，并不保证立即渲染，UI渲染线程可能因为其他绘制
+或者用户操作，延迟渲染，甚至出现丢帧现象。</p>
+<p>他的解决方案是创建一个<code>mozRequestAnimationFrame()</code>方法，接收
+一个参数，该参数是一个屏幕重绘前调用的函数，该函数对DOM进行样式改变，这些改变用在下一次重绘中。</p>
+<pre><code>window.requestAnimFrame = ( function(){  
+    return  window.requestAnimationFrame
+        || window.webkitRequestAnimationFrame 
+        || window.mozRequestAnimationFrame    
+        || window.oRequestAnimationFrame      
+        || window.msRequestAnimationFrame     
+        || function( callback ){  
+            window.setTimeout(callback, 1000/60);  
+        };  
+})();  
+
+// 调用  
+function animationLoop(elem){  
+    requestAnimFrame(animationLoop);  
+    // logic  
+    performStyleUpdate();
+}  </code></pre>
+<p>只执行一次，再次动画需要自行再调用requestAnimFrame。</p>
+<p>这种方式，让浏览器知道Javascript何时尝试动画，利于浏览器做更多的优化处理。</p>
+<p>优化在于，这种方式对于一个帧中对DOM的所有操作，只进行一次Layout和Paint，如果发生动画
+的元素被隐藏了，那么就不再Paint。</p>
+
+
+
+
+
+<h2> DOM-Event: transitionend </h2>
+<blockquote><p> 该事件在transition完成时触发。如果在完成前，transition被移除，该事件不会被触发。</p></blockquote><p><code>事件特性：</code></p>
+<ul><li>bubbles: yes</li>
+<li>cancelable: yes</li>
+<li>context info: propertyName, elapsedTime, pseudoElement</li></ul>
+<p><code>跨浏览器事件名：</code></p>
+<ul><li>Android and Safari: <code>webkitTransitionEnd</code></li>
+<li>Opera: 10 as <code>oTransitionEnd</code>, 12 as <code>otransitionend</code>, 12.10 as <code>transitionend</code></li></ul>
+<p><code>Example:</code></p>
+<pre><code>function showMessage() {
+    alert('Transition has finished');
+}
+
+var element = document.getElementById("slidingMenu");
+element.addEventListener("transitionend", showMessage, false);    </code></pre>
+<h2> DOM-Event: Animation Events</h2>
+<blockquote><p> 关键帧动画开始、结束，以及每次循环结束都会触发DOM事件。</p></blockquote><ol><li><code>animationstart</code><p>属性： animationName, pseudoElement</p>
+</li>
+<li><code>animationend</code><p>属性： animationName, elapsedTime, pseudoElement</p>
+</li>
+<li><code>animationiteration</code><p>属性： animationName, elapsedTime, pseudoElement</p>
+</li></ol>
+<p><code>事件特性：</code></p>
+<ul><li>bubbles: yes</li>
+<li>cancelable: no</li></ul>
+<p><code>跨浏览器事件名：</code></p>
+<ol><li><code>webkitAnimationEnd</code></li>
+<li><code>oAnimationEnd</code></li>
+<li><code>MSAnimationEnd</code></li></ol>
+
+    <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+document.title = $('h1').html() || '技术文档－258i.com';    
+})();
+</script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>

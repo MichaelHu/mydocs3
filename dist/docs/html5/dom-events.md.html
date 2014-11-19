@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="javascript:history.back()">返回</a>
+    </div>
+
+<h1> DOM Events</h1>
+<p>hudamin</p>
+<h2> DOM Event Level</h2>
+<p><code>Level 0</code>，浏览器直接将事件派发给target，如果该target有handler，则执行之，仅此而已，别再无它。</p>
+<p><code>Level 2</code>，事件传播有三个阶段：</p>
+<ul><li><code>capturing phase</code>，从document向下往target走，比如<code>[document - html - body - section.slide - h2]</code></li>
+<li><code>target phase</code>，target本身</li>
+<li><code>bubbling phase</code>，从target向上往document走，比如<code>[h2 - section.slide - body - html - document]</code></li></ul>
+<p>所以父节点<code>可能有1到2次机会</code>响应事件，不过一般情况不需要在capturing phase响应。</p>
+<p>这体现在使用addEventListener时，第三个参数<code>useCapture</code>为false</p>
+
+<h2> Hierarchy</h2>
+<ul><li>Event<ul><li>UIEvent<ul><li>MouseEvent</li>
+<li>TouchEvent</li></ul>
+</li></ul>
+</li></ul>
+<h2> Event</h2>
+<p><code>定义的接口方法：</code></p>
+<ul><li>initEvent</li>
+<li>preventDefault</li>
+<li>stopImmediatePropagation</li>
+<li>stopPropagation</li></ul>
+<h2> UIEvent</h2>
+<p><code>定义的接口方法：</code></p>
+<ul><li>initUIEvent</li></ul>
+<h2> MouseEvent - click</h2>
+<p>所属类：<code>MouseEvent</code></p>
+<h3> 1. 重要属性</h3>
+<ul><li>type</li>
+<li>srcElement</li>
+<li>target</li>
+<li>clientX</li>
+<li>clientY</li>
+<li>offsetX</li>
+<li>offsetY</li>
+<li>pageX</li>
+<li>pageY</li>
+<li>x</li>
+<li>y</li>
+<li>screenX</li>
+<li>screenY</li>
+<li>fromElement</li>
+<li>toElement</li>
+<li>altKey</li>
+<li>ctrlKey</li>
+<li>shiftKey</li>
+<li>metaKey</li>
+<li>detail</li>
+<li>timeStamp</li></ul>
+<h3> 2. 其他属性</h3>
+<ul><li>bubbles： 标识<code>是否冒泡类型</code>事件，click事件为true</li>
+<li>button</li>
+<li>cancelBubble</li>
+<li>cancelable</li>
+<li>charCode</li>
+<li>clipboardData</li>
+<li>currentTarget</li>
+<li>dataTransfer</li>
+<li>defaultPrevented</li>
+<li>eventPhase</li>
+<li>keyCode</li>
+<li>layerX</li>
+<li>layerY</li>
+<li>movementX</li>
+<li>movementY</li>
+<li>path</li>
+<li>relatedTarget</li>
+<li>returnValue</li>
+<li>view</li>
+<li>webkitMovementX</li>
+<li>webkitMovementY</li>
+<li>which</li></ul>
+<h3> 3. 方法</h3>
+<ul><li>initMouseEvent</li></ul>
+<h2> TouchEvent - touchstart</h2>
+<p>所属类：<code>TouchEvent</code></p>
+<h3> 1. 重要属性</h3>
+<ul><li>type: <code>touchstart</code></li>
+<li>changedTouches</li>
+<li>targetTouches</li>
+<li>touches<p>是一个<code>TouchList</code>，举一个Chrome下Phone模式一个<code>touchstart</code>事件的touches内容，
+该事件的changedTouches, targetTouches, touches一致，其<code>touches[0]</code>如下：</p>
+<pre><code>clientX
+clientY
+pageX
+pageY
+screenX
+screenY
+radiusX
+radiusY
+force
+identifier
+target
+webkitForce
+webkitRadiusX
+webkitRadiusY
+webkitRotationAngle </code></pre>
+</li>
+<li>srcElement</li>
+<li>target<p>事件target，srcElement同target</p>
+</li>
+<li>currentTarget</li></ul>
+<h3> 2. 其他属性</h3>
+<ul><li>pageX</li>
+<li>pageY<p>对于touchstart事件来说，一级属性的pageX和pageY没意义。</p>
+</li>
+<li>altKey</li>
+<li>shiftKey</li>
+<li>ctrlKey</li>
+<li>metaKey</li>
+<li>keyCode</li>
+<li>charCode</li>
+<li>which</li>
+<li>detail</li>
+<li>timeStamp</li>
+<li>returnValue</li>
+<li>eventPhase</li>
+<li>defaultPrevented</li>
+<li>cancelBubble</li>
+<li>cancelable</li>
+<li>bubbles： 标识<code>是否冒泡类型</code>事件，touchstart事件为true</li>
+<li>clipboardData</li>
+<li>data</li>
+<li>layerX</li>
+<li>layerY</li>
+<li>path<p>冒泡路径，类型为<code>NodeList</code>：</p>
+<pre><code>0: section.slide
+1: body
+2: html
+3: document</code></pre>
+</li>
+<li>view</li></ul>
+<h3> 3. 方法</h3>
+<ul><li>isDefaultPrevented</li>
+<li>isPropagationStopped</li>
+<li>isImmediatePropagationStopped</li>
+<li>stopPropagation</li>
+<li>preventDefault</li>
+<li>stopImmediatePropagation</li></ul>
+<h2> Zepto - swipeUp</h2>
+<p>所属类：<code>Event</code></p>
+<h3> 1. 重要属性</h3>
+<ul><li>type</li>
+<li>srcElement</li>
+<li>target<p>事件target，srcElement同target</p>
+</li>
+<li>_args</li></ul>
+<h3> 2. 其他属性 </h3>
+<ul><li>bubbles： 标识<code>是否冒泡类型</code>事件，swipeUp事件为true</li>
+<li>cancelBubble</li>
+<li>cancelable</li>
+<li>returnValue</li>
+<li>timeStamp</li>
+<li>clipboardData</li>
+<li>currentTarget</li>
+<li>data</li>
+<li>defaultPrevented</li>
+<li>eventPhase</li>
+<li>path<p>同touchstart</p>
+</li></ul>
+<h3> 3. 方法</h3>
+<p>同touchstart事件</p>
+
+
+
+
+
+
+    <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+document.title = $('h1').html() || '技术文档－258i.com';    
+})();
+</script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>
