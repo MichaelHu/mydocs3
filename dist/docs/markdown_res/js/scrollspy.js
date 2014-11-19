@@ -1,7 +1,7 @@
 // @thanks liguang
 (function($){
 
-    if(/\/index\.md\.html([?#].*)?$/.test(location.href)){
+    if(/\/(index|preview)\.md\.html([?#].*)?$/.test(location.href)){
         return;
     }
 

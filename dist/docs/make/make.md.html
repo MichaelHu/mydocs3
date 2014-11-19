@@ -15,7 +15,7 @@
 </head>
 <body>
     <div id="nav">
-<a href="javascript:history.back()">返回</a>
+<a href="javascript:history.back()">返回 [ or Backspace ]</a>
     </div>
 
 <h1> GNU make</h1>
@@ -156,7 +156,18 @@ clean :
 </html>
 <script type="text/javascript">
 (function(){
+
 document.title = $('h1').html() || '技术文档－258i.com';    
+
+$(document).on('keydown', function(e){
+    var BACKSPACE = 8;
+
+    if(BACKSPACE == e.keyCode
+        || BACKSPACE == e.which){
+        history.back();
+    }
+});
+
 })();
 </script>
 <script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>
