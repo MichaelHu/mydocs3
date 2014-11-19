@@ -88,6 +88,57 @@ command1 | command2 | command3 > output-file  </code></pre>
 ls -l 2>&amp;1 >&amp;3 3>&amp;- | grep bad 3>&amp;-
 exec 3>&amp;-  </code></pre>
 </li></ol>
+<h2> Here Documents</h2>
+<blockquote><p> 在命令行中使用匿名文档</p></blockquote><p>格式如下：</p>
+<pre><code>&lt;&lt;EndOfMessage
+...
+...
+EndOfMessage </code></pre>
+<ol><li>直接输出<pre><code>cat &lt;&lt;EOF
+    Hello, World!
+    My name is $NAME
+    Yes
+    No
+EOF </code></pre>
+<p>注意，EOF<code>前后</code>不能有空白字符，否则不被视为结束符。</p>
+<p><code>$NAME</code>会进行变量替换。</p>
+</li>
+<li>不带参数替换的Here Document，只需将起始标志符用<code>单引号扩起来</code><pre><code>cat &lt;&lt;'EOF'
+    Hello, World!
+    My name is $NAME
+    Yes
+    No
+EOF  </code></pre>
+</li>
+<li>捕获Here文档内容进入管道，使用命令组合：<pre><code>(
+cat &lt;&lt;'EOF'
+    Hello, World!
+    My name is $NAME
+    Yes
+    No
+EOF
+) > output_file </code></pre>
+</li>
+<li>捕获Here文档内容进入变量，使用命令组合：<pre><code>STRING=$(
+cat &lt;&lt;EOF
+    Hello, World!
+    My name is $NAME
+    Yes
+    No
+EOF
+)    </code></pre>
+</li></ol>
+<h2> 算术运算</h2>
+<p>以下几种方式都可以：</p>
+<pre><code>(( z = z + 1 ))
+(( z +=  10 ))
+z=$(( z+1 )) </code></pre>
+<p>注意，<code>((</code>和<code>))</code>内部的变量赋值比较自由，操作符前后可以有空格。</p>
+<p>而，普通赋值，比如<code>z=$((...))</code>，<code>z和=之间</code>就不允许有空格。</p>
+
+
+
+
 
     <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>
@@ -98,10 +149,13 @@ exec 3>&amp;-  </code></pre>
 document.title = $('h1').html() || '技术文档－258i.com';    
 
 $(document).on('keydown', function(e){
-    var BACKSPACE = 8;
+    var BACKSPACE = 8,
+        LEFT = 37;
 
     if(BACKSPACE == e.keyCode
-        || BACKSPACE == e.which){
+        || BACKSPACE == e.which
+        || LEFT == e.keyCode
+        || LEFT == e.which){
         history.back();
     }
 });

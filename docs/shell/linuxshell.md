@@ -99,3 +99,78 @@ hudamin 2014
         ls -l 2>&1 >&3 3>&- | grep bad 3>&-
         exec 3>&-
 
+
+## Here Documents
+
+> 在命令行中使用匿名文档
+
+格式如下：
+
+    <<EndOfMessage
+    ...
+    ...
+    EndOfMessage
+
+1. 直接输出
+
+        cat <<EOF
+            Hello, World!
+            My name is $NAME
+            Yes
+            No
+        EOF
+
+    注意，EOF`前后`不能有空白字符，否则不被视为结束符。
+
+    `$NAME`会进行变量替换。
+
+2. 不带参数替换的Here Document，只需将起始标志符用`单引号扩起来`
+
+        cat <<'EOF'
+            Hello, World!
+            My name is $NAME
+            Yes
+            No
+        EOF
+
+
+3. 捕获Here文档内容进入管道，使用命令组合：
+
+        (
+        cat <<'EOF'
+            Hello, World!
+            My name is $NAME
+            Yes
+            No
+        EOF
+        ) > output_file
+
+4. 捕获Here文档内容进入变量，使用命令组合：
+
+        STRING=$(
+        cat <<EOF
+            Hello, World!
+            My name is $NAME
+            Yes
+            No
+        EOF
+        )
+
+
+
+
+## 算术运算
+
+以下几种方式都可以：
+
+    (( z = z + 1 ))
+    (( z +=  10 ))
+    z=$(( z+1 ))
+
+注意，`((`和`))`内部的变量赋值比较自由，操作符前后可以有空格。
+
+而，普通赋值，比如`z=$((...))`，`z和=之间`就不允许有空格。
+    
+
+
+

@@ -346,10 +346,13 @@ isurl(url(...)); // true </code></pre>
 document.title = $('h1').html() || '技术文档－258i.com';    
 
 $(document).on('keydown', function(e){
-    var BACKSPACE = 8;
+    var BACKSPACE = 8,
+        LEFT = 37;
 
     if(BACKSPACE == e.keyCode
-        || BACKSPACE == e.which){
+        || BACKSPACE == e.which
+        || LEFT == e.keyCode
+        || LEFT == e.which){
         history.back();
     }
 });
