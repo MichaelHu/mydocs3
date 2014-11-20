@@ -18,12 +18,13 @@ find . -type f \
 
 
 # set _file_count
-find . -type f -name "*.md" > _file_list 
+find . -type f -mindepth 2 -name "*.md" > _file_list 
+cat _file_list
 _file_count=$(wc -l _file_list | awk '{print $1}')
 
 
 # get links and save into _list file
-find . -type f -name "*.md" \
+find . -type f -mindepth 2 -name "*.md" \
     -exec sh $ROOT/build/build-link.sh {} >> _list \;
 
 

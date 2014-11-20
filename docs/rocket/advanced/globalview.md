@@ -1,3 +1,5 @@
+# 跨页面视图：GLOBALVIEW 
+
 % 跨页面视图：GLOBALVIEW 
 % hdm258i@gmail.com
 % 2013-05-13
