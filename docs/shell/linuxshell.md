@@ -156,6 +156,15 @@ hudamin 2014
         EOF
         )
 
+5. 使用Here文档，提供交互指令
+
+        rm docs.tar.gz
+        tar zcvf docs.tar.gz docs
+        ftp username@ftp.server.com <<EOF
+        cd wwwroot
+        ls
+        put docs.tar.gz
+        EOF
 
 
 
@@ -173,4 +182,34 @@ hudamin 2014
     
 
 
+
+## env
+
+> set and print environment
+
+    env [-i] [name=value ...] [utility [argument ...]]
+
+`Examples:`
+
+1. 查看环境变量
+
+        $ env
+        TERM_PROGRAM=Apple_Terminal
+        TERM=xterm-256color
+        SHELL=/bin/bash
+        ...
+        HOME=/Users/hudamin
+        SHLVL=1
+        LOGNAME=hudamin
+        _=/usr/bin/env
+
+2. 设置环境变量
+
+        $ env PHP_CGI=/usr/bin/php-cgi ./webserv.out /Users/hudamin/projects/news/git-webapp/output 8500 debug
+
+3. NodeJs bin文件：
+
+        #!/usr/bin/env node
+        var hello = require('hello-node');
+        hello.sayHello();
 
