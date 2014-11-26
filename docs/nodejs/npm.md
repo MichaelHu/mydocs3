@@ -240,6 +240,92 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
     npm get <key>
     npm set <key> <value> [--global]
 
+npm获取配置信息，来自`六个来源，优先级如下，由高到低`：
+
+1. 命令行参数
+    
+        --foo bar
+
+    将配置项foo设置为bar
+
+        --flag
+
+    将配置项flag设置为true
+
+2. 环境变量
+
+    任何以`npm_config_`为前缀的环境变量，都会被解析成对应配置值。大小写不敏感，
+    也可以是`NPM_CONFIG_`为前缀
+
+3. `npmrc`文件，四个相关文件： 
+    * 项目级别配置文件（`/path/to/my/project/.npmrc`）
+    * 用户级别配置文件（`~/.npmrc`）
+    * 全局配置文件（`$PREFIX/npmrc`）
+    * npm内建配置文件（`/path/to/npm/npmrc`）
+
+4. 默认配置
+
+5. 以下简写形式会被自动扩展：
+
+        * -v: --version
+        * -h, -?, --help, -H: --usage
+        * -s, --silent: --loglevel silent
+        * -q, --quiet: --loglevel warn
+        * -d: --loglevel info
+        * -dd, --verbose: --loglevel verbose
+        * -ddd: --loglevel silly
+        * -g: --global
+        * -C: --prefix
+        * -l: --long
+        * -m: --message
+        * -p, --porcelain: --parseable
+        * -reg: --registry
+        * -v: --version
+        * -f: --force
+        * -desc: --description
+        * -S: --save
+        * -D: --save-dev
+        * -O: --save-optional
+        * -B: --save-bundle
+        * -E: --save-exact
+        * -y: --yes
+        * -n: --yes false
+        * ll and la commands: ls --long
+
+    例如：
+
+        $ npm install -ddd
+        # same as:
+        $ npm install --loglevel silly
+
+    再如，多个单子符简写形式合并，只要不出现歧义，都会被扩展成响应选项：
+
+        $ npm ls -gpld
+        # same as:
+        $ npm ls --global --parseable --long --loglevel info
+
+6. 包级别配置项
+
+    比如，`package.json`如下：
+
+        ｛
+            "name": "foo"
+            , "config": { "port": "8080" }
+            , "scripts": { "start": "node server.js" }
+        }
+
+    `server.js`如下：
+
+        http.createServer(...).listen(
+            process.env.npm_package_config_port
+        );
+
+    ，这时，如果运行时需要覆盖port的值，可以如下操作：
+
+        npm config set foo:port 80
+
+
+
 ### npm link
 
     npm link (in package folder)
@@ -287,6 +373,10 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
 
 必须是一个`纯JSON`，而不能是JS的object literal。
 
+通过`npm init`命令，可以进行交互式生成。
+
+### 字段说明
+
 * name
 * version
 * description
@@ -301,7 +391,20 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
 * files，受.npmignore影响
 * main
 * bin
+
+    1. `global install`的时候，npm会将bin配置的文件创建符号链接至`prefix/bin`目录下；
+    2. `local install`的时候，会将bin配置我的文件创建符号链接至`./node_modules/.bin/`目录下。
+
+    比如，npm包的bin就是这么配置的：
+
         { "bin" : { "npm" : "./cli.js" } }
+
+    若符号链接名就是包名本身，则可以直接提供字符串，而不是object：
+
+        { "bin" : "./path/to/program" } 
+
+    
+    
 * man
 * directories
 * directories.lib
@@ -322,6 +425,52 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
           }
 
 * scripts: 定义包生命周期中各个阶段调用执行的脚本命令
+
+    * `prepublish`: Run BEFORE the package is published. 
+        (Also run on local npm install without any arguments.)
+    * `publish, postpublish`: Run AFTER the package is published.
+    * `preinstall`: Run BEFORE the package is installed
+    * `install, postinstall`: Run AFTER the package is installed.
+    * `preuninstall, uninstall`: Run BEFORE the package is uninstalled.
+    * `postuninstall`: Run AFTER the package is uninstalled.
+    * `preupdate`: Run BEFORE the package is updated with the update command.
+    * `update, postupdate`: Run AFTER the package is updated with the update command.
+    * `pretest, test, posttest`: Run by the `npm test` command.
+    * `prestop, stop, poststop`: Run by the `npm stop` command.
+    * `prestart, start, poststart`: Run by the `npm start` command.
+    * `prerestart, restart, postrestart`: Run by the `npm restart` command. 
+        Note: `npm restart` will run the stop and start scripts if no restart script is provided.
+
+    举例1：
+
+        { 
+            "name" : "foo"
+            , "config" : { "port" : "8080" }
+            , "scripts" : { "start" : "node server.js" } 
+        }
+
+    举例2:
+
+        { 
+            "scripts" :
+            { 
+                "install" : "scripts/install.js"
+                , "postinstall" : "scripts/install.js"
+                , "uninstall" : "scripts/uninstall.js"
+            }
+        } 
+
+    举例3:
+
+        { 
+            "scripts" : { 
+                "preinstall" : "./configure"
+                , "install" : "make && make install"
+                , "test" : "make test"
+            }
+        }
+
+
 * config
 * dependencies
 

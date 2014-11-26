@@ -213,3 +213,68 @@ hudamin 2014
         var hello = require('hello-node');
         hello.sayHello();
 
+
+
+## 网络命令
+
+### dig
+    
+相比其他工具更全面的DNS信息查询工具。
+
+    $ dig github.com
+
+    ; <<>> DiG 9.8.3-P1 <<>> github.com
+    ;; global options: +cmd
+    ;; Got answer:
+    ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 11179
+    ;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 4, ADDITIONAL: 4
+
+    ;; QUESTION SECTION:
+    ;github.com.            IN  A
+
+    ;; ANSWER SECTION:
+    github.com.     17  IN  A   192.30.252.129
+
+    ;; AUTHORITY SECTION:
+    github.com.     1214    IN  NS  ns4.p16.dynect.net.
+    github.com.     1214    IN  NS  ns2.p16.dynect.net.
+    github.com.     1214    IN  NS  ns3.p16.dynect.net.
+    github.com.     1214    IN  NS  ns1.p16.dynect.net.
+
+    ;; ADDITIONAL SECTION:
+    ns1.p16.dynect.net. 84132   IN  A   208.78.70.16
+    ns2.p16.dynect.net. 84132   IN  A   204.13.250.16
+    ns3.p16.dynect.net. 84132   IN  A   208.78.71.16
+    ns4.p16.dynect.net. 84132   IN  A   204.13.251.16
+
+    ;; Query time: 41 msec
+    ;; SERVER: 172.22.1.253#53(172.22.1.253)
+    ;; WHEN: Fri Nov 21 12:27:12 2014
+    ;; MSG SIZE  rcvd: 194
+
+
+### nslookup
+
+    $ nslookup github.com
+    Server:     172.22.1.253
+    Address:    172.22.1.253#53
+
+    Non-authoritative answer:
+    Name:   github.com
+    Address: 192.30.252.130
+
+### host
+
+    $ host github.com
+    github.com has address 192.30.252.131
+    github.com mail is handled by 10 ALT4.ASPMX.L.GOOGLE.com.
+    github.com mail is handled by 1 ASPMX.L.GOOGLE.com.
+    github.com mail is handled by 5 ALT1.ASPMX.L.GOOGLE.com.
+    github.com mail is handled by 5 ALT2.ASPMX.L.GOOGLE.com.
+    github.com mail is handled by 10 ALT3.ASPMX.L.GOOGLE.com.
+
+
+
+
+
+

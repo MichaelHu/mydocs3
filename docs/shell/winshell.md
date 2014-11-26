@@ -616,13 +616,13 @@ musics.txt文件每行包含两个字符串（歌名和URL），行内字符串�
 
 `例子6：MP3文件下载`
 
-详见D:\Personal\iPhone3GS\Musics\bin目录下的两个批处理文件：
+详见D:\\Personal\\iPhone3GS\\Musics\\bin目录下的两个批处理文件：
 
     get_all.bat
     get_musics.bat
 
 双击get_all.bat文件，可以进行MP3文件下载。
-D:\Personal\iPhone3GS\Musics\bin\conf目录下的list.txt是MP3下载文件列表。
+D:\\Personal\\iPhone3GS\\Musics\\bin\\conf目录下的list.txt是MP3下载文件列表。
 
 
 1.  使用了for循环嵌套
@@ -633,7 +633,7 @@ D:\Personal\iPhone3GS\Musics\bin\conf目录下的list.txt是MP3下载文件列�
 
 `例子7：局域网网速监测`
 
-查看Samples\network_ratio_detect\network_ratio_detect.bat文件，用于监测网络速度是否低于某个阈值，并给出报警。
+查看Samples\\network_ratio_detect\\network_ratio_detect.bat文件，用于监测网络速度是否低于某个阈值，并给出报警。
 
 
 `例子8：批量生成diff文件`
@@ -834,7 +834,7 @@ DIR [drive:][path][filename] [/A[[:]attributes]] [/B] [/C] [/D] [/L] [/N]  [/O[[
 
 ## 12. findstr命令
 
-先恶作剧一下，进入到c:\windows\system32目录，输入以下命令：
+先恶作剧一下，进入到c:\\windows\\system32目录，输入以下命令：
 
     $ findstr a *
 

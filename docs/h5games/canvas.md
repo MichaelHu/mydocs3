@@ -4,6 +4,131 @@
 
 `W3C Schools Ref:` http://www.w3schools.com/tags/ref_canvas.asp
 
+
+## 有用的属性
+
+devicePixelRatio
+
+http://www.html5rocks.com/en/tutorials/canvas/hidpi/
+
+High DPI Canvas
+
+    /**
+     * Writes an image into a canvas taking into
+     * account the backing store pixel ratio and
+     * the device pixel ratio.
+     *
+     * @author Paul Lewis
+     * @param {Object} opts The params for drawing an image to the canvas
+     */
+    function drawImage(opts) {
+
+        if(!opts.canvas) {
+            throw("A canvas is required");
+        }
+        if(!opts.image) {
+            throw("Image is required");
+        }
+
+        // get the canvas and context
+        var canvas = opts.canvas,
+            context = canvas.getContext('2d'),
+            image = opts.image,
+
+        // now default all the dimension info
+            srcx = opts.srcx || 0,
+            srcy = opts.srcy || 0,
+            srcw = opts.srcw || image.naturalWidth,
+            srch = opts.srch || image.naturalHeight,
+            desx = opts.desx || srcx,
+            desy = opts.desy || srcy,
+            desw = opts.desw || srcw,
+            desh = opts.desh || srch,
+            auto = opts.auto,
+
+        // finally query the various pixel ratios
+            devicePixelRatio = window.devicePixelRatio || 1,
+            backingStoreRatio = context.webkitBackingStorePixelRatio ||
+                                context.mozBackingStorePixelRatio ||
+                                context.msBackingStorePixelRatio ||
+                                context.oBackingStorePixelRatio ||
+                                context.backingStorePixelRatio || 1,
+
+            ratio = devicePixelRatio / backingStoreRatio;
+
+        // ensure we have a value set for auto.
+        // If auto is set to false then we
+        // will simply not upscale the canvas
+        // and the default behaviour will be maintained
+        if (typeof auto === 'undefined') {
+            auto = true;
+        }
+
+        // upscale the canvas if the two ratios don't match
+        if (auto && devicePixelRatio !== backingStoreRatio) {
+
+            var oldWidth = canvas.width;
+            var oldHeight = canvas.height;
+
+            canvas.width = oldWidth * ratio;
+            canvas.height = oldHeight * ratio;
+
+            canvas.style.width = oldWidth + 'px';
+            canvas.style.height = oldHeight + 'px';
+
+            // now scale the context to counter
+            // the fact that we've manually scaled
+            // our canvas element
+            context.scale(ratio, ratio);
+
+        }
+
+        context.drawImage(pic, srcx, srcy, srcw, srch, desx, desy, desw, desh);
+    }
+
+
+Android 4.1.x Stock Browser Canvas Solution
+
+https://medium.com/@dhashvir/android-4-1-x-stock-browser-canvas-solution-ffcb939af758
+
+    canvas.width = canvas.width;
+
+
+    canvas.clearRect(0, 0, w, h);
+    canvas.style.visibility = ‘hidden’; // Force a change in DOM
+    canvas.offsetHeight; // Cause a repaint to take play
+    canvas.style.visibility = ‘inherit’; // Make visible again
+
+
+    canvas.clearRect(0, 0, w, h);
+    canvas.style.display = ‘none’;// Detach from DOM
+    canvas.offsetHeight; // Force the detach
+    canvas.style.display = ‘inherit’; // Reattach to DOM
+
+
+CORS与Canvas图片toDataURL
+
+http://www.web-tinker.com/article/20687.html
+
+
+
+WebView: animation issues with Java Script, JQuery Mobile and Phonegap
+
+https://code.google.com/p/android/issues/detail?id=35474
+
+
+
+context.toDataURL() only support on android 3.2 or above version.
+
+http://stackoverflow.com/questions/10488033/todataurl-not-working-on-android-browsers
+
+android 2.3.3的原生浏览器是不支持的，虽然该函数可以正常调用。但不代表该平台上其他浏览器不支持，实际上该平台上
+安装的UC浏览器都支持。
+
+不过可以认为webview是不支持的。
+
+
+
 ## Small Canvas Lib below
 
 * `getContext`: function()
