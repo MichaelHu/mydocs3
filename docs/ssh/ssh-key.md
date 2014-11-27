@@ -1,5 +1,33 @@
 # ssh key
 
+
+
+
+
+## ssh-keygen命令
+
+本机生成key，按类型生成：
+
+    $ ssh-keygen -t rsa1
+    $ ssh-keygen -t rsa
+    $ ssh-keygen -t dsa
+    $ ssh-keygen -t ecdsa
+
+默认情况下，在`~/.ssh`目录下生成相应文件，一般有`秘钥文件和公钥文件（.pub后缀）`，成对出现。
+
+    $ ssh-keygen -t TYPE -C "COMMENTS"
+
+以上可以添加注释内容至钥匙文件中。
+
+`-P`选项，提供密码，`-p`选项，可以进行密码修改，命令行会提示。
+
+其他选项或功能，可以`man ssh-keygen`再行查看。
+
+
+
+
+
+
 ## known_hosts文件
 
 > 记录其他主机的公钥
