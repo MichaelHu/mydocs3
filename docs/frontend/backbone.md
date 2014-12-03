@@ -5,18 +5,22 @@
 ## AMD、CMD支持
 
     (function(root, factory){
+        // AMD first
         if(typeof define === 'function' && define.amd){
             define(['underscore', 'jquery', 'exports'], function(_, $, exports){
                 root.Backbone = factory(root, exports, _, $);
             });
         } 
+        // then Node.js or CommonJS
         else if(typeof exports !== 'undefined'){
             var _ = require('underscore');
             factory(root, exports, _);
         }
+        // last global Backbone
         else {
             root.Backbone = factory(root
                 , {}, root._
+                // $ can be jQuery, Zepto, ender
                 , ( root.jQuery || root.Zepto || root.ender || root.$ )
             );
         }
@@ -26,13 +30,13 @@
 
 ## Events，可以mixin到任何一个对象，提供自定义事件的功能。
 
-1. on/bind: function(name, callback, context)
-2. once: function(name, callback, context)
-3. off/unbind: function(name, callback, context)
-4. trigger: function(name)
-5. stopListening: function(obj, name, callback)
-6. listenTo: function(obj, name, callback)
-7. listenToOnce: function(obj, name, callback)
+1. `on/bind`: function(name, callback, context)
+2. `once`: function(name, callback, context)
+3. `off/unbind`: function(name, callback, context)
+4. `trigger`: function(name)
+5. `stopListening`: function(obj, name, callback)
+6. `listenTo`: function(obj, name, callback)
+7. `listenToOnce`: function(obj, name, callback)
 
 ## Model，通常表示数据表的一行
 
@@ -124,6 +128,7 @@
 ## Router
 
 1. constructor
+
     1. this.routes = options.routes
     2. this._bindRoutes()
     3. this.initialize.apply(this, arguments)
@@ -136,24 +141,33 @@
         escapeRegExp = /[\-{}\[\]+?.,\\\^$|#\s]/g 
 
 2. prototype
+
     1. initialize: function() 
     2. route: funciton(route, name, callback)
     3. execute: function(callback, args, name)
     4. navigate: function(fragment, options)
 
-        如果是hash，fragment为hash值（不包含#），如果是pushState，fragment为path值（出去root部分）
+        如果是hash，fragment为hash值（不包含#），如果是pushState，fragment为path值（除去root部分）
 
     5. _bindRoutes: function()
     6. _routeToRegExp: function(route)
     7. _extractParameters: function(route, fragment)
 
+
+
+
+
+
+
 ## History
 
 1. constructor
+
     1. this.handlers = []
     2. _.bindAll(this, 'checkUrl')
     3. this.location = window.location
     4. this.history = window.history
+
 
 2. vars
 
@@ -165,6 +179,7 @@
     1. History.started = false
 
 4. prototype
+
     1. interval: 50
     2. atRoot: function()
     3. getSearch: function()
@@ -195,6 +210,8 @@
     var wrapError = function(model, options)
 
 比较特殊的`extend`方法，生成一个子类：
+
+子类可以通过`__super__.xxx`调用父类原型链的对应方法。
 
     var extend = function(protoProps, staticProps){
         var parent = this;
@@ -231,12 +248,12 @@
 
 ## static attrs and methods
 
-1. Backbone.sync: function(method, model, options)
-2. Backbone.ajax: function()
-3. Backbone.history = new History
-4. Backbone.VERSION = '1.1.2';
-5. Backbone.$ = $;
-6. Backbone.noConflict = function()
-7. Backbone.emulateHTTP = false
-8. Backbone.emulateJSON = false
+1. `Backbone.sync`: function(method, model, options)
+2. `Backbone.ajax`: function()
+3. `Backbone.history` = new History
+4. `Backbone.VERSION` = '1.1.2';
+5. `Backbone.$` = $;
+6. `Backbone.noConflict` = function()
+7. `Backbone.emulateHTTP` = false
+8. `Backbone.emulateJSON` = false
 

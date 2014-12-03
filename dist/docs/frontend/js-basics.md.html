@@ -18,45 +18,31 @@
 <a href="javascript:history.back()">返回 [ or Backspace ]</a>
     </div>
 
-<h1> node-gyp</h1>
-<blockquote><p> Node.js <code>native addon</code> build tool</p></blockquote><p>Generates Your Projects</p>
-<p>nodejs编写的跨平台命令行工具。</p>
-<p>nodejs的C++模块的编译工具，node的0.8版本之前，用的是<code>node-waf</code>编译，该版本之后，就进入使用node-gyp编译工具。</p>
-<p><code>GITHUB</code>: <a href="https://github.com/TooTallNate/node-gyp/">node-gyp</a></p>
-<p>其配置文件名为<code>binding.gyp</code></p>
-<h2> 安装方式</h2>
-<pre><code>$ npm install -g node-gyp  </code></pre>
-<h2> 举例</h2>
-<h3> C++模块，binding.cc</h3>
-<pre><code>#include &lt;node.h>
-#include &lt;v8.h>
+<h1> js basics</h1>
 
-using namespace v8;
+<h2> 绝对等式</h2>
+<pre><code>typeof null === 'object'
+void 0 === undefined </code></pre>
+<p>数字判断：</p>
+<pre><code>num === +num </code></pre>
+<p>IE9以下，hasEnumBug</p>
 
-Handle&lt;Value> Method(const Arguments&amp; args) {
-  HandleScope scope;
-  return scope.Close(String::New("world"));
-}
-
-void init(Handle&lt;Object> target) {
-  NODE_SET_METHOD(target, "hello", Method);
-}
-
-NODE_MODULE(binding, init); </code></pre>
-<h3> binding.gyp文件</h3>
-<pre><code>{
-  'targets': [
-    {
-      'target_name': 'binding',
-      'sources': [ 'binding.cc' ]
-    }
-  ]
-}   </code></pre>
-<h3> js调用代码</h3>
-<pre><code>var assert = require('assert');
-var binding = require('./build/Release/binding');
-assert.equal('world', binding.hello());
-console.log('binding.hello() =', binding.hello());  </code></pre>
+<h2> 一般等式</h2>
+<pre><code>null == undefined
+0 == ''
+false == 0
+false == ''  </code></pre>
+<h2> TRUE表达式</h2>
+<pre><code>!null
+!void 0
+!undefined
+!0
+!''  </code></pre>
+<h2> Object.prototype.toString.call(obj)</h2>
+<p>注意<code>不是Object.toString</code>，该toString来自<code>Function.prototype.toString</code></p>
+<pre><code>function(){}    [object Function]
+[]              [object Array]
+10              [object Number]     </code></pre>
 
     <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>

@@ -19,14 +19,120 @@
     </div>
 
 <h1> npm备忘</h1>
-<blockquote><p style="color:green;font-size:18px">Node Packaged Modules.  <a href="http://www.npmjs.org"> [ npmjs ] </a></p></blockquote><h2> 常用命令</h2>
+<blockquote><p style="color:green;font-size:18px">Node Packaged Modules.  <a href="http://www.npmjs.org"> [ npmjs ] </a></p></blockquote><h2> 包注册与发布</h2>
+<h3> 包托管地址</h3>
+<ul><li>官方地址：http://registry.npmjs.org/</li>
+<li>镜像地址：http://skimdb.npmjs.com/registry</li></ul>
+<p>服务器使用CouchDB数据库，couchapp的代码托管在github上：http://github.com/npm/npm-registry-couchapp。
+服务器提供好用的RESTful API，举例如下：</p>
+<pre><code>$ curl http://registry.npmjs.org
+{"db_name":"registry","doc_count":113003,"doc_del_count":380,"update_seq":450451,"purge_seq":0,"compact_running":false,"disk_size":1045799035,"data_size":407768840,"instance_start_time":"1414070581227712","disk_format_version":6,"committed_update_seq":450451}  </code></pre>
+<h3> registry决定</h3>
+<ul><li>首先由scope来定，scope与registry可以通过以下方式绑定：<pre><code>npm config set @scope:registry ... </code></pre>
+</li>
+<li>如果没有scope，则使用默认registry。默认registry通过以下方式绑定：<pre><code>npm config set registry ... </code></pre>
+</li></ul>
+<h3> 创建私有库</h3>
+<p>todo</p>
+
+<h3> 包范围（scope）</h3>
+<p>2014-09-13日以后，公共地址上的registry开始支持范围限定包。
+npm客户端自动兼容非范围包与范围包的处理。</p>
+<p>命名方式同包名（package name）：<code>url安全的字符，不以逗号或下划线开头</code>。</p>
+<p>使用的时候，如下格式拼接：</p>
+<pre><code>@somescope/somepackagename </code></pre>
+<p><code>包安装位置：</code></p>
+<ol><li>非scope包路径： node_modules/packagename</li>
+<li>那么，scope包路径为： node_modules/@myorg/packagename</li></ol>
+<p><code>安装方式：</code></p>
+<pre><code>npm install @myorg/mypackage </code></pre>
+<p>或者在依赖安装中配置：</p>
+<pre><code>"dependencies": {
+    "@myorg/mypackage": "^1.3.0"
+}  </code></pre>
+<p><code>require方式：</code></p>
+<pre><code>require('@myorg/mypackage')  </code></pre>
+<p><code>scope与registry绑定：</code></p>
+<pre><code>npm login --registry=http://reg.example.com --scope=@myco </code></pre>
+<p>scope与registry是多对一的关系。绑定还可以使用npm config来进行：</p>
+<pre><code>npm config set @myco:registry http://reg.example.com    </code></pre>
+<h3> 包发布</h3>
+<pre><code>npm publish &lt;tarball> [--tag &lt;tag>]
+npm publish &lt;folder> [--tag &lt;tag>] </code></pre>
+<blockquote><p> Once a package is published with a given name and version, that specific  name and version combination can never be used again, even if it is removed with npm-unpublish(1).</p></blockquote><p>一旦发布，不可再用。</p>
+
+
+
+
+
+<h2> 使用npm进行开发</h2>
+<h3> .npmignore与.gitignore</h3>
+<ol><li>如果没有.npmignore，则使用.gitignore</li>
+<li>如果提供.npmignore，则.gitignore被忽略，即使.npmignore是一个空文件</li></ol>
+<h3> 默认忽略的文件：</h3>
+<ul><li>.*.swp</li>
+<li>._*</li>
+<li>.DS_Store</li>
+<li>.git</li>
+<li>.hg</li>
+<li>.lock_wscript</li>
+<li>.svn</li>
+<li>.wafpickle-*</li>
+<li>CVS</li>
+<li>npm-debug.log</li></ul>
+<p>所有node_modules下的文件也被忽略，除了依赖文件。</p>
+<h3> 总是包含的文件</h3>
+<p>以下文件总是被包含，即使加到ignore文件中，也无法剔除。</p>
+<ul><li>package.json</li>
+<li>README.*</li></ul>
+<h3> 发布前验证工作</h3>
+
+<p>一定要确保通过安装且工作正常，再进行发布。</p>
+<ol><li>测试全局安装：<pre><code>npm install . -g </code></pre>
+<p>或者只用</p>
+<pre><code>npm link </code></pre>
+<p>创建全局可用的包的符号链接。然后用<code>npm ls -g</code>查看是否存在。</p>
+</li>
+<li>测试本地安装：<pre><code>cd ../some-other-folder
+npm install ../my-package   </code></pre>
+</li></ol>
+<h2> 开始发布</h2>
+<pre><code>npm publish ...     </code></pre>
+<h2> 常用命令</h2>
 <h3> npm install, npm i</h3>
-<pre><code>npm install &lt;name>
+<pre><code>npm install
+npm install -g
+npm install &lt;name>
 npm install -g &lt;name>
+npm install --global &lt;name>
 npm install --save &lt;name>
-npm install --verbose -g &lt;name>   </code></pre>
+npm install --production &lt;name>
+npm install --verbose -g &lt;name>
+npm install &lt;folder>
+npm install &lt;tarball file>
+npm install &lt;tarball url>
+npm install [@&lt;scope>/]&lt;name> [--save|--save-dev|--save-optional]
+npm install [@&lt;scope>/]&lt;name>@&lt;tag>
+npm install [@&lt;scope>/]&lt;name>@&lt;version>
+npm install [@&lt;scope>/]&lt;name>@&lt;version range>
+npm install &lt;githubname>/&lt;githubrepo>
+npm install &lt;git remote url>  </code></pre>
+<ol><li>没有<code>-g</code>或<code>--global</code>，则总是安装在本地的node_modules下</li></ol>
+<p><code>举例如下：</code></p>
+<p>将依赖安装在本地node_modules目录下：</p>
+<pre><code>npm install
+npm install . </code></pre>
+<p>将当前目录下的包安装到全局：</p>
+<pre><code>npm install -g
+npm install . -g </code></pre>
+<p>安装指定目录下的包：</p>
+<pre><code>npm install ../node-redis </code></pre>
+<p>安装压缩包：</p>
+<pre><code>npm install ./package.tgz   </code></pre>
 <h3> npm init</h3>
-<pre><code>npm init [-f|--force|-y|--yes]  </code></pre>
+<pre><code>npm init [-f|--force|-y|--yes] </code></pre>
+<p>在包的根目录生成基础<code>package.json</code>文件</p>
+
 <h3> npm rm</h3>
 <pre><code>npm rm &lt;name>
 npm r &lt;name>
@@ -49,14 +155,97 @@ npm config get &lt;key>
 npm config delete &lt;key>
 npm get &lt;key>
 npm set &lt;key> &lt;value> [--global] </code></pre>
+<p>npm获取配置信息，来自<code>六个来源，优先级如下，由高到低</code>：</p>
+<ol><li>命令行参数<pre><code>--foo bar </code></pre>
+<p>将配置项foo设置为bar</p>
+<pre><code>--flag </code></pre>
+<p>将配置项flag设置为true</p>
+</li>
+<li>环境变量<p>任何以<code>npm_config_</code>为前缀的环境变量，都会被解析成对应配置值。大小写不敏感，
+也可以是<code>NPM_CONFIG_</code>为前缀</p>
+</li>
+<li><code>npmrc</code>文件，四个相关文件： <ul><li>项目级别配置文件（<code>/path/to/my/project/.npmrc</code>）</li>
+<li>用户级别配置文件（<code>~/.npmrc</code>）</li>
+<li>全局配置文件（<code>$PREFIX/npmrc</code>）</li>
+<li>npm内建配置文件（<code>/path/to/npm/npmrc</code>）</li></ul>
+</li>
+<li>默认配置</li>
+<li>以下简写形式会被自动扩展：<pre><code>* -v: --version
+* -h, -?, --help, -H: --usage
+* -s, --silent: --loglevel silent
+* -q, --quiet: --loglevel warn
+* -d: --loglevel info
+* -dd, --verbose: --loglevel verbose
+* -ddd: --loglevel silly
+* -g: --global
+* -C: --prefix
+* -l: --long
+* -m: --message
+* -p, --porcelain: --parseable
+* -reg: --registry
+* -v: --version
+* -f: --force
+* -desc: --description
+* -S: --save
+* -D: --save-dev
+* -O: --save-optional
+* -B: --save-bundle
+* -E: --save-exact
+* -y: --yes
+* -n: --yes false
+* ll and la commands: ls --long </code></pre>
+<p>例如：</p>
+<pre><code>$ npm install -ddd
+# same as:
+$ npm install --loglevel silly </code></pre>
+<p>再如，多个单子符简写形式合并，只要不出现歧义，都会被扩展成响应选项：</p>
+<pre><code>$ npm ls -gpld
+# same as:
+$ npm ls --global --parseable --long --loglevel info </code></pre>
+</li>
+<li>包级别配置项<p>比如，<code>package.json</code>如下：</p>
+<pre><code>｛
+    "name": "foo"
+    , "config": { "port": "8080" }
+    , "scripts": { "start": "node server.js" }
+} </code></pre>
+<p><code>server.js</code>如下：</p>
+<pre><code>http.createServer(...).listen(
+    process.env.npm_package_config_port
+); </code></pre>
+<p>，这时，如果运行时需要覆盖port的值，可以如下操作：</p>
+<pre><code>npm config set foo:port 80   </code></pre>
+</li></ol>
 <h3> npm link</h3>
-
-
-
-
-
+<pre><code>npm link (in package folder)
+npm link [@&lt;scope>/]&lt;pkgname>
+npm ln (with any of the previous argument usage) </code></pre>
+<blockquote><p> 方便开发调试，可将另一个包链接到本包的node_modules下，另一个包的任意改动，可以直接反映出来。</p></blockquote><p>注意pkgname不是目录名，而是包名，其在package.json中定义。</p>
+<p>进行包链接，包含两个步骤：</p>
+<ol><li>当前目录下运行<code>npm link</code>，创建全局安装的符号链接，从<code>prefix/package-name</code>指到当前目录</li>
+<li>再在另一个目录下，运行<code>npm link package-name</code>，在本地的node_modules中创建一个符号链接到第一步<p>创建的全局符号链接。</p>
+</li></ol>
+<p>举例如下：</p>
+<pre><code>cd ~/projects/node-redis
+npm link
+cd ~/projects/node-bloggy
+npm link redis </code></pre>
+<p>也可以简写成：</p>
+<pre><code>cd ~/projects/node-bloggy
+npm link ../node-redis  </code></pre>
+<p>一个实际例子：</p>
+<pre><code>$ cd hello-node
+$ npm link
+/usr/local/share/npm/lib/node_modules/hello-node -> /Users/hudamin/tmp/hello-node
+$ cd ../test-hello-node
+$ npm link hello-node
+/Users/hudamin/tmp/test-hello-node/node_modules/hello-node -> /usr/local/share/npm/lib/node_modules/hello-node -> /Users/hudamin/tmp/hello-node   </code></pre>
 <h2> package.json</h2>
+
+<blockquote><p> 包描述文件，必须有。字段含义可以通过<code>npm help json</code>获取</p></blockquote>
 <p>必须是一个<code>纯JSON</code>，而不能是JS的object literal。</p>
+<p>通过<code>npm init</code>命令，可以进行交互式生成。</p>
+<h3> 字段说明</h3>
 <ul><li>name</li>
 <li>version</li>
 <li>description</li>
@@ -70,7 +259,12 @@ npm set &lt;key> &lt;value> [--global] </code></pre>
 <li>author, contributors (数组) </li>
 <li>files，受.npmignore影响</li>
 <li>main</li>
-<li>bin<pre><code>{ "bin" : { "npm" : "./cli.js" } }</code></pre>
+<li>bin<ol><li><code>global install</code>的时候，npm会将bin配置的文件创建符号链接至<code>prefix/bin</code>目录下；</li>
+<li><code>local install</code>的时候，会将bin配置我的文件创建符号链接至<code>./node_modules/.bin/</code>目录下。</li></ol>
+<p>比如，npm包的bin就是这么配置的：</p>
+<pre><code>{ "bin" : { "npm" : "./cli.js" } } </code></pre>
+<p>若符号链接名就是包名本身，则可以直接提供字符串，而不是object：</p>
+<pre><code>{ "bin" : "./path/to/program" }    </code></pre>
 </li>
 <li>man</li>
 <li>directories</li>
@@ -89,7 +283,44 @@ npm set &lt;key> &lt;value> [--global] </code></pre>
   , "url" : "http://v8.googlecode.com/svn/trunk/"
   } </code></pre>
 </li>
-<li>scripts: 定义包生命周期中各个阶段调用执行的脚本命令</li>
+<li>scripts: 定义包生命周期中各个阶段调用执行的脚本命令<ul><li><code>prepublish</code>: Run BEFORE the package is published. <p>(Also run on local npm install without any arguments.)</p>
+</li>
+<li><code>publish, postpublish</code>: Run AFTER the package is published.</li>
+<li><code>preinstall</code>: Run BEFORE the package is installed</li>
+<li><code>install, postinstall</code>: Run AFTER the package is installed.</li>
+<li><code>preuninstall, uninstall</code>: Run BEFORE the package is uninstalled.</li>
+<li><code>postuninstall</code>: Run AFTER the package is uninstalled.</li>
+<li><code>preupdate</code>: Run BEFORE the package is updated with the update command.</li>
+<li><code>update, postupdate</code>: Run AFTER the package is updated with the update command.</li>
+<li><code>pretest, test, posttest</code>: Run by the <code>npm test</code> command.</li>
+<li><code>prestop, stop, poststop</code>: Run by the <code>npm stop</code> command.</li>
+<li><code>prestart, start, poststart</code>: Run by the <code>npm start</code> command.</li>
+<li><code>prerestart, restart, postrestart</code>: Run by the <code>npm restart</code> command. <p>Note: <code>npm restart</code> will run the stop and start scripts if no restart script is provided.</p>
+</li></ul>
+<p>举例1：</p>
+<pre><code>{ 
+    "name" : "foo"
+    , "config" : { "port" : "8080" }
+    , "scripts" : { "start" : "node server.js" } 
+} </code></pre>
+<p>举例2:</p>
+<pre><code>{ 
+    "scripts" :
+    { 
+        "install" : "scripts/install.js"
+        , "postinstall" : "scripts/install.js"
+        , "uninstall" : "scripts/uninstall.js"
+    }
+}  </code></pre>
+<p>举例3:</p>
+<pre><code>{ 
+    "scripts" : { 
+        "preinstall" : "./configure"
+        , "install" : "make &amp;&amp; make install"
+        , "test" : "make test"
+    }
+}  </code></pre>
+</li>
 <li>config</li>
 <li>dependencies<pre><code>{ "dependencies" :
   { "foo" : "1.0.0 - 2.9999.9999"
@@ -107,7 +338,8 @@ npm set &lt;key> &lt;value> [--global] </code></pre>
   }
 } </code></pre>
 </li>
-<li>devDependencies<pre><code>{ "name": "ethopia-waza",
+<li>devDependencies<p>通过在package的根目录下运行<code>npm link</code>或者<code>npm install</code>，会进行安装开发依赖。</p>
+<pre><code>{ "name": "ethopia-waza",
   "description": "a delightfully fruity coffee varietal",
   "version": "1.2.3",
   "devDependencies": {

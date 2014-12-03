@@ -492,6 +492,8 @@ npm获取配置信息，来自`六个来源，优先级如下，由高到低`：
 
 * devDependencies
 
+    通过在package的根目录下运行`npm link`或者`npm install`，会进行安装开发依赖。
+
         { "name": "ethopia-waza",
           "description": "a delightfully fruity coffee varietal",
           "version": "1.2.3",

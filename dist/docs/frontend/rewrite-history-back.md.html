@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="javascript:history.back()">返回 [ or Backspace ]</a>
+    </div>
+
+<h1> Rewrite history.back</h1>
+<blockquote><p> 注意重写history对象是不行的，只能重写history.back</p></blockquote>
+
+
+<h2> 一、注意点</h2>
+<p><code>history.length</code>表示浏览过的历史数目。</p>
+<p><code>不能</code>判断还能不能后退，或者当前在历史中的索引。</p>
+<p>需要使用一些hack方法，比如使用<code>延时</code>和注册<code>onbeforeunload和onhashchange事件</code>，如第二种方法。</p>
+
+
+
+
+<h2> 二、方案</h2>
+<ol><li>一棍子打死，直接重写：<pre><code>(function(){
+
+    if(window.oldHistoryBack) return;
+
+    var oldBack = window.oldHistoryBack = history.back;
+    history.back = function(){
+        location.href= 'bdapi://hybrid?info={"action": "history_back", "args": {}}'; 
+        console.log('trigger events');
+    }
+
+})(); 
+history.back();  </code></pre>
+</li>
+<li>稍作判断，在后退到第一个历史的时候触发：<pre><code>(function(){
+
+    if(window.oldHistoryBack) return;
+
+    var oldBack = window.oldHistoryBack = history.back;
+    history.back = function(){
+        var timer = setTimeout(function(){
+            location.href= 'bdapi://hybrid?info={"action": "history_back", "args": {}}'; 
+            console.log('trigger events');
+        }, 100);
+
+        window.onbeforeunload = function(e){
+            clearTimeout(timer);
+        };
+
+        window.onhashchange = function(e){
+            clearTimeout(timer);
+        };
+
+        oldBack.apply(history, arguments);
+    }
+
+})(); 
+history.back();   </code></pre>
+</li></ol>
+
+    <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+
+document.title = $('h1').html() || '技术文档－258i.com';    
+
+$(document).on('keydown', function(e){
+    var BACKSPACE = 8,
+        LEFT = 37;
+
+    if(BACKSPACE == e.keyCode
+        || BACKSPACE == e.which
+        || LEFT == e.keyCode
+        || LEFT == e.which){
+        e.preventDefault();
+        history.back();
+    }
+});
+
+})();
+</script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>

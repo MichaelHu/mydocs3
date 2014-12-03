@@ -10,10 +10,14 @@
 ./frontend/class_extend.md
 ./frontend/commonjs.md
 ./frontend/grunt.md
+./frontend/js-basics.md
 ./frontend/lesscss.md
+./frontend/qunit.md
 ./frontend/requirejs.md
+./frontend/rewrite-history-back.md
 ./frontend/seajs.md
 ./frontend/useful_javascript_frameworks.md
+./git/git-memo.md
 ./h5games/animation.md
 ./h5games/box2dweb/box2dweb.md
 ./h5games/canvas.md
@@ -22,11 +26,13 @@
 ./h5games/games.md
 ./html5/css3.md
 ./html5/dom-events.md
+./html5/ua.md
 ./linux/expect-command.md
 ./linux/network.md
 ./linux/user_group.md
 ./make/make.md
 ./mcwebserver/introduce.md
+./network/cname_a.md
 ./nodejs/node-example.md
 ./nodejs/node-gyp.md
 ./nodejs/npm.md
@@ -55,6 +61,7 @@
 ./shell/linux-expect.md
 ./shell/linuxshell.md
 ./shell/winshell.md
+./ssh/ssh-key.md
 ./ssh/ssh-proxy.md
 ./vim/vim-eval.md
 ./vim/vim-memo.md

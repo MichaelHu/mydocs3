@@ -428,16 +428,16 @@ for /f "eol=# delims=, tokens=1,2,*" %%i in (musics.txt) do echo !M! &amp;&amp; 
 <p>或者在代码中添加以下命令：</p>
 <pre><code>setlocal enabledelayedexpansion     </code></pre>
 <p><code>例子6：MP3文件下载</code></p>
-<p>详见D:PersonaliPhone3GSMusicsbin目录下的两个批处理文件：</p>
+<p>详见D:\Personal\iPhone3GS\Musics\bin目录下的两个批处理文件：</p>
 <pre><code>get_all.bat
 get_musics.bat </code></pre>
 <p>双击get_all.bat文件，可以进行MP3文件下载。
-D:PersonaliPhone3GSMusicsbinconf目录下的list.txt是MP3下载文件列表。</p>
+D:\Personal\iPhone3GS\Musics\bin\conf目录下的list.txt是MP3下载文件列表。</p>
 
 <ol><li>使用了for循环嵌套</li>
 <li>使用了环境变量延时加载</li></ol>
 <p><code>例子7：局域网网速监测</code></p>
-<p>查看Samplesnetwork_ratio_detectnetwork_ratio_detect.bat文件，用于监测网络速度是否低于某个阈值，并给出报警。</p>
+<p>查看Samples\network_ratio_detect\network_ratio_detect.bat文件，用于监测网络速度是否低于某个阈值，并给出报警。</p>
 
 <p><code>例子8：批量生成diff文件</code></p>
 <pre><code>svn st > review.lst
@@ -571,7 +571,7 @@ ERASE [/P] [/F] [/S] [/Q] [/A[[:]attributes]] names </code></pre>
 <p>强制删除只读文件。</p>
 <pre><code>del /f  </code></pre>
 <h2> 12. findstr命令</h2>
-<p>先恶作剧一下，进入到c:windowssystem32目录，输入以下命令：</p>
+<p>先恶作剧一下，进入到c:\windows\system32目录，输入以下命令：</p>
 <pre><code>$ findstr a * </code></pre>
 <p>嘀嘀声还不错吧，哈哈。千万别在这么大的目录下做这种事情，findstr会循环打开各种文件（包括二进制文件），</p>
 <p>而且a这种字符太常见了，这时，很有可能你的cmd变成未响应状态，而且还kill不掉。</p>

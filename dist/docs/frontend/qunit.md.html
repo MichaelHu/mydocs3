@@ -18,45 +18,38 @@
 <a href="javascript:history.back()">返回 [ or Backspace ]</a>
     </div>
 
-<h1> node-gyp</h1>
-<blockquote><p> Node.js <code>native addon</code> build tool</p></blockquote><p>Generates Your Projects</p>
-<p>nodejs编写的跨平台命令行工具。</p>
-<p>nodejs的C++模块的编译工具，node的0.8版本之前，用的是<code>node-waf</code>编译，该版本之后，就进入使用node-gyp编译工具。</p>
-<p><code>GITHUB</code>: <a href="https://github.com/TooTallNate/node-gyp/">node-gyp</a></p>
-<p>其配置文件名为<code>binding.gyp</code></p>
-<h2> 安装方式</h2>
-<pre><code>$ npm install -g node-gyp  </code></pre>
-<h2> 举例</h2>
-<h3> C++模块，binding.cc</h3>
-<pre><code>#include &lt;node.h>
-#include &lt;v8.h>
+<h1> QUnit Memo</h1>
+<p>由jQuery团队开发，也是jQuery的官方测试套装。</p>
+<p><a href="http://qunitjs.com/">qunitjs.com</a></p>
+<p>npm: <code>npm install --save-dev qunitjs</code></p>
+<h2> 测试环境</h2>
+<p><code>HTML代码：</code></p>
+<pre><code>&lt;!DOCTYPE html>
+&lt;html>
+&lt;head>
+    &lt;title>QUnit Test Suite&lt;/title>
+    &lt;link rel="stylesheet" href="http://github.com/jquery/qunit/raw/master/qunit/qunit.css" type="text/css" media="screen">
+    &lt;script type="text/javascript" src="http://github.com/jquery/qunit/raw/master/qunit/qunit.js">&lt;/script>
+    &lt;!-- Your project file goes here -->
+    &lt;script type="text/javascript" src="myProject.js">&lt;/script>
+    &lt;!-- Your tests file goes here -->
+    &lt;script type="text/javascript" src="myTests.js">&lt;/script>
+&lt;/head>
+&lt;body>
+    &lt;h1 id="qunit-header">QUnit Test Suite&lt;/h1>
+    &lt;h2 id="qunit-banner">&lt;/h2>
+    &lt;div id="qunit-testrunner-toolbar">&lt;/div>
+    &lt;h2 id="qunit-userAgent">&lt;/h2>
+    &lt;ol id="qunit-tests">&lt;/ol>
+&lt;/body>
+&lt;/html> </code></pre>
+<ol><li>使用以上脚手架</li>
+<li>引入项目js文件和test文件</li></ol>
+<h2> 关键测试方法</h2>
+<blockquote><p> test文件中测试用例的写法</p></blockquote>
 
-using namespace v8;
 
-Handle&lt;Value> Method(const Arguments&amp; args) {
-  HandleScope scope;
-  return scope.Close(String::New("world"));
-}
 
-void init(Handle&lt;Object> target) {
-  NODE_SET_METHOD(target, "hello", Method);
-}
-
-NODE_MODULE(binding, init); </code></pre>
-<h3> binding.gyp文件</h3>
-<pre><code>{
-  'targets': [
-    {
-      'target_name': 'binding',
-      'sources': [ 'binding.cc' ]
-    }
-  ]
-}   </code></pre>
-<h3> js调用代码</h3>
-<pre><code>var assert = require('assert');
-var binding = require('./build/Release/binding');
-assert.equal('world', binding.hello());
-console.log('binding.hello() =', binding.hello());  </code></pre>
 
     <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>

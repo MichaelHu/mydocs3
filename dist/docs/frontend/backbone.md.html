@@ -22,18 +22,22 @@
 <p>2014-09-29</p>
 <h2> AMD、CMD支持</h2>
 <pre><code>(function(root, factory){
+    // AMD first
     if(typeof define === 'function' &amp;&amp; define.amd){
         define(['underscore', 'jquery', 'exports'], function(_, $, exports){
             root.Backbone = factory(root, exports, _, $);
         });
     } 
+    // then Node.js or CommonJS
     else if(typeof exports !== 'undefined'){
         var _ = require('underscore');
         factory(root, exports, _);
     }
+    // last global Backbone
     else {
         root.Backbone = factory(root
             , {}, root._
+            // $ can be jQuery, Zepto, ender
             , ( root.jQuery || root.Zepto || root.ender || root.$ )
         );
     }
@@ -41,13 +45,13 @@
     ...
 }); </code></pre>
 <h2> Events，可以mixin到任何一个对象，提供自定义事件的功能。</h2>
-<ol><li>on/bind: function(name, callback, context)</li>
-<li>once: function(name, callback, context)</li>
-<li>off/unbind: function(name, callback, context)</li>
-<li>trigger: function(name)</li>
-<li>stopListening: function(obj, name, callback)</li>
-<li>listenTo: function(obj, name, callback)</li>
-<li>listenToOnce: function(obj, name, callback)</li></ol>
+<ol><li><code>on/bind</code>: function(name, callback, context)</li>
+<li><code>once</code>: function(name, callback, context)</li>
+<li><code>off/unbind</code>: function(name, callback, context)</li>
+<li><code>trigger</code>: function(name)</li>
+<li><code>stopListening</code>: function(obj, name, callback)</li>
+<li><code>listenTo</code>: function(obj, name, callback)</li>
+<li><code>listenToOnce</code>: function(obj, name, callback)</li></ol>
 <h2> Model，通常表示数据表的一行</h2>
 <ol><li>constructor:<ol><li>cid: _.uniqueId('c')</li>
 <li>attributes: {...}</li>
@@ -139,7 +143,7 @@ escapeRegExp = /[\-{}\[\]+?.,\\\^$|#\s]/g  </code></pre>
 <li>prototype<ol><li>initialize: function() </li>
 <li>route: funciton(route, name, callback)</li>
 <li>execute: function(callback, args, name)</li>
-<li>navigate: function(fragment, options)<p>如果是hash，fragment为hash值（不包含#），如果是pushState，fragment为path值（出去root部分）</p>
+<li>navigate: function(fragment, options)<p>如果是hash，fragment为hash值（不包含#），如果是pushState，fragment为path值（除去root部分）</p>
 </li>
 <li>_bindRoutes: function()</li>
 <li>_routeToRegExp: function(route)</li>
@@ -184,6 +188,7 @@ var slice = array.slice
 var urlError = function()
 var wrapError = function(model, options) </code></pre>
 <p>比较特殊的<code>extend</code>方法，生成一个子类：</p>
+<p>子类可以通过<code>__super__.xxx</code>调用父类原型链的对应方法。</p>
 <pre><code>var extend = function(protoProps, staticProps){
     var parent = this;
     var child;
@@ -217,14 +222,14 @@ var wrapError = function(model, options) </code></pre>
     return child;
 }; </code></pre>
 <h2> static attrs and methods</h2>
-<ol><li>Backbone.sync: function(method, model, options)</li>
-<li>Backbone.ajax: function()</li>
-<li>Backbone.history = new History</li>
-<li>Backbone.VERSION = '1.1.2';</li>
-<li>Backbone.$ = $;</li>
-<li>Backbone.noConflict = function()</li>
-<li>Backbone.emulateHTTP = false</li>
-<li>Backbone.emulateJSON = false</li></ol>
+<ol><li><code>Backbone.sync</code>: function(method, model, options)</li>
+<li><code>Backbone.ajax</code>: function()</li>
+<li><code>Backbone.history</code> = new History</li>
+<li><code>Backbone.VERSION</code> = '1.1.2';</li>
+<li><code>Backbone.$</code> = $;</li>
+<li><code>Backbone.noConflict</code> = function()</li>
+<li><code>Backbone.emulateHTTP</code> = false</li>
+<li><code>Backbone.emulateJSON</code> = false</li></ol>
 
     <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>

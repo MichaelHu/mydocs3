@@ -18,45 +18,23 @@
 <a href="javascript:history.back()">返回 [ or Backspace ]</a>
     </div>
 
-<h1> node-gyp</h1>
-<blockquote><p> Node.js <code>native addon</code> build tool</p></blockquote><p>Generates Your Projects</p>
-<p>nodejs编写的跨平台命令行工具。</p>
-<p>nodejs的C++模块的编译工具，node的0.8版本之前，用的是<code>node-waf</code>编译，该版本之后，就进入使用node-gyp编译工具。</p>
-<p><code>GITHUB</code>: <a href="https://github.com/TooTallNate/node-gyp/">node-gyp</a></p>
-<p>其配置文件名为<code>binding.gyp</code></p>
-<h2> 安装方式</h2>
-<pre><code>$ npm install -g node-gyp  </code></pre>
-<h2> 举例</h2>
-<h3> C++模块，binding.cc</h3>
-<pre><code>#include &lt;node.h>
-#include &lt;v8.h>
-
-using namespace v8;
-
-Handle&lt;Value> Method(const Arguments&amp; args) {
-  HandleScope scope;
-  return scope.Close(String::New("world"));
-}
-
-void init(Handle&lt;Object> target) {
-  NODE_SET_METHOD(target, "hello", Method);
-}
-
-NODE_MODULE(binding, init); </code></pre>
-<h3> binding.gyp文件</h3>
-<pre><code>{
-  'targets': [
-    {
-      'target_name': 'binding',
-      'sources': [ 'binding.cc' ]
-    }
-  ]
-}   </code></pre>
-<h3> js调用代码</h3>
-<pre><code>var assert = require('assert');
-var binding = require('./build/Release/binding');
-assert.equal('world', binding.hello());
-console.log('binding.hello() =', binding.hello());  </code></pre>
+<h1> git使用备忘</h1>
+<h2> ssh访问</h2>
+<ol><li>本地机器上生成SSH Key<ol><li>先查看是否存在<code>~/.ssh</code>，该目录下存在两个文件<pre><code>id_rsa
+id_rsa.pub </code></pre>
+<p>一个秘钥，一个公钥。如果已经存在，直接进入第二步，否则运行以下命令：</p>
+<pre><code>$ ssh-keygen -t rsa </code></pre>
+</li></ol>
+</li>
+<li>将生成的公钥<code>id_rsa.pub</code>的内容复制到github上的用户设置之<code>SSH keys</code></li>
+<li>测试是否添加成功：<pre><code>$ ssh -T git@github.com
+The authenticity of host 'github.com (192.30.252.128)' can't be established.
+RSA key fingerprint is 16:22:ac:a5:76:88:2d:36:63:1b:56:4d:eb:df:a2:48.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'github.com,192.30.252.128' (RSA) to the list of known hosts.
+Hi MichaelHu! You've successfully authenticated, but GitHub does not provide shell access. </code></pre>
+<p>以上显示已经添加成功</p>
+</li></ol>
 
     <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>

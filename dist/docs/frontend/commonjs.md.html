@@ -19,19 +19,26 @@
     </div>
 
 <h1> CommonJS Modules/1.1.1</h1>
+<blockquote><p> A way to build up the JavaScript ecosystem for web servers, desktop and command line  apps and in the browser.</p></blockquote><p><code>CommonJS wiki:</code> <a href="http://wiki.commonjs.org/wiki/CommonJS">CommonJS</a></p>
 <h2> require</h2>
 <ul><li>require是一个函数<ul><li>接收模块标识参数</li>
 <li>返回外部模块导出的API</li>
-<li>如果存在循环依赖，。。。</li>
+<li>如果存在循环依赖，the foreign module may not have finished executing at the time it is <p>required by one of its transitive dependencies; in this case, the object returned by 
+"require" must contain at least the exports that the foreign module has prepared before 
+the call to require that led to the current module's execution.</p>
+</li>
 <li>请求的模块如果不能返回，必须抛出错误</li>
-<li>函数可能有<code>main</code>属性<ul><li><code>main</code>属性如果可行，应该是只读的，不能删除</li>
+<li>函数可能有<code>main</code>属性<ul><li><code>main</code>属性如果可行的话，应该是只读的，不能删除</li>
 <li><code>main</code>属性要么<code>undefined</code>，要么等同于上下文中的一个已加载模块的<code>module</code>对象 </li></ul>
 </li>
 <li>函数可能有<code>paths</code>属性，是一个路径字符串组成的优先级数组，从高到低排列<ul><li>该属性必须不能存在与<code>sandbox</code>（一个安全模块系统） </li>
 <li>该属性必须在所有模块中引用一致 </li>
 <li>将<code>paths</code>对象替换成另一对象无法生效</li>
 <li>如果<code>paths</code>属性存在，原地修改其对象内容必须影响其对应模块的搜索行为</li>
-<li>...</li></ul>
+<li>If the "paths" attribute exists, it may not be an exhaustive list of search paths, <p>as the loader may internally look in other locations before or after the mentioned paths. </p>
+</li>
+<li>If the "paths" attribute exists, it is the loader's prorogative to resolve, normalize, <p>or canonicalize the paths provided.</p>
+</li></ul>
 </li></ul>
 </li></ul>
 <h2> module上下文</h2>
@@ -43,8 +50,14 @@
 <li>module可能有一个<code>uri</code>属性，该属性不能存在于sandbox中</li></ul>
 </li></ol>
 <h2> module标识</h2>
-<p>...</p>
-
+<ol><li>A module identifier is a String of <code>"terms"</code> delimited by forward slashes</li>
+<li>A term must be a camelCase identifier, <code>"."</code>, or <code>".."</code></li>
+<li>Module identifiers may not have file-name extensions like <code>".js"</code></li>
+<li>Module identifiers may be <code>"relative"</code> or <code>"top-level"</code>. A module identifier is <code>"relative"</code><p>if the first term is <code>"."</code> or <code>".."</code></p>
+</li>
+<li>Top-level identifiers are resolved off the conceptual module name space root</li>
+<li>Relative identifiers are resolved relative to the identifier of the module in which <p><code>"require"</code> is written and called</p>
+</li></ol>
 <h2> 例子</h2>
 <ol><li>math.js<pre><code>exports.add = function() {
     var sum = 0, i = 0, args = arguments, l = args.length;
