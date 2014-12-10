@@ -53,6 +53,42 @@
 
 
 
+## Inserting Commands
+
+
+`特殊insert：`
+
+    :r {file}
+    :r! command
+
+关于`++opt`：
+
+> The [++opt] argument can be used to force the value of 'fileformat',
+> 'fileencoding' or 'binary' to a value for one command, and to specify the
+> behavior for bad characters.
+
+格式为：
+
+    ++{optname}
+    ++{optname}={value}
+
+`{optname}`可以是以下值：
+
+    ff     or  fileformat   overrides 'fileformat'
+    enc    or  encoding     overrides 'fileencoding'                                                              
+    bin    or  binary       sets 'binary'               
+    nobin  or  nobinary     resets 'binary'
+    bad                     specifies behavior for bad characters
+    edit                    for |:read| only: keep option values as if editing
+                            a file
+
+举例如下：
+
+    :e ++ff=unix
+    :w ++enc=latin1 newfile
+
+
+
 ## Left-right motions
 
 常用的：`h, l, 0, ^, t{char}, T{char}`

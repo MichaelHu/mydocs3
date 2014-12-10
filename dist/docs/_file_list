@@ -10,6 +10,7 @@
 ./frontend/class_extend.md
 ./frontend/commonjs.md
 ./frontend/grunt.md
+./frontend/ie-bugs.md
 ./frontend/js-basics.md
 ./frontend/lesscss.md
 ./frontend/qunit.md
@@ -27,6 +28,7 @@
 ./html5/css3.md
 ./html5/dom-events.md
 ./html5/ua.md
+./http/http-basics.md
 ./linux/expect-command.md
 ./linux/network.md
 ./linux/user_group.md

@@ -64,20 +64,27 @@ npm: `npm install --save-dev qunitjs`
         ok(expr, msg)
         equals(expr, expr, msg)
         same(expr, expr, msg)
+        deepEqual(expr, expr, msg)
+        strictEqual(expr, expr, msg)
+
+
+    `equals`已经废弃，新版本使用`equal`
+
+    `same`已经废弃，新版本使用`deepEqual`
 
 
     例子如：
 
         test('assertions', function() {
-            equals( 2, 1, 'one equals one');
+            equal( 2, 1, 'one equals one');
         })
 
 
         test('test', function() {
-            same( {}, {}, 'passes, objects have the same content');
-            same( {a: 1}, {a: 1} , 'passes');
-            same( [], [], 'passes, arrays have the same content');
-            same( [1], [1], 'passes');
+            deepEqual( {}, {}, 'passes, objects have the same content');
+            deepEqual( {a: 1}, {a: 1} , 'passes');
+            deepEqual( [], [], 'passes, arrays have the same content');
+            deepEqual( [1], [1], 'passes');
         })
 
 

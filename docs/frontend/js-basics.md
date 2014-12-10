@@ -39,5 +39,14 @@ IE9以下，hasEnumBug
     10              [object Number]
 
 
+## arguments是Array-like的
+
+    (function(){
+        console.log(arguments);
+    })();
+
+`output`:
+
+    []
 
 

@@ -2,13 +2,13 @@
 
 > 从已存在的父类中派生出一个子类的实现方式 
 
-## Backbone实现
+## 一、Backbone实现
 
-支持通过`this.__super__`调用父类的原型链，比如子类的init方法中调用父类的init方法：
+支持通过`Class.__super__`调用父类的原型链，比如子类的init方法中调用父类的init方法：
 
     ...
-    this.__super__.init &&
-        this.__super__.init.apply(this, arguments);
+    Class.__super__.init &&
+        Class.__super__.init.apply(this, arguments);
     ... 
 
 具体实现如下：
@@ -49,10 +49,20 @@
       return child;
     };
 
+`解析`：
+
+1. 函数中的`var parent = this;`代表的是父类本身，比如Model
+2. 可以自行提供子类的构造函数，使用`constructor`字段
+3. 默认情况下，子类构造函数会自动调用父类构造函数
+4. 父类`静态方法`自动添加到子类
+5. 设置子类prototype时，避免直接调用父类构造函数，而是使用一个`dummy function`，该函数
+    只是简单的设置`this.constructor`属性。
 
 
 
-## Quintus实现
+
+
+## 二、Quintus实现
 
 支持`this._super()`方法，通过该方法可以调用`同名`的父类方法，比如子类的init方法中调用父类的init方法：
 
@@ -148,5 +158,79 @@
     ));
 
 
+从当前类派生子类：
+
+1. `_super = this.prototype`：当前类的prototype
+2. `ThisClass = this`：当前类
+3. `prototype = new ThisClass`：当前类的实例，将作为子类的prototype
+4. `_superFactory(name, prop[name])`：prop中存在的方法，若在当前类的prototype中有同名函数，
+    则构建一个`临时属性this._super`，通过之可以直接调用上级prototype的同名方法
+5. `Class`：子类构造函数
 
 
+
+
+## 三、Rocket-p实现
+
+参考了Backbone和Quintus实现，具有以下特征：
+1. 子类通过`Class._superClass`获得父类的引用
+2. 子类方法（原型链方法）通过`this._super`，可调用父类对应方法 
+3. 可以自行提供子类的构造函数，使用`constructor`字段
+
+具体实现如下：
+
+    function classExtend(protoProps, staticProps){
+                                                 
+        var parentClass = this;                  
+        var subClass;
+
+        // The constructor function for the new subclass is either defined by you
+        // (the "constructor" property in your `extend` definition), or defaulted
+        // by us to simply call the parent's constructor.
+        if(protoProps && Utils.has(protoProps, 'constructor')){
+            subClass = protoProps.constructor;   
+        }
+        else{
+            subClass = function(){ return parentClass.apply(this, arguments); }; 
+        }
+        
+        // Add static properties to the constructor function, if supplied.
+        Utils.extend(subClass, parentClass, staticProps);
+
+        // Set the prototype chain to inherit from `parent`, without calling
+        // `parent`'s constructor function.
+        var Surrogate = function(){ this.constructor = subClass; }; 
+        Surrogate.prototype = parentClass.prototype;  
+        subClass.prototype = new Surrogate;
+
+        function _superFactory(name, fn) {
+            return function() {
+                var tmp = this._super;
+
+                /* Add a new ._super() method that is the same method */
+                /* but on the super-class */
+                this._super = parentClass.prototype[name];    
+
+                /* The method only need to be bound temporarily, so we */
+                /* remove it when we're done executing */     
+                var ret = fn.apply(this, arguments);          
+                this._super = tmp;
+
+                return ret;
+            };
+        }
+        if(protoProps){
+            // Note: Does not take effect when name is `"constructor"`
+            for(var name in protoProps){
+                subClass.prototype[name] = 
+                    typeof protoProps[name] === 'function'        
+                        && typeof parentClass.prototype[name] === 'function'
+                    ? _superFactory(name, protoProps[name])       
+                    : protoProps[name];
+            }
+        }
+
+        subClass._superClass = parentClass;
+
+        return subClass;
+    }

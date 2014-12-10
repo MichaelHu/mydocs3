@@ -25,5 +25,51 @@
 
     以上显示已经添加成功
 
+## git diff
+
+常用命令：
+
+    # 当前文件与暂存区文件比较
+    git diff <file>
+
+    # 两次提交或两个分支HEAD之间的差异
+    git diff <commit1> <commit2> <file>
+    git diff <branch1> <branch2> <file>
+    git diff <commit1>..<commit2> <file>
+    git diff <branch1>..<branch2> <file>
+
+    # 两次提交的公共merge祖先与commit2的比较，两次commit需遵从历史先后关系
+    git diff <commit1>...<commit2> <file>
+    git diff <branch1>...<branch2> <file>
+
+    # 暂存区与版本库差异
+    git diff --staged <file>
+    git diff --cached <file>
+
+其他options：
+
+    --stat 显示统计信息
+
+以上<file>可以是文件，也可以是目录。
+
+
+## git log
+
+常用命令：
+
+    # 最近n次修改日志
+    git log -n <file>
+
+    # 详细修改日志
+    git log -p <file>
+
+    # 最近n次详细修改日志
+    git log -p -n <file>
+
+    # 修改日志统计信息
+    git log --stat <file>
+
+
+
 
 

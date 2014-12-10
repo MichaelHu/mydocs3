@@ -18,37 +18,13 @@
 <a href="javascript:history.back()">返回 [ or Backspace ]</a>
     </div>
 
-<h1> js basics</h1>
+<h1> ie bugs</h1>
+<h2> ie6,7之jsonp问题</h2>
+<p>如果<code>document</code>是<code>GBK</code>页面，使用<code>jsonp</code>请求一个<code>utf-8</code>的数据接口，<code>需要设置script标签的charset属性</code>，否则
+可能导致脚本解析出错。</p>
+<pre><code>&lt;script src="..." charset="utf-8" type="text/javascript">&lt;/script> </code></pre>
+<p>原因大概是低版本的IE浏览器script标签请求，对<code>Respond Headers</code>的<code>charset</code>并不关注。</p>
 
-<h2> 绝对等式</h2>
-<pre><code>typeof null === 'object'
-void 0 === undefined </code></pre>
-<p>数字判断：</p>
-<pre><code>num === +num </code></pre>
-<p>IE9以下，hasEnumBug</p>
-
-<h2> 一般等式</h2>
-<pre><code>null == undefined
-0 == ''
-false == 0
-false == ''  </code></pre>
-<h2> TRUE表达式</h2>
-<pre><code>!null
-!void 0
-!undefined
-!0
-!''  </code></pre>
-<h2> Object.prototype.toString.call(obj)</h2>
-<p>注意<code>不是Object.toString</code>，该toString来自<code>Function.prototype.toString</code></p>
-<pre><code>function(){}    [object Function]
-[]              [object Array]
-10              [object Number]  </code></pre>
-<h2> arguments是Array-like的</h2>
-<pre><code>(function(){
-    console.log(arguments);
-})(); </code></pre>
-<p><code>output</code>:</p>
-<pre><code>[]   </code></pre>
 
     <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>

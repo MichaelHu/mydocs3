@@ -83,6 +83,29 @@ element.addEventListener("transitionend", showMessage, false);    </code></pre>
 <ol><li><code>webkitAnimationEnd</code></li>
 <li><code>oAnimationEnd</code></li>
 <li><code>MSAnimationEnd</code></li></ol>
+<h2> min-device-pixel-ratio</h2>
+<p>移动系统支持情况：</p>
+<ul><li>iOS3.2 +</li>
+<li>Android 2.1+</li></ul>
+<p><code>检测页面：</code> <a href="http://bjango.com/articles/min-device-pixel-ratio/">min-device-pixel-ratio</a></p>
+<p>例如，针对3倍设备像素比的设备，使用<code>@3x</code>图片，可使用以下代码：</p>
+<pre><code>@media only screen and (-webkit-min-device-pixel-ratio: 3) {
+    selector {
+        ...
+    }
+    ...
+}    </code></pre>
+<h2> Media Queries</h2>
+<ol><li><code>W3C：</code><a href="http://www.w3.org/TR/css3-mediaqueries/"></a></li>
+<li><code>参考页面：</code><a href="http://www.cnblogs.com/asqq/archive/2012/04/13/2445912.html">Media Queries详解</a><p><link rel="stylesheet" media="screen and (max-width:600px)" href="small.css" type="text/css" />
+<link rel="stylesheet" media="screen and (min-width:900px)" href="big.css" type="text/css"  />
+<link rel="stylesheet" media="screen and (max-device-width: 480px)" href="iphone.css" type="text/css" />
+<link rel="stylesheet" media="only screen and (-webkit-min-device-pixel-ratio: 2)" type="text/css" href="iphone4.css" />
+<link rel="stylesheet" media="all and (orientation:portrait)" href="portrait.css" type="text/css" /> 
+<link rel="stylesheet" media="all and (orientation:landscape)" href="landscape.css"  type="text/css" />
+<link rel="stylesheet" media="not print and (max-width: 1200px)" href="print.css" type="text/css" />
+<link rel="stylesheet" media="only screen and (max-device-width:240px)" href="android240.css" type="text/css" /></p>
+</li></ol>
 
     <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>

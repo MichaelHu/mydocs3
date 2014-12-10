@@ -233,6 +233,7 @@ ctx.strokeRect(5,5,25,15); </code></pre>
 var ctx=c.getContext("2d");
 ctx.rotate(20*Math.PI/180);
 ctx.fillRect(50,20,100,50);         </code></pre>
+<p>注意，坐标系转换函数，<code>在绘制前调用</code>，才能影响绘制函数。</p>
 </li>
 <li><code>translate</code>: function(tx, ty)<p>平移</p>
 </li>

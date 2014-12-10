@@ -40,6 +40,34 @@
 
 ## Model，通常表示数据表的一行
 
+### 1. 说明
+
+1. `validate`对attributes进行验证，返回值error，如果`!error == true`，则通过验证；
+    否则，属性不会变化，也不会触发change事件
+2. 事件按序触发
+3. `unset`不存在的属性，不会触发`change`事件
+4. `this.id`代表Model的唯一服务端标识，它的值由以下代码决定：
+    
+        if(this.idAttribute in attrs) this.id = attrs[this.idAttribute];
+
+    也就是说，即使idAttribute并不是`id`，而是比如说`_id`，也会生成`this.id`。
+
+        model.unset('_id')
+    
+    将会重置`this.id`为`undefined`，使得其称为一个New Model，即`model.isNew()`为true
+5. `model.sync`函数，其error事件在封装的`options.error`方法中触发
+6. `save, fetch, destroy`都会调用`model.sync`和服务器进行同步
+7. `patch`方式，若`options.attrs不存在`，会在options下添加`attrs`属性
+8. 事件触发：
+
+    * `request`：每次发起服务端请求时都会触发，参数为`model, xhr, options`
+    * `sync`：请求成功返回以后触发，参数`model, resp, options`
+    * `change`：模型属性发生变化触发，参数`model, options`
+    * `change:name`：模型属性发生变化触发，参数`model, attr, options`
+
+
+### 2. 代码结构
+
 1. constructor:
     1. cid: _.uniqueId('c')
     2. attributes: {...}

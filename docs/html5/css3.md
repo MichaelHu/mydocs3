@@ -97,3 +97,40 @@
 1. `webkitAnimationEnd`
 2. `oAnimationEnd`
 3. `MSAnimationEnd`
+
+
+
+## min-device-pixel-ratio
+
+移动系统支持情况：
+* iOS3.2 +
+* Android 2.1+
+
+`检测页面：` <a href="http://bjango.com/articles/min-device-pixel-ratio/">min-device-pixel-ratio</a>
+
+例如，针对3倍设备像素比的设备，使用`@3x`图片，可使用以下代码：
+
+    @media only screen and (-webkit-min-device-pixel-ratio: 3) {
+        selector {
+            ...
+        }
+        ...
+    }
+
+
+
+
+## Media Queries
+
+1. `W3C：`<a href="http://www.w3.org/TR/css3-mediaqueries/"></a>
+2. `参考页面：`<a href="http://www.cnblogs.com/asqq/archive/2012/04/13/2445912.html">Media Queries详解</a>
+
+    <link rel="stylesheet" media="screen and (max-width:600px)" href="small.css" type="text/css" />
+    <link rel="stylesheet" media="screen and (min-width:900px)" href="big.css" type="text/css"  />
+    <link rel="stylesheet" media="screen and (max-device-width: 480px)" href="iphone.css" type="text/css" />
+    <link rel="stylesheet" media="only screen and (-webkit-min-device-pixel-ratio: 2)" type="text/css" href="iphone4.css" />
+    <link rel="stylesheet" media="all and (orientation:portrait)" href="portrait.css" type="text/css" /> 
+    <link rel="stylesheet" media="all and (orientation:landscape)" href="landscape.css"  type="text/css" />
+    <link rel="stylesheet" media="not print and (max-width: 1200px)" href="print.css" type="text/css" />
+    <link rel="stylesheet" media="only screen and (max-device-width:240px)" href="android240.css" type="text/css" />
+

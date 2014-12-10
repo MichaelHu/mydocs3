@@ -35,6 +35,41 @@ Warning: Permanently added 'github.com,192.30.252.128' (RSA) to the list of know
 Hi MichaelHu! You've successfully authenticated, but GitHub does not provide shell access. </code></pre>
 <p>以上显示已经添加成功</p>
 </li></ol>
+<h2> git diff</h2>
+<p>常用命令：</p>
+<pre><code># 当前文件与暂存区文件比较
+git diff &lt;file>
+
+# 两次提交或两个分支HEAD之间的差异
+git diff &lt;commit1> &lt;commit2> &lt;file>
+git diff &lt;branch1> &lt;branch2> &lt;file>
+git diff &lt;commit1>..&lt;commit2> &lt;file>
+git diff &lt;branch1>..&lt;branch2> &lt;file>
+
+# 两次提交的公共merge祖先与commit2的比较，两次commit需遵从历史先后关系
+git diff &lt;commit1>...&lt;commit2> &lt;file>
+git diff &lt;branch1>...&lt;branch2> &lt;file>
+
+# 暂存区与版本库差异
+git diff --staged &lt;file>
+git diff --cached &lt;file> </code></pre>
+<p>其他options：</p>
+<pre><code>--stat 显示统计信息 </code></pre>
+<p>以上<file>可以是文件，也可以是目录。</p>
+
+<h2> git log</h2>
+<p>常用命令：</p>
+<pre><code># 最近n次修改日志
+git log -n &lt;file>
+
+# 详细修改日志
+git log -p &lt;file>
+
+# 最近n次详细修改日志
+git log -p -n &lt;file>
+
+# 修改日志统计信息
+git log --stat &lt;file>      </code></pre>
 
     <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>

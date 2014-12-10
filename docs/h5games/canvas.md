@@ -287,6 +287,8 @@ android 2.3.3的原生浏览器是不支持的，虽然该函数可以正常调�
         ctx.rotate(20*Math.PI/180);
         ctx.fillRect(50,20,100,50);        
 
+    注意，坐标系转换函数，`在绘制前调用`，才能影响绘制函数。
+
 * `translate`: function(tx, ty)
     
     平移

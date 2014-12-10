@@ -18,37 +18,12 @@
 <a href="javascript:history.back()">返回 [ or Backspace ]</a>
     </div>
 
-<h1> js basics</h1>
-
-<h2> 绝对等式</h2>
-<pre><code>typeof null === 'object'
-void 0 === undefined </code></pre>
-<p>数字判断：</p>
-<pre><code>num === +num </code></pre>
-<p>IE9以下，hasEnumBug</p>
-
-<h2> 一般等式</h2>
-<pre><code>null == undefined
-0 == ''
-false == 0
-false == ''  </code></pre>
-<h2> TRUE表达式</h2>
-<pre><code>!null
-!void 0
-!undefined
-!0
-!''  </code></pre>
-<h2> Object.prototype.toString.call(obj)</h2>
-<p>注意<code>不是Object.toString</code>，该toString来自<code>Function.prototype.toString</code></p>
-<pre><code>function(){}    [object Function]
-[]              [object Array]
-10              [object Number]  </code></pre>
-<h2> arguments是Array-like的</h2>
-<pre><code>(function(){
-    console.log(arguments);
-})(); </code></pre>
-<p><code>output</code>:</p>
-<pre><code>[]   </code></pre>
+<h1> HTTP Basics</h1>
+<p>application/x-www-form-urlencoded</p>
+<p>X-HTTP-Method-Override</p>
+<p>GET, POST, PUT, DELETE, PATCH</p>
+<pre><code>幂等操作：GET, PUT, DELETE
+非幂等：POST </code></pre>
 
     <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>

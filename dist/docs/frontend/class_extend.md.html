@@ -19,11 +19,11 @@
     </div>
 
 <h1> js类扩展方式</h1>
-<blockquote><p> 从已存在的父类中派生出一个子类的实现方式 </p></blockquote><h2> Backbone实现</h2>
-<p>支持通过<code>this.__super__</code>调用父类的原型链，比如子类的init方法中调用父类的init方法：</p>
+<blockquote><p> 从已存在的父类中派生出一个子类的实现方式 </p></blockquote><h2> 一、Backbone实现</h2>
+<p>支持通过<code>Class.__super__</code>调用父类的原型链，比如子类的init方法中调用父类的init方法：</p>
 <pre><code>...
-this.__super__.init &amp;&amp;
-    this.__super__.init.apply(this, arguments);
+Class.__super__.init &amp;&amp;
+    Class.__super__.init.apply(this, arguments);
 ...  </code></pre>
 <p>具体实现如下：</p>
 <pre><code>// Helper function to correctly set up the prototype chain, for subclasses.
@@ -60,8 +60,15 @@ var extend = function(protoProps, staticProps) {
   child.__super__ = parent.prototype;
 
   return child;
-};    </code></pre>
-<h2> Quintus实现</h2>
+}; </code></pre>
+<p><code>解析</code>：</p>
+<ol><li>函数中的<code>var parent = this;</code>代表的是父类本身，比如Model</li>
+<li>可以自行提供子类的构造函数，使用<code>constructor</code>字段</li>
+<li>默认情况下，子类构造函数会自动调用父类构造函数</li>
+<li>父类<code>静态方法</code>自动添加到子类</li>
+<li>设置子类prototype时，避免直接调用父类构造函数，而是使用一个<code>dummy function</code>，该函数<p>只是简单的设置<code>this.constructor</code>属性。</p>
+</li></ol>
+<h2> 二、Quintus实现</h2>
 <p>支持<code>this._super()</code>方法，通过该方法可以调用<code>同名</code>的父类方法，比如子类的init方法中调用父类的init方法：</p>
 <pre><code>...
 this._super(...);
@@ -150,7 +157,75 @@ Q.Class.extend = function(className, prop, classMethods) {
 
   return Class;
 };
-));     </code></pre>
+));  </code></pre>
+<p>从当前类派生子类：</p>
+<ol><li><code>_super = this.prototype</code>：当前类的prototype</li>
+<li><code>ThisClass = this</code>：当前类</li>
+<li><code>prototype = new ThisClass</code>：当前类的实例，将作为子类的prototype</li>
+<li><code>_superFactory(name, prop[name])</code>：prop中存在的方法，若在当前类的prototype中有同名函数，<p>则构建一个<code>临时属性this._super</code>，通过之可以直接调用上级prototype的同名方法</p>
+</li>
+<li><code>Class</code>：子类构造函数</li></ol>
+<h2> 三、Rocket-p实现</h2>
+<p>参考了Backbone和Quintus实现，具有以下特征：</p>
+<ol><li>子类通过<code>Class._superClass</code>获得父类的引用</li>
+<li>子类方法（原型链方法）通过<code>this._super</code>，可调用父类对应方法 </li>
+<li>可以自行提供子类的构造函数，使用<code>constructor</code>字段</li></ol>
+<p>具体实现如下：</p>
+<pre><code>function classExtend(protoProps, staticProps){
+
+    var parentClass = this;                  
+    var subClass;
+
+    // The constructor function for the new subclass is either defined by you
+    // (the "constructor" property in your `extend` definition), or defaulted
+    // by us to simply call the parent's constructor.
+    if(protoProps &amp;&amp; Utils.has(protoProps, 'constructor')){
+        subClass = protoProps.constructor;   
+    }
+    else{
+        subClass = function(){ return parentClass.apply(this, arguments); }; 
+    }
+
+    // Add static properties to the constructor function, if supplied.
+    Utils.extend(subClass, parentClass, staticProps);
+
+    // Set the prototype chain to inherit from `parent`, without calling
+    // `parent`'s constructor function.
+    var Surrogate = function(){ this.constructor = subClass; }; 
+    Surrogate.prototype = parentClass.prototype;  
+    subClass.prototype = new Surrogate;
+
+    function _superFactory(name, fn) {
+        return function() {
+            var tmp = this._super;
+
+            /* Add a new ._super() method that is the same method */
+            /* but on the super-class */
+            this._super = parentClass.prototype[name];    
+
+            /* The method only need to be bound temporarily, so we */
+            /* remove it when we're done executing */     
+            var ret = fn.apply(this, arguments);          
+            this._super = tmp;
+
+            return ret;
+        };
+    }
+    if(protoProps){
+        // Note: Does not take effect when name is `"constructor"`
+        for(var name in protoProps){
+            subClass.prototype[name] = 
+                typeof protoProps[name] === 'function'        
+                    &amp;&amp; typeof parentClass.prototype[name] === 'function'
+                ? _superFactory(name, protoProps[name])       
+                : protoProps[name];
+        }
+    }
+
+    subClass._superClass = parentClass;
+
+    return subClass;
+} </code></pre>
 
     <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>

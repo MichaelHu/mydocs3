@@ -53,6 +53,25 @@
 <li><code>listenTo</code>: function(obj, name, callback)</li>
 <li><code>listenToOnce</code>: function(obj, name, callback)</li></ol>
 <h2> Model，通常表示数据表的一行</h2>
+<h3> 1. 说明</h3>
+<ol><li><code>validate</code>对attributes进行验证，返回值error，如果<code>!error == true</code>，则通过验证；<p>否则，属性不会变化，也不会触发change事件</p>
+</li>
+<li>事件按序触发</li>
+<li><code>unset</code>不存在的属性，不会触发<code>change</code>事件</li>
+<li><code>this.id</code>代表Model的唯一服务端标识，它的值由以下代码决定：<pre><code>if(this.idAttribute in attrs) this.id = attrs[this.idAttribute]; </code></pre>
+<p>也就是说，即使idAttribute并不是<code>id</code>，而是比如说<code>_id</code>，也会生成<code>this.id</code>。</p>
+<pre><code>model.unset('_id') </code></pre>
+<p>将会重置<code>this.id</code>为<code>undefined</code>，使得其称为一个New Model，即<code>model.isNew()</code>为true</p>
+</li>
+<li><code>model.sync</code>函数，其error事件在封装的<code>options.error</code>方法中触发</li>
+<li><code>save, fetch, destroy</code>都会调用<code>model.sync</code>和服务器进行同步</li>
+<li><code>patch</code>方式，若<code>options.attrs不存在</code>，会在options下添加<code>attrs</code>属性</li>
+<li>事件触发：<ul><li><code>request</code>：每次发起服务端请求时都会触发，参数为<code>model, xhr, options</code></li>
+<li><code>sync</code>：请求成功返回以后触发，参数<code>model, resp, options</code></li>
+<li><code>change</code>：模型属性发生变化触发，参数<code>model, options</code></li>
+<li><code>change:name</code>：模型属性发生变化触发，参数<code>model, attr, options</code></li></ul>
+</li></ol>
+<h3> 2. 代码结构</h3>
 <ol><li>constructor:<ol><li>cid: _.uniqueId('c')</li>
 <li>attributes: {...}</li>
 <li>collection: Backbone.Collection</li>

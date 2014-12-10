@@ -60,6 +60,26 @@ CTRL-T or CTRL-O
 
 " option
 :help 'x'   </code></pre>
+<h2> Inserting Commands</h2>
+
+<p><code>特殊insert：</code></p>
+<pre><code>:r {file}
+:r! command </code></pre>
+<p>关于<code>++opt</code>：</p>
+<blockquote><p> The [++opt] argument can be used to force the value of 'fileformat', 'fileencoding' or 'binary' to a value for one command, and to specify the behavior for bad characters.</p></blockquote><p>格式为：</p>
+<pre><code>++{optname}
+++{optname}={value} </code></pre>
+<p><code>{optname}</code>可以是以下值：</p>
+<pre><code>ff     or  fileformat   overrides 'fileformat'
+enc    or  encoding     overrides 'fileencoding'                                                              
+bin    or  binary       sets 'binary'               
+nobin  or  nobinary     resets 'binary'
+bad                     specifies behavior for bad characters
+edit                    for |:read| only: keep option values as if editing
+                        a file </code></pre>
+<p>举例如下：</p>
+<pre><code>:e ++ff=unix
+:w ++enc=latin1 newfile   </code></pre>
 <h2> Left-right motions</h2>
 <p>常用的：<code>h, l, 0, ^, t{char}, T{char}</code></p>
 <p>值得注意的：<code>g0, g^, g$, gm, |, f{char}, F{char}</code></p>
