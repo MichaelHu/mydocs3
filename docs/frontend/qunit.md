@@ -62,7 +62,8 @@ npm: `npm install --save-dev qunitjs`
 2. `断言类型：`
 
         ok(expr, msg)
-        equals(expr, expr, msg)
+        equal(expr, expr, msg)
+        notEqual(expr, expr, msg)
         same(expr, expr, msg)
         deepEqual(expr, expr, msg)
         strictEqual(expr, expr, msg)

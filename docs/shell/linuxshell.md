@@ -275,6 +275,16 @@ hudamin 2014
 
 
 
+## 实用例子
+
+1. 批量进行文件改名： 
+
+        find . -type f -exec echo "mv {} {}" \; | sed -e "s/ \([^ ]*\)@3x.png$/ ..\/\1.png/g" | sh -x
+
+    注意sed的正则同vim正则。
+
+
+
 
 
 

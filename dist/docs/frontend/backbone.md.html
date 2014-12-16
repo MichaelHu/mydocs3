@@ -54,7 +54,9 @@
 <li><code>listenToOnce</code>: function(obj, name, callback)</li></ol>
 <h2> Model，通常表示数据表的一行</h2>
 <h3> 1. 说明</h3>
-<ol><li><code>validate</code>对attributes进行验证，返回值error，如果<code>!error == true</code>，则通过验证；<p>否则，属性不会变化，也不会触发change事件</p>
+<ol><li><code>validate</code>对attributes进行验证，返回值error，如果<code>!error == true</code>，则通过验证；<p>否则，属性不会变化，也不会触发change事件。</p>
+<p>仅当<code>options.validate标志被设置且model.validate方法存在</code>，才进行属性验证。</p>
+<p>只设置options.validate标志或者model.validate方法存在，都不足以促使进行属性验证。</p>
 </li>
 <li>事件按序触发</li>
 <li><code>unset</code>不存在的属性，不会触发<code>change</code>事件</li>
@@ -68,9 +70,32 @@
 <li><code>patch</code>方式，若<code>options.attrs不存在</code>，会在options下添加<code>attrs</code>属性</li>
 <li>事件触发：<ul><li><code>request</code>：每次发起服务端请求时都会触发，参数为<code>model, xhr, options</code></li>
 <li><code>sync</code>：请求成功返回以后触发，参数<code>model, resp, options</code></li>
+<li><code>error</code>：请求失败以后触发，参数<code>model, resp, options</code>，同时会设置<code>model.validationError</code></li>
 <li><code>change</code>：模型属性发生变化触发，参数<code>model, options</code></li>
-<li><code>change:name</code>：模型属性发生变化触发，参数<code>model, attr, options</code></li></ul>
-</li></ol>
+<li><code>change:name</code>：模型属性发生变化触发，参数<code>model, attr, options</code></li>
+<li><code>invalid</code>：模型验证失败时触发，参数<code>model, error, options</code></li>
+<li><code>destroy</code>：发送同步请求前触发，或者同步请求成功返回后触发，参数<code>model, model.collection, options</code></li></ul>
+</li>
+<li><code>success</code>与<code>error</code>函数参数：<code>model, resp, options</code></li>
+<li><code>model.isNew() == true</code>情况下，destroy无需与服务器进行同步</li>
+<li>默认情况下，不会进行属性验证，除非传入<code>{validate: true}</code>。model.validate函数接收参数<code>attrs, options</code></li>
+<li>嵌套change事件<code>不会改变model._previousAttributes</code></li>
+<li><code>change:name</code>事件在所有属性都变化以后才触发</li>
+<li>set同样的值，<code>不会触发change和change:name事件</code></li>
+<li>unset一个undefined的属性，不会触发change和change:name事件</li>
+<li><code>{wait: true}</code>的save方法，如果服务器请求失败，本地属性不会更新</li>
+<li><code>Utils.results(model, 'url')</code>必须有返回值，否则无法进行<code>model.sync</code>操作，程序异常</li>
+<li><code>{wait: true}</code>的save方法，即使服务器请求失败，本地属性也会进行validate</li>
+<li><code>save</code>与<code>fetch</code>都会设置<code>options.parse</code>标志位</li>
+<li>嵌套change事件只触发一次<pre><code>var times = 0;
+model.on('change:x', function(){
+    times++;
+    model.set({x: true});
+});
+model.set({x: true}); </code></pre>
+<p>以上代码，<code>times == 1</code></p>
+</li>
+<li><code>new Model(attrs, options)</code>，其中的attrs和options会<code>原封不动</code>的传入initialize方法，即使它们是<code>undefined</code></li></ol>
 <h3> 2. 代码结构</h3>
 <ol><li>constructor:<ol><li>cid: _.uniqueId('c')</li>
 <li>attributes: {...}</li>
@@ -82,7 +107,7 @@
 <li>idAttribute: 'id'</li>
 <li>initialize: function(){}</li>
 <li>toJSON: funciton(options)</li>
-<li>sync: function()</li>
+<li>sync: function(method, model, options)</li>
 <li>get: function(attr)</li>
 <li>escape: function(attr)</li>
 <li>has: function(attr)</li>

@@ -43,7 +43,13 @@
 ### 1. 说明
 
 1. `validate`对attributes进行验证，返回值error，如果`!error == true`，则通过验证；
-    否则，属性不会变化，也不会触发change事件
+    否则，属性不会变化，也不会触发change事件。
+
+    仅当`options.validate标志被设置且model.validate方法存在`，才进行属性验证。
+
+    只设置options.validate标志或者model.validate方法存在，都不足以促使进行属性验证。
+
+
 2. 事件按序触发
 3. `unset`不存在的属性，不会触发`change`事件
 4. `this.id`代表Model的唯一服务端标识，它的值由以下代码决定：
@@ -62,9 +68,34 @@
 
     * `request`：每次发起服务端请求时都会触发，参数为`model, xhr, options`
     * `sync`：请求成功返回以后触发，参数`model, resp, options`
+    * `error`：请求失败以后触发，参数`model, resp, options`，同时会设置`model.validationError`
     * `change`：模型属性发生变化触发，参数`model, options`
     * `change:name`：模型属性发生变化触发，参数`model, attr, options`
+    * `invalid`：模型验证失败时触发，参数`model, error, options`
+    * `destroy`：发送同步请求前触发，或者同步请求成功返回后触发，参数`model, model.collection, options`
 
+9. `success`与`error`函数参数：`model, resp, options`
+10. `model.isNew() == true`情况下，destroy无需与服务器进行同步
+11. 默认情况下，不会进行属性验证，除非传入`{validate: true}`。model.validate函数接收参数`attrs, options`
+12. 嵌套change事件`不会改变model._previousAttributes`
+13. `change:name`事件在所有属性都变化以后才触发
+14. set同样的值，`不会触发change和change:name事件`
+15. unset一个undefined的属性，不会触发change和change:name事件
+16. `{wait: true}`的save方法，如果服务器请求失败，本地属性不会更新
+17. `Utils.results(model, 'url')`必须有返回值，否则无法进行`model.sync`操作，程序异常
+18. `{wait: true}`的save方法，即使服务器请求失败，本地属性也会进行validate
+11. `save`与`fetch`都会设置`options.parse`标志位
+1. 嵌套change事件只触发一次
+
+        var times = 0;
+        model.on('change:x', function(){
+            times++;
+            model.set({x: true});
+        });
+        model.set({x: true});
+
+    以上代码，`times == 1`
+1. `new Model(attrs, options)`，其中的attrs和options会`原封不动`的传入initialize方法，即使它们是`undefined`
 
 ### 2. 代码结构
 
@@ -80,7 +111,7 @@
     3. idAttribute: 'id'
     4. initialize: function(){}
     5. toJSON: funciton(options)
-    6. sync: function()
+    6. sync: function(method, model, options)
     7. get: function(attr)
     8. escape: function(attr)
     9. has: function(attr)

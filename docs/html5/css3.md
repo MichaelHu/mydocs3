@@ -117,6 +117,9 @@
         ...
     }
 
+`js API`：
+
+    ratio = window.devicePixelRatio;
 
 
 
