@@ -18,32 +18,30 @@
 <a href="javascript:history.back()">返回 [ or Backspace ]</a>
     </div>
 
-<h1> 动画</h1>
+<h1> RegExp Memo</h1>
+<h2> 字符实体</h2>
+<pre><code>\w          [a-zA-Z0-9_]
+\W
+\s          [\n\r\f\t\v\x20] 
+\xhh
+\0dd      </code></pre>
+<h2> 反向引用</h2>
 
-<h2> 相关概念 </h2>
-<ul><li><code>频率(Hz)</code>，刷新率，60Hz，每秒刷新60次，每次间隔1/60 s</li>
-<li><code>动画持续时间(s)</code>，完成动画所需要的时间，比如2s</li>
-<li><code>每一次脉冲完成量占总量的百分比</code> <pre><code>1 / ( 动画时长(s) * 频率 ) </code></pre>
-</li>
-<li><code>脉冲器</code>，根据当前动画百分比进行绘制行为<p>脉冲器实现举例如下：</p>
-<pre><code>function impulse(percent, duration, render, callback){
 
-    var steps = duration / 1000 * freq;
 
-    if(percent &lt; 1){
-        if(1 - percent &lt;= 1 / steps){
-            render(1);
-            callback &amp;&amp; callback();
-            return;
-        }
+<h3> 1. 反向引用模式</h3>
 
-        render(percent); 
-        setTimeout(function(){
-            impulse(percent + 1 / steps, duration, render, callback)
-        }, 1000 / freq);
-    } 
-}   </code></pre>
-</li></ul>
+<p>格式：<code>\1, \2, \3, ..., \9</code></p>
+<p>不含转义的简单字符串，需要首尾引号匹配：</p>
+<pre><code>/(['"])[^'"]*\1/ </code></pre>
+<p>字符实体的<code>\0dd</code>的存在，也说明了不能使用从0为开始下标的反向引用</p>
+
+
+
+<h3> 2. 反向引用模式匹配串</h3>
+
+<p>格式：<code>$&amp;, $1, $2, $3, ..., $9</code></p>
+<pre><code>string.replace(/(&lt;)[^>]+(>)/g, '$1...$2');      </code></pre>
 
     <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>

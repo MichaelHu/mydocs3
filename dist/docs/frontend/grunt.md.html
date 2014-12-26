@@ -22,6 +22,44 @@
 
 <blockquote><p style="color:green;font-size:18px">The JavaScript Task Runner</p></blockquote><p><code>github</code>: <a href="https://github.com/gruntjs/grunt">https://github.com/gruntjs/grunt</a></p>
 <p><code>docs</code>: <a href="http://gruntjs.com/">http://gruntjs.com/</a></p>
+<h2> 安装</h2>
+<p>Node.js Requirement: <code>>= 0.8.0</code></p>
+<p>安装命令行接口：</p>
+<pre><code>$ npm install -g grunt-cli </code></pre>
+<p>在与<code>package.json</code>同一目录下，快速安装grunt包：</p>
+<pre><code>$ npm install grunt --save-dev </code></pre>
+<p>安装常用grunt plugins：</p>
+<pre><code>$ npm install grunt-contrib-jshint --save-dev
+$ npm install grunt-contrib-concat --save-dev  </code></pre>
+<h2> Gruntfile文件</h2>
+<p>例子：</p>
+<pre><code>module.exports = function(grunt) {
+
+    // Project configuration.
+    grunt.initConfig({
+        pkg: grunt.file.readJSON('package.json'),
+        uglify: {
+            options: {
+                banner: '/*! &lt;%= pkg.name %> &lt;%= grunt.template.today("yyyy-mm-dd") %> */\n'
+            },  
+            build: {
+                src: 'src/&lt;%= pkg.name %>.js',
+                dest: 'build/&lt;%= pkg.name %>.min.js'
+            }   
+        }   
+    }); 
+
+    // Load the plugin that provides the "uglify" task.
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+
+    // Default task(s).
+    grunt.registerTask('default', ['uglify']);
+
+}; </code></pre>
+<ol><li>总是包含在以下结构中：<p>module.exports = function(grunt){</p>
+<pre><code>...</code></pre>
+<p>};</p>
+</li></ol>
 
     <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>

@@ -149,6 +149,35 @@
 
 ## View
 
+
+### 1. 说明
+
+1. `view.delegateEvents(events)`，会略过未定义的method
+2. `options.el`指定为一个不存在的元素，会导致`model.el`未定义
+3. `构造参数：`
+    
+    * `View`: `options`，包含以下预定义选项：
+
+            var viewOptions = [
+                    'model'
+                    , 'collection'
+                    , 'el'
+                    , 'id'
+                    , 'attributes'
+                    , 'className'
+                    , 'tagName'
+                    , 'events'
+                ];            
+
+    * `BaseView`: `options, parent` 
+    * `PageView`: `options, action, router`，action为字符串，router为路由对象。PageView由Router创建，创建后PageView._router保存了对Router的引用。
+    * `SubView`: 同BaseView
+    * `SubPageView`: 同BaseView
+    * `GlobalView`：`options, router`，router为路由对象
+
+
+### 2. 代码结构
+
 1. constructor
     1. cid: _.unique('view')
     2. attrs maybe:
@@ -185,6 +214,57 @@
 
 
 ## Router
+
+### 1. 说明
+
+1. `getHash`，不包含`#`。比如：
+        http://path#hash
+    返回值为：
+        hash
+2. 路由参数：
+
+        命名参数：      /[^/?]+/ 
+        splat参数：     /[^?]*?/
+        可选参数：      /(?:([^/?]+))?/
+        查询参数：      /(?:\?([\s\S]*))?$/
+
+    `说明：`
+    1. 命名参数`不包含/`，splat参数可以`包含/`，可选参数实际上是可选命名参数
+    2. 命名参数`至少包含一个`字符，不能为空；splat参数`可以为空`，本身具有可选的特性 
+    3. 查询参数在route尾部，`以?开头`
+    4. 查询参数解析时，`不进行decode`
+
+3. route事件：参数`name, args` 或 `route:name, args`
+
+        routes: {
+            /* router               route */
+            'index/:type':          'index'
+        }
+
+    `route`对应`name参数`。
+
+4. 不管路由callback是否存在，`总会触发route事件`
+5. `router.execute`方法如果返回`false`，则不会触发route事件
+6. `支持空路由模式`：
+
+        routes: {
+            /* router               route */
+            '':                     'index'
+        }
+
+7. `支持默认路由处理器`，该处理器自动获取`action`，以及将对应的`命名参数转换成JSON`，并传给`Router.doAction`:
+
+        routes: {
+            "index":                      "_defaultHandler:index",
+            "index/:type":                "_defaultHandler:index",
+            "index/:type/p:page":         "_defaultHandler:index"
+        }
+    
+    `_defaultHandler`是默认实现的方法，`冒号(:)`后面的非空单词为`实际action`
+        
+
+
+### 2. 代码结构
 
 1. constructor
 

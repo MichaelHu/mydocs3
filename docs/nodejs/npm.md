@@ -218,6 +218,9 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
 
     npm update <name>
 
+    # 更新npm本身
+    npm update -g npm
+
 ### npm ls
     npm ls
     npm ls -g

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="javascript:history.back()">返回 [ or Backspace ]</a>
+    </div>
+
+<h1> Rocket预定义动画及动画扩展</h1>
+<h2> 预定义动画</h2>
+<p>预定义动画使用了<a href="http://tympanus.net/Development/PageTransitions/">Page Transitions</a>提供的<code>35个动画</code>：</p>
+<h3> 1. 横向动画（LR后缀）</h3>
+<p>以下<code>14个横向动画</code>：</p>
+<pre><code>fadeslideLR                         
+flipLR                              
+movefaderotateunfoldLR              
+rotatecarouselLR                    
+rotatecubeLR                        
+rotatefoldmovefadeLR                
+rotatepushslideLR                   
+rotateroomLR                        
+rotateslideLR                       
+scaledownslideLR                    
+slideeasingLR                       
+slidefadeLR                         
+slideLR                             
+slidescaleupLR                        </code></pre>
+<h3> 2. 纵向动画（TB后缀）</h3>
+<p>以下<code>14个纵向动画</code>：</p>
+<pre><code>fadeslideTB                         
+flipTB                              
+movefaderotateunfoldTB              
+rotatecarouselTB                    
+rotatecubeTB                        
+rotatefoldmovefadeTB                
+rotatepushslideTB                   
+rotateroomTB                        
+rotateslideTB                       
+scaledownslideTB                    
+slideeasingTB                       
+slidefadeTB                         
+slideTB
+slidescaleupTB                        </code></pre>
+<h3> 3. 无方向动画</h3>
+<p>以下<code>7个纵向动画</code>：</p>
+<pre><code>rotatefallscaleup                   
+rotatenewspaper                     
+rotateslide                         
+rotateslidedelay                    
+scaledowncenterscaleupcenter        
+scaledownscaleupdown                
+scaledownupscaleup                    </code></pre>
+<h2> 动画扩展</h2>
+<p>以下文件完成了新动画<code>newanimate</code>创建和注册：</p>
+<pre><code>(function(){
+
+function newanimate(currentEle, nextEle, dir, callback) {
+    var $currentEle = currentEle &amp;&amp; $(currentEle),
+        $nextEle = nextEle &amp;&amp; $(nextEle);
+
+    if(0 == dir){
+        if(currentEle != nextEle){
+            currentEle &amp;&amp; $currentEle.hide();
+            setTimeout(function(){
+                nextEle &amp;&amp; $nextEle.show();
+            }, 0);
+        }
+
+        callback &amp;&amp; callback();
+        return;
+    }
+
+    var outClass = 'pt-page-...',
+        inClass = 'pt-page-...'
+        ;
+
+    Animation.pageTransition(nextEle, currentEle, inClass, outClass);
+
+};
+
+Animation.register('newanimate', newanimate);
+
+})(); </code></pre>
+<p>以上代码创建的动画为无方向动画，以下代码创建了有方向动画：</p>
+<pre><code>(function(){
+
+function slideLR(currentEle, nextEle, dir, callback) {
+    var $currentEle = currentEle &amp;&amp; $(currentEle),
+        $nextEle = nextEle &amp;&amp; $(nextEle);
+
+    if(0 == dir){
+        if(currentEle != nextEle){
+            currentEle &amp;&amp; $currentEle.hide();
+            setTimeout(function(){
+                nextEle &amp;&amp; $nextEle.show();
+            }, 0);
+        }
+
+        callback &amp;&amp; callback();
+        return;
+    }
+
+    var outClass = 'pt-page-moveToLeft',
+        inClass = 'pt-page-moveFromRight'
+        ;
+
+    if(2 == dir){
+        outClass = 'pt-page-moveToRight';
+        inClass = 'pt-page-moveFromLeft';
+    }
+
+    Animation.pageTransition(nextEle, currentEle, inClass, outClass);
+
+};
+
+Animation.register('slideLR', slideLR);
+
+})(); </code></pre>
+
+    <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+
+document.title = $('h1').html() || '技术文档－258i.com';    
+
+$(document).on('keydown', function(e){
+    var BACKSPACE = 8,
+        LEFT = 37;
+
+    if(BACKSPACE == e.keyCode
+        || BACKSPACE == e.which
+        || LEFT == e.keyCode
+        || LEFT == e.which){
+        e.preventDefault();
+        history.back();
+    }
+});
+
+})();
+</script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>

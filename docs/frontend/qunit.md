@@ -91,7 +91,7 @@ npm: `npm install --save-dev qunitjs`
 
 3. `结构化你的断言：`
 
-        module(desp)
+        module(desp, options)
 
     例子如：
 
@@ -102,6 +102,16 @@ npm: `npm install --save-dev qunitjs`
         module('Module B');
         test('a test', function() {});
         test('an another test', function() {});
+
+        module('History', {
+            setup: function(){
+                History.start();
+            }   
+                
+            , teardown: function(){
+                History.stop();
+            } 
+        }); 
 
 
 4. `异步测试`，使用`stop()`和`start()`：

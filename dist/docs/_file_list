@@ -14,6 +14,7 @@
 ./frontend/js-basics.md
 ./frontend/lesscss.md
 ./frontend/qunit.md
+./frontend/regexp.md
 ./frontend/requirejs.md
 ./frontend/rewrite-history-back.md
 ./frontend/seajs.md
@@ -59,6 +60,7 @@
 ./rocket/workshop/fis_config.md
 ./rocket/workshop/how_to_create_a_new_webapp.md
 ./rocket/workshop/howto_create_a_new_page.md
+./rocket-p/animations.md
 ./shell/compress_by_pieces.md
 ./shell/linux-expect.md
 ./shell/linuxshell.md

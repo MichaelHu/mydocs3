@@ -143,6 +143,28 @@ model.set({x: true}); </code></pre>
 <h2> Collection: rows </h2>
 
 <h2> View</h2>
+
+<h3> 1. 说明</h3>
+<ol><li><code>view.delegateEvents(events)</code>，会略过未定义的method</li>
+<li><code>options.el</code>指定为一个不存在的元素，会导致<code>model.el</code>未定义</li>
+<li><code>构造参数：</code><ul><li><code>View</code>: <code>options</code>，包含以下预定义选项：<pre><code>var viewOptions = [
+        'model'
+        , 'collection'
+        , 'el'
+        , 'id'
+        , 'attributes'
+        , 'className'
+        , 'tagName'
+        , 'events'
+    ];             </code></pre>
+</li>
+<li><code>BaseView</code>: <code>options, parent</code> </li>
+<li><code>PageView</code>: <code>options, action, router</code>，action为字符串，router为路由对象。PageView由Router创建，创建后PageView._router保存了对Router的引用。</li>
+<li><code>SubView</code>: 同BaseView</li>
+<li><code>SubPageView</code>: 同BaseView</li>
+<li><code>GlobalView</code>：<code>options, router</code>，router为路由对象</li></ul>
+</li></ol>
+<h3> 2. 代码结构</h3>
 <ol><li>constructor<ol><li>cid: _.unique('view')</li>
 <li>attrs maybe:<ul><li>model</li>
 <li>collection</li>
@@ -175,6 +197,42 @@ model.set({x: true}); </code></pre>
 <li>_setAttributes: function(attributes)</li></ol>
 </li></ol>
 <h2> Router</h2>
+<h3> 1. 说明</h3>
+<ol><li><code>getHash</code>，不包含<code>#</code>。比如：<pre><code>http://path#hash</code></pre>
+<p>返回值为：</p>
+<pre><code>hash</code></pre>
+</li>
+<li>路由参数：<pre><code>命名参数：      /[^/?]+/ 
+splat参数：     /[^?]*?/
+可选参数：      /(?:([^/?]+))?/
+查询参数：      /(?:\?([\s\S]*))?$/ </code></pre>
+<p><code>说明：</code></p>
+<ol><li>命名参数<code>不包含/</code>，splat参数可以<code>包含/</code>，可选参数实际上是可选命名参数</li>
+<li>命名参数<code>至少包含一个</code>字符，不能为空；splat参数<code>可以为空</code>，本身具有可选的特性 </li>
+<li>查询参数在route尾部，<code>以?开头</code></li>
+<li>查询参数解析时，<code>不进行decode</code></li></ol>
+</li>
+<li>route事件：参数<code>name, args</code> 或 <code>route:name, args</code><pre><code>routes: {
+    /* router               route */
+    'index/:type':          'index'
+} </code></pre>
+<p><code>route</code>对应<code>name参数</code>。</p>
+</li>
+<li>不管路由callback是否存在，<code>总会触发route事件</code></li>
+<li><code>router.execute</code>方法如果返回<code>false</code>，则不会触发route事件</li>
+<li><code>支持空路由模式</code>：<pre><code>routes: {
+    /* router               route */
+    '':                     'index'
+} </code></pre>
+</li>
+<li><code>支持默认路由处理器</code>，该处理器自动获取<code>action</code>，以及将对应的<code>命名参数转换成JSON</code>，并传给<code>Router.doAction</code>:<pre><code>routes: {
+    "index":                      "_defaultHandler:index",
+    "index/:type":                "_defaultHandler:index",
+    "index/:type/p:page":         "_defaultHandler:index"
+} </code></pre>
+<p><code>_defaultHandler</code>是默认实现的方法，<code>冒号(:)</code>后面的非空单词为<code>实际action</code></p>
+</li></ol>
+<h3> 2. 代码结构</h3>
 <ol><li>constructor<ol><li>this.routes = options.routes</li>
 <li>this._bindRoutes()</li>
 <li>this.initialize.apply(this, arguments)</li></ol>

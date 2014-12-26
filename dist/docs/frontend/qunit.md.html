@@ -82,7 +82,7 @@ test('test', function() {
     deepEqual( [1], [1], 'passes');
 })  </code></pre>
 </li>
-<li><code>结构化你的断言：</code><pre><code>module(desp) </code></pre>
+<li><code>结构化你的断言：</code><pre><code>module(desp, options) </code></pre>
 <p>例子如：</p>
 <pre><code>module('Module A');
 test('a test', function() {});
@@ -90,7 +90,17 @@ test('an another test', function() {});
 
 module('Module B');
 test('a test', function() {});
-test('an another test', function() {});  </code></pre>
+test('an another test', function() {});
+
+module('History', {
+    setup: function(){
+        History.start();
+    }   
+
+    , teardown: function(){
+        History.stop();
+    } 
+});   </code></pre>
 </li>
 <li><code>异步测试</code>，使用<code>stop()</code>和<code>start()</code>：<pre><code>test('asynchronous test', function() {
     // Pause the test first
