@@ -147,7 +147,7 @@
 
     %               Find the next item in this line after or under the cursor and
                     jump to its match. Items can be: ([{}]), /* */
-
+    CTRL-Y          
 
 
 
@@ -558,6 +558,19 @@
     :delm[arks] {marks}         delete the specified marks. Marks that can be deleted include A-Z and 0-9
     :delm[arks]!                delete all marks for the current buffer, but not marks A-Z or 0-9
 
+
+
+
+## Scrolling
+
+滚动屏幕，光标不跟随移动（除非要移出屏幕）：
+
+    CTRL-E                      scroll window [count] lines downwards
+    CTRL-D                      scroll window downwards. the number of lines comes from the 
+                                `scroll` option (default: half a screen)
+    CTRL-Y                      scroll window [count] lines upwards
+    CTRL-U                      scroll window upwards. the number of lines comes from the 
+                                `scroll` option (default: half a screen)
 
 
     

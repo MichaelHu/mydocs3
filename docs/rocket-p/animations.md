@@ -57,6 +57,10 @@
     scaledownupscaleup                  
 
 
+> 有些稍微复杂的动画，比如`rotatecarouselLR`，在奇葩iOS8的Safari竟然没有效果。不管是iPhone4S还是iPhone5S
+> 都不行。
+
+
 ## 动画扩展
 
 以下文件完成了新动画`newanimate`创建和注册：

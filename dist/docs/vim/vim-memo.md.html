@@ -126,7 +126,8 @@ L               to line [count] from bottom of window (default: last line
                 on the window) on the first non-blank character
 
 %               Find the next item in this line after or under the cursor and
-                jump to its match. Items can be: ([{}]), /* */        </code></pre>
+                jump to its match. Items can be: ([{}]), /* */
+CTRL-Y                 </code></pre>
 <h2> External Commands</h2>
 <pre><code>:sh[ell]
 :!{command}
@@ -419,7 +420,15 @@ CTRL-D
 :marks                      list all the marks
 :marks {args}               list all the marks those are mentioned in {args}
 :delm[arks] {marks}         delete the specified marks. Marks that can be deleted include A-Z and 0-9
-:delm[arks]!                delete all marks for the current buffer, but not marks A-Z or 0-9      </code></pre>
+:delm[arks]!                delete all marks for the current buffer, but not marks A-Z or 0-9    </code></pre>
+<h2> Scrolling</h2>
+<p>滚动屏幕，光标不跟随移动（除非要移出屏幕）：</p>
+<pre><code>CTRL-E                      scroll window [count] lines downwards
+CTRL-D                      scroll window downwards. the number of lines comes from the 
+                            `scroll` option (default: half a screen)
+CTRL-Y                      scroll window [count] lines upwards
+CTRL-U                      scroll window upwards. the number of lines comes from the 
+                            `scroll` option (default: half a screen)     </code></pre>
 <h2> VimGrep</h2>
 <pre><code>:vimgrep /&lt;script.\+>/ **/*.md
 :cw

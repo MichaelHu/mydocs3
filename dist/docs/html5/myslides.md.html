@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="javascript:history.back()">返回 [ or Backspace ]</a>
+    </div>
+
+<h1> MySlides设计及备忘</h1>
+<ol><li>类继承机制，使用<code>this._super()</code>调用父类</li>
+<li>Slide以及GlobalView自行append至<code>#wrapper</code></li></ol>
+<h2> 想法</h2>
+<ol><li>支持<code>PC操作</code>，同时支持<code>手机操作</code><p>PC平台更适合上班或工作状态下进行创作，手机操作适合特定情况下，比如没有
+PC在手的情况下，或者提供给网名用户使用时，直接在手机上操作，也或者和客户端
+结合时。</p>
+</li>
+<li>支持<code>编辑模式、发布模式、编辑状态持久化</code><p>代码架构需要支持所见即所得的编辑，编辑状态可以保存以便后续打开继续创作，同时
+支持方便切换至发布模式，可以迅速发布至服务提供web访问。</p>
+</li>
+<li>支持<code>页面模板</code><p>页面模板提供常用类型模板，这些模板提供某些布局、动效、交互功能，可以在模板基础上
+进行修改。</p>
+<p>修改后的页面可以支持保存成模板。</p>
+</li>
+<li>支持<code>页面组件模板</code><p>一些常用页面功能组件，或者一些复杂交互功能组件，都可以做成页面组件模板，提供组件
+模板系统使用，点选即可迅速创建组件，并且可在组件上进行修改。</p>
+<p>组件模板一般需要专业开发人员制作。</p>
+</li></ol>
+<h2> TODOs</h2>
+<h3> 功能点</h3>
+<ol><li><code>控制器树</code>按照config<code>自动创建</code></li>
+<li><code>发布模式</code>支持</li>
+<li>页面模板支持</li>
+<li>页面组件模板支持</li>
+<li>页面属性编辑支持</li>
+<li>字号、颜色调整支持</li>
+<li>图片<code>上传</code>支持，图片<code>URL配置</code>支持</li></ol>
+<h3> Unit Tests </h3>
+
+<h2> BUGs</h2>
+<ol><li>手机上编辑功能不流畅。iOS无法编辑，Android点击不灵敏</li></ol>
+
+    <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+
+document.title = $('h1').html() || '技术文档－258i.com';    
+
+$(document).on('keydown', function(e){
+    var BACKSPACE = 8,
+        LEFT = 37;
+
+    if(BACKSPACE == e.keyCode
+        || BACKSPACE == e.which
+        || LEFT == e.keyCode
+        || LEFT == e.which){
+        e.preventDefault();
+        history.back();
+    }
+});
+
+})();
+</script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>

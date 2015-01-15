@@ -28,6 +28,10 @@
 ./h5games/games.md
 ./html5/css3.md
 ./html5/dom-events.md
+./html5/fileupload.md
+./html5/h5maker.md
+./html5/ios8-safari-bug.md
+./html5/myslides.md
 ./html5/ua.md
 ./http/http-basics.md
 ./linux/expect-command.md
