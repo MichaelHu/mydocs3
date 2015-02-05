@@ -50,3 +50,10 @@ IE9以下，hasEnumBug
     []
 
 
+## 正则表达式之转义序列
+
+1. `\xxx`: 八进制数xxx规定的字符
+2. `\xdd`: 十六进制数dd规定的字符
+3. `\uxxxx`:十六进制数xxxx规定的Unicode字符
+
+

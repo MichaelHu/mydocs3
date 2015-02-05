@@ -37,5 +37,28 @@
 10. type
 11. value: 用户输入后的文件名
 
+### form之enctype
+
+上传文件时，需要显式设置form的`enctype`属性值，如下：
+
+    <form action="POST" target="__upload_iframe__"
+        enctype="multipart/form-data">
+        <input type="file" name="pic">
+    </form>
+
+综合来说：
+
+1. 按`文本`传输，默认为`application/x-www-form-urlencoded`，还有`text/plain`。
+    两者区别为，前者将编码所有字符，后者仅将空格转换成`+`，而不编码特殊字符。
+2. 按文件传输，即input的type为`file`的时候，必须使用`multipart/form-data`
+
+form的DOM对象需要获取或设置enctype，可以使用
+
+    form.enctype
+
+或者
+
+    form.encoding
+
 
 

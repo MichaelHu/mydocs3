@@ -22,9 +22,12 @@
 <p>2015-01-15</p>
 
 <blockquote><p> 致力于方便创建H5分享页面的利器</p></blockquote><h2> 框架考虑</h2>
-<ol><li>类继承机制，使用<code>this._super()</code>调用父类</li>
+<ol><li>类继承机制，使用<code>this._super()</code>调用父类<p>按C++类继承机制，父类构造函数先执行，再执行子类构造函数，析构函数正好相反。框架类继承时也遵行这个机制。</p>
+</li>
 <li>Slide以及GlobalView自行append至<code>#wrapper</code></li>
-<li>接口机制，对必需操作进行验证，比如各类SlidePageView类必须设置<code>viewClass</code>属性，且必须是字符串类型。</li></ol>
+<li>接口机制，对必需操作进行验证，比如各类SlidePageView类必须设置<code>viewClass</code>属性，且必须是字符串类型。</li>
+<li>两种状态：<code>编辑状态</code>和<code>发布状态</code>，由<code>appRouter.isRelease</code>或者<code>this.gec.isRelease</code>指示。</li>
+<li>组件创建状态：<code>setup</code>和<code>非setup</code>，由<code>this.ec.isSetup</code>标示</li></ol>
 <h2> 想法</h2>
 <ol><li>支持<code>PC操作</code>，同时支持<code>手机操作</code><p>PC平台更适合上班或工作状态下进行创作，手机操作适合特定情况下，比如没有
 PC在手的情况下，或者提供给网名用户使用时，直接在手机上操作，也或者和客户端
@@ -48,16 +51,39 @@ PC在手的情况下，或者提供给网名用户使用时，直接在手机上
 </li></ol>
 <h2> TODOs</h2>
 <h3> 功能点</h3>
-<ol><li><code>控制器树</code>按照config<code>自动创建</code></li>
-<li><code>发布模式</code>支持</li>
+<p><code>已完成：</code></p>
+<ul><li>2015-1-16<ol><li><code>控制器树</code>按照config<code>自动创建</code>：2015-1-16</li>
+<li><code>发布模式</code>支持</li></ol>
+</li></ul>
+<p><code>等待完成：</code></p>
+<ol><li>锁定功能</li>
+<li>页面属性编辑支持，背景颜色，背景图片支持</li>
+<li>左、中、右定位与位置调整不冲突</li>
+<li>移图功能，显示希望展示的区域，新增组件，图片绝对定位，支持放大缩小，移动位置</li>
+<li>支持图片蒙板功能，蒙板锁定后，可以在蒙板上移动下方图片</li>
 <li>页面模板支持</li>
 <li>页面组件模板支持</li>
-<li>页面属性编辑支持</li>
 <li>字号、颜色调整支持</li>
 <li>图片<code>上传</code>支持，图片<code>URL配置</code>支持</li>
 <li><code>组件通用动画</code>支持</li></ol>
 <h3> Unit Tests </h3>
 
+<h2> 业界调研</h2>
+<ol><li>http://strut.io/editor<p>webPPT制作，H5技术搭建，不过遗憾的没有模版系统</p>
+</li>
+<li>http://html5maker.com/app?token=aa9cf4fc37266521135e1b93671b841c26efb15a1d8f74a9 <p>html5maker，Flash版本</p>
+</li>
+<li><code>H5Slides</code>，H5版本，支持layout，页面切换动画配置。但给出的Demo文本编辑功能较弱，甚至背景色也不能修改。<p>尚不知扩展特性如何。</p>
+<p>试玩地址：http://jinjiang.github.io/h5slides/demo/index.html</p>
+</li>
+<li>h5小游戏编辑器（h5.cocoachina.com)，基于cocos2d-js制作的H5小游戏，将素材、音乐、代码等<p>资源配置抽取出来，可以在线修改，同时预览效果。</p>
+<p><a href="http://h5.cocoachina.com/template/">Game Creator Online</a></p>
+</li>
+<li>积木网，H5微杂志是一种新的微信应用，形式生动，富有趣味性，更容易在朋友圈中传播。<p>这种场景应用有多种用途，例如杂志、贺卡、会议邀请函、产品展示、年度报告、公司宣传。
+主要是看上它在页面上放了业内流行的微信H5应用。</p>
+</li>
+<li>http://demo.qunee.com/editor/<p>基于canvas的图表制作工具。</p>
+</li></ol>
 <h2> BUGs</h2>
 <ol><li>手机上编辑功能不流畅。iOS无法编辑，Android点击不灵敏</li></ol>
 

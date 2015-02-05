@@ -689,3 +689,15 @@
     CTRL-Break
     :mode N 
     
+
+## 常见问题
+
+1. 使用过程中，方向键无法使用，出现`E388: couldn't find definition`，解决的方法之一，输入
+
+        :!reset
+
+    也可自行查找一下问题，看看键盘映射此时是否有异常，使用以下命令：
+
+        :nmap <Left>
+        :nmap <Up>
+

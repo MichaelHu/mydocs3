@@ -18,41 +18,21 @@
 <a href="javascript:history.back()">返回 [ or Backspace ]</a>
     </div>
 
-<h1> js basics</h1>
+<h1> Hammerjs memo</h1>
+<p>http://hammerjs.github.io/</p>
+<p>https://github.com/hammerjs/hammer.js</p>
 
-<h2> 绝对等式</h2>
-<pre><code>typeof null === 'object'
-void 0 === undefined </code></pre>
-<p>数字判断：</p>
-<pre><code>num === +num </code></pre>
-<p>IE9以下，hasEnumBug</p>
-
-<h2> 一般等式</h2>
-<pre><code>null == undefined
-0 == ''
-false == 0
-false == ''  </code></pre>
-<h2> TRUE表达式</h2>
-<pre><code>!null
-!void 0
-!undefined
-!0
-!''  </code></pre>
-<h2> Object.prototype.toString.call(obj)</h2>
-<p>注意<code>不是Object.toString</code>，该toString来自<code>Function.prototype.toString</code></p>
-<pre><code>function(){}    [object Function]
-[]              [object Array]
-10              [object Number]  </code></pre>
-<h2> arguments是Array-like的</h2>
-<pre><code>(function(){
-    console.log(arguments);
-})(); </code></pre>
-<p><code>output</code>:</p>
-<pre><code>[]  </code></pre>
-<h2> 正则表达式之转义序列</h2>
-<ol><li><code>\xxx</code>: 八进制数xxx规定的字符</li>
-<li><code>\xdd</code>: 十六进制数dd规定的字符</li>
-<li><code>\uxxxx</code>:十六进制数xxxx规定的Unicode字符</li></ol>
+<h2> 手势说明</h2>
+<ol><li>Pan：拖移，慢速移动</li>
+<li>Pinch：二指往内或往外拨动，平时经常用到的缩放</li>
+<li>Press：长按</li>
+<li>Rotate：旋转</li>
+<li>Swipe：滑动，快速移动</li>
+<li>Tap: 点一下</li></ol>
+<h2> 使用感受</h2>
+<p>了解这个库主要是想使用其多点触控效果，<code>Pinch</code>使用时，性能较差，基本不能流畅跑起来。</p>
+<p>还用过<code>doubletap</code>，还可以，猜测多点触控效果不会很好，其他的<code>Zepto</code>也基本都有简单实现。</p>
+<p>所以，在<code>RocketPPT</code>中没有采用HammerJS。</p>
 
     <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>

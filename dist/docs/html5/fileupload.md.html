@@ -42,6 +42,20 @@
 <li>tabIndex</li>
 <li>type</li>
 <li>value: 用户输入后的文件名</li></ol>
+<h3> form之enctype</h3>
+<p>上传文件时，需要显式设置form的<code>enctype</code>属性值，如下：</p>
+<pre><code>&lt;form action="POST" target="__upload_iframe__"
+    enctype="multipart/form-data">
+    &lt;input type="file" name="pic">
+&lt;/form> </code></pre>
+<p>综合来说：</p>
+<ol><li>按<code>文本</code>传输，默认为<code>application/x-www-form-urlencoded</code>，还有<code>text/plain</code>。<p>两者区别为，前者将编码所有字符，后者仅将空格转换成<code>+</code>，而不编码特殊字符。</p>
+</li>
+<li>按文件传输，即input的type为<code>file</code>的时候，必须使用<code>multipart/form-data</code></li></ol>
+<p>form的DOM对象需要获取或设置enctype，可以使用</p>
+<pre><code>form.enctype </code></pre>
+<p>或者</p>
+<pre><code>form.encoding    </code></pre>
 
     <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>

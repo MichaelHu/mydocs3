@@ -36,21 +36,41 @@
 &lt;/head>
 &lt;body>
     &lt;style type="text/css">
-#wrapper { 
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ffc;
-    -webkit-transform: translateZ(-3000px) rotateZ(360deg) scale(.4); 
-}
+    #wrapper { 
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ffc;
+        -webkit-transform: translateZ(-3000px) rotateZ(360deg) scale(.4); 
+    }
     &lt;/style>
     &lt;div id="wrapper">&lt;/div>
 &lt;/body>
 &lt;/html> </code></pre>
 <p>以上代码，如果将<code>translateZ(-3000px)</code>去除，就可以正常在iOS8 Safari上运行。</p>
-
+<p><code>2015-01-27：</code>这个bug也是有解决方案的，总的来讲，就是在iOS8 Safari上需要运行animation，
+则需要在运行animation的元素之父元素（<code>不是body</code>）上添加<code>perspective</code>属性，如果父元素还有
+<code>transform-style</code>属性，把它去除。</p>
+<p>以上有bug的代码改成以下情况后，就能正常显示动画了。</p>
+<pre><code>    &lt;style type="text/css">
+    #wrapper { 
+        -webkit-perspective: 5000px;
+    }
+    #inner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ffc;
+        -webkit-transform: translateZ(-3000px) rotateZ(360deg) scale(.4); 
+    }
+    &lt;/style>
+    &lt;div id="wrapper">
+        &lt;div id="inner">&lt;/div>
+    &lt;/div>    </code></pre>
 
     <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>
