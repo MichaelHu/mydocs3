@@ -54,19 +54,119 @@ PC在手的情况下，或者提供给网名用户使用时，直接在手机上
 <p><code>已完成：</code></p>
 <ul><li>2015-1-16<ol><li><code>控制器树</code>按照config<code>自动创建</code>：2015-1-16</li>
 <li><code>发布模式</code>支持</li></ol>
-</li></ul>
-<p><code>等待完成：</code></p>
-<ol><li>锁定功能</li>
-<li>页面属性编辑支持，背景颜色，背景图片支持</li>
+</li>
+<li>2015-2-5, 2015-2-6<ol><li>页面属性编辑支持，背景颜色，背景图片支持</li>
 <li>左、中、右定位与位置调整不冲突</li>
 <li>移图功能，显示希望展示的区域，新增组件，图片绝对定位，支持放大缩小，移动位置</li>
-<li>支持图片蒙板功能，蒙板锁定后，可以在蒙板上移动下方图片</li>
+<li>支持图片蒙板功能，蒙板锁定后，可以在蒙板上移动下方图片</li></ol>
+</li>
+<li>2015-2-7<ol><li>锁定功能</li>
+<li>支持三种模式：<code>全编辑模式、部分编辑模式、发布模式</code><ul><li><code>全编辑模式(fullEdit)</code>：所有编辑功能可用，包括锁定和未锁定功能</li>
+<li><code>部分编辑模式(partialEdit)</code>：未锁定编辑功能部分可用，锁定功能不可用</li>
+<li><code>发布模式(release)</code>：所有编辑功能均不可用</li></ul>
+</li></ol>
+</li>
+<li>2015-2-9~2015-2-10<ol><li>头条图片上传功能</li>
+<li>贺卡上传功能</li>
+<li>贺卡查看页，有代码优化</li></ol>
+</li>
+<li>2015-2-11<ol><li>组件旋转功能</li>
+<li>图片插入或更改时显示loading，图片旋转</li>
+<li>编辑器换行功能，简单过滤</li>
+<li>图片上传界面优化</li></ol>
+</li>
+<li>2015-2-12<ol><li>图片资源预加载、加载页面，需要解析出所有图片资源</li>
+<li>图片操作按钮放大操作区域</li>
+<li>文本颜色可手写输入</li></ol>
+</li></ul>
+<p><code>等待完成：</code></p>
+<ol><li>高级居中、居左、居右</li>
+<li>PartialEdit组件的边框在Release下不显示</li>
+<li>Android iconfont 乱码问题 </li>
+<li>上传图片功能针对不支持的浏览器屏蔽</li>
+<li>分享页</li>
+<li>默认可移动，半编辑模式下的图片</li>
+<li>EditOnly页在Release预览中不显示</li>
+<li>提示可编辑、可上传方式优化，select样式优化</li>
+<li>模板选择页</li>
+<li>模板开发，3套</li>
+<li>tip类型组件，RELEASE模式下不显示</li>
+<li>部分编辑模式页，RELEASE模式下不存在</li>
+<li>部分编辑模式图片上传功能新样式</li>
+<li>其他编辑功能打磨</li>
+<li>动画效果，声音效果</li>
+<li>上传文件尺寸判断</li>
+<li>render功能明确化</li>
+<li>页面复制功能</li>
+<li>组件复制功能</li>
 <li>页面模板支持</li>
+<li>EditOnly页在Release预览中不显示</li>
 <li>页面组件模板支持</li>
 <li>字号、颜色调整支持</li>
 <li>图片<code>上传</code>支持，图片<code>URL配置</code>支持</li>
-<li><code>组件通用动画</code>支持</li></ol>
+<li><code>组件通用动画</code>支持</li>
+<li>操作记录，可Ctrl-Z或Command-Z撤销</li></ol>
+<h3> 中间成果</h3>
+<ol><li>fulledit<ol><li>http://test.baidu.com:8300/template/myslides/fulledit.html?cardid=15670870227862777334</li>
+<li>http://test.baidu.com:8300/template/myslides/fulledit.html?cardid=16220865808377624071</li>
+<li>http://test.baidu.com:8300/template/myslides/fulledit.html?cardid=16407306567705951099</li>
+<li>http://db-news-fe2.vm.baidu.com:8098/myslides/fulledit.html?cardid=15500251771548795763</li>
+<li>rotate: http://test.baidu.com:8300/template/myslides/fulledit.html?cardid=15915253467644422081</li>
+<li>http://db-news-fe2.vm.baidu.com:8098/myslides/fulledit.html?cardid=15909220339882143900</li></ol>
+</li>
+<li>partialedit<ol><li>http://test.baidu.com:8300/template/myslides/partialedit.html?cardid=12813716557934814515 </li>
+<li>http://test.baidu.com:8300/template/myslides/partialedit.html?cardid=15812910710529346940</li></ol>
+</li>
+<li>release<ol><li>http://test.baidu.com:8300/template/myslides/index.html?cardid=16475049231430235346&x=0&y=0&w=400&h=300#index</li>
+<li>http://test.baidu.com:8300/template/myslides/index.html?cardid=16112483962221526007&x=0&y=0&w=400&h=300#index</li></ol>
+</li></ol>
+<h3> 模板</h3>
+<p><code>剪纸</code></p>
+<ul><li>fulledit <ol><li>http://db-news-fe2.vm.baidu.com:8098/myslides/fulledit.html?cardid=15808351302173388958</li>
+<li>fulledit.html?cardid=15969864668415132937</li>
+<li>fulledit.html?cardid=12518138506395452933</li>
+<li>fulledit.html?cardid=16090959196801807245</li>
+<li>fulledit.html?cardid=16545598892618196777</li>
+<li>fulledit.html?cardid=16086193617104005187</li>
+<li>fulledit.html?cardid=15907832086260844938</li>
+<li>fulledit.html?cardid=15646984355820983989</li></ol>
+</li>
+<li>partialedit<ol><li>http://db-news-fe2.vm.baidu.com:8098/myslides/partialedit.html?cardid=15183824389706532537</li>
+<li>partialedit.html?cardid=15761066413872044526</li></ol>
+</li>
+<li>release<ol><li>http://db-news-fe2.vm.baidu.com:8098/myslides/index.html?cardid=15937074323963550011 </li>
+<li>http://db-news-fe2.vm.baidu.com:8098/myslides/index.html?cardid=16922630393391216429</li></ol>
+</li></ul>
+<h3> online</h3>
+<p><code>剪纸：</code></p>
+<ul><li>fulledit<ol><li>fulledit.html?cardid=12964277710234507198</li></ol>
+</li>
+<li>partialedit<ol><li>partialedit.html?cardid=16098518970591753679</li></ol>
+</li>
+<li>release<ol><li>index.html?cardid=16514352120760868230&cut_x=0&cut_y=0&cut_w=396&cut_h=247.5</li></ol>
+</li></ul>
+<p><code>国民老公：</code></p>
+<ul><li>fulledit<ol><li>fulledit.html?cardid=16244555873118434350</li></ol>
+</li>
+<li>partialedit<ol><li>partialedit.html?cardid=15839904326712976276</li></ol>
+</li></ul>
+<p><code>媚娘：</code></p>
+<ul><li>fulledit<ol><li>fulledit.html?cardid=16220926960266469104</li>
+<li>fulledit.html?cardid=6583685740762205709</li></ol>
+</li>
+<li>partialedit<ol><li>partialedit.html?cardid=16891504095439177332</li>
+<li>partialedit.html?cardid=12711976865900282617</li></ol>
+</li>
+<li>release<ol><li>index.html?cardid=15636667956021638939</li></ol>
+</li></ul>
+<p><code>模板选择页：</code></p>
+<ol><li>http://m.baidu.com/static/news/postcard/select.html</li></ol>
+<p><code>创意：</code></p>
+<p>Robin: </p>
+<ol><li>http://m.baidu.com/news?cardid=16135789876452836262&cut_x=12.121212121212121&cut_y=0&cut_w=600&cut_h=375</li>
+<li>http://m.baidu.com/news?cardid=16120905637185107517&cut_x=21.538461538461537&cut_y=6.153846153846153&cut_w=600&cut_h=375</li></ol>
 <h3> Unit Tests </h3>
+
 
 <h2> 业界调研</h2>
 <ol><li>http://strut.io/editor<p>webPPT制作，H5技术搭建，不过遗憾的没有模版系统</p>
@@ -85,7 +185,8 @@ PC在手的情况下，或者提供给网名用户使用时，直接在手机上
 <li>http://demo.qunee.com/editor/<p>基于canvas的图表制作工具。</p>
 </li></ol>
 <h2> BUGs</h2>
-<ol><li>手机上编辑功能不流畅。iOS无法编辑，Android点击不灵敏</li></ol>
+<ol><li>手机上编辑功能不流畅。iOS无法编辑，Android点击不灵敏</li>
+<li>Android新闻客户端无法传图和拍照，特别是4.4，4.4.1，4.4.2</li></ol>
 
     <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>

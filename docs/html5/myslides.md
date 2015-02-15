@@ -68,24 +68,180 @@
     1. `控制器树`按照config`自动创建`：2015-1-16
     2. `发布模式`支持
 
+* 2015-2-5, 2015-2-6
+
+    5. 页面属性编辑支持，背景颜色，背景图片支持
+    4. 左、中、右定位与位置调整不冲突
+    2. 移图功能，显示希望展示的区域，新增组件，图片绝对定位，支持放大缩小，移动位置
+    3. 支持图片蒙板功能，蒙板锁定后，可以在蒙板上移动下方图片
+
+* 2015-2-7
+
+    1. 锁定功能
+    2. 支持三种模式：`全编辑模式、部分编辑模式、发布模式`
+        * `全编辑模式(fullEdit)`：所有编辑功能可用，包括锁定和未锁定功能
+        * `部分编辑模式(partialEdit)`：未锁定编辑功能部分可用，锁定功能不可用
+        * `发布模式(release)`：所有编辑功能均不可用
+
+* 2015-2-9~2015-2-10
+
+    2. 头条图片上传功能
+    6. 贺卡上传功能
+    6. 贺卡查看页，有代码优化
+
+* 2015-2-11
+
+    1. 组件旋转功能
+    11. 图片插入或更改时显示loading，图片旋转
+    9. 编辑器换行功能，简单过滤
+    10. 图片上传界面优化
+    
+* 2015-2-12
+
+    8. 图片资源预加载、加载页面，需要解析出所有图片资源
+    9. 图片操作按钮放大操作区域
+    6. 文本颜色可手写输入
+    
+
 `等待完成：`
 
-1. 锁定功能
-5. 页面属性编辑支持，背景颜色，背景图片支持
-4. 左、中、右定位与位置调整不冲突
+1. 高级居中、居左、居右
+4. PartialEdit组件的边框在Release下不显示
+1. Android iconfont 乱码问题 
+10. 上传图片功能针对不支持的浏览器屏蔽
+4. 分享页
 
-2. 移图功能，显示希望展示的区域，新增组件，图片绝对定位，支持放大缩小，移动位置
-3. 支持图片蒙板功能，蒙板锁定后，可以在蒙板上移动下方图片
+5. 默认可移动，半编辑模式下的图片
+3. EditOnly页在Release预览中不显示
+5. 提示可编辑、可上传方式优化，select样式优化
+
+5. 模板选择页
+9. 模板开发，3套
+
+
+10. tip类型组件，RELEASE模式下不显示
+12. 部分编辑模式页，RELEASE模式下不存在
+3. 部分编辑模式图片上传功能新样式
+
+11. 其他编辑功能打磨
+12. 动画效果，声音效果
+13. 上传文件尺寸判断
+14. render功能明确化
+15. 页面复制功能
+16. 组件复制功能
+
 
 3. 页面模板支持
+3. EditOnly页在Release预览中不显示
 4. 页面组件模板支持
 5. 字号、颜色调整支持
 2. 图片`上传`支持，图片`URL配置`支持
 2. `组件通用动画`支持
+1. 操作记录，可Ctrl-Z或Command-Z撤销
 
 
+
+### 中间成果
+
+1. fulledit
+    1. http://test.baidu.com:8300/template/myslides/fulledit.html?cardid=15670870227862777334
+    2. http://test.baidu.com:8300/template/myslides/fulledit.html?cardid=16220865808377624071
+    3. http://test.baidu.com:8300/template/myslides/fulledit.html?cardid=16407306567705951099
+    4. http://db-news-fe2.vm.baidu.com:8098/myslides/fulledit.html?cardid=15500251771548795763
+    5. rotate: http://test.baidu.com:8300/template/myslides/fulledit.html?cardid=15915253467644422081
+    6. http://db-news-fe2.vm.baidu.com:8098/myslides/fulledit.html?cardid=15909220339882143900
+
+2. partialedit
+    1. http://test.baidu.com:8300/template/myslides/partialedit.html?cardid=12813716557934814515 
+    2. http://test.baidu.com:8300/template/myslides/partialedit.html?cardid=15812910710529346940
+
+3. release
+    1. http://test.baidu.com:8300/template/myslides/index.html?cardid=16475049231430235346&x=0&y=0&w=400&h=300#index
+    2. http://test.baidu.com:8300/template/myslides/index.html?cardid=16112483962221526007&x=0&y=0&w=400&h=300#index
+
+### 模板
+
+`剪纸`
+* fulledit 
+    1. http://db-news-fe2.vm.baidu.com:8098/myslides/fulledit.html?cardid=15808351302173388958
+    2. fulledit.html?cardid=15969864668415132937
+    3. fulledit.html?cardid=12518138506395452933
+    4. fulledit.html?cardid=16090959196801807245
+    5. fulledit.html?cardid=16545598892618196777
+    6. fulledit.html?cardid=16086193617104005187
+    7. fulledit.html?cardid=15907832086260844938
+    8. fulledit.html?cardid=15646984355820983989
+
+* partialedit
+    1. http://db-news-fe2.vm.baidu.com:8098/myslides/partialedit.html?cardid=15183824389706532537
+    2. partialedit.html?cardid=15761066413872044526
+
+* release
+    1. http://db-news-fe2.vm.baidu.com:8098/myslides/index.html?cardid=15937074323963550011 
+    2. http://db-news-fe2.vm.baidu.com:8098/myslides/index.html?cardid=16922630393391216429
+
+
+### online
+
+`剪纸：`
+
+* fulledit
+    6. fulledit.html?cardid=15425638843849520908
+    7. fulledit.html?cardid=15891783988146641050
+    8. fulledit.html?cardid=15577494817079876005
+
+* partialedit
+    3. partialedit.html?cardid=15698107063564317710
+    4. partialedit.html?cardid=15665213442435703695
+
+* release
+    1. index.html?cardid=16514352120760868230&cut_x=0&cut_y=0&cut_w=396&cut_h=247.5
+
+
+`国民老公：`
+
+* fulledit
+    18. 不换脸：fulledit.html?cardid=15064361781275376346
+    22. fulledit.html?cardid=15785877138399742082
+    23. fulledit.html?cardid=15436547364874500803
+    24. fulledit.html?cardid=16125987678687031752
+    25. fulledit.html?cardid=16525607683810550389
+
+
+* partialedit
+    7. 不换脸：partialedit.html?cardid=15601680117246657844
+    8. partialedit.html?cardid=15837749683211641795
+    9. partialedit.html?cardid=15743125901496265722
+    10. partialedit.html?cardid=12267423647270465218
+    11. partialedit.html?cardid=15604306648574255992
+
+`媚娘：`
+
+* fulledit
+    22. fulledit.html?cardid=12346020097067584540
+    23. fulledit.html?cardid=16233522067679736597
+
+* partialedit
+    7. partialedit.html?cardid=15283453732311694968
+    8. partialedit.html?cardid=12375877275277060959
+
+* release
+    1. index.html?cardid=15636667956021638939
+
+
+`模板选择页：`
+
+1. http://m.baidu.com/static/news/postcard/select.html
+
+`创意：`
+
+Robin: 
+
+1. http://m.baidu.com/news?cardid=16135789876452836262&cut_x=12.121212121212121&cut_y=0&cut_w=600&cut_h=375
+2. http://m.baidu.com/news?cardid=16120905637185107517&cut_x=21.538461538461537&cut_y=6.153846153846153&cut_w=600&cut_h=375
 
 ### Unit Tests 
+
 
 
 ## 业界调研
@@ -125,4 +281,6 @@
 ## BUGs
 
 1. 手机上编辑功能不流畅。iOS无法编辑，Android点击不灵敏
+2. Android新闻客户端无法传图和拍照，特别是4.4，4.4.1，4.4.2
+
 
