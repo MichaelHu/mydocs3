@@ -8,7 +8,8 @@ cd $ROOT
 
 rm -rf __tmp
 mkdir -p __tmp/docs
-cp -r $DOCDIR/* __tmp/docs
+# preserve modification time
+cp -rp $DOCDIR/* __tmp/docs
 
 pushd __tmp/docs
 
@@ -39,7 +40,16 @@ cat <<'EOF'
 </script>
 
 <style type="text/css">
-@import url("./markdown_res/css/index.css")
+
+@import url("./markdown_res/css/index.css");
+
+span.new-tag {
+    color: #f00;
+    font-size: 12px;
+    font-variant: monospace;
+    padding-left: 8px;
+}
+
 </style>
 
 <div class="title"><h1>我的技术文章</h1></div>
@@ -70,6 +80,36 @@ cat <<'EOF'
 
 </ul>
 </div>
+
+<script>
+(function(){
+    var $list = $('.list ul'),
+        $links = $('.list ul a'),
+        top5 = [];
+
+    $links.each(function(index, item){
+        var $link = $(item);
+
+        if(!top5.length) top5.push({mt: $link.data('mt'), link: $link});
+        for(var i=0; i<top5.length; i++){
+            if(top5[i].mt - 0 < $link.data('mt') - 0){
+                top5.splice(i, 0, {mt: $link.data('mt'), link: $link});
+                break;
+            }
+        }
+    });
+
+    if(top5.length > 5){
+        top5.length = 5;
+    }
+
+    $.each(top5, function(index, item){
+        item.link.append('<span class="new-tag">NEW</span>');
+    });
+
+})();
+</script>
+
 EOF
 ) > _footer
 

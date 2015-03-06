@@ -65,6 +65,8 @@ h1 {
     margin-top: 7px;
     margin-right: 20px;
     padding: 0 10px;
+    height: 30px;
+    overflow: hidden;
 
     background-color: #dfebf3;
 }

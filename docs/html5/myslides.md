@@ -186,13 +186,12 @@
 `剪纸：`
 
 * fulledit
-    6. fulledit.html?cardid=15425638843849520908
-    7. fulledit.html?cardid=15891783988146641050
-    8. fulledit.html?cardid=15577494817079876005
+    9. fulledit.html?cardid=16317105215022708556
+    10. fulledit.html?cardid=15814191602825558220
 
 * partialedit
-    3. partialedit.html?cardid=15698107063564317710
-    4. partialedit.html?cardid=15665213442435703695
+    5. partialedit.html?cardid=15933293146173194318
+    6. partialedit.html?cardid=15455819136497256354
 
 * release
     1. index.html?cardid=16514352120760868230&cut_x=0&cut_y=0&cut_w=396&cut_h=247.5
@@ -202,28 +201,26 @@
 
 * fulledit
     18. 不换脸：fulledit.html?cardid=15064361781275376346
-    22. fulledit.html?cardid=15785877138399742082
-    23. fulledit.html?cardid=15436547364874500803
-    24. fulledit.html?cardid=16125987678687031752
-    25. fulledit.html?cardid=16525607683810550389
+    26. fulledit.html?cardid=15189778932186000177
+    27. fulledit.html?cardid=15962899979248120278
 
 
 * partialedit
     7. 不换脸：partialedit.html?cardid=15601680117246657844
-    8. partialedit.html?cardid=15837749683211641795
-    9. partialedit.html?cardid=15743125901496265722
-    10. partialedit.html?cardid=12267423647270465218
-    11. partialedit.html?cardid=15604306648574255992
+    12. partialedit.html?cardid=9595144653497850548
+    13. partialedit.html?cardid=16319757803944884729
 
 `媚娘：`
 
 * fulledit
     22. fulledit.html?cardid=12346020097067584540
     23. fulledit.html?cardid=16233522067679736597
+    24. fulledit.html?cardid=11823020078272446075
 
 * partialedit
     7. partialedit.html?cardid=15283453732311694968
     8. partialedit.html?cardid=12375877275277060959
+    9. partialedit.html?cardid=12297577397147683170
 
 * release
     1. index.html?cardid=15636667956021638939

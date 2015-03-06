@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="javascript:history.back()">返回 [ or Backspace ]</a>
+    </div>
+
+<h1> 有用的小抄 </h1>
+<h2> 15-03-05</h2>
+<ul><li>http://font.baidu.com/editor/<p>EcomFE新作，对字体文件进行编辑、制作、导入&导出。其中使用Canvas进行icon的编辑
+，还支持路径拖动等操作，感觉还是挺震撼的。</p>
+</li></ul>
+
+    <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+
+document.title = $('h1').html() || '技术文档－258i.com';    
+
+$(document).on('keydown', function(e){
+    var BACKSPACE = 8,
+        LEFT = 37;
+
+    if(BACKSPACE == e.keyCode
+        || BACKSPACE == e.which
+        || LEFT == e.keyCode
+        || LEFT == e.which){
+        e.preventDefault();
+        history.back();
+    }
+});
+
+})();
+</script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>

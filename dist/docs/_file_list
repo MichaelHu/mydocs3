@@ -44,6 +44,7 @@
 ./nodejs/node-example.md
 ./nodejs/node-gyp.md
 ./nodejs/npm.md
+./other/useful-things.md
 ./ps/ps.md
 ./rocket/advanced/components.md
 ./rocket/advanced/globalview.md
