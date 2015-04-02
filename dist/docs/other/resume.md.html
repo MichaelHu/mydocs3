@@ -70,31 +70,6 @@ SPA程序的多人开发问题，代码架构上提出了MVC分解方法论，�
     <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>
 </html>
-<script type="text/javascript">
-(function(){
-
-document.title = $('h1').html() || '技术文档－258i.com';    
-
-$(document).on('keydown', function(e){
-    var BACKSPACE = 8,
-        SLASH = 191,
-        LEFT = 37;
-
-    if ( BACKSPACE == e.keyCode
-        || BACKSPACE == e.which
-        || LEFT == e.keyCode
-        || LEFT == e.which){
-        e.preventDefault();
-        history.back();
-    }
-    else if ( SLASH == e.keyCode ) {
-        $('#search').focus();
-        // prevent search input 
-        e.preventDefault();
-    }
-});
-
-})();
-</script>
+<script type="text/javascript" src="/docs/markdown_res/js/footer.js"></script>
 <script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>
 <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>

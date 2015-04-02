@@ -141,32 +141,40 @@ var $list = $('.list ul'),
 
 (function(){
 
-var rRegEscape = /[\\\[\]($){}*+.?-]/;
+    var rRegEscape = /[\\\[\]($){}*+.?-]/;
 
-$('#search').on('input', function(){
-    var text = $(this).val(),
-        reg = new RegExp(text.replace(rRegEscape, '\\$&'), 'ig'),
-        reg1 = new RegExp(text.replace(rRegEscape, '\\$&'), 'i'),
-        count = 0;
+    function doFilter(key){
+        var text = key,
+            reg = new RegExp(text.replace(rRegEscape, '\\$&'), 'ig'),
+            reg1 = new RegExp(text.replace(rRegEscape, '\\$&'), 'i'),
+            count = 0;
 
-    $links.each(function(index, item){
-        var $link = $(item);
-        if( reg1.test( $link.text() ) ) {
-            $link.parent().show();
-            count++;
-        }
-        else {
-            $link.parent().hide();
-        }
+        $links.each(function(index, item){
+            var $link = $(item);
+            if( reg1.test( $link.text() ) ) {
+                $link.parent().show();
+                count++;
+            }
+            else {
+                $link.parent().hide();
+            }
+        });
+
+        $('#file_count').html(count);
+    }
+
+    $('#search').on('input', function(){
+        doFilter($(this).val());
+    })
+    .on('keydown', function(e){
+        e.stopPropagation();
+    })
+    ;
+
+    $(window).on('load', function(){
+        doFilter($('#search').val());
     });
 
-    $('#file_count').html(count);
-
-})
-.on('keydown', function(e){
-    e.stopPropagation();
-})
-;
 
 })();
 

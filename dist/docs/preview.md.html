@@ -199,32 +199,40 @@ var $list = $('.list ul'),
 
 (function(){
 
-var rRegEscape = /[\\\[\]($){}*+.?-]/;
+    var rRegEscape = /[\\\[\]($){}*+.?-]/;
 
-$('#search').on('input', function(){
-    var text = $(this).val(),
-        reg = new RegExp(text.replace(rRegEscape, '\\$&'), 'ig'),
-        reg1 = new RegExp(text.replace(rRegEscape, '\\$&'), 'i'),
-        count = 0;
+    function doFilter(key){
+        var text = key,
+            reg = new RegExp(text.replace(rRegEscape, '\\$&'), 'ig'),
+            reg1 = new RegExp(text.replace(rRegEscape, '\\$&'), 'i'),
+            count = 0;
 
-    $links.each(function(index, item){
-        var $link = $(item);
-        if( reg1.test( $link.text() ) ) {
-            $link.parent().show();
-            count++;
-        }
-        else {
-            $link.parent().hide();
-        }
+        $links.each(function(index, item){
+            var $link = $(item);
+            if( reg1.test( $link.text() ) ) {
+                $link.parent().show();
+                count++;
+            }
+            else {
+                $link.parent().hide();
+            }
+        });
+
+        $('#file_count').html(count);
+    }
+
+    $('#search').on('input', function(){
+        doFilter($(this).val());
+    })
+    .on('keydown', function(e){
+        e.stopPropagation();
+    })
+    ;
+
+    $(window).on('load', function(){
+        doFilter($('#search').val());
     });
 
-    $('#file_count').html(count);
-
-})
-.on('keydown', function(e){
-    e.stopPropagation();
-})
-;
 
 })();
 
@@ -236,31 +244,6 @@ $('#search').on('input', function(){
     <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>
 </html>
-<script type="text/javascript">
-(function(){
-
-document.title = $('h1').html() || '技术文档－258i.com';    
-
-$(document).on('keydown', function(e){
-    var BACKSPACE = 8,
-        SLASH = 191,
-        LEFT = 37;
-
-    if ( BACKSPACE == e.keyCode
-        || BACKSPACE == e.which
-        || LEFT == e.keyCode
-        || LEFT == e.which){
-        e.preventDefault();
-        history.back();
-    }
-    else if ( SLASH == e.keyCode ) {
-        $('#search').focus();
-        // prevent search input 
-        e.preventDefault();
-    }
-});
-
-})();
-</script>
+<script type="text/javascript" src="/docs/markdown_res/js/footer.js"></script>
 <script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>
 <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>
