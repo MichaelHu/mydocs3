@@ -2,10 +2,13 @@
 <html>
 <head>
     <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <style type="text/css">
+        body {padding: 15px;}
         img {max-width: 100%; border: 1px solid #eee; }
         pre, code {color: #048ebd; }
         li>p {display: block;}
@@ -31,6 +34,10 @@
 
 @import url("./markdown_res/css/index.css");
 
+body {
+    padding-top: 50px;
+}
+
 span.new-tag {
     color: #f00;
     font-size: 12px;
@@ -38,14 +45,38 @@ span.new-tag {
     padding-left: 8px;
 }
 
+#file_count {
+    margin-left: 10px;
+    color: #fff;
+}
+
 
 </style>
 
-<div class="title"><h1>我的技术文章</h1></div>
-
 <div class="list">
 
-<h2> 预览列表［77篇］</h2>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+<div class="container">
+<div class="navbar-header">
+<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+<span class="sr-only">Toggle navigation</span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+</button>
+<a class="navbar-brand" href="#">文章列表<span id="file_count" class="badge">81</span></a>
+</div>
+<div id="navbar" class="navbar-collapse collapse">
+<form class="navbar-form navbar-right">
+<div class="form-group">
+<input type="text" id="search" placeholder="Search" class="form-control">
+</div>
+</form>
+</div><!--/.navbar-collapse -->
+</div>
+</nav>
+
 
 <ul>
 
@@ -65,6 +96,7 @@ span.new-tag {
 <li><a href="./frontend/ie-bugs.md.html" data-mt="1418184361">ie bugs</a></li>
 <li><a href="./frontend/js-basics.md.html" data-mt="1421652866">js basics</a></li>
 <li><a href="./frontend/lesscss.md.html" data-mt="1416970743">lesscss备忘</a></li>
+<li><a href="./frontend/promisejs.md.html" data-mt="1427935093">Promisejs Memo</a></li>
 <li><a href="./frontend/qunit.md.html" data-mt="1418907844">QUnit Memo</a></li>
 <li><a href="./frontend/regexp.md.html" data-mt="1418968676">RegExp Memo</a></li>
 <li><a href="./frontend/requirejs.md.html" data-mt="1416970743">requirejs相关资料</a></li>
@@ -83,9 +115,10 @@ span.new-tag {
 <li><a href="./html5/fileupload.md.html" data-mt="1422691556">File Upload</a></li>
 <li><a href="./html5/h5maker.md.html" data-mt="1420973191">HTML5 Maker调研</a></li>
 <li><a href="./html5/ios8-safari-bug.md.html" data-mt="1422347530">iOS8 Safari Bugs</a></li>
-<li><a href="./html5/myslides.md.html" data-mt="1424084302">MySlides设计及备忘</a></li>
+<li><a href="./html5/myslides.md.html" data-mt="1426047341">MySlides设计及备忘</a></li>
 <li><a href="./html5/ua.md.html" data-mt="1416990661">UserAgent 分析</a></li>
 <li><a href="./http/http-basics.md.html" data-mt="1418028512">HTTP Basics</a></li>
+<li><a href="./ios/ios-develop.md.html" data-mt="1427252427">ios开发笔记</a></li>
 <li><a href="./linux/expect-command.md.html" data-mt="1416970743">expect command</a></li>
 <li><a href="./linux/network.md.html" data-mt="1416976433">网络命令</a></li>
 <li><a href="./linux/user_group.md.html" data-mt="1416970743">user group</a></li>
@@ -95,7 +128,9 @@ span.new-tag {
 <li><a href="./nodejs/node-example.md.html" data-mt="1416970743">Nodejs Examples</a></li>
 <li><a href="./nodejs/node-gyp.md.html" data-mt="1416970743">node-gyp</a></li>
 <li><a href="./nodejs/npm.md.html" data-mt="1419235793">npm备忘</a></li>
-<li><a href="./other/useful-things.md.html" data-mt="1425540409">有用的小抄 </a></li>
+<li><a href="./other/resume.md.html" data-mt="1427940698">胡大民的简历</a></li>
+<li><a href="./other/useful-things.md.html" data-mt="1427935205">有用的小抄 </a></li>
+<li><a href="./php/php-memo.md.html" data-mt="1426773832">PHP备忘</a></li>
 <li><a href="./ps/ps.md.html" data-mt="1416970743">ps memo</a></li>
 <li><a href="./rocket/advanced/components.md.html" data-mt="1416970743">框架组件 </a></li>
 <li><a href="./rocket/advanced/globalview.md.html" data-mt="1416970743">跨页面视图：GLOBALVIEW </a></li>
@@ -132,10 +167,12 @@ span.new-tag {
 
 <script>
 
+
+var $list = $('.list ul'),
+    $links = $('.list ul a');
+
 (function(){
-    var $list = $('.list ul'),
-        $links = $('.list ul a'),
-        top5 = [];
+    var top5 = [];
 
     $links.each(function(index, item){
         var $link = $(item);
@@ -159,6 +196,40 @@ span.new-tag {
 
 })();
 
+
+(function(){
+
+var rRegEscape = /[\\\[\]($){}*+.?-]/;
+
+$('#search').on('input', function(){
+    var text = $(this).val(),
+        reg = new RegExp(text.replace(rRegEscape, '\\$&'), 'ig'),
+        reg1 = new RegExp(text.replace(rRegEscape, '\\$&'), 'i'),
+        count = 0;
+
+    $links.each(function(index, item){
+        var $link = $(item);
+        if( reg1.test( $link.text() ) ) {
+            $link.parent().show();
+            count++;
+        }
+        else {
+            $link.parent().hide();
+        }
+    });
+
+    $('#file_count').html(count);
+
+})
+.on('keydown', function(e){
+    e.stopPropagation();
+})
+;
+
+})();
+
+
+
 </script>
 
 
@@ -172,17 +243,24 @@ document.title = $('h1').html() || '技术文档－258i.com';
 
 $(document).on('keydown', function(e){
     var BACKSPACE = 8,
+        SLASH = 191,
         LEFT = 37;
 
-    if(BACKSPACE == e.keyCode
+    if ( BACKSPACE == e.keyCode
         || BACKSPACE == e.which
         || LEFT == e.keyCode
         || LEFT == e.which){
         e.preventDefault();
         history.back();
     }
+    else if ( SLASH == e.keyCode ) {
+        $('#search').focus();
+        // prevent search input 
+        e.preventDefault();
+    }
 });
 
 })();
 </script>
 <script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>

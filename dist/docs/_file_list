@@ -14,6 +14,7 @@
 ./frontend/ie-bugs.md
 ./frontend/js-basics.md
 ./frontend/lesscss.md
+./frontend/promisejs.md
 ./frontend/qunit.md
 ./frontend/regexp.md
 ./frontend/requirejs.md
@@ -35,6 +36,7 @@
 ./html5/myslides.md
 ./html5/ua.md
 ./http/http-basics.md
+./ios/ios-develop.md
 ./linux/expect-command.md
 ./linux/network.md
 ./linux/user_group.md
@@ -44,7 +46,9 @@
 ./nodejs/node-example.md
 ./nodejs/node-gyp.md
 ./nodejs/npm.md
+./other/resume.md
 ./other/useful-things.md
+./php/php-memo.md
 ./ps/ps.md
 ./rocket/advanced/components.md
 ./rocket/advanced/globalview.md

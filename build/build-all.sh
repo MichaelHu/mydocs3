@@ -43,6 +43,10 @@ cat <<'EOF'
 
 @import url("./markdown_res/css/index.css");
 
+body {
+    padding-top: 50px;
+}
+
 span.new-tag {
     color: #f00;
     font-size: 12px;
@@ -50,9 +54,12 @@ span.new-tag {
     padding-left: 8px;
 }
 
-</style>
+#file_count {
+    margin-left: 10px;
+    color: #fff;
+}
 
-<div class="title"><h1>我的技术文章</h1></div>
+</style>
 
 <div class="list">
 
@@ -64,7 +71,27 @@ EOF
 # EOF: use parameter substitution
 cat <<EOF
 
-## 预览列表［${_file_count}篇］
+<nav class="navbar navbar-inverse navbar-fixed-top">
+<div class="container">
+<div class="navbar-header">
+<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+<span class="sr-only">Toggle navigation</span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+</button>
+<a class="navbar-brand" href="#">文章列表<span id="file_count" class="badge">${_file_count}</span></a>
+</div>
+<div id="navbar" class="navbar-collapse collapse">
+<form class="navbar-form navbar-right">
+<div class="form-group">
+<input type="text" id="search" placeholder="Search" class="form-control">
+</div>
+</form>
+</div><!--/.navbar-collapse -->
+</div>
+</nav>
+
 
 <ul>
 
@@ -82,10 +109,12 @@ cat <<'EOF'
 </div>
 
 <script>
+
+var $list = $('.list ul'),
+    $links = $('.list ul a');
+
 (function(){
-    var $list = $('.list ul'),
-        $links = $('.list ul a'),
-        top5 = [];
+    var top5 = [];
 
     $links.each(function(index, item){
         var $link = $(item);
@@ -108,6 +137,40 @@ cat <<'EOF'
     });
 
 })();
+
+
+(function(){
+
+var rRegEscape = /[\\\[\]($){}*+.?-]/;
+
+$('#search').on('input', function(){
+    var text = $(this).val(),
+        reg = new RegExp(text.replace(rRegEscape, '\\$&'), 'ig'),
+        reg1 = new RegExp(text.replace(rRegEscape, '\\$&'), 'i'),
+        count = 0;
+
+    $links.each(function(index, item){
+        var $link = $(item);
+        if( reg1.test( $link.text() ) ) {
+            $link.parent().show();
+            count++;
+        }
+        else {
+            $link.parent().hide();
+        }
+    });
+
+    $('#file_count').html(count);
+
+})
+.on('keydown', function(e){
+    e.stopPropagation();
+})
+;
+
+})();
+
+
 </script>
 
 EOF

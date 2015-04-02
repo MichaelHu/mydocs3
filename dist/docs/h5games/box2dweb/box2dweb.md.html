@@ -2,10 +2,13 @@
 <html>
 <head>
     <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <style type="text/css">
+        body {padding: 15px;}
         img {max-width: 100%; border: 1px solid #eee; }
         pre, code {color: #048ebd; }
         li>p {display: block;}
@@ -72,7 +75,8 @@
 <li>Dynamics<ul><li>provides the simulation world, bodies, fixtures, and joints</li></ul>
 </li></ul>
 <p><code>Module Hierarchy：</code></p>
-<p><img src="./img/module-hierarchy.png"></p>
+
+<img src="./img/module-hierarchy.png">
 
 
 <h3> 2. Units</h3>
@@ -440,7 +444,8 @@ float32 GetReactionTorque(); </code></pre>
 <p><code>Distance Joint</code></p>
 <p>距离关节</p>
 <blockquote><p> One of the simplest joint is a distance joint which says that the distance between  two points on two bodies must be constant. </p></blockquote><p>分别存在于两个物体上的两个点之间的距离是定值。</p>
-<p><img src="./img/distance-joint.png"></p>
+
+<img src="./img/distance-joint.png">
 <pre><code>b2DistanceJointDef jointDef;
 jointDef.Initialize(myBodyA, myBodyB, worldAnchorOnBodyA, worldAnchorOnBodyB); 
 jointDef.collideConnected = true; </code></pre>
@@ -455,7 +460,8 @@ jointDef.dampingRatio = 0.5f; </code></pre>
 </li></ol>
 <p><code>Revolute joint</code></p>
 <p>旋转关节让两个物体共享一个锚点（anchor point），通常叫做hinge point</p>
-<p><img src="./img/revolute-joint.png"></p>
+
+<img src="./img/revolute-joint.png">
 <p>两个物体只有单一的角度自由。</p>
 <p>需要提供两个物体和一个锚点，初始化函数默认物体已经在正确的位置。</p>
 <pre><code>b2RevoluteJointDef jointDef;
@@ -498,7 +504,8 @@ myJoint->SetMotorSpeed(-gain * angleError);
 ... Game Loop End ...      </code></pre>
 <p><code>Prismatic joint</code></p>
 <p>移动关节允许两个物体沿着指定轴线(axis)相对移动，它不允许相对转动。</p>
-<p><img src="./img/prismatic-joint.png"></p>
+
+<img src="./img/prismatic-joint.png">
 <p>移动关节的定义与转动关节类似，只需用移动(translation)替换角度(angle)，
 用力(force)替换扭力(torque)。</p>
 <pre><code>b2PrismaticJointDef jointDef;
@@ -520,7 +527,8 @@ float32 GetMotorForce() const;
 void SetMotorSpeed(float32 speed); 
 void SetMotorForce(float32 force);   </code></pre>
 <p><code>Pulley Joint</code></p>
-<blockquote><p> 滑轮关节用于创建一个理想化滑轮。</p></blockquote><p><img src="./img/pulley-joint.png"></p>
+<blockquote><p> 滑轮关节用于创建一个理想化滑轮。</p></blockquote>
+<img src="./img/pulley-joint.png">
 <p>滑轮关节将两个物体连接到ground，同时相互连接，一个上去，另一个下来。滑轮线长度保持初始设置，如：</p>
 <pre><code>length1 + length2 == constant </code></pre>
 <p>可以提供比率来模拟滑轮索具，这会使的一边的绳子比另一边伸展得快，同时一边的受力比另一边的受力小。
@@ -541,7 +549,8 @@ anchor2, ratio); </code></pre>
 float32 GetLengthB() const;    </code></pre>
 <p><code>Gear Joint</code></p>
 <p>齿轮关节<code>只能</code>连接旋转和（或）移动关节。</p>
-<p><img src="./img/gear-joint.png"></p>
+
+<img src="./img/gear-joint.png">
 <p>同样有比率，但该比率可以为负数。</p>
 <p>需要记住的是，</p>
 <blockquote><p> Also keep in mind that when one joint is a revolute joint (angular) and the other joint   is prismatic (translation), and then the gear ratio will have units of length or one over length.</p></blockquote><pre><code>coordinate1 + ratio * coordinate2 == constant </code></pre>
@@ -567,7 +576,8 @@ jointDef.ratio = 2.0f * b2_pi / myLength; </code></pre>
 
 <p><code>Wheel Joint</code></p>
 <p>轮子关节将bodyB的一个点限制在bodyA的一条线上，常用于汽车轮子模拟。</p>
-<p><img src="./img/wheel-joint.png"></p>
+
+<img src="./img/wheel-joint.png">
 
 <p><code>Weld Joint</code></p>
 <p>...</p>
@@ -700,17 +710,24 @@ document.title = $('h1').html() || '技术文档－258i.com';
 
 $(document).on('keydown', function(e){
     var BACKSPACE = 8,
+        SLASH = 191,
         LEFT = 37;
 
-    if(BACKSPACE == e.keyCode
+    if ( BACKSPACE == e.keyCode
         || BACKSPACE == e.which
         || LEFT == e.keyCode
         || LEFT == e.which){
         e.preventDefault();
         history.back();
     }
+    else if ( SLASH == e.keyCode ) {
+        $('#search').focus();
+        // prevent search input 
+        e.preventDefault();
+    }
 });
 
 })();
 </script>
 <script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>

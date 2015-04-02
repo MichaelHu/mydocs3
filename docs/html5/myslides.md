@@ -18,6 +18,8 @@
 
 5. 组件创建状态：`setup`和`非setup`，由`this.ec.isSetup`标示
 
+6. 组件可自行扩展，按照一定的编码规范。加载时可自行注册
+
 
 ## 想法
 
@@ -236,6 +238,12 @@ Robin:
 
 1. http://m.baidu.com/news?cardid=16135789876452836262&cut_x=12.121212121212121&cut_y=0&cut_w=600&cut_h=375
 2. http://m.baidu.com/news?cardid=16120905637185107517&cut_x=21.538461538461537&cut_y=6.153846153846153&cut_w=600&cut_h=375
+
+
+### 开发链接
+
+1. http://test.baidu.com:8300/template/myslides/fulledit.html?cardid=16204715932521676863&cut_x=0&cut_y=0&cut_w=640&cut_h=400#index
+
 
 ### Unit Tests 
 

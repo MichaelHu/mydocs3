@@ -12,7 +12,7 @@
             
         var list = $(selector).add("h3")
             ,$li = null
-            ,$ul = $('<ul class="nav"></ul>');
+            ,$ul = $('<ul class="side-nav"></ul>');
 
 
         list.each(function(i, item){

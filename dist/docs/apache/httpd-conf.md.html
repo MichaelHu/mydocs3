@@ -2,10 +2,13 @@
 <html>
 <head>
     <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <style type="text/css">
+        body {padding: 15px;}
         img {max-width: 100%; border: 1px solid #eee; }
         pre, code {color: #048ebd; }
         li>p {display: block;}
@@ -22,7 +25,8 @@
 
 
 <h2> 2.2到2.4升级备忘</h2>
-<blockquote><p> 2.2到2.4的升级，变化不少，需要查看changelog来进行修改</p></blockquote><p><a href="http://httpd.apache.org/docs/2.4/en/upgrading.html">Upgrading to 2.4 from 2.2</a></p>
+<blockquote><p> 2.2到2.4的升级，变化不少，需要查看changelog来进行修改</p></blockquote>
+<a href="http://httpd.apache.org/docs/2.4/en/upgrading.html">Upgrading to 2.4 from 2.2</a>
 <ol><li>User需要mod_unixd</li>
 <li>DefaultType警告，先简单改成<code>DefaultType none</code></li></ol>
 <p>其他更多的参考changelog</p>
@@ -55,17 +59,24 @@ document.title = $('h1').html() || '技术文档－258i.com';
 
 $(document).on('keydown', function(e){
     var BACKSPACE = 8,
+        SLASH = 191,
         LEFT = 37;
 
-    if(BACKSPACE == e.keyCode
+    if ( BACKSPACE == e.keyCode
         || BACKSPACE == e.which
         || LEFT == e.keyCode
         || LEFT == e.which){
         e.preventDefault();
         history.back();
     }
+    else if ( SLASH == e.keyCode ) {
+        $('#search').focus();
+        // prevent search input 
+        e.preventDefault();
+    }
 });
 
 })();
 </script>
 <script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>

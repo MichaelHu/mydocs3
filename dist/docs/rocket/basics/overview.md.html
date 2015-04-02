@@ -2,10 +2,13 @@
 <html>
 <head>
     <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <style type="text/css">
+        body {padding: 15px;}
         img {max-width: 100%; border: 1px solid #eee; }
         pre, code {color: #048ebd; }
         li>p {display: block;}
@@ -25,7 +28,8 @@
 如果对移动webapp概念不熟悉的同学，可以先阅读这篇文章<a href="/docs/hudamin/rocket/introduce/mobile_webapp.md.html">移动webapp介绍</a>)）的<code>通用开发框架</code>，
 集成webapp产品开发涉及的<code>规范、框架类库、最佳实践</code>，提供一套完整的<code>代码框架</code>，有丰富的<code>配置接口</code>，同时为扩展提供了足够的空间。
 使用框架开发，可以大大<code>缩短webapp开发周期</code>，并且保证开发的规范性，使后期升级和维护更容易。</p>
-<p><img title="Rocket框架概览" src="./img/framework-overview.png"></p>
+
+<img title="Rocket框架概览" src="./img/framework-overview.png">
 <h2> 2. Rocket框架的设计目标</h2>
 <ul><li><code>并行开发</code>。满足<code>大型</code>的<code>复杂</code>WebApp之<code>并行开发</code>需求，使SPA程序<code>多人合作</code>开发成为可能</li>
 <li><code>化繁为简</code>。<code>分而治之</code>的控制模型，提供一种<code>MVC分解模型</code>，将复杂应用逻辑分解成<code>树状控制结构</code>，每个控制节点粒度（代码规模）适中。</li>
@@ -73,17 +77,24 @@ document.title = $('h1').html() || '技术文档－258i.com';
 
 $(document).on('keydown', function(e){
     var BACKSPACE = 8,
+        SLASH = 191,
         LEFT = 37;
 
-    if(BACKSPACE == e.keyCode
+    if ( BACKSPACE == e.keyCode
         || BACKSPACE == e.which
         || LEFT == e.keyCode
         || LEFT == e.which){
         e.preventDefault();
         history.back();
     }
+    else if ( SLASH == e.keyCode ) {
+        $('#search').focus();
+        // prevent search input 
+        e.preventDefault();
+    }
 });
 
 })();
 </script>
 <script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>

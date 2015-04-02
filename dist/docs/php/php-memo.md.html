@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        body {padding: 15px;}
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="javascript:history.back()">返回 [ or Backspace ]</a>
+    </div>
+
+<h1> PHP备忘</h1>
+<blockquote><p> 2015年以前的关于PHP的文章不在此处</p></blockquote><h2> 2015-03-19</h2>
+<ul><li>关于magic quotes<ol><li>开关打开以后，所有的<code>', ", \, NULL</code>字符之前都会加上一个<code>\ </code></li>
+<li>有三种magic quotes：<ul><li><code>magic_quotes_gpc</code>: 影响请求数据（GET， POST， 以及COOKIE）。默认打开</li>
+<li><code>magic_quotes_runtime</code>: 影响大部分从外部返回数据的函数，包括数据库或文本文件。默认关闭</li>
+<li><code>magic_quotes_sybase</code>: 单引号前添加单引号，即<code>'</code> => <code>''</code>，仅单引号会被转义。此开关打开以后，<p><code>magic_quotes_gpc</code>将失效</p>
+</li></ul>
+</li>
+<li>版本说明：<p>5.3.0已经DEPRECATED，5.4.0开始，不再使用</p>
+</li>
+<li>fe2上面的fis2在运行news.php数据代理时，请求数据中添加了反斜线转义。原因为fe2机器上<p>使用的是PHP5.3，没有提供php.ini文件，使用了默认值（默认打开）。解决方法为在使用的php.ini文件中添加：</p>
+<pre><code>magic_quotes_gpc = off </code></pre>
+<p>另一解决方案为升级PHP至5.4及以上版本</p>
+</li>
+<li><code>magic_quotes_gpc</code>选项不能在运行时通过ini_set函数设置生效，必须在php.ini文件中设置。如果是fast-cgi<p>方式，需要在修改php.ini文件以后，重启fast-cgi</p>
+</li></ol>
+</li></ul>
+
+    <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+
+document.title = $('h1').html() || '技术文档－258i.com';    
+
+$(document).on('keydown', function(e){
+    var BACKSPACE = 8,
+        SLASH = 191,
+        LEFT = 37;
+
+    if ( BACKSPACE == e.keyCode
+        || BACKSPACE == e.which
+        || LEFT == e.keyCode
+        || LEFT == e.which){
+        e.preventDefault();
+        history.back();
+    }
+    else if ( SLASH == e.keyCode ) {
+        $('#search').focus();
+        // prevent search input 
+        e.preventDefault();
+    }
+});
+
+})();
+</script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>

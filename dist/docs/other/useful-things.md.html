@@ -2,10 +2,13 @@
 <html>
 <head>
     <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <style type="text/css">
+        body {padding: 15px;}
         img {max-width: 100%; border: 1px solid #eee; }
         pre, code {color: #048ebd; }
         li>p {display: block;}
@@ -19,6 +22,27 @@
     </div>
 
 <h1> 有用的小抄 </h1>
+
+<h2> 15-03-31</h2>
+<ol><li>The Network Information API在W3C草案中已经停止。原因是Device APIs Working Group在推进过程中遇到了带宽检测方面的问题，所以决定先停止相关工作，直到更好的了解问题，需求以及解决方案出来为止。<pre><code>navigation.connection </code></pre>
+</li>
+<li>以下内容：<pre><code>Network Service Discovery (HTTP-based services advertised via common discovery 
+protocols within the current network.) </code></pre>
+<p>网络服务发现，草案已出，但尚未有实现者。</p>
+</li></ol>
+<p>目前想通过Mobile Browser获取网络连接状况，还是不可行的。</p>
+<h2> 15-03-30</h2>
+<ul><li>移动：2G采用GPRS以及EDGE，后者是被称作2.75G的技术；3G使用TD-SCDMA；4G使用TD-LTE/FDD-LTE混合组网，相比之下主要以TD-LTE为主</li>
+<li>联通：2G同移动；3G采用WCDMA；4G同样是TD-LTE/FDD-LTE混合组网，但以FDD-LTE为主</li>
+<li>电信：2G使用CDMA 1X；3G采用CDMA 2000；4G同联通</li>
+<li>全网通：支持移动、联通、电信三家运营商的全部网络。包括GSM, CDMA, WCDMA, TD-SCDMA, CDMA 2000, TD-LTE, FDD-LTE</li></ul>
+<h2> 15-03-17</h2>
+<ul><li>iPresst.com，来自腾讯Alloy Team，是个在线PPT创作平台。整体效果不错，切换动画较全。<p>整体架构使用大画板，通过放大定位至某个版块完成切换。好处是切换动画有特色，也带来一些问题，</p>
+<p>就是切换动画有一种令人眩晕的感觉。同时，这种网页架构，不能直接迁移至Mobile端，从性能、布局到交互</p>
+<p>都存在问题。</p>
+</li></ul>
+<h2> 15-03-09</h2>
+<ul><li>Astrill等国外知名的VPN在2015年初也开始被和谐了</li></ul>
 <h2> 15-03-05</h2>
 <ul><li>http://font.baidu.com/editor/<p>EcomFE新作，对字体文件进行编辑、制作、导入&导出。其中使用Canvas进行icon的编辑
 ，还支持路径拖动等操作，感觉还是挺震撼的。</p>
@@ -34,17 +58,24 @@ document.title = $('h1').html() || '技术文档－258i.com';
 
 $(document).on('keydown', function(e){
     var BACKSPACE = 8,
+        SLASH = 191,
         LEFT = 37;
 
-    if(BACKSPACE == e.keyCode
+    if ( BACKSPACE == e.keyCode
         || BACKSPACE == e.which
         || LEFT == e.keyCode
         || LEFT == e.which){
         e.preventDefault();
         history.back();
     }
+    else if ( SLASH == e.keyCode ) {
+        $('#search').focus();
+        // prevent search input 
+        e.preventDefault();
+    }
 });
 
 })();
 </script>
 <script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>

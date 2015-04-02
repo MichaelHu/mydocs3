@@ -2,10 +2,13 @@
 <html>
 <head>
     <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <style type="text/css">
+        body {padding: 15px;}
         img {max-width: 100%; border: 1px solid #eee; }
         pre, code {color: #048ebd; }
         li>p {display: block;}
@@ -24,8 +27,9 @@
 | 2013-03-18
 | 基础, webapp框架</p>
 <h2> 前言 </h2>
-<p><a title="移动webapp介绍" href="/docs/hudamin/rocket/introduce/mobile_webapp.md.html">移动webapp介绍</a>一文介绍了webapp及其区别于普通web站点的一些特征，我们在开发一个webapp产品时，
-需要在一些基本概念上达成一致，只有在理解一致的基础上，才能进一步介绍框架细节。</p>
+
+<a title="移动webapp介绍" href="/docs/hudamin/rocket/introduce/mobile_webapp.md.html">移动webapp介绍</a>一文介绍了webapp及其区别于普通web站点的一些特征，我们在开发一个webapp产品时，
+<p>需要在一些基本概念上达成一致，只有在理解一致的基础上，才能进一步介绍框架细节。</p>
 <h2> 一些概念</h2>
 <h3> document</h3>
 <p>webapp对应的<code>HTML document</code>，其包含多个div标签，每个div标签对应一个webapp页面，webapp框架正是通过对这些div标签进行交替操作，模拟页面切换。</p>
@@ -54,7 +58,8 @@
 <p>多个Backbone.View的实例通过parent｜children引用链构成的<code>树状结构</code>，如下图。
 正是通过控制树的分层结构，将复杂的页面控制流程分解到各个子节点，
 实现<code>分而治之</code>的效果，降低代码的逻辑复杂度，同时还提升了代码的易维护性。</p>
-<p><img title="控制器树" src="./img/controller_tree.png"> </p>
+
+<img title="控制器树" src="./img/controller_tree.png"> 
 <h3> MVC对应关系</h3>
 <p>Rocket框架使用<code>Backbone</code>作为MVC基础类库，其对应关系如下：</p>
 <ul><li>M: <code>Backbone.Model</code> or <code>BackBone.Collection</code></li>
@@ -82,17 +87,24 @@ document.title = $('h1').html() || '技术文档－258i.com';
 
 $(document).on('keydown', function(e){
     var BACKSPACE = 8,
+        SLASH = 191,
         LEFT = 37;
 
-    if(BACKSPACE == e.keyCode
+    if ( BACKSPACE == e.keyCode
         || BACKSPACE == e.which
         || LEFT == e.keyCode
         || LEFT == e.which){
         e.preventDefault();
         history.back();
     }
+    else if ( SLASH == e.keyCode ) {
+        $('#search').focus();
+        // prevent search input 
+        e.preventDefault();
+    }
 });
 
 })();
 </script>
 <script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>

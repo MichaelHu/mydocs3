@@ -2,10 +2,13 @@
 <html>
 <head>
     <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <style type="text/css">
+        body {padding: 15px;}
         img {max-width: 100%; border: 1px solid #eee; }
         pre, code {color: #048ebd; }
         li>p {display: block;}
@@ -27,7 +30,8 @@
 <li>Slide以及GlobalView自行append至<code>#wrapper</code></li>
 <li>接口机制，对必需操作进行验证，比如各类SlidePageView类必须设置<code>viewClass</code>属性，且必须是字符串类型。</li>
 <li>两种状态：<code>编辑状态</code>和<code>发布状态</code>，由<code>appRouter.isRelease</code>或者<code>this.gec.isRelease</code>指示。</li>
-<li>组件创建状态：<code>setup</code>和<code>非setup</code>，由<code>this.ec.isSetup</code>标示</li></ol>
+<li>组件创建状态：<code>setup</code>和<code>非setup</code>，由<code>this.ec.isSetup</code>标示</li>
+<li>组件可自行扩展，按照一定的编码规范。加载时可自行注册</li></ol>
 <h2> 想法</h2>
 <ol><li>支持<code>PC操作</code>，同时支持<code>手机操作</code><p>PC平台更适合上班或工作状态下进行创作，手机操作适合特定情况下，比如没有
 PC在手的情况下，或者提供给网名用户使用时，直接在手机上操作，也或者和客户端
@@ -173,6 +177,8 @@ PC在手的情况下，或者提供给网名用户使用时，直接在手机上
 <p>Robin: </p>
 <ol><li>http://m.baidu.com/news?cardid=16135789876452836262&cut_x=12.121212121212121&cut_y=0&cut_w=600&cut_h=375</li>
 <li>http://m.baidu.com/news?cardid=16120905637185107517&cut_x=21.538461538461537&cut_y=6.153846153846153&cut_w=600&cut_h=375</li></ol>
+<h3> 开发链接</h3>
+<ol><li>http://test.baidu.com:8300/template/myslides/fulledit.html?cardid=16204715932521676863&cut_x=0&cut_y=0&cut_w=640&cut_h=400#index</li></ol>
 <h3> Unit Tests </h3>
 
 
@@ -206,17 +212,24 @@ document.title = $('h1').html() || '技术文档－258i.com';
 
 $(document).on('keydown', function(e){
     var BACKSPACE = 8,
+        SLASH = 191,
         LEFT = 37;
 
-    if(BACKSPACE == e.keyCode
+    if ( BACKSPACE == e.keyCode
         || BACKSPACE == e.which
         || LEFT == e.keyCode
         || LEFT == e.which){
         e.preventDefault();
         history.back();
     }
+    else if ( SLASH == e.keyCode ) {
+        $('#search').focus();
+        // prevent search input 
+        e.preventDefault();
+    }
 });
 
 })();
 </script>
 <script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>

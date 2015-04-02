@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <style type="text/css">
+        body {padding: 15px;}
+        img {max-width: 100%; border: 1px solid #eee; }
+        pre, code {color: #048ebd; }
+        li>p {display: block;}
+        p>code, li>code {padding:0; font-size: 13px; color: red;}
+    </style>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav">
+<a href="javascript:history.back()">返回 [ or Backspace ]</a>
+    </div>
+
+<h1> ios开发笔记</h1>
+<blockquote><p> 目标：有自己的代言产品</p></blockquote><h2> 2015-03-24</h2>
+<ol><li>编译输出平台，可以针对32位系统和64位系统输出程序包。对于不同的体系架构，需要注意数据类型的长度变化。<p>比如iPhone 5及以前都是32位系统，iPhone 5s及以后都是64位系统。</p>
+<ul><li>动态类型，32位系统就是32位，64位系统就是64位：<pre><code>CGPoint </code></pre>
+</li>
+<li>固定类型，不管系统都是32位：<pre><code>Float32
+Float32Point  </code></pre>
+</li></ul>
+</li></ol>
+<h2> 2015-03-11</h2>
+<ol><li>storyboard操作实际上挺简单，但是如果没掌握要领的话，还是会一头雾水，甚至觉得很难用。<p>要领就是<code>Ctrl-drag</code>，还有<code>Assist Editor</code>。
+<code>Ctrl-drag</code>在添加<code>Outlets, Action</code>进代码时很有用，这是需要打开<code>Assist Editor</code></p>
+</li></ol>
+
+    <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
+<script type="text/javascript">
+(function(){
+
+document.title = $('h1').html() || '技术文档－258i.com';    
+
+$(document).on('keydown', function(e){
+    var BACKSPACE = 8,
+        SLASH = 191,
+        LEFT = 37;
+
+    if ( BACKSPACE == e.keyCode
+        || BACKSPACE == e.which
+        || LEFT == e.keyCode
+        || LEFT == e.which){
+        e.preventDefault();
+        history.back();
+    }
+    else if ( SLASH == e.keyCode ) {
+        $('#search').focus();
+        // prevent search input 
+        e.preventDefault();
+    }
+});
+
+})();
+</script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>
