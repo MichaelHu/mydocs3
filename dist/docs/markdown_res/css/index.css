@@ -3,6 +3,10 @@
     margin:0;
 } 
 
+body {
+    padding-top: 50px;
+}
+
 ul{
     list-style: none;
 } 
@@ -39,6 +43,7 @@ h1 {
     font: normal normal 16px/30px Arail; 
 }
 
+/*
 .list h2{ 
     margin: 10px 0;
     padding-left: 10px;
@@ -46,6 +51,7 @@ h1 {
     font: normal bold 20px/20px Sans-Serif; 
     color: #1a1a1a;  
 }
+*/
 
 .list ul {
     margin-left: 0;
