@@ -80,12 +80,15 @@ cat <<EOF
 <span class="icon-bar"></span>
 <span class="icon-bar"></span>
 </button>
-<a class="navbar-brand" href="#">文章列表<span id="file_count" class="badge">${_file_count}</span></a>
+<a class="navbar-brand" href="#">Articles<span id="file_count" class="badge">${_file_count}</span></a>
 </div>
 <div id="navbar" class="navbar-collapse collapse">
 <form class="navbar-form navbar-right">
 <div class="form-group">
 <input type="text" id="search" placeholder="Search" class="form-control">
+</div>
+<div class="form-group">
+<button id="clear_search" class="btn btn-info">clear</button>
 </div>
 </form>
 </div><!--/.navbar-collapse -->
@@ -141,7 +144,8 @@ var $list = $('.list ul'),
 
 (function(){
 
-    var rRegEscape = /[\\\[\]($){}*+.?-]/;
+    var rRegEscape = /[\\\[\]($){}*+.?-]/,
+        isClear = false;
 
     function doFilter(key){
         var text = key,
@@ -164,12 +168,21 @@ var $list = $('.list ul'),
     }
 
     $('#search').on('input', function(){
-        doFilter($(this).val());
+        if( !isClear ) {
+            doFilter($(this).val());
+        }
     })
     .on('keydown', function(e){
         e.stopPropagation();
     })
     ;
+
+    $('#clear_search').on('click', function(){
+        isClear = true;
+        $('#search').val('');
+        isClear = false;
+        doFilter($('#search').val());
+    });
 
     $(window).on('load', function(){
         doFilter($('#search').val());

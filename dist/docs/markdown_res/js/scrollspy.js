@@ -12,7 +12,7 @@
             
         var list = $(selector).add("h3")
             ,$li = null
-            ,$ul = $('<ul class="side-nav"></ul>');
+            ,$ul = $('<ul class="nav"></ul>');
 
 
         list.each(function(i, item){
@@ -27,13 +27,6 @@
         });
         
         var $navbar = $("<div></div>").attr("id", "navbar-auto")
-            .css({
-                "width":"180px",
-                "position":" fixed",
-                "top":"20px",
-                "right":" 10px",
-                "background-color":" #fff"
-            })
             .append($ul)
             .on('click', function(e){
                 var $target = $(e.target),
