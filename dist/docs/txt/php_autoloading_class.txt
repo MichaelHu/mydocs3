@@ -1,0 +1,52 @@
+PHP之Autoloading Classes
+
+
+
+修订内容    修订人  修订时间
+初稿    胡大民  2010/11/25
+        
+ 
+目录
+PHP之Autoloading Classes    1
+目录    2
+1 前言  1
+2 分析：autoloading classes?    1
+3 解决方法  2
+
+ 
+1 前言
+写这个专题的原因是我在最近的一次项目中遇到了问题。这次项目需要将模板系统从Smarty2升级到Smarty3，由于Smarty3对Smarty2全面兼容，所以我只是简单地将Smarty2目录下的程序文件换成了Smarty3版本的。重新运行程序，出现很多Fatal Error，提示多个Class无法找到。而模板系统恢复成Smarty2版本，程序恢复正常。奇怪也哉！！不是兼容的么？？
+2 分析：autoloading classes?
+第一感觉应该是__autoload冲突了。现在使用的PHP框架本身提供了__autoload机制，可以同Smarty2和平相处，相安无事，但是Smarty3却无法正常使用。所以问题可能出现在Smarty3的autoloading和现有框架有冲突。
+比对Smarty3和Smarty2的源代码（Smarty.class.php），问题终于浮出水面。
+
+Smarty2使用的类数量较少，而Smarty3使用了大量的类，大部分以smarty_internal_为前缀，有几十个之多。所以Smarty3引入了autoloading classes机制，以下代码来自Smarty3.0.5的Smarty.class.php：
+ 
+冲突在于，PHP框架使用autoloading classes机制时，定义了__autoload函数，而Smarty3也使用了autoloading classes机制，在Smarty.class.php中定义了smartyAutoload函数，并使用spl_autoload_register函数注册。
+ 
+两者冲突的原因在于，现在使用的PHP框架定义autoloading classes时，使用的是直接定义内建函数__autoload的方式，这个函数在smartyAutoload函数注册以后就不再生效了。
+3 解决方法
+解决方法就是统一使用spl_autoload_register函数，避免互相覆盖的问题。这种问题在PHP Manual网站上已经有人提出来过：
+jjfitzgerald at gmail dot com
+30-Jan-2008 03:39 
+Regardless of the situation you're in (developing a web-app or writing some code that may use someone else's web-app), always a good idea not to use __autoload() but instead write a differently-named function and register it as an autoloader:
+
+<?php
+
+function class_autoloader($c) {
+    if(file_exists(dirname(__FILE__). "/classes/{$c}.php") && include_once(dirname(__FILE__). "/classes/{$c}.php")) {
+        return true;
+    } else {
+        trigger_error("Could not load class '{$c}' from file '{$c}.php'", E_USER_WARNING);
+        return false;
+    }
+}
+
+spl_autoload_register("class_autoloader");
+
+?>
+
+Using spl_autoload_register(), the function class_autoloader() will now be used when classes are instantiated, just like __autoload() does, but without the potential conflict with other web-apps __autoload() function. 
+
+
+

@@ -308,7 +308,7 @@ android 2.3.3的原生浏览器是不支持的，虽然该函数可以正常调�
         matrix(1, 0, 0, 1, tx, ty)
 
         x' = 1x + 0y + tx = x + tx
-        y' = 0x + 1y + ty = x + ty 
+        y' = 0x + 1y + ty = y + ty 
 
     等价于：
     

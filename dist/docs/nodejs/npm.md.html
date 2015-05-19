@@ -2,18 +2,12 @@
 <html>
 <head>
     <title></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <style type="text/css">
-        body {padding: 15px;}
-        img {max-width: 100%; border: 1px solid #eee; }
-        pre, code {color: #048ebd; }
-        li>p {display: block;}
-        p>code, li>code {padding:0; font-size: 13px; color: red;}
-    </style>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/page.css" />
     <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
 </head>
 <body>
@@ -22,21 +16,30 @@
     </div>
 
 <h1> npm备忘</h1>
-<blockquote><p style="color:green;font-size:18px">Node Packaged Modules.  <a href="http://www.npmjs.org"> [ npmjs ] </a></p></blockquote><h2> 包注册与发布</h2>
+<blockquote><p style="color:green;font-size:18px">Node Packaged Modules.  <a href="http://www.npmjs.org"> [ npmjs ] </a></p></blockquote>
+
+<h2> 安装方式</h2>
+<p>通过安装新版本的nodejs，自动包含npm的安装。</p>
+<p>自动检测nodejs的最新版本（mac适用）：</p>
+<pre><code>curl https://nodejs.org | grep -Eo "Current Version: *v[^&lt;]+"    </code></pre>
+<h2> 包注册与发布</h2>
 <h3> 包托管地址</h3>
 <ul><li>官方地址：http://registry.npmjs.org/</li>
 <li>镜像地址：http://skimdb.npmjs.com/registry</li></ul>
 <p>服务器使用CouchDB数据库，couchapp的代码托管在github上：http://github.com/npm/npm-registry-couchapp。
 服务器提供好用的RESTful API，举例如下：</p>
 <pre><code>$ curl http://registry.npmjs.org
-{"db_name":"registry","doc_count":113003,"doc_del_count":380,"update_seq":450451,"purge_seq":0,"compact_running":false,"disk_size":1045799035,"data_size":407768840,"instance_start_time":"1414070581227712","disk_format_version":6,"committed_update_seq":450451}  </code></pre>
+{"db_name":"registry","doc_count":113003,"doc_del_count":380,"update_seq":450451,"purge_seq":0,"compact_running":false,"disk_size":1045799035,"data_size":407768840,"instance_start_time":"1414070581227712","disk_format_version":6,"committed_update_seq":450451}       </code></pre>
 <h3> registry决定</h3>
 <ul><li>首先由scope来定，scope与registry可以通过以下方式绑定：<pre><code>npm config set @scope:registry ... </code></pre>
 </li>
-<li>如果没有scope，则使用默认registry。默认registry通过以下方式绑定：<pre><code>npm config set registry ... </code></pre>
+<li>如果没有scope，则使用默认registry。默认registry通过以下方式绑定：<pre><code>npm config set registry ...     </code></pre>
 </li></ul>
 <h3> 创建私有库</h3>
 <p>todo</p>
+
+
+
 
 <h3> 包范围（scope）</h3>
 <p>2014-09-13日以后，公共地址上的registry开始支持范围限定包。
@@ -58,7 +61,7 @@ npm客户端自动兼容非范围包与范围包的处理。</p>
 <p><code>scope与registry绑定：</code></p>
 <pre><code>npm login --registry=http://reg.example.com --scope=@myco </code></pre>
 <p>scope与registry是多对一的关系。绑定还可以使用npm config来进行：</p>
-<pre><code>npm config set @myco:registry http://reg.example.com    </code></pre>
+<pre><code>npm config set @myco:registry http://reg.example.com        </code></pre>
 <h3> 包发布</h3>
 <pre><code>npm publish &lt;tarball> [--tag &lt;tag>]
 npm publish &lt;folder> [--tag &lt;tag>] </code></pre>
@@ -89,6 +92,7 @@ npm publish &lt;folder> [--tag &lt;tag>] </code></pre>
 <ul><li>package.json</li>
 <li>README.*</li></ul>
 <h3> 发布前验证工作</h3>
+
 
 <p>一定要确保通过安装且工作正常，再进行发布。</p>
 <ol><li>测试全局安装：<pre><code>npm install . -g </code></pre>
@@ -150,6 +154,7 @@ npm update -g npm </code></pre>
 <pre><code>npm ls
 npm ls -g </code></pre>
 <h3> npm root</h3>
+<p>查看本地包和全局包的安装路径</p>
 <pre><code>npm root
 npm root -g </code></pre>
 <h3> npm help</h3>

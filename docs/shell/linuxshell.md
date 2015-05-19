@@ -215,6 +215,40 @@ hudamin 2014
 
 
 
+
+
+
+
+## pbcopy & pbpaste
+
+这两个工具可以打通命令行和剪贴板。当然用鼠标操作复制粘贴也可以，但这两个工具的真正威力，发挥在将其用作Unix工具的时候。意思就是说：可以将这两个工具用作管道、IO重定向以及和其他命令的整合。例如：
+
+    $ ls ~ | pbcopy
+
+可以将主目录的文件列表复制到剪贴板。
+
+也可以把任意文件的内容读入剪贴板：
+
+    $ pbcopy < blogpost.txt
+
+做点更疯狂的尝试：获取最新Google纪念徽标（doodle）的URL并复制到剪贴板：
+
+    $ curl http://www.google.com/doodles#oodles/archive \
+        | grep -A5 'latest-doodle on' \
+        | grep 'img src' \
+        | sed s/.*'<img src="\/\/'/''/ \
+        | sed s/'" alt=".*'/''/ \
+        | pbcopy
+
+使用管道语法配合`pbcopy`工具可以简单的抓取命令的输出，而不必向上滚动翻阅终端窗口。可以用于和他人分享命令行的标准和错误输出。 `pbcopy` 和 `pbpaste` 也可以用于自动化或加速执行一些事情。例如把一些邮件的主题存为任务列表，就可以先从Mail.app中复制主题，再运行：
+
+    $ pbpaste >> tasklist.txt
+
+
+
+
+
+
 ## 网络命令
 
 ### dig

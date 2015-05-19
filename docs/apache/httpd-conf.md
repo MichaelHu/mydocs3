@@ -10,7 +10,35 @@
 
 1. User需要mod_unixd
 2. DefaultType警告，先简单改成`DefaultType none`
+3. 出现`Authz_core:error Client Denied by Server Configuration`错误
+    ，需要将：
+
+        <Directory /path/to/directory>
+            Options FollowSymlinks
+            AllowOverride none
+            Order allow, deny
+            Allow from all
+        </Directory>
+
+    改成：
+
+        <Directory /path/to/directory>
+            Options FollowSymlinks
+            AllowOverride none
+            Require all granted
+        </Directory>
+
+    还有
+
+        Require all denied
+        
+    等，具体可参考： 
+    1. https://mikegriffin.ie/blog/20140130-authz-core-error-client-denied-by-server-configuration/
+    2. http://www.hksilicon.com/kb/cn/articles/409729/Apache-2224Conf
+
 其他更多的参考changelog
+
+
 
 
 ## 配置HTTP代理

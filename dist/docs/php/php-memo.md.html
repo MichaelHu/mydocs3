@@ -2,18 +2,12 @@
 <html>
 <head>
     <title></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <style type="text/css">
-        body {padding: 15px;}
-        img {max-width: 100%; border: 1px solid #eee; }
-        pre, code {color: #048ebd; }
-        li>p {display: block;}
-        p>code, li>code {padding:0; font-size: 13px; color: red;}
-    </style>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/page.css" />
     <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
 </head>
 <body>
@@ -22,7 +16,9 @@
     </div>
 
 <h1> PHP备忘</h1>
-<blockquote><p> 2015年以前的关于PHP的文章不在此处</p></blockquote><h2> 2015-03-19</h2>
+<blockquote><p> 2015年以前的关于PHP的文章不在此处</p></blockquote>
+
+<h2> 2015-03-19</h2>
 <ul><li>关于magic quotes<ol><li>开关打开以后，所有的<code>', ", \, NULL</code>字符之前都会加上一个<code>\ </code></li>
 <li>有三种magic quotes：<ul><li><code>magic_quotes_gpc</code>: 影响请求数据（GET， POST， 以及COOKIE）。默认打开</li>
 <li><code>magic_quotes_runtime</code>: 影响大部分从外部返回数据的函数，包括数据库或文本文件。默认关闭</li>

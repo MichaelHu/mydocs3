@@ -5,9 +5,12 @@
 ./c/stdlib.h.md
 ./c/string.h.md
 ./c/variant_arguments.md
+./didi/tips.md
 ./frontend/backbone.md
 ./frontend/bootstrap.md
+./frontend/brunch.md
 ./frontend/class_extend.md
+./frontend/coffee.md
 ./frontend/commonjs.md
 ./frontend/grunt.md
 ./frontend/hammerjs.md
@@ -22,6 +25,7 @@
 ./frontend/seajs.md
 ./frontend/useful_javascript_frameworks.md
 ./git/git-memo.md
+./git/git-server.md
 ./h5games/animation.md
 ./h5games/box2dweb/box2dweb.md
 ./h5games/canvas.md
@@ -34,6 +38,7 @@
 ./html5/h5maker.md
 ./html5/ios8-safari-bug.md
 ./html5/myslides.md
+./html5/reset-vs-normalize.md
 ./html5/ua.md
 ./http/http-basics.md
 ./ios/ios-develop.md
@@ -41,6 +46,7 @@
 ./linux/network.md
 ./linux/user_group.md
 ./make/make.md
+./math/basics.md
 ./mcwebserver/introduce.md
 ./network/cname_a.md
 ./nodejs/node-example.md
@@ -48,6 +54,8 @@
 ./nodejs/npm.md
 ./other/resume.md
 ./other/useful-things.md
+./php/php-configure.md
+./php/php-dependencies.md
 ./php/php-memo.md
 ./ps/ps.md
 ./rocket/advanced/components.md
@@ -77,5 +85,8 @@
 ./shell/winshell.md
 ./ssh/ssh-key.md
 ./ssh/ssh-proxy.md
+./svn/svn-doc-server.md
+./tpls/common-templates.md
 ./vim/vim-eval.md
 ./vim/vim-memo.md
+./vim/vim-plugin.md

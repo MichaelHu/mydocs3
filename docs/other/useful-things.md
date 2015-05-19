@@ -1,5 +1,163 @@
 # 有用的小抄 
 
+> 记下，以备后续查看
+
+
+
+
+## 15-05-19
+
+1. apr和apr-util经常在linux环境下的源码安装中被依赖，比较环保的方案是先安装这两个东东。
+
+    源码可以在`http://www.apache.org`的`Download`下，任意一个mirror下的apr目录下找到。
+
+    自行制定prefix即可，确保环保。然后通过`with-apr`和`with-apr-util`选项引入。
+
+
+
+## 15-05-18
+
+`
+离职日：`
+
+1. 电动车，工位整理
+2. Token、电脑
+3. 走单
+
+
+
+
+
+## 15-05-13
+
+1. ARC - Automatic Reference Couting
+
+2. Objective C中，使用ARC的情况下，不能直接使用`NSAutoreleasePool`，而需要使用`@autoreleasepool {...}`
+
+
+
+
+
+## 15-05-07
+
+1. Bower安装的zeptojs: 
+
+        bower install zeptojs
+
+    默认情况下不会有dist目录，因为zepto进行了模块化拆分，构建包的选择留给了用户，需要运行以下命令来构建：
+
+        npm install
+        coffee make dist
+
+
+2. zeptojs官方版本没有提供amd版本，自己搞了一个版本，可以通过bower下载：
+
+        bower install zepto-amd
+        # 安装npm依赖，主要是shelljs
+        npm install
+        # 发布zepto full版本
+        sh -x dist.sh
+        
+    
+
+
+
+
+
+## 15-05-05
+
+1. 语义化版本号：<a href="http://semver.org">http://semver.org</a>
+
+
+
+
+
+
+
+## 15-04-23
+
+1. PHP的zlib的一些函数，`zlib_encode`
+    
+        zlib_encode("11111111111111111111112333333333333333333333", ZLIB_ENCODING_RAW); 
+        zlib_encode("abcccccdddddddd", ZLIB_ENCODING_GZIP); 
+        zlib_encode("abcccccdddddddd", ZLIB_ENCODING_DEFLATE); 
+
+    支持三种未文档化的编码方式。
+
+
+
+
+## 15-04-22
+
+1. mysql修改`root@localhost`密码：
+
+        $ mysqladmin -uroot -S /tmp/mysql_3335.sock password
+        $ New Password: 
+        $ Confirm: 
+
+    清空密码只需在两次输入密码的时候直接按回车键。
+
+2. mac上编译安装php-5.5.24：
+    <a href="../php/php-configure.md.html">PHP configure and install</a>
+
+
+
+
+
+
+## 15-04-14
+
+1. http://jsperf.com/innertext-vs-fragment
+    ，innerHTML方式与Fragment方式的性能比较。后者比前者快，Chrome里不太明显，慢百分之几，Safari下慢50%+
+
+        <script>
+          Benchmark.prototype.setup = function() {
+            var html = "<div><ul><li>df</li><li>fdf</li></ul></div>";
+            var d = document.createElement('div');
+            document.body.appendChild(d);
+          };
+
+          Benchmark.prototype.teardown = function() {
+            document.body.removeChild(d);
+          };
+        </script>
+
+
+2. Flux的设计思路
+
+    <img src="./img/flux-simple-f8-diagram-explained-1300w.png">
+
+    是Facebook的用于构建web application的application architecture。与`Reactjs`配合使用。
+
+    `文档地址：`http://facebook.github.io/flux/docs/overview.html
+
+
+3. Phantomjs是一个基于 WebKit 的服务器端 JavaScript API。它全面支持web而不需浏览器支持，
+    其快速，原生支持各种Web标准： DOM 处理, CSS 选择器, JSON, Canvas, 和 SVG。 PhantomJS 
+    可以用于 页面自动化 ， 网络监测 ， 网页截屏 ，以及 无界面测试 等
+
+    现在安装已经很简单，直接有二进制包可用。下载页面去下载即可。目前是2.0.0。
+
+    `一些有趣的例子：` https://github.com/ariya/phantomjs/tree/master/examples
+
+    将这些js文件保存到本地，运行： 
+
+        $ phantomjs a.js arguments
+
+
+
+
+
+## 15-04-09
+
+### OpenGL ES与cocos2d的区别
+
+1. OpenGL ES (OpenGL for Embedded Systems) 是 OpenGL三维图形 API 的子集，针对手机、PDA和游戏主机等嵌入式设备而设计。（来至：http://baike.baidu.com/view/2013442.htm?fr=aladdin）
+
+2. cocos2d是一个基于MIT协议的开源框架，用于构建游戏、应用程序和其他图形界面交互应用。可以让你在创建自己的多平台游戏时节省很多的时间。（来至：http://baike.baidu.com/view/3800461.htm?fr=aladdin）
+
+3. Cocos2d 是在 OpenGL ES 上面的一层封装。而且 Cocos2d 中还包含了：用户界面、网络通讯、跨平台数据持久化存储、音频播放、物理引擎等多种方便开发的模块，这样可以比直接使用 OpenGL ES 开发游戏，更加迅速、简单。Cocos2d 让开发者将精力更加集中在游戏本身，而不是底层的图像绘制上。
+
 
 ## 15-03-31
 

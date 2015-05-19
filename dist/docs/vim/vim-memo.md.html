@@ -2,18 +2,12 @@
 <html>
 <head>
     <title></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <style type="text/css">
-        body {padding: 15px;}
-        img {max-width: 100%; border: 1px solid #eee; }
-        pre, code {color: #048ebd; }
-        li>p {display: block;}
-        p>code, li>code {padding:0; font-size: 13px; color: red;}
-    </style>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/page.css" />
     <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
 </head>
 <body>
@@ -431,7 +425,23 @@ CTRL-D                      scroll window downwards. the number of lines comes f
                             `scroll` option (default: half a screen)
 CTRL-Y                      scroll window [count] lines upwards
 CTRL-U                      scroll window upwards. the number of lines comes from the 
-                            `scroll` option (default: half a screen)     </code></pre>
+                            `scroll` option (default: half a screen)    </code></pre>
+<h2> CTRL-W相关</h2>
+<p><code>CTRL-W j</code>
+、<code>CTRL-W h</code>
+、<code>CTRL-W l</code>
+等快捷键可以在各个分隔窗口间切换，但是在某些情况下，无法使用快捷键写法的时候，需要使用
+<code>:wincmd</code>命令来代替，举个例子：</p>
+<p><code>NERDTree</code>需要自动打开，并且将焦点设置在右边窗口：</p>
+<pre><code>autocmd vimenter * NERDTree | :wincmd l </code></pre>
+<p>这个时候，如果这么写是不可以的：</p>
+<pre><code>autocmd vimenter * NERDTree | &lt;Esc>&lt;C-w>j </code></pre>
+<p>因为这时需要的是一个
+<code>Command-line command</code>，而不是
+<code>Normal mode command</code>。
+更复杂的，比如不希望从标准输入读取时也打开NERDTree，可以如下写法：</p>
+<pre><code>autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 1 &amp;&amp; !exists("s:std_in") | NERDTree | :wincmd l | endif   </code></pre>
 <h2> VimGrep</h2>
 <pre><code>:vimgrep /&lt;script.\+>/ **/*.md
 :cw

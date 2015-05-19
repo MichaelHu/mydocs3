@@ -1,0 +1,203 @@
+FEDORA下SVN的安装以及配置  
+
+2012-05-10 16:58:12|  分类： linux学习 |  标签：fedora  svn  apach   |字号 订阅
+step 1
+
+安装subversion
+yum install subversion
+
+step 2
+
+安装apache的svn模块
+yum install mod_dav_svn
+
+step 3
+
+建立svn仓库文件
+mkdir /var/svn
+
+step 4
+
+建立SVN库并修改/var/svn用户组和用户
+svnadmin create /var/svn/repos/
+chown -R apache.apache /var/svn
+
+step 5
+
+编辑/var/svn/repos/conf/svnserve.conf
+vi /var/svn/repos/conf/svnserve.conf
+a.
+把
+＃anon-access = read
+＃auth-access = write
+改为
+anon-access = none
+auth-access = write
+b.
+把
+＃password-db = passwd
+改为
+password-db = passwd
+
+step 6
+
+增加用户密码
+vi /var/svn/repos/conf/passwd
+如[users]
+looney = 123456
+
+step 7
+
+把每次提交的文件都和/var/www/html同步，那样，就可以直接访问了
+信件一个post-commit文件
+vi /var/svn/repos/hooks/post-commit
+写入以下内容:
+#!/bin/sh
+export LANG=en_US.UTF-8
+svn update /var/www/html –username looney –password 123456
+并且，把这个文件改为777 首先，先在服务器端/var/www/html checkout以后，每次更新就能够向/var/www/html添加了
+
+Step 8
+
+运行subversion服务（非必要）
+vi /etc/rc.local
+加入如下命令
+#!/bin/sh
+#
+# This script will be executed *after* all the other init scripts.
+# You can put your own initialization stuff in here if you don’t
+# want to do the full Sys V style init stuff.
+touch /var/lock/subsys/local
+svnserve -d -r /var/svn/repos
+
+step 9
+
+设置apache的svn配置文件
+
+vi /etc/httpd/conf.d/subversion.conf
+
+<Location /repos>
+DAV svn
+   SVNParentPath /var/svn
+#
+#   # Limit write permission to list of valid users.
+#   <LimitExcept GET PROPFIND OPTIONS REPORT>
+#      # Require SSL connection for password protection.
+#      # SSLRequireSSL
+#
+#      AuthType Basic
+#      AuthName “Authorization Realm”
+#      AuthUserFile /path/to/passwdfile
+#      Require valid-user
+#   </LimitExcept>
+</Location>
+把对应的#号去掉，并修改路径，改为如上的。
+
+step 10
+
+重启服务器
+
+step 11
+建立project test
+mkdir /tmp/test
+mkdir /var/svn/repos/test
+svn import /tmp/test file:///var/svn/repos/test -m “initial import”
+step 12
+在服务器checkout一次
+svn checkout svn://127.0.0.1/ /var/www/html
+
+step 13
+OK了
+可以用别的机器访问服务器,例如内网IP：192.168.1.226
+svn://192.168.1.226/test
+test项目的地址
+http://192.168.1.226/test
+
+以后commit到数据仓库的代码，和192.168.1.222服务器的/var/www/html里面的同步了
+另外，可以每个数据仓库一个项目工程，自己进行相关设置就是了
+
+
+
+以下是命令行操作和输出：
+
+[root@localhost work]# yum install subversion
+Loaded plugins: langpacks, presto, refresh-packagekit
+fedora/metalink                                                                                              | 7.8 kB     00:00     
+updates/metalink                                                                                             | 4.2 kB     00:00     
+updates                                                                                                      | 4.7 kB     00:00     
+updates/primary_db                                                                                           | 5.9 MB     00:47     
+updates/group                                                                                                | 1.9 MB     00:47     
+Setting up Install Process
+Resolving Dependencies
+--> Running transaction check
+---> Package subversion.i686 0:1.6.18-1.fc16 will be installed
+--> Processing Dependency: subversion-libs(x86-32) = 1.6.18-1.fc16 for package: subversion-1.6.18-1.fc16.i686
+--> Processing Dependency: perl(URI) >= 1.17 for package: subversion-1.6.18-1.fc16.i686
+--> Processing Dependency: libsvn_wc-1.so.0 for package: subversion-1.6.18-1.fc16.i686
+--> Processing Dependency: libsvn_subr-1.so.0 for package: subversion-1.6.18-1.fc16.i686
+--> Processing Dependency: libsvn_repos-1.so.0 for package: subversion-1.6.18-1.fc16.i686
+--> Processing Dependency: libsvn_ra_svn-1.so.0 for package: subversion-1.6.18-1.fc16.i686
+--> Processing Dependency: libsvn_ra_neon-1.so.0 for package: subversion-1.6.18-1.fc16.i686
+--> Processing Dependency: libsvn_ra_local-1.so.0 for package: subversion-1.6.18-1.fc16.i686
+--> Processing Dependency: libsvn_ra-1.so.0 for package: subversion-1.6.18-1.fc16.i686
+--> Processing Dependency: libsvn_fs_util-1.so.0 for package: subversion-1.6.18-1.fc16.i686
+--> Processing Dependency: libsvn_fs_fs-1.so.0 for package: subversion-1.6.18-1.fc16.i686
+--> Processing Dependency: libsvn_fs_base-1.so.0 for package: subversion-1.6.18-1.fc16.i686
+--> Processing Dependency: libsvn_fs-1.so.0 for package: subversion-1.6.18-1.fc16.i686
+--> Processing Dependency: libsvn_diff-1.so.0 for package: subversion-1.6.18-1.fc16.i686
+--> Processing Dependency: libsvn_delta-1.so.0 for package: subversion-1.6.18-1.fc16.i686
+--> Processing Dependency: libsvn_client-1.so.0 for package: subversion-1.6.18-1.fc16.i686
+--> Processing Dependency: libaprutil-1.so.0 for package: subversion-1.6.18-1.fc16.i686
+--> Processing Dependency: libapr-1.so.0 for package: subversion-1.6.18-1.fc16.i686
+--> Running transaction check
+---> Package apr.i686 0:1.4.6-1.fc16 will be installed
+---> Package apr-util.i686 0:1.3.12-1.fc16 will be installed
+---> Package perl-URI.noarch 0:1.60-1.fc16 will be installed
+---> Package subversion-libs.i686 0:1.6.18-1.fc16 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+====================================================================================================================================
+ Package                             Arch                       Version                           Repository                   Size
+====================================================================================================================================
+Installing:
+ subversion                          i686                       1.6.18-1.fc16                     updates                     1.1 M
+Installing for dependencies:
+ apr                                 i686                       1.4.6-1.fc16                      updates                     104 k
+ apr-util                            i686                       1.3.12-1.fc16                     fedora                       82 k
+ perl-URI                            noarch                     1.60-1.fc16                       updates                     104 k
+ subversion-libs                     i686                       1.6.18-1.fc16                     updates                     711 k
+
+Transaction Summary
+====================================================================================================================================
+Install       5 Packages
+
+Total download size: 2.0 M
+Installed size: 7.4 M
+Is this ok [y/N]: 
+Downloading Packages:
+(1/5): apr-1.4.6-1.fc16.i686.rpm                                                                             | 104 kB     00:02     
+(2/5): apr-util-1.3.12-1.fc16.i686.rpm                                                                       |  82 kB     00:00     
+(3/5): perl-URI-1.60-1.fc16.noarch.rpm                                                                       | 104 kB     00:03     
+(4/5): subversion-1.6.18-1.fc16.i686.rpm                                                                     | 1.1 MB     00:08     
+(5/5): subversion-libs-1.6.18-1.fc16.i686.rpm                                                                | 711 kB     00:06     
+------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                77 kB/s | 2.0 MB     00:27     
+Running Transaction Check
+Running Transaction Test
+Transaction Test Succeeded
+Running Transaction
+  Installing : perl-URI-1.60-1.fc16.noarch                                                                                      1/5 
+  Installing : apr-1.4.6-1.fc16.i686                                                                                            2/5 
+  Installing : apr-util-1.3.12-1.fc16.i686                                                                                      3/5 
+  Installing : subversion-libs-1.6.18-1.fc16.i686                                                                               4/5 
+  Installing : subversion-1.6.18-1.fc16.i686                                                                                    5/5 
+
+Installed:
+  subversion.i686 0:1.6.18-1.fc16                                                                                                   
+
+Dependency Installed:
+  apr.i686 0:1.4.6-1.fc16   apr-util.i686 0:1.3.12-1.fc16   perl-URI.noarch 0:1.60-1.fc16   subversion-libs.i686 0:1.6.18-1.fc16  
+
+Complete!

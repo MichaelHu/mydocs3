@@ -1,5 +1,47 @@
 # CSS3 Memo
 
+## 属性拾遗
+
+1. `-webkit-font-smoothing`，网页字体反锯齿设置
+
+        -webkit-font-smoothing: none;
+        -webkit-font-smoothing: subpixel-antialiased;
+        -webkit-font-smoothing: antialiased;
+
+    `subpixel-antialiased`为浏览器默认，`antialiased`为反锯齿效果
+
+2. `-webkit-touch-callout`，Disables the default callout shown when you touch and hold a touch target.
+    在iOS上可用，阻止用户按住某些元素（图片、链接）时弹出信息窗口。
+
+        -webkit-touch-callout: none;
+
+    iOS下，应用于图片元素，可阻止图片复制、保存等；应用于link，可阻止链接信息弹出窗口。
+
+
+3. `user-select`，阻止文本选择，以下给出比较通用的阻止文本选择的代码。 
+
+        *.unselectable {
+            -moz-user-select: -moz-none;
+            -khtml-user-select: none;
+            -webkit-user-select: none;
+
+            /**
+             *   Introduced in IE 10.
+             *   See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+             */
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+
+### 参考网站
+
+1. http://css-infos.net/
+2. http://css-infos.net/properties/webkit，包含非官方的webkit css属性
+
+
+
+
 ## 3D CSS Tester
 
 <a href="http://thewebrocks.com/demos/3D-css-tester/">3D-CSS-Tester</a>

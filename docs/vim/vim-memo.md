@@ -573,7 +573,32 @@
                                 `scroll` option (default: half a screen)
 
 
+
+
+## CTRL-W相关
+
+`CTRL-W j`
+、`CTRL-W h`
+、`CTRL-W l`
+等快捷键可以在各个分隔窗口间切换，但是在某些情况下，无法使用快捷键写法的时候，需要使用
+`:wincmd`命令来代替，举个例子：
+
+`NERDTree`需要自动打开，并且将焦点设置在右边窗口：
+
+    autocmd vimenter * NERDTree | :wincmd l
+
+这个时候，如果这么写是不可以的：
     
+    autocmd vimenter * NERDTree | <Esc><C-w>j
+
+因为这时需要的是一个
+`Command-line command`，而不是
+`Normal mode command`。
+更复杂的，比如不希望从标准输入读取时也打开NERDTree，可以如下写法：
+
+    autocmd StdinReadPre * let s:std_in=1
+    autocmd VimEnter * if argc() == 1 && !exists("s:std_in") | NERDTree | :wincmd l | endif
+
 
 
 ## VimGrep

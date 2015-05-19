@@ -2,18 +2,12 @@
 <html>
 <head>
     <title></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <style type="text/css">
-        body {padding: 15px;}
-        img {max-width: 100%; border: 1px solid #eee; }
-        pre, code {color: #048ebd; }
-        li>p {display: block;}
-        p>code, li>code {padding:0; font-size: 13px; color: red;}
-    </style>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/page.css" />
     <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
 </head>
 <body>
@@ -22,7 +16,80 @@
     </div>
 
 <h1> 有用的小抄 </h1>
+<blockquote><p> 记下，以备后续查看</p></blockquote>
 
+
+<h2> 15-05-19</h2>
+<ol><li>apr和apr-util经常在linux环境下的源码安装中被依赖，比较环保的方案是先安装这两个东东。<p>源码可以在<code>http://www.apache.org</code>的<code>Download</code>下，任意一个mirror下的apr目录下找到。</p>
+<p>自行制定prefix即可，确保环保。然后通过<code>with-apr</code>和<code>with-apr-util</code>选项引入。</p>
+</li></ol>
+<h2> 15-05-18</h2>
+<p><code>
+离职日：</code></p>
+<ol><li>电动车，工位整理</li>
+<li>Token、电脑</li>
+<li>走单</li></ol>
+<h2> 15-05-13</h2>
+<ol><li>ARC - Automatic Reference Couting</li>
+<li>Objective C中，使用ARC的情况下，不能直接使用<code>NSAutoreleasePool</code>，而需要使用<code>@autoreleasepool {...}</code></li></ol>
+<h2> 15-05-07</h2>
+<ol><li>Bower安装的zeptojs: <pre><code>bower install zeptojs </code></pre>
+<p>默认情况下不会有dist目录，因为zepto进行了模块化拆分，构建包的选择留给了用户，需要运行以下命令来构建：</p>
+<pre><code>npm install
+coffee make dist  </code></pre>
+</li>
+<li>zeptojs官方版本没有提供amd版本，自己搞了一个版本，可以通过bower下载：<pre><code>bower install zepto-amd
+# 安装npm依赖，主要是shelljs
+npm install
+# 发布zepto full版本
+sh -x dist.sh       </code></pre>
+</li></ol>
+<h2> 15-05-05</h2>
+<ol><li>语义化版本号：<a href="http://semver.org">http://semver.org</a></li></ol>
+<h2> 15-04-23</h2>
+<ol><li>PHP的zlib的一些函数，<code>zlib_encode</code><pre><code>zlib_encode("11111111111111111111112333333333333333333333", ZLIB_ENCODING_RAW); 
+zlib_encode("abcccccdddddddd", ZLIB_ENCODING_GZIP); 
+zlib_encode("abcccccdddddddd", ZLIB_ENCODING_DEFLATE);  </code></pre>
+<p>支持三种未文档化的编码方式。</p>
+</li></ol>
+<h2> 15-04-22</h2>
+<ol><li>mysql修改<code>root@localhost</code>密码：<pre><code>$ mysqladmin -uroot -S /tmp/mysql_3335.sock password
+$ New Password: 
+$ Confirm:  </code></pre>
+<p>清空密码只需在两次输入密码的时候直接按回车键。</p>
+</li>
+<li>mac上编译安装php-5.5.24：<p><a href="../php/php-configure.md.html">PHP configure and install</a></p>
+</li></ol>
+<h2> 15-04-14</h2>
+<ol><li>http://jsperf.com/innertext-vs-fragment<p>，innerHTML方式与Fragment方式的性能比较。后者比前者快，Chrome里不太明显，慢百分之几，Safari下慢50%+</p>
+<pre><code>&lt;script>
+  Benchmark.prototype.setup = function() {
+    var html = "&lt;div>&lt;ul>&lt;li>df&lt;/li>&lt;li>fdf&lt;/li>&lt;/ul>&lt;/div>";
+    var d = document.createElement('div');
+    document.body.appendChild(d);
+  };
+
+  Benchmark.prototype.teardown = function() {
+    document.body.removeChild(d);
+  };
+&lt;/script>  </code></pre>
+</li>
+<li>Flux的设计思路<p><img src="./img/flux-simple-f8-diagram-explained-1300w.png"></p>
+<p>是Facebook的用于构建web application的application architecture。与<code>Reactjs</code>配合使用。</p>
+<p><code>文档地址：</code>http://facebook.github.io/flux/docs/overview.html</p>
+</li>
+<li>Phantomjs是一个基于 WebKit 的服务器端 JavaScript API。它全面支持web而不需浏览器支持，<p>其快速，原生支持各种Web标准： DOM 处理, CSS 选择器, JSON, Canvas, 和 SVG。 PhantomJS 
+可以用于 页面自动化 ， 网络监测 ， 网页截屏 ，以及 无界面测试 等</p>
+<p>现在安装已经很简单，直接有二进制包可用。下载页面去下载即可。目前是2.0.0。</p>
+<p><code>一些有趣的例子：</code> https://github.com/ariya/phantomjs/tree/master/examples</p>
+<p>将这些js文件保存到本地，运行： </p>
+<pre><code>$ phantomjs a.js arguments     </code></pre>
+</li></ol>
+<h2> 15-04-09</h2>
+<h3> OpenGL ES与cocos2d的区别</h3>
+<ol><li>OpenGL ES (OpenGL for Embedded Systems) 是 OpenGL三维图形 API 的子集，针对手机、PDA和游戏主机等嵌入式设备而设计。（来至：http://baike.baidu.com/view/2013442.htm?fr=aladdin）</li>
+<li>cocos2d是一个基于MIT协议的开源框架，用于构建游戏、应用程序和其他图形界面交互应用。可以让你在创建自己的多平台游戏时节省很多的时间。（来至：http://baike.baidu.com/view/3800461.htm?fr=aladdin）</li>
+<li>Cocos2d 是在 OpenGL ES 上面的一层封装。而且 Cocos2d 中还包含了：用户界面、网络通讯、跨平台数据持久化存储、音频播放、物理引擎等多种方便开发的模块，这样可以比直接使用 OpenGL ES 开发游戏，更加迅速、简单。Cocos2d 让开发者将精力更加集中在游戏本身，而不是底层的图像绘制上。</li></ol>
 <h2> 15-03-31</h2>
 <ol><li>The Network Information API在W3C草案中已经停止。原因是Device APIs Working Group在推进过程中遇到了带宽检测方面的问题，所以决定先停止相关工作，直到更好的了解问题，需求以及解决方案出来为止。<pre><code>navigation.connection </code></pre>
 </li>

@@ -2,18 +2,12 @@
 <html>
 <head>
     <title></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <style type="text/css">
-        body {padding: 15px;}
-        img {max-width: 100%; border: 1px solid #eee; }
-        pre, code {color: #048ebd; }
-        li>p {display: block;}
-        p>code, li>code {padding:0; font-size: 13px; color: red;}
-    </style>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/page.css" />
     <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
 </head>
 <body>
@@ -22,6 +16,32 @@
     </div>
 
 <h1> CSS3 Memo</h1>
+<h2> 属性拾遗</h2>
+<ol><li><code>-webkit-font-smoothing</code>，网页字体反锯齿设置<pre><code>-webkit-font-smoothing: none;
+-webkit-font-smoothing: subpixel-antialiased;
+-webkit-font-smoothing: antialiased; </code></pre>
+<p><code>subpixel-antialiased</code>为浏览器默认，<code>antialiased</code>为反锯齿效果</p>
+</li>
+<li><code>-webkit-touch-callout</code>，Disables the default callout shown when you touch and hold a touch target.<p>在iOS上可用，阻止用户按住某些元素（图片、链接）时弹出信息窗口。</p>
+<pre><code>-webkit-touch-callout: none; </code></pre>
+<p>iOS下，应用于图片元素，可阻止图片复制、保存等；应用于link，可阻止链接信息弹出窗口。</p>
+</li>
+<li><code>user-select</code>，阻止文本选择，以下给出比较通用的阻止文本选择的代码。 <pre><code>*.unselectable {
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+
+    /**
+     *   Introduced in IE 10.
+     *   See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+     */
+    -ms-user-select: none;
+    user-select: none;
+}  </code></pre>
+</li></ol>
+<h3> 参考网站</h3>
+<ol><li>http://css-infos.net/</li>
+<li>http://css-infos.net/properties/webkit，包含非官方的webkit css属性</li></ol>
 <h2> 3D CSS Tester</h2>
 
 <a href="http://thewebrocks.com/demos/3D-css-tester/">3D-CSS-Tester</a>

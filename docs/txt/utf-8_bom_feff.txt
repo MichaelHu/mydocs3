@@ -1,0 +1,83 @@
+UTF-8、BOM、<feff>的问题
+2011-08-17 20:42:43
+标签：feff 休闲 utf8 职场 BOM
+http://smzz.org/node/36
+ 
+ 
+有些编辑器，比如M$ Windows的记事本，在创建UTF8编码文件时会在头部添加一个不可见字符。这个字符可以通过vim查看到，而且如果是一个php文件，php4、php5在解析时均会有输出。
+原来这个被称作BOM(Byte Order Mark)的不可见字符，是Unicode用来标识内部编码的排列方式的，在UTF-16、UTF-32编码里它是必需的，而在UTF-8里是可选的。因 此，才会出现有的编辑器在文件头部添加添加BOM、而有的语法解析器又不作处理的的混乱情况。
+根据w3c里FAQ的建议，解决方法就是，删无赦！
+**************************
+ http://apps.hi.baidu.com/share/detail/35382688
+ 
+ 
+UTF-8编码中BOM的检测与删除
+所谓 BOM，全称是Byte Order Mark，它是一个Unicode字符，通常出现在文本的开头，用来标识字节序 （Big/Little Endian），除此以外还可以标识编码（UTF-8/16/32），如果出现在文本中间，则解释为zero width no-break space。
+ 
+注：Unicode相关知识的详细介绍请参考UTF-8, UTF-16, UTF-32 & BOM。
+对于UTF-8/16/32而言，它们名字中的8/16/32指的是编码单位是多少位的，也就是说，它们的编码单位分别是8/16/32位，换算成 字节就是1/2/4字节，如果是多字节，就要牵扯到字节序，UTF-8以单字节为编码单位，所以不存在字节序。
+UTF-8主要的优点是可以兼容ASCII，但如果使用BOM的话，这个好处就荡然无存了，除此以外，BOM的存在还可能引发一些问题，比如下面错 误便都有可能是BOM导致的：
+Shell: ?#!/bin/sh: No such file or directory
+PHP: Warning: Cannot modify header information – headers already sent
+在详细讨论UTF-8编码中BOM的检测与删除问题前，不妨先通过一个例子热热身：
+# curl -s http://phone.10086.cn/ | head -1 | sed -n l
+\357\273\277<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional\
+//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\r$
+如上所示，前三个字节分别是357、273、277，这就是八进制的BOM。
+# curl -s http://phone.10086.cn/ | head -1 | xxd
+0000000: efbb bf3c 2144 4f43 5459 5045 2068 746d  ...<!DOCTYPE htm
+0000010: 6c20 5055 424c 4943 2022 2d2f 2f57 3343  l PUBLIC "-//W3C
+0000020: 2f2f 4454 4420 5848 544d 4c20 312e 3020  //DTD XHTML 1.0
+0000030: 5472 616e 7369 7469 6f6e 616c 2f2f 454e  Transitional//EN
+0000040: 2220 2268 7474 703a 2f2f 7777 772e 7733  " "http://www.w3
+0000050: 2e6f 7267 2f54 522f 7868 746d 6c31 2f44  .org/TR/xhtml1/D
+0000060: 5444 2f78 6874 6d6c 312d 7472 616e 7369  TD/xhtml1-transi
+0000070: 7469 6f6e 616c 2e64 7464 223e 0d0a       tional.dtd">..
+如上所示，前三个字节分别是EF、BB、BF，这就是十六进制的BOM。
+注：用到了第三方网站的页面，不能保证例子结论始终正确。
+实际做项目开发时，可能会面对成百上千个文本文件，如果有几个文件混入了BOM，那么很难察觉，如果没有带BOM的UTF文本文件例子，可以用vi 杜撰几个，相关命令如下：
+#设置UTF-8编码
+:set fileencoding=utf-8
+#添加BOM
+:set bomb
+#删除BOM
+:set nobomb
+#查询BOM
+:set bomb?
+如何检测UTF-8编码中的BOM呢？
+shell> grep -I -r -l $'\xEF\xBB\xBF' /path
+如何删除UTF-8编码中的BOM呢？
+shell> grep -I -r -l $'\xEF\xBB\xBF' /path | xargs sed -i 's/^\xEF\xBB\xBF//;q'
+推荐：如果你使用SVN的话，可以在pre-commit钩子里加上相关代码，从源头杜绝BOM。
+#!/bin/sh
+
+REPOS="$1"
+TXN="$2"
+
+SVNLOOK=/usr/bin/svnlook
+
+FILES=`$SVNLOOK changed -t "$TXN" "$REPOS" | awk {'print $2'}`
+
+for FILE in $FILES; do
+    CONTENT=`$SVNLOOK cat -t "$TXN" "$REPOS" "$FILE"`
+
+    if echo $CONTENT | head -c 3 | xxd -i | grep -q '0xef, 0xbb, 0xbf'; then
+        echo "BOM!" 1>&2
+        exit 1
+    fi
+done
+篇幅所限，恕不详述，未尽事宜大家就请自己搜索吧。
+**************************
+linux下处理windows utf8文件，发现vim头会多一个<feff>
+ 
+一般默认创建的文件都是ANSI编码的。用记事本打开这个文件,点"另存为",最下面有个"编码(Encoding)"可以选择,里面有"ANSI,utf8"等选项。
+下面介绍用直接使用perl创建一个UTF-8的文件
+open( OUT, ">:utf8", "a.txt" ) or die "a.out: $!";
+print OUT "\x{feff}";
+print OUT "aaaa\n";
+close OUT;
+反过来，删除文件中的<feff>头
+open (FH, '<:utf8',"$_" ) or die $!;
+...
+s/\x{feff}//;
+...

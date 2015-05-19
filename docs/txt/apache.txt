@@ -1,0 +1,91 @@
+2012/8/20
+/news_webapp不做代理
+/news?...做代理
+如何写RewriteRule?
+RewriteCond %{SCRIPT_FILENAME} ^/news$
+RewriteRule ^/news(.*)$ http://m.baidu.com$0 [P]
+注意划线部分可以不要。
+为什么单写RewriteRule不行呢？
+RewriteRule ^/news(.*)$ http://m.baidu.com$0 [P]
+会把news_webapp也做代理。有单写RewriteRule而达成效果的么？
+RewriteRule ^/news\?(.*)$ http://m.baidu.com$0 [P]  
+以上不能，因为在虚拟机上下文中，pattern匹配针对协议和主机名后，查询字串前的部分。”\?”的限定已经没有任何意义。
+
+rewrite_module针对整个URL。
+
+RewriteRule的后向引用$N
+RewriteCond的后向引用%N
+
+RewriteRule Pattern Substitution [flags]
+Pattern是Perl兼容的正则表达式。RewriteRule可以出现多次，每次定义一个单独的规则。这些规则定义的先后顺序是很重要的，因为运行时就是按照顺序先后使用这些规则的。
+对于第一条规则，其Pattern应用在URL-path上，也即跟在协议和主机名后面的部分，比如/path/to/file.html。
+后续的规则，其pattern应用在上一次匹配的规则的输出。
+
+哪些部分被匹配：
+在VirtualHost上下文，规则应用在URL的协议和主机名后，查询串之前的部分，不包含?；
+在Directory以及htaccess上下文，规则应用在文件系统路径上，比如： /usr/local/apache/htdocs/path/to/file.html
+如果需要对hostname, port或query string进行匹配，请使用%{HTTP_HOST}, %{SERVER_PORT}, %{QUERY_STRING}进行匹配。
+%{SCRIPT_FILENAME}的匹配直接在RewriteRule中进行即可，因为默认pattern就匹配的它。其他部分需要用RewriteCond辅助。
+
+反向引用时，与Pattern的内容不是完全对应的。
+比如
+pattern写成^/news$，而在substitution中的$0却包含后面的querystring，如果一一对应的话，是不包含的。
+
+P，R等flag中，substitution中默认情况下会把原有的query string添加上去。但是如果在substitution中已经包含query string，这时原有的query string就会被丢弃。如果确实需要在这种情况下，也需要把原有query string添加上去，也即重新组织query string的话，就需要QSA flag了。
+比如：
+RewriteRule ^/news$ http://hudamin.fe.baidu.com/vs_proxy.php?request_url=http://m.baidu.com/news? [B,P,QSA]
+没有QSA flag的话，原地址中的query string会被丢弃。
+
+
+
+2012/7/24：
+Options指令
+Options
+指令控制了在特定目录中将使用哪些服务器特性。
+可选项能设置为
+None
+，在这种情况下，将不启用任何额外特性。或设置为以下选项中的一个或多个：
+All
+除MultiViews之外的所有特性。这是默认设置。
+ExecCGI
+允许执行CGI脚本.
+FollowSymLinks
+服务器会在此目录中使用符号连接。
+注意：即便服务器会使用符号连接，但它不会改变用于匹配<Directory>配置段的路径名。
+注意：如果此配置位于<Location>配置段中，则此设置会被忽略。
+Includes
+允许服务器端包含。
+IncludesNOEXEC
+允许服务器端包含，但禁用#exec命令和#exec CGI。但仍可以从ScriptAliase目录使用#include 虚拟CGI脚本。
+Indexes
+如果一个映射到目录的URL被请求，而此目录中又没有DirectoryIndex（例如：index.html），那么服务器会返回一个格式化后的目录列表。
+MultiViews
+允许内容协商的多重视图。
+SymLinksIfOwnerMatch
+服务器仅在符号连接与其目的目录或文件拥有者具有同样的用户id时才使用它。
+注意：如果此配置出现在<Location>配置段中，此选项将被忽略。
+一般来说，如果一个目录被多次设置了Options，则最特殊的一个会被完全接受，而各个可选项的设定彼此并不融合。然而，如果所有施用于Options指令的可选项前都加有+或-符号，此可选项将被合并。所有前面加有+号的可选项将强制覆盖当前可选项设置，而所有前面有-号的可选项将强制从当前可选项设置中去除。
+比如说，没有任何+和-符号：
+<Directory /web/docs>
+Options Indexes FollowSymLinks
+</Directory>
+<Directory /web/docs/spec>
+Options Includes
+</Directory>
+则只有Includes设置到/web/docs/spec目录上。然而如果第二个Options指令使用了+和-符号：
+<Directory /web/docs>
+Options Indexes FollowSymLinks
+</Directory>
+<Directory /web/docs/spec>
+Options +Includes -Indexes
+</Directory>
+那么就会有FollowSymLinks和Includes设置到/web/docs/spec目录上。
+请注意：使用
+-IncludesNOEXEC
+或是
+-Includes
+时，不论前面如何设置，都会完全禁用服务器端包含。
+没有其它设置时，默认设置为
+All
+
+

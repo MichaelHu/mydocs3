@@ -1,0 +1,334 @@
+Linux Shell
+
+
+
+修订记录
+修订内容    修订人  修订时间
+初稿    胡大民  2010/10
+添加前言、查看CPU信息命令   胡大民  2010/12/8
+增加dos2unix命令及其bug信息
+增加find命令新例子  胡大民  2010/12/30
+增加批量查询主机名对应的ip的例子    胡大民  2011/2/15
+增加计算.php文件源代码总行数的例子  胡大民  2011/3/24
+增加ldd命令 胡大民  2011/3/26
+增加readelf命令以及编译配置的LDFlAGS    胡大民  2011/4/2
+添加awk命令、sed命令    胡大民  2011/4/12
+更新awk命令的例子，分隔字段 胡大民  2011/5/3
+添加计算每秒请求次数的例子  胡大民  2011/5/17
+更新awk命令，支持PERL正则   胡大民  2011/7/14
+添加awk命令注意事项
+添加sed命令新例子   胡大民  2011/7/25
+增加sed命令的注意事项   胡大民  2011/7/26
+增加ssh-keygen命令
+增加简单项目发布脚本示例，使用了shell函数   胡大民  2011/8/3
+增加LD_LIBRARY_PATH配置 胡大民  2011/9/8
+增加find命令的-iregex和-regex开关   胡大民  2011/11/11
+增加while命令   胡大民  2011/11/18
+增加awk命令的字段分隔符 胡大民  2011/11/22
+增加查看Linux内核版本和发行版本的命令   胡大民  2012/5/22
+增加diff命令    胡大民  2012/8/16
+
+ 
+1 前言
+Linux Shell脚本编程基础，常用命令汇总。
+2 shell基础
+
+3 常用Linux命令
+3.1 文本过滤grep
+grep “abc” file_name
+从文件file_name中过滤出含有abc模式的行。
+grep -n “abc” file_name
+同上，并且在过滤结果中带上行号。
+grep -c “abc” file_name
+count，输出匹配的次数。
+grep -o “abc” file_name
+only，表示只输出匹配的部分。
+grep -P “^abc” file_name
+Perl正则表达式开关，过滤行为支持Perl正则。
+grep -Pn “^abc\d+” file_name
+开关合并，支持Perl正则，并且在过滤结果中带上行号。
+grep -r “script” .
+获取当前目录及其子目录下的所有文件中包含字符串script的所有匹配行。
+3.2 文件查找命令find
+格式：
+find [path...] [expression]
+该命令以path指定的目录为根，循环查找目录树，针对每一个文件执行expression。
+引用一段来自使用手册的说明，了解如何判定path和expression部分：
+The first argument that begins with '-', '(', ')', ',', or '!' is taken to be the beginning of  the  expression; any  arguments  before it are paths to search, and any arguments after it are the rest of the expression.  If no paths are given, the current directory is used.  If no expression is given, the expression '-print' is used.
+……
+1.  第一个以下划线，左括号，右括号或者叹号开始的参数，作为expression的开始；
+2.  expression部分包含三个子部分：options、tests和actions；
+3.  options总是返回true，影响所有的操作，而不特定于某些文件；
+4.  tests返回true或false；
+3.2.1 常用options
+-depth    深度遍历目录树，默认为广度遍历
+-maxdepth levels    遍历目录树的最大层次，当前目录为0级
+-mindepth levels    遍历目录树的最小层次
+
+3.2.2 常用tests
++n    是否大于n
+-n    是否小于n
+n     是否刚等于n
+-name pattern    文件名符合pattern，pattern内的点号和斜线不做特殊处理
+-path pattern    路径名符合pattern，pattern内的点号和斜线不做特殊处理
+-type c    文件类型，f为通常文件，d为目录，l为符号链接，等等
+-regex pattern 全路径符合正则pattern，点号会做特殊处理
+-iregex pattern全路径符合正则pattern，不区分大小写，点号会特殊处理
+举一些例子：
+[work@ai-news-tag0.ai01.baidu.com chengen]$ find . -path './sync/*'        
+./sync/phpui-control.sh
+./sync/sync.sh
+./sync/sync_gbk.sh
+列出sync目录下所有文件。
+find . -name '*.sh'
+查找当前目录下，扩展名为.sh的所有文件。
+find . -mindepth 3 -type d
+查找当前目录下，目录层次至少3级的所有目录。
+区别一下-regex的pattern与-name和-path的pattern：
+$ find . -regex ".*.sh" | less
+./.ssh
+./tobeonline/phpui_deploy/image/phpui_soft/lighttpd_install.sh
+./tobeonline/phpui_deploy/image/phpui_soft/phpui_install.sh
+而
+$ find . -name ".*.sh" | less     
+./lintianlong/neon-0.29.6/.release.sh
+find的后向引用：寻找全路径中至少两次出现pro的文件。
+$ find . -regex ".*?\(pro\).*?\1.*"
+./projects/phpui_tools/.svn/prop-base
+./projects/phpui_tools/.svn/prop-base/img_tpl_release.sh.svn-base
+
+3.2.3 常用actions
+-exec command \;    执行命令command，若命令返回0，整个表达式返回true
+-exec command ‘;’
+-exec command “;”
+1.  使用分号来区分command的参数还是find的参数。为了不和通常的shell命令结束符（也是分号）混淆，需要将该分号转义。转义有两种方案，一是加反斜线，二是用引号括起来；
+2.  一个exec支持一个命令，在碰到\;之前，命令后面的参数都作为该命令的参数，而不作为find命令的参数；
+3.  {}结构被解析为当前文件名；
+4.  若要支持多个命令，再写一个-exec即可。
+以下举例说明：
+find . -name '*.sh' -exec echo {} ";" -exec cat {} ';'
+打印当前目录（包含子目录）下所有扩展名为.sh的文件的文件名和内容。
+
+find
+列出当前目录下所有目录和文件，包含隐藏文件。
+find . -ls
+以ls -dils列出所有文件的详细信息。
+再举个例子，用dos2unix循环转换某个目录（及子目录）下所有文件:
+find . -name "*tpl" -exec cp {} @__tmp.tpl \; -exec dos2unix @__tmp.tpl \; -exec mv @__tmp.tpl {} \;
+
+3.3 编码转换命令iconv
+iconv命令，转换文件编码。
+iconv -f utf8 -t gbk -o file_gbk file_utf8
+以上命令，将utf8编码的文件file_utf8转换成GBK编码，并以file_gbk文件名保存。
+3.4 查看当前主机的ip
+hotstname -i
+3.5 查看cpu信息
+cat /proc/cpuinfo
+会列出有多少个CPU，以及CPU的核数。核数可以查看cores字段。
+3.6 lftp命令
+连接站点，执行命令后退出。
+# mirror命令的-x参数值支持的是正则表达式
+lftp -e "mirror -x '.*\.log' /home/work/wiaui wiaui" ai-news-tag0.ai01
+3.7 dos2unix命令
+DOS/MAC to UNIX text file format converter
+该命令可以将DOS或者MAC下的文本文件格式转换成UNIX的文本文件格式。使用方法：
+1.  原地转换文本文件a.txt，会修改a.txt文件本身
+dos2unix a.txt
+2.  转换文本文件a.txt，输出到指定文件
+dos2unix -o a.out a.txt
+该命令存在bug，如果指定文件包含目录，可能导致出core。
+https://bugzilla.redhat.com/show_bug.cgi?id=186490
+举个出core的例子：
+目录名长度为9个字符，比如abcdeabcd，该目录下有test.html文件，如果如下调用：
+dos2unix ./abcdeabcd/test.html
+会出core。
+
+安全的使用方式是只在当前目录下操作，也即只传入文件名。
+如
+dos2unix a.txt
+而不是
+dos2unix ./mtest/a.txt
+更多例子查看find命令例子中关于dos2unix的部分。
+3.8 ldd命令查看程序的共享库信息
+#ldd python
+libpython2.5.so.1.0 => not found
+libpthread.so.0 => /lib64/tls/libpthread.so.0 (0x000000302b800000)
+libdl.so.2 => /lib64/libdl.so.2 (0x000000302b200000)
+libutil.so.1 => /lib64/libutil.so.1 (0x000000302d300000)
+libm.so.6 => /lib64/tls/libm.so.6 (0x000000302b400000)
+libc.so.6 => /lib64/tls/libc.so.6 (0x000000302af00000)
+/lib64/ld-linux-x86-64.so.2 (0x000000302ad00000)
+有些时候，如果程序不是安装在系统默认的路径下，可能出现so文件找不到的情况，如上第二行所示“not found”。这时，可以设置环境变量LD_LIBRARY_PATH，见3.9。
+3.9 LD_LIBRARY_PATH配置
+可以解决动态库查找不到的问题。
+export LD_LIBRARY_PATH=/home/img/softwares/python/lib:$LD_LIBRARY_PATH
+
+3.10 readelf命令查看可执行链接文件信息
+elf：Executable and Linkable Format
+readelf -s httpd
+比如查看文件输出的符号表等。ldd和readelf类似windows下的dumpbin工具。
+3.11 LDFLAGS编译配置
+如果需要动态加载的LIB来自一个非标准目录，则在configure的时候可以通过LDFLAGS指定。目的在于指定GNU连接器的开关。
+./configure LDFLAGS="-L/usr/lib" \
+    --prefix=/home/work/softwares/reviewboard/apache \
+    --enable-so \
+    --enable-deflate
+
+3.12 awk命令
+传说中的awk命令，一直没敢使用，或许其功能太强了，使得语法复杂，门槛较高。同find、sed命令一样，都有坎坷的入门经历。以下是最常用的使用方式：
+awk command-text file
+command-text: 'pattern { command }'
+以下例子：
+awk '/a+/ {print $0}' t
+针对文件t的每一行，若该行满足正则表达式/a+/，则输出整行。
+awk '/a+/ {print $1}' t
+针对文件t的每一行，若该行满足正则表达式/a+/，则输出第一个字段，默认情况下字段由空格分隔。
+正则表达式支持Perl正则，如：
+awk -F uid= '/\"POST [^\"]*?uid=[^&]+/ {print $2}' log_file
+3.12.1 关于字段分隔符
+-F fs
+--field-separator fs
+如果fs是单个字符，则按照该单个字符对输入行进行字段分割；如果fs是空串（””或’’），则按字符边界分割；其他情况下，fs作为一个正则表达式看待。不设置分隔符也即默认情况下，fs为空格。
+awk '{print $2_$3}'
+awk -F '' '{print $2_$3}'
+awk -F "" '{print $2_$3}'
+awk -F tm[\(]ms[\)] '{print $2_$3}'
+awk -F [:digit:] '{print $2_$3}'
+fs的正则表达式直接写，不需要首尾的斜线。如果要按t(ms)作为分隔符，需要写成
+tm[\(]ms[\)]
+也即把特殊字符放在字符类中。如果不行，最好放在单引号或者双引号中。
+3.12.2 注意事项
+command-text需要使用单引号而不是双引号包围。
+3.13 sed命令
+如同awk命令，sed命令也令我长时间不敢触碰，感觉命令语法太复杂了，难以上手。总算鼓足勇气接触sed了，先从最常用也最实用的使用方式开始：
+sed [OPTIONS] command-text file ...
+一个例子：
+sed -r -e "s/^aa(.+)/bb\1/g" t
+将文件t以aa开头的行，都替换成bb开头，输出到stdout。
+sed -i -r -e "s/^aa(.+)/bb\1/g" t
+对文件t进行原地替换，其他同上。
+sed -i.bak -r -e "s/^aa(.+)/bb\1/g" t
+或
+sed --in-place=.bak -r -e "s/^aa(.+)/bb\1/g" t
+先备份文件为t.bak，再对文件t进行原地替换，其他同上。
+for i in `find . -type f`; do sed -r -e "s/\/home\/work\/newsphp/\/home\/work\/test_newsphp/g" $i; done
+以上脚本的作用是，对当前目录下所有文件中符合”/home/work/newsphp”模式的部分都替换成”/home/work/test_newsphp”，替换结果输出到stdout。
+不过，以上脚本存在一个问题，-type f开关会将二进制文件也包含进来，而初衷不希望对二进制文件进行处理。这时，可以先获得需要处理的文件列表。如下：
+grep -rP "\/home\/work\/newsphp" . | awk -F : '{print $1}' | grep -P "^\." | sort | uniq > candidate.lst
+
+for i in `cat candidate.lst`; do sed -r -e "s/\/home\/work\/newsphp/\/home\/work\/test_newsphp/g" $i; done
+3.13.1 注意事项
+（错误的说法，实际上皆可，只不过有差别而已）：-e后面的命令只能用双引号而不是单引号；
+匹配$字符时，用\$无效，但是可以用[\$]来代替，或者\\$；
+匹配空白字符时，用\s无效，直接用空白符本身代替。
+sed的正则部分不用magic character。
+3.14 ssh-keygen命令
+用于生成ssh认证码。
+ssh-keygen -t rsa
+3.15 while命令
+while [ condition ]; do command; done
+#!/bin/bash
+
+URL=http://ai-img-use1.ai01.baidu.com:8890/status?json
+while [ 1 ]; do
+    LOG=status.log.`date +%Y%m%d%H`
+    echo "[`date +%H:%k:%M:%S`]" >> $LOG
+    wget -O tmp.log $URL > /dev/null 2>&1
+    cat tmp.log >> $LOG
+    echo >> $LOG
+    echo >> $LOG
+    sleep 1;
+done;
+3.16 查看Linux发行版本
+# cat /etc/issue
+或者
+# lsb_release -a
+Red Hat机器还可以使用
+# cat /etc/readhat-release
+3.17 查看内核版本
+# cat /proc/version
+3.18 diff命令
+比较文件或者目录的差异。
+比较两个目录的差异，去除文件空白字符的影响。
+diff -r -w dira dirb
+去除换行符的影响，如下：
+diff -r --strip-trailing-cr dira dirb
+不包含某些目录，如下：
+diff -r --strip-trailing-cr -x \.svn dir dirb
+只列出差异文件，如下：
+diff -r --strip-trailing-cr -x \.svn -q dir dirb
+
+4 常用脚本片段
+4.1 批量查询主机名对应的ip
+for i in `cat wui.list`; do ping -c 1 $i; done | grep -Po "\d+\.\d+\.\d+\.\d+" | uniq
+4.2 计算.php文件源代码总行数
+find . -name "*.php" -exec wc -l {} \; | grep -Po "\d+" > m
+sum=0; for i in `cat m`; do ((sum=$sum+$i)); done; echo $sum;
+4.3 分析日志，计算每秒请求次数
+tail -f  wapnews.log.2011051720 | awk -F ":" '{print $3}' | awk -F "," '{print $1}' | uniq -c
+4.4 简单项目发布脚本
+使用shell函数，解决代码重复问题。
+# !/bin/bash
+ 
+TMP_DIR=./__temp
+OUTPUT_DIR=./output
+PACKAGE_NAME=album_api.tar.gz
+ 
+function test_directory () {
+    if [ -e "$1" ]
+    then
+        rm -rf "$1"
+    fi
+    mkdir -p "$1"
+}
+ 
+function clear_svn () {
+    find "$1" -type d -name ".svn" -exec rm -rf {} \; &>/dev/null
+}
+ 
+function build_by_version () {
+ 
+    ALBUM_VERSION="$1"
+ 
+ 
+    if [ ! -e v$ALBUM_VERSION ]
+    then
+        echo v$ALBUM_VERSION not exists!!
+        exit 1
+    fi
+ 
+    JSAPI_DIR=v$ALBUM_VERSION/build/release
+    RESOURCE_DIR=v$ALBUM_VERSION/resources
+ 
+    DEST_JSAPI_DIR=$OUTPUT_DIR/data/album_js/v$ALBUM_VERSION
+    DEST_RESOURCE_DIR=$OUTPUT_DIR/webroot/album_resources/v$ALBUM_VERSION
+ 
+    test_directory $DEST_JSAPI_DIR
+    test_directory $DEST_RESOURCE_DIR
+ 
+    cp -r $JSAPI_DIR $TMP_DIR
+    clear_svn $TMP_DIR/release
+    cp -r $TMP_DIR/release/* $DEST_JSAPI_DIR
+ 
+    cp -r $RESOURCE_DIR $TMP_DIR
+    clear_svn $TMP_DIR/resources
+    cp -r $TMP_DIR/resources/* $DEST_RESOURCE_DIR
+ 
+}
+ 
+test_directory $OUTPUT_DIR
+test_directory $TMP_DIR
+ 
+for v in `cat version.conf`; do
+    build_by_version $v
+done
+ 
+pushd . 
+cd $OUTPUT_DIR
+tar zcvf $PACKAGE_NAME data webroot 
+rm -rf data webroot
+popd
+ 
+rm -rf $TMP_DIR
+
+

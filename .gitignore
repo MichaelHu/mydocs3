@@ -3,3 +3,6 @@ __tmp/
 *.swp
 *.preview.html
 *.tar.gz
+
+docs/didi
+dist/docs/didi

@@ -2,18 +2,12 @@
 <html>
 <head>
     <title></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <style type="text/css">
-        body {padding: 15px;}
-        img {max-width: 100%; border: 1px solid #eee; }
-        pre, code {color: #048ebd; }
-        li>p {display: block;}
-        p>code, li>code {padding:0; font-size: 13px; color: red;}
-    </style>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/page.css" />
     <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
 </head>
 <body>
@@ -28,8 +22,29 @@
 <blockquote><p> 2.2到2.4的升级，变化不少，需要查看changelog来进行修改</p></blockquote>
 <a href="http://httpd.apache.org/docs/2.4/en/upgrading.html">Upgrading to 2.4 from 2.2</a>
 <ol><li>User需要mod_unixd</li>
-<li>DefaultType警告，先简单改成<code>DefaultType none</code></li></ol>
+<li>DefaultType警告，先简单改成<code>DefaultType none</code></li>
+<li>出现<code>Authz_core:error Client Denied by Server Configuration</code>错误<p>，需要将：</p>
+<pre><code>&lt;Directory /path/to/directory>
+    Options FollowSymlinks
+    AllowOverride none
+    Order allow, deny
+    Allow from all
+&lt;/Directory> </code></pre>
+<p>改成：</p>
+<pre><code>&lt;Directory /path/to/directory>
+    Options FollowSymlinks
+    AllowOverride none
+    Require all granted
+&lt;/Directory> </code></pre>
+<p>还有</p>
+<pre><code>Require all denied </code></pre>
+<p>等，具体可参考： </p>
+<ol><li>https://mikegriffin.ie/blog/20140130-authz-core-error-client-denied-by-server-configuration/</li>
+<li>http://www.hksilicon.com/kb/cn/articles/409729/Apache-2224Conf</li></ol>
+</li></ol>
 <p>其他更多的参考changelog</p>
+
+
 
 <h2> 配置HTTP代理</h2>
 <blockquote><p> 配置proxy，可以实现请求包窥探，特别是对手机的数据请求进行窥探</p></blockquote><p>以下是httpd.conf文件中的相关配置代码：</p>

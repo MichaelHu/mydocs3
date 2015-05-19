@@ -1,0 +1,137 @@
+Objective-C简介
+
+Objective-C，通常写作ObjC和较少用的Objective C或Obj-C，是扩充C的面向对象编程语言。它主要使用于Mac OS X和GNUstep这两个使用OpenStep标准的系统，而在NeXTSTEP和OpenStep中它更是基本语言。Objective-C可以在gcc运作的系统写和编译，因为gcc含Objective-C的编译器。1980年代初布莱德·确斯(Brad Cox)在其公司Stepstone发明Objective-C。他对软件设计和编程里的真实可用度问题十分关心。Objective-C最主要的描述是他1986年出版的Object Oriented Programming: An Evolutionary Approach. Addison Wesley. ISBN 0-201-54834-8.
+
+优点及缺点
+
+Objective-C是非常“实际”的语言。它使用一个用C写成、很小的运行库，只会令应用程序的大小增加很小，和大部分OO系统使用极大的VM执行时间会取代了整个系统的运作相反。ObjC写成的程序通常不会比其原始码大很多。而其函式库(通常没附在软件发行本)亦和Smalltalk系统要使用极大的内存来开启一个窗口的情况相反。 Objective-C的最初版本并不支持垃圾回收。在当时这是争论的焦点之一，很多人考虑到Smalltalk回收时有漫长的“死亡时间”，令整个系统失去功用。Objective-C为避免此问题才不拥有这个功能。虽然某些第三方版本已加入这个功能(尤是GNUstep), Apple在其Mac OS X 10.3中仍未引入这个功能。 另一个问题是ObjC不包括命名空间机制(namespace mechanism)。取而代之的是程序设计师必须在其类别名称加上前缀，时常引致冲突。在2004年，在Cocoa编程环境中，所有Mac OS X类别和函式均有“NS”作为前缀，例如NSObject或NSButton来清楚分别它们属于Mac OS X核心;使用“NS”是由于这些类别的名称在NeXTSTEP开发时定下。 虽然Objective-C是C的母集，但它也不视C的基本型别为第一级的对象。 和C++不同，Objective-C不支援运算子多载(它不支持ad-hoc多型)。亦与C++不同，但和Java相同，Objective-C只容许对象继承一个类别(不设多重继承)。Categories和protocols不但可以提供很多多重继承的好处，而且没有很多缺点，例如额外执行时间过重和二进制不兼容。
+
+Objective-C 排行榜
+
+TIOBE 2010 5月编程语言榜已于近日发布，本期主要变化是Objective-C排名进入前十。尽管Objective-C的份额在上个月只达到0.08%，但却在排名上迈出了重要一步——首次进入前十名。这一步的意义重大，要知道，2001年6月TIOBE编程榜发布以来，总体只有13个编程语言曾经进入前十名。 Objective-C流行的主要原因可能是它是唯一一种可以为iphone和ipad编程的语言。但单从编程语言的角度来看，诞生于1986年的Object-c并没有表现出多少新意。
+
+TIOBE 2010年6月份编程语言榜已于近日发布，Objective-C排名继续爬升，从第10名上升到第9名。由此可见，Objective-C具有很大的发展空间。
+
+Objective-C和C++的比较
+
+单一继承：
+
+Objective-C不支持多重继承，(同Java和Smalltalk)，而C++语言支持多重继承。
+
+动态：
+
+Objective-C是动态定型(dynamicaly typed)所以它的类库比C++要容易操作。Objective-C 在运行时可以允许根据字符串名字来访问方法和类，还可以动态连接和添加类。
+
+C++ 跟从面向对象编程里的Simula 67(一种早期OO语言)学派，而Objecive-C属于Smalltalk学派。
+
+在C++里，对象的静态类型决定你是否可以发送消息给它，而对Objective-C来说，由动态类型来决定。Simula 67学派更安全，因为大部分错误可以在编译时查出。 而Smalltalk学派更灵活，比如一些Smalltalk 看来无误的程序拿到Simualr 67那里就无法通过。
+
+从很多方面来看，C++和Objective-C的差别，与其说时技术上的， 不如说是思维方式上的。你是否想更安全而舍弃灵活性?Simular67学派的支持者声称既然程序设计出色何必再要灵活性，而 Smalltalk学派则辩称为了灵活可以容忍运行时多出错。
+
+Objective-C简明教程
+
+前言
+
+◆开始学习前，假设你已经具备了一些C语言的基础知识，包括变量类型、函数、返回值、以及指针的相关概念。如果对这些还不了解，建议首先学习谭浩强的《C程序设计》。
+
+◆Objective-C，是 C 的衍生体，继承了所有 C 语言的特性。是有一些例外，但是它们不是继承于 C 的语言特性本身。
+
+◆nil：在 C/C++ 你或许曾使用过 NULL，而在 Objective-C 中则是 nil。不同之处是你可以传递讯息给 nil(例如 [nil message];)，这是完全合法的，然而你却不能对 NULL 如法炮制。
+
+◆BOOL：C 没有正式的布尔类型，而在 Objective-C 中也不是「真的」有。它是包含在 Foundation classes(基本类别库)中(即 import NSObject.h;nil 也是包括在这个标头档内)。BOOL 在 Objective-C 中有两种型态：YES 或 NO，而不是 TRUE 或 FALSE。
+
+◆#import vs #include：就如同你在 hello world 范例中看到的，我们使用了 #import。#import 由 gcc 编译器支援。我并不建议使用 #include，#import 基本上跟 .h 档头尾的 #ifndef #define #endif 相同。许多程式员们都同意，使用这些东西这是十分愚蠢的。无论如何，使用 #import 就对了。这样不但可以避免麻烦，而且万一有一天 gcc 把它拿掉了，将会有足够的 Objective-C 程式员可以坚持保留它或是将它放回来。偷偷告诉你，Apple 在它们官方的程式码中也使用了 #import。所以万一有一天这种事真的发生，不难预料 Apple 将会提供一个支援 #import 的 gcc 分支版本。
+
+◆ Objective-C 中， method 及 message 这两个字是可以互换的。不过 messages 拥有特别的特性，具体区别在後面介绍。
+
+编译 hello world
+
+hello.m 
+ 
+#import 
+ 
+int main( int argc, const char *argv[] ) { 
+ 
+printf( "hello world\n" ); 
+ 
+return 0; 
+ 
+} 
+
+◆输出
+
+hello world
+
+◆ 在 Objective-C 中使用 #import 代替 #include
+
+◆ Objective-C 的预设副档名是 .m
+
+创建 classe
+
+@interface
+
+◆基于 "Programming in Objective-C," Copyright (C) 2004 by Sams Publishing 一书中的范例，并经过允许而刊载。
+
+Fraction.h 
+ 
+#import 
+ 
+@interface Fraction: NSObject { 
+ 
+int numerator; 
+ 
+int denominator; 
+ 
+} 
+ 
+-(void) print; 
+ 
+-(void) setNumerator: (int) n; 
+ 
+-(void) setDenominator: (int) d; 
+ 
+-(int) numerator; 
+ 
+-(int) denominator; 
+ 
+@end 
+
+◆NSObject：NeXTStep Object 的缩写。因为它已经改名为 OpenStep，所以这在今天已经不是那麼有意义了。
+
+◆继承(inheritance)以 Class: Parent 表示，就像上面的 Fraction: NSObject。
+
+◆夹在 @interface Class: Parent { .... } 中的称为 instance variables。
+
+◆没有设定存取权限(protected, public, private)时，预设的存取权限为 protected。设定权限的方式将在稍後说明。
+
+◆Instance methods 跟在成员变数(即 instance variables)後。格式为：scope (returnType) methodName: (parameter1Type) parameter1Name;scope 有class 或 instance 两种。
+
+◆instance methods 以 - 开头，class level methods 以 + 开头。
+
+◆Interface 以一个 @end 作为结束。
+
+原生的Hello World代码
+
+#import 
+ 
+int main (int argc, const char * argv[]) { 
+ 
+NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init]; 
+ 
+// insert code here... 
+ 
+NSLog(@"Hello, World!"); 
+ 
+[pool drain]; 
+ 
+return 0; 
+ 
+} 
+
+以上是Xcode开发环境下默认的.m文件内容，就是原生的Hello World范例代码。
+
+关于hello world的更多扩展内容
+
+在 Objective-C 中 #import 和 #include 的区别
+
+在 Objective-C 中，#import 被当成 #include 指令的改良版本来使用。除此之外，#import 确定一个文 件只能被导入一次，这使你在递归包含中不会出现问题。使用哪一个还是由你来决定。一般来说，在导入 Objective-C 头文件的时候使用 #import，包含 C 头文件时使用 #include。

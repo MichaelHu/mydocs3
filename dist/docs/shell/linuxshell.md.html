@@ -2,18 +2,12 @@
 <html>
 <head>
     <title></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <style type="text/css">
-        body {padding: 15px;}
-        img {max-width: 100%; border: 1px solid #eee; }
-        pre, code {color: #048ebd; }
-        li>p {display: block;}
-        p>code, li>code {padding:0; font-size: 13px; color: red;}
-    </style>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/page.css" />
     <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
 </head>
 <body>
@@ -166,8 +160,23 @@ _=/usr/bin/env </code></pre>
 </li>
 <li>NodeJs bin文件：<pre><code>#!/usr/bin/env node
 var hello = require('hello-node');
-hello.sayHello();   </code></pre>
+hello.sayHello();       </code></pre>
 </li></ol>
+<h2> pbcopy & pbpaste</h2>
+<p>这两个工具可以打通命令行和剪贴板。当然用鼠标操作复制粘贴也可以，但这两个工具的真正威力，发挥在将其用作Unix工具的时候。意思就是说：可以将这两个工具用作管道、IO重定向以及和其他命令的整合。例如：</p>
+<pre><code>$ ls ~ | pbcopy </code></pre>
+<p>可以将主目录的文件列表复制到剪贴板。</p>
+<p>也可以把任意文件的内容读入剪贴板：</p>
+<pre><code>$ pbcopy &lt; blogpost.txt </code></pre>
+<p>做点更疯狂的尝试：获取最新Google纪念徽标（doodle）的URL并复制到剪贴板：</p>
+<pre><code>$ curl http://www.google.com/doodles#oodles/archive \
+    | grep -A5 'latest-doodle on' \
+    | grep 'img src' \
+    | sed s/.*'&lt;img src="\/\/'/''/ \
+    | sed s/'" alt=".*'/''/ \
+    | pbcopy </code></pre>
+<p>使用管道语法配合<code>pbcopy</code>工具可以简单的抓取命令的输出，而不必向上滚动翻阅终端窗口。可以用于和他人分享命令行的标准和错误输出。 <code>pbcopy</code> 和 <code>pbpaste</code> 也可以用于自动化或加速执行一些事情。例如把一些邮件的主题存为任务列表，就可以先从Mail.app中复制主题，再运行：</p>
+<pre><code>$ pbpaste >> tasklist.txt      </code></pre>
 <h2> 网络命令</h2>
 <h3> dig</h3>
 <p>相比其他工具更全面的DNS信息查询工具。</p>

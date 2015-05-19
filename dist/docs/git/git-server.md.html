@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/page.css" />
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav" class="row">
+<a class="text-info pull-right" href="javascript:history.back()">Back</a>
+    </div>
+
+<h1> Git服务器搭建</h1>
+<blockquote><p> HTTP访问，支持pull和push的GIT服务器</p></blockquote><h2> Apache Server</h2>
+
+<h3> 1. httpd.conf配置</h3>
+
+<ol><li>配置Alias，使得<code>/git_repost/</code>可以通过网络访问：<pre><code>&lt;IfModule alias_module>
+    Alias /git_repos/ /home/xiaoju/fe/git_repos/
+&lt;/IfModule> </code></pre>
+</li>
+<li>添加Directory，提供文件系统目录的可访问性：<pre><code>&lt;Directory "/home/xiaoju/fe/git_repos">
+    Options Indexes FollowSymLinks
+    AllowOverride None
+    Require all granted
+&lt;/Directory>         </code></pre>
+<p>注意apache2.4的新写法。</p>
+</li>
+<li>添加dav相关module<pre><code>LoadModule dav_module modules/mod_dav.so
+LoadModule dav_fs_module modules/mod_dav_fs.so </code></pre>
+</li>
+<li>添加dav lock文件路径配置（路径可自定义 ， 但必须提供）<p>DAVLockDB "/home/work/apache2.4.2/tmp/DAV.lock"</p>
+</li>
+<li>配置需要DAV支持的Location<pre><code>&lt;Location /git_repos/>
+    DAV on
+&lt;/Location>    </code></pre>
+</li></ol>
+<h3> 2. 建立git仓库</h3>
+<pre><code>cd /home/xiaoju/fe/git_repos
+mkdir test
+cd test
+git init
+cp -r .git ../abc.git
+cd ../abc.git
+git update-server-info </code></pre>
+<p><code>git update-server-info</code>非常关键，会在abc.git/info/下生成refs</p>
+
+
+<h3> 3. 使用</h3>
+<p>在本地机器： </p>
+<pre><code>git clone http://path/to/server/git_repos/abc.git abc </code></pre>
+<p>不出意外，已经可以clone出一个empty的仓库了，以下再试试push功能，向服务器提交数据。</p>
+<pre><code>cd abc
+vim test.md
+git add test.md
+git commit -m "master: add test.md"
+git push origin master      </code></pre>
+
+    <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
+<script type="text/javascript" src="/docs/markdown_res/js/footer.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>

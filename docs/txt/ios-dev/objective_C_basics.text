@@ -1,0 +1,186 @@
+% Objective-C 基础
+% 51cto.com
+% 2013-04-11
+
+Objective-C是一种简单的计算机语言，它可以用来设计复杂的面向对象程序。 Objective-C扩展了标准ANSI C语言，增加了一些定义类、方法以及其它结构的语法，提升了类的动态扩展。
+
+重点: 本文档没有教授任何有关于C语言的知识。如果你还不熟悉C语言，阅读本文之前应该学习一下C语言的基础知识。
+
+如果你已经熟悉C语言，并且之前使用过面向对象语言编写过程序，下面的内容将会帮助你学习Objective-C的基础语法。 许多传统面向对象的思想，比如封装、继承、多态，都会在Objective-C中体现。 虽然也有一些重要的不同点，但这些不同点都会在这篇文章中提到，如果需要有更多详细信息可用。
+
+## Objective-C: C语言的超集
+
+Objective-C是C语言ANSI版本的超集，支持和C相同的基本语法。用C代码，你可以定义头文件和源码文件， 以从详细实现的代码中分离出公开的声明。 Objective-C头文件下面列出的扩展名 Table 1-1.
+
+Table 1-1 Objective-C代码的文件扩展名扩展名文件类型
+
+.h 头文件。头文件包含类、类型、函数、常量的声明。
+.m 源码文件。这是源码文件的典型扩展名，可以包含Objective-C和C代码。
+.mm 源码文件。使用该扩展名的源文件除了Objective-C和C代码，还可以包含C++代码。 该扩展名仅用于在你的Objective-C代码中引用到的C++类和特性。
+
+当你想在你的代码中包含头文件时，你可以使用 #import 指令。 它比较像 #include， 除了它必须要确定相同文件不能被包含多次。 Objective-C的示例和文档都更喜欢使用 #import, 你的代码应该也这样。
+
+## 类
+
+和大多数其它面向对象语言一样，Objective-C里的类也提供基本的结构，用来封装带有行为的一些数据。 一个对象是一个类的运行实例，包含类中声明变量的实例在内存中的复制，以及指向该类的方法。
+
+Objective-C中类的定义，要求两个明显的部分：接口和实现。 接口部分包含类的声明、定义成员变量，及与此类关联的方法。 接口通常在a .h 文件里。实现部分包含类的方法实际代码。实现通常在 a .m 文件里。
+
+图1-1 展示声明MyClass类的语法， 它继承自Cocoa的基类 NSObject。 这个类的声明开始于 @interface 编译指令，结束于 @end 指令。仅跟着类名的(以冒号分割)是父类名。 类的实体变量(有时简称ivars，在一些其它语言中称作成员变量)声明在以大括号({和})括起来的代码块中。 实体变量后面是类的方法声明列表。以分号做为每个实体变量和方法的结束标记。
+
+![类的声明](./img/objective_C_basics-1.jpg)
+
+图1-1 声明一个类
+
+小提示： 这个接口只声明了方法，类也可以声明 属性。 了解属性的更多信息, 请查看 “声明属性”.
+
+Objective-C支持包含对象的强弱两个类型的变量。 在变量声明时，强类型的变量包含类名，弱类型的变量使用类型 id 代替对象。 弱类型变量在像集合类中使用频繁，在一个集合中的对象的实际类型可能是未知的。如果你使用过强类型的语言， 你可能会认为使用弱类型会引起问题，但是在Objective-C程序中它们实际上提供了很大的灵活性和更强大的动态性。
+
+下面的例子展示了强类型和弱类型变量的声明格式：
+
+    MyClass *myObject1; // 强类型 
+    id myObject2; // 弱类型 
+
+注意在第一个声明里的 * 号。在Objective-C中，对象的引用叫指针。如果你对指针没有很清晰的认识， 不用担心，不是必须要成为一个指针专家才能使用Objective-C进行编程的。你只要记住在声明强类型对象的变量名前加上 * 就可以了。 弱类型 id 本身就意味着是个指针。
+
+## 方法和通信
+
+Objective-C中的类可以声明两种类型的方法：实体方法和类方法。 一个实体方法是在这个特定类的实例中才能执行的方法，换句话说， 在调用实体方法前，你必须首先要创建这个类的实例。类方法，相对的，不需要创建实例。 当然更可以在创建实例之后调用。
+
+方法的声明由方法的类型标识符、一个返回值类型、一个或多个签名关键字、参数类型和名称信息组成。 图1-2 展示实体方法 insertObject:atIndex:的声明格式。
+
+![方法声明](./img/objective_C_basics-2.jpg)
+
+图1-2 方法声明的语法
+
+声明开始于减号(-) ，减号用来标识这是一个实体方法。这个方法的实际名称 (insertObject:atIndex:) 是所有签名关键字的拼接,包括冒号。 冒号声明了当前的参数.如果方法没有参数，你就可以省略第一个签名关键字。 在这个例子中，该方法有两个参数。
+
+当你想调用这个方法时，你可以通过向对象 通信 。 通信内容是方法签名和方法要求参数信息。
+
+信息是用中括号 (\[ 和 \])包裹的。 在中括号里面，接收信息的对象在左边，信息(包括信息要求的参数)在右边。 例如，发送信息insertObject:atIndex: 到变量名为 myArray 的对象，你会用到下面的语法：
+
+    [myArray insertObject:anObject atIndex:0]; 
+
+为了避免声明多个局部变量来保存临时结果， Objective-C允许你嵌套信息。来自每个嵌套信息中的返回值，可以被用做参数、目标、或另一个信息。 例如，你可以用信息来代替前面例子中任意使用过的变量。从而，如果你有一个叫 myAppObject 的对象，它有访问数组对象和将对象插入数组的方法， 你可以将前面的例子写成像下面这样：
+
+    [[myAppObject theArray] insertObject:[myAppObject objectToInsert] atIndex:0]; 
+
+Objective-C也提供用句点来调用 存取器方法。 存取器方法获取和设置一个对象的状态， 典型的格式为 -(type)propertyName 和 -(void)setPropertyName:(type)。 使用句点语法，你可以将前面的例子重写成：
+
+    [myAppObject.theArray insertObject:[myAppObject objectToInsert] atIndex:0]; 
+
+你也能使用句点语法赋值：
+
+    myAppObject.theArray = aNewArray; 
+
+用不同语法写也比较简单
+    [myAppObject setTheArray:aNewArray];
+
+尽管前面的例子都是发送信息给一个类的实例，你也可以发送信息到类本身。 当你要通信到一个类，你指定的方法必须被定义成一个类方法，而非实体方法。
+
+典型的，你使用类方法来创建类的新实例，或访问有关此类的一些共享信息。 类方法的声明语法除了一点不同，其它完全和实体方法一样。 用加号(+)来代替用减号(-)作为方法类型的标识符。
+
+下面的例子就是来说明如何使用类方法作为一个类的工厂方法。 在这个例子中，方法 array 是类 NSArray 的类方法—继承自 NSMutableArray— 它用于分配和初始化该类的新实例并将它的返回到代码中。
+
+    NSMutableArray *myArray = nil; // nil等同NULL 
+    // 创建一些新数组并赋给变量myArray。 
+    myArray = [NSMutableArray array]; 
+
+清单1-1 展示类了在前面例子中 MyClass 类的实现代码。 像类的声明一样，类的实现通过两个编译指令识别 —这里, @implementation 和 @end。 这些指令提供编译器需要的范围信息，来定位相对应类的封闭方法。 方法的声明要匹配接口中相应的声明，不包括代码块里的内容。
+
+清单1-1 一个类的实现
+
+    @implementation MyClass 
+     
+    - (id)initWithString:(NSString *)aName 
+     
+    { 
+         
+        self = [super init]; 
+         
+        if (self) { 
+             
+            name = [aName copy]; 
+             
+        } 
+         
+        return self; 
+         
+    } 
+     
+    + (MyClass *)createMyClassWithString: (NSString *)aName 
+     
+    { 
+         
+        return [[[self alloc] initWithString:aName] autorelease]; 
+         
+    } 
+     
+    @end 
+
+## 声明属性
+
+声明属性是代替声明及简单实现存取器方法的方便形式。
+
+在类接口里，可以包含属性声明和方法声明。 基本的定义用 @property 编译指令， 之后是类型信息和属性名称。 你也可以定制配置属性，比如定义存取器方法如何执行。 下面的例子展示一个简单属性的声明：
+
+    @property BOOL flag; 
+    @property (copy) NSString *nameObject; // 在赋值时复制对象。 
+    @property (readonly) UIView *rootView; //声明一个只读方法 
+
+每个可读属性指定一个与该属性同名的方法。 每个可写属性指定一个额外的方法，格式为 setPropertyName, 属性名的首字母要大写。
+
+在你的类的实现里，你可以使用 @synthesize 编译指令来要求编译器依照声明规格创建方法：
+
+    @synthesize flag; 
+    @synthesize nameObject; 
+    @synthesize rootView; 
+
+你可以合并 @synthesize 语句到一行中，如果你愿意：
+
+    @synthesize flag, nameObject, rootView; 
+
+从实际上说，属性减少了你不得不写的冗长代码的数量。 因为大多数存取器方法都是以类似的方式执行的，属性去掉了类中公开的每个属性实现读写方法的重复。 相反的，你只要指定你想使用属性的行为，会在编译时生成实际的读写方法。
+
+要了解如何在你的类中声明属性，请查看 “声明属性” 在 Objective-C编程语言里。
+
+## 字符串
+
+作为C语言的超集，Objective-C和C语言一样在指定字符串上支持相同的约定。 换句话说，字符用单引号包裹、字符串用双引号包裹。 可是Objective-C框架典型的是不使用C语言式的字符串。他们以 NSString 对象的方式传递字符串。
+
+NSString 类提供一个对象封装字符串，这样可以具有你想要的所有优点，包括为任意长度的字符串创建内存管理、 支持Unicode、 printf-式的格式化工具集，还有更多。 因为这样的字符串使用很普遍，Objective-C提供一个快捷方式来根据常量创建 NSString 对象. 要使用这种快捷方式，你必须在普通双引号字符串前加 @ 符号，下面的例子就做了展示：
+
+    NSString *myString = @"My String\n"; 
+    NSString *anotherString = 
+        [NSString stringWithFormat:@"%d %@", 1, @"String"]; 
+    // 根据C式字符串创建Objective-C字符趾 
+    NSString *fromCString = 
+        [NSString stringWithCString:"A C string" encoding:NSASCIIStringEncoding]; 
+
+## 协议
+
+一个协议声明的方法可以被任意类实现。 协议本身没有类。他们只是简单地定义一个接口让其它对象可靠的实现。 当你在你的类里实现一个协议的方法时，就可以说你的类符合那个协议了。
+
+协议被频繁用于为 委拖 对象指定接口。 看协议、委托以及其它对象之间的相互作用的最好方式，就是看一个例子。
+
+UIApplication 类实现一个应用程序要求的行为。 不用强迫你实现子类 UIApplication 来接收有当前程序状态的简单通知。而是 UIApplication 类通过调用它分配的委托对象的具体方法来发送那些通知。 实现 UIApplicationDelegate 协议方法的对象能接收那些通知，并提供恰当的答复。 通过将协议的名称用“<>”包裹起来放到它继承的类后面，来指定你的类遵循或采用的协议。 你不用去声明你实现协议的方法。
+
+    @interface MyClass : NSObject { 
+         
+    } 
+     
+    @end 
+
+协议的声明看起来比较类似一个类的接口，不同的是协议没有父类也不能定义实体变量。 下面的例子展示了含有一个方法的简单协议：
+
+    @protocol MyProtocol 
+     
+    - (void)myProtocolMethod; 
+     
+    @end 
+
+在很多委托协议的示例中，采用一个协议类似实现协议中定义的方法。 有些协议要求你明确说明你支持的协议，协议可以指定必选和可选方法。 当你要将你的开发推进到更深层次，无论如何，你应该花稍多时间去学习协议及如何使用它们-- “协议” in Objective-C编程语言.
+
+## 更多信息
+
+上述内容主要是想让你熟悉Objective-C语言的基础。 这里介绍的主题覆盖了你通读文档时最可能遇到的语言功能。

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/page.css" />
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav" class="row">
+<a class="text-info pull-right" href="javascript:history.back()">Back</a>
+    </div>
+
+<h1> VIM plugins</h1>
+<blockquote><p> VIM常用的plugins安装和配置</p></blockquote>
+
+
+
+
+<h2> 常用plugins</h2>
+<p>2013年左右，出现了针对vim plugins的管理工具：<code>vim-pathogen</code>，很靠谱。</p>
+<ul><li>vim-pathogen：vim插件管理工具，插件统一放在<code>~/.vim/bundle</code>或<code>~/vimfiles</code>(windows)下，每个插件<p>独立一个目录，互不影响。个人只需维护<code>.vimrc</code>文件，插件都通过github放至bundle目录下，更好支持独立更新。</p>
+</li>
+<li>nerdtree：文件列表管理</li>
+<li>neocomplcache & neosnippet: 代码补全</li>
+<li>syntastic：语法检查</li></ul>
+<p>以上插件内容均在github上可以找到，在我的github starred里面可以找到。</p>
+<p>适合我的<code>.vimrc</code>文件： </p>
+<a href="https://github.com/MichaelHu/myscripts/blob/master/vim/vimrc">.vimrc from MichaelHu</a>
+
+
+
+<h2> 安装与配置</h2>
+<ol><li>首先安装pathogen，手动安装到<p><code>~/.vim/autoload/pathogen.vim</code> 或者运行以下命令：</p>
+<pre><code>mkdir -p ~/.vim/autoload ~/.vim/bundle \
+    &amp;&amp; curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim </code></pre>
+<p>然后在<code>.vimrc</code>顶部添加以下代码：</p>
+<pre><code>execute pathogen#infect()   </code></pre>
+</li>
+<li>其他插件的安装，都按统一方式，比如安装nerdtree<pre><code>cd ~/.vim/bundle
+git clone https://github.com/scrooloose/nerdtree.git 
+cd nerdtree/doc </code></pre>
+<p>重新打开vim，运行命令行命令(Command-line command)：</p>
+<pre><code>:Helptags 
+:help NERD_tree.txt  </code></pre>
+<p>完成tags建立和帮助文档建立。</p>
+</li></ol>
+
+    <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
+<script type="text/javascript" src="/docs/markdown_res/js/footer.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>

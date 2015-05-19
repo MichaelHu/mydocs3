@@ -3,6 +3,19 @@
 > @[style="color:green;font-size:18px"]Node Packaged Modules. 
 > <a href="http://www.npmjs.org"> [ npmjs ] </a>
 
+
+
+## 安装方式
+
+通过安装新版本的nodejs，自动包含npm的安装。
+
+自动检测nodejs的最新版本（mac适用）：
+
+    curl https://nodejs.org | grep -Eo "Current Version: *v[^<]+"
+
+
+
+
 ## 包注册与发布
 
 ### 包托管地址
@@ -17,6 +30,11 @@
     {"db_name":"registry","doc_count":113003,"doc_del_count":380,"update_seq":450451,"purge_seq":0,"compact_running":false,"disk_size":1045799035,"data_size":407768840,"instance_start_time":"1414070581227712","disk_format_version":6,"committed_update_seq":450451}
 
 
+
+
+
+
+
 ### registry决定
 
 * 首先由scope来定，scope与registry可以通过以下方式绑定：
@@ -27,9 +45,16 @@
 
         npm config set registry ...
 
+
+
+
+
 ### 创建私有库
 
 todo
+
+
+
 
 
 ### 包范围（scope）
@@ -71,6 +96,10 @@ npm客户端自动兼容非范围包与范围包的处理。
 scope与registry是多对一的关系。绑定还可以使用npm config来进行：
 
     npm config set @myco:registry http://reg.example.com
+
+
+
+
 
 
 
@@ -121,7 +150,11 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
 
 
 
+
+
+
 ### 发布前验证工作
+
 
 
 一定要确保通过安装且工作正常，再进行发布。
@@ -226,6 +259,8 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
     npm ls -g
 
 ### npm root
+
+查看本地包和全局包的安装路径
 
     npm root
     npm root -g

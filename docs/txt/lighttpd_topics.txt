@@ -1,0 +1,61 @@
+Lighttpd相关专题
+
+
+
+修订内容    修订人  修订时间
+初稿    胡大民  2011/1/5
+        
+ 
+目录
+Lighttpd相关专题    1
+目录    2
+1 前言  1
+2 lighttpd的安装    1
+2.1 lighttpd+php（fastcgi） 2
+3 lighttpd的配置    3
+
+ 
+
+1 前言
+
+2 lighttpd的安装
+编写该文的时候，官方网站（http://www.lighttpd.net/download/）上最新的稳定版本是1.4.28，1.5版本尚未正式发行，但已经可以使用（todo：试一下1.5版本）。
+先说一下通过lighttpd启动fastcgi的模式运行php程序。
+
+以下是安装lighttpd_1.4.28版本的脚本，这之前需要先下载1.4.28版本，并解包。并按需修改目标目录：
+#/bin/bash
+
+dest=/home/newsfe/hudamin/lighttpd
+cd lighttpd-1.4.28
+./configure --prefix=$dest --sbindir=$dest/bin --with-PACKAGE=yes --with-zlib
+make clean &&  make && make install
+
+# 按apache的方式组织目录
+mkdir -p $dest/conf
+mkdir -p $dest/log
+mkdir -p $dest/status
+mkdir -p $dest/cache
+mkdir -p $dest/www/htdocs
+cp -r doc/config/conf.d $dest/conf
+cp doc/config/*.conf $dest/conf
+cp -r doc/config/vhosts.d $dest/conf
+find $dest/conf -name "Makefile*" -exec rm -rf {} \;
+
+2.1 lighttpd+php（fastcgi）
+主要是PHP 5.2.3以后版本对fastcgi的升级。这之前的版本，php的fastcgi模块是php，这以后的版本是单独一个文件php-cgi。需要注意这个差别。
+下面是关于fastcgi的一段描述（http://redmine.lighttpd.net/wiki/lighttpd/Docs:ModFastCGI）：
+FastCGI
+Warning: As of php 5.2.3, the cgi binary is installed as "/usr/local/bin/php-cgi" by default, instead of "/usr/local/bin/php". Make sure to substitute the relevant parts in the documentation below.
+FastCGI removes a lot of the limitations of CGI programs. CGI programs have the problem that they have to be restarted by the webserver for every request which leads to really bad performance values.
+FastCGI removes this limitation by keeping the process running and handling the requests by this always running process. This removes the time used for the fork() and the overall startup and cleanup time which is necessary to create and destroy a process.
+While CGI programs communicate to the server over pipes, FastCGI processes use Unix-Domain-Sockets or TCP/IP to talk with the webserver. This gives you the second advantage over simple CGI programs: FastCGI don't have to run on the webserver itself but anywhere in the network.
+lighttpd takes it a little bit further by providing an internal FastCGI load-balancer which can be used to balance the load over multiple FastCGI Servers. In contrast to other solutions only the FastCGI process has to be on the cluster and not the whole webserver. That gives the FastCGI process more resources than a e.g. load-balancer+apache+mod_php solution.
+If you compare FastCGI against an apache+mod_php setup you should note that FastCGI provides additional security as the FastCGI process can be run under different permissions than the webserver and can also live in a chroot which might be different than the one the webserver is running in.
+
+
+启动php-cgi:
+./spawn-fcgi -f /home/newsfe/hudamin/php5/bin/php-cgi
+以上是默认启动方式，可以查看spawn-fcgi程序的命令行参数，做其他限制，比如-C等。
+
+3 lighttpd的配置
+
