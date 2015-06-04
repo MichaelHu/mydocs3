@@ -10,4 +10,4 @@ $MARKDOWN "$TMPFILE" \
     | cat ./markdown_res/header.tpl.html - ./markdown_res/footer.tpl.html \
     > "$1".html
 
-rm "$1" "$TMPFILE"
+rm "$TMPFILE"

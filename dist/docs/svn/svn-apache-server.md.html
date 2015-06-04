@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/page.css" />
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav" class="row">
+<a class="text-info pull-right" href="javascript:history.back()">Back</a>
+    </div>
+
+<h1> SVN服务器搭建</h1>
+
+<blockquote><p> subversion作为一个开源软件，由Apache Foundation维护</p></blockquote>
+
+
+<h2> 一、安装subversion</h2>
+
+<h3> 1. 依赖安装</h3>
+<ol><li>apr, apr-util</li>
+<li>tclsh，源码安装sqlite3需要tclsh，如果系统上没有，需要提前安装，如有，则略过。<p>Tcl (Tool Command Language) is a very powerful but easy to learn dynamic programming language, suitable for a very wide range of uses, including web and desktop applications, networking, administration, testing and many more. Open source and business-friendly, Tcl is a mature yet evolving language that is truly cross platform, easily deployed and highly extensible.</p>
+<p>下载：http://www.tcl.tk/software/tcltk/download.html</p>
+<p>8.5.18版本： http://prdownloads.sourceforge.net/tcl/tcl8.5.18-src.tar.gz
+8.6.4版本： http://prdownloads.sourceforge.net/tcl/tcl8.6.4-src.tar.gz</p>
+<p>注意，以上皆为sourceforge链接，不能直接下载，需要先浏览器打开后，再获取实际链接。</p>
+<p>在baselibs.git上面有保存。</p>
+<pre><code>./configure --prefix=/home/xiaoju/fe/tcl
+make
+make install  </code></pre>
+</li>
+<li>sqlite<p>自包含，无服务，另配置，事务型SQL数据库引擎。是一个软件库。</p>
+<p>SQLite is a software library that implements a self-contained, serverless, zero-configuration, transactional SQL database engine. SQLite is the most widely deployed database engine in the world. The source code for SQLite is in the public domain.</p>
+<p>从这里下载：http://www.sqlite.org/download.html</p>
+<p><code>注意：</code>sqlite作为一个源码库，已经提供amalgamation方式，也即混合方式。把所有C文件都合并成一个文件，而不是
+分散存放，这样在编译的时候，也有利于编译器优化。所以请下载amalgamation包版本，也是推荐的版本：</p>
+<ul><li>源码，包含configure：http://www.sqlite.org/2015/sqlite-autoconf-3081001.tar.gz</li>
+<li>纯源码：http://www.sqlite.org/2015/sqlite-amalgamation-3081001.zip</li></ul>
+<p>安装：</p>
+<pre><code>./configure --prefix=/home/xiaoju/fe/sqlite 
+make
+make install </code></pre>
+<p>subversion除了通过指定</p>
+<pre><code>--with-sqlite=PREFIX    Use installed SQLite library or amalgamation file. </code></pre>
+<p>以外，还可以直接将混合源码下载后放到指定编译目录即可，如下说明所示：</p>
+<pre><code>configure: checking sqlite library
+checking sqlite amalgamation... no
+checking sqlite amalgamation... no
+checking sqlite3.h usability... no
+checking sqlite3.h presence... no
+checking for sqlite3.h... no
+checking sqlite library version (via pkg-config)... no
+
+An appropriate version of sqlite could not be found.  We recommmend
+3.7.15.1, but require at least 3.7.12.
+Please either install a newer sqlite on this system
+
+or
+
+get the sqlite 3.7.15.1 amalgamation from:
+    http://www.sqlite.org/sqlite-amalgamation-3071501.zip
+    unpack the archive using unzip and rename the resulting
+    directory to:
+    /home/xiaoju/hudamin/softwares/subversion-1.8.13/sqlite-amalgamation      </code></pre>
+</li></ol>
+<h3> 2. 正式安装</h3>
+<p>下载页面： http://subversion.apache.org/download/</p>
+<ol><li>http://mirror.bit.edu.cn/apache/subversion/subversion-1.8.13.tar.bz2</li>
+<li>安装：<pre><code>tar xvjf subversion-1.8.13.tar.bz2
+cd subversion-1.8.13
+./configure \
+    --with-apr=/home/xiaoju/fe/apr \
+    --with-apr-util=/home/xiaoju/fe/apr-util \
+    --with-sqlite=/home/xiaoju/fe/sqlite \
+    --with-apxs=/home/xiaoju/fe/apache/bin/apxs \
+    --enable-mod-activation \
+    --prefix=/home/xiaoju/fe/svn
+make
+make install   </code></pre>
+<p>其中<code>--with-apxs</code>选项，使编译输出<code>mod_dav_svn.so</code>等到apache模块目录下。
+<code>--enable-mod-activation</code>选项，在apache的conf文件中添加<code>LoadModule</code>配置。</p>
+</li></ol>
+<h2> 二、Apache配置</h2>
+
+<h3> 1. DAV配置</h3>
+<p>通过subversion的安装选项，以下配置已经存在于httpd.conf中：</p>
+<pre><code>LoadModule dav_svn_module     /home/xiaoju/fe/svn/libexec/mod_dav_svn.so
+LoadModule authz_svn_module   /home/xiaoju/fe/svn/libexec/mod_authz_svn.so  </code></pre>
+<h3> 2. Location配置</h3>
+<p>在Location中配置DAV，注意<code>SVNPath</code>只能配置一个版本库，且末尾不能带目录符号。
+<code>SVNParentPath</code>是配置版本库父路径，在它下面可以配置多个版本库，末尾带目录符号。</p>
+<pre><code>&lt;Location "/svn_repos/">
+
+DAV svn
+# SVNPath /home/xiaoju/fe/svn_repos
+SVNParentPath /home/xiaoju/fe/svn_repos/
+
+&lt;/Location>  </code></pre>
+<h3> 3. 权限配置</h3>
+<p>以上配置好的svn服务器是没有权限限制的，任何人都可访问。</p>
+<p>todo</p>
+
+
+    <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
+<script type="text/javascript" src="/docs/markdown_res/js/footer.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>

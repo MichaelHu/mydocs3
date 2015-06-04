@@ -205,10 +205,13 @@ rm _header _list _footer
 
 
 
-# do markdown parsing
+# do markdown parsing for files modified in 3 days
 find . -type f \
     -regex "\..*\.md" \
+    -and -mtime -3 \
     -exec sh $ROOT/build/build-markdown.sh {} \;
+
+find . -type f -name "*.md" -exec rm {} \;
 
 cd ..
 cp -r docs $DISTDIR 

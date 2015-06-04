@@ -64,6 +64,53 @@
 
 
 
+
+
+## 关于require.config
+
+> `完整配置说明：` http://requirejs.org/docs/api.html#config
+
+1. shim配置，针对非AMD模块，比如bootstrap
+
+        require.config({
+            baseUrl: '.'
+            , waitSeconds: 0 // disable timeout check
+            , paths: {
+                'jquery': '../bower_components/jquery/dist/jquery'
+                , 'bootstrap': '../bower_components/bootstrap/dist/js/bootstrap'
+                , 'underscore': '../bower_components/underscore/underscore'
+                , 'rocket-p': '../bower_components/rocket-p/dist/rocket-p'
+                , 'main': 'main'
+            }       
+            , shim: {
+                // no exports, only supply deps
+                'bootstrap': ['jquery']
+                , 'backbone': {
+                    deps: ['underscore', 'jquery']
+                    , exports: 'Backbone'
+                }
+                , 'foo': {
+                    deps: ['bar']
+                    , exports: 'Foo'
+                    , init: function (bar) {
+                        return this.Foo.noConflict();
+                    }
+                }
+            }
+        }); 
+
+
+    `例子：`提供jQuery插件的shim配置方式， https://github.com/requirejs/example-jquery-shim
+
+    jQuery的特点是，不管是否运行AMD模式，都会注册window.jQuery和window.$
+
+
+
+
+
+
+
+
 ## 定义模块
 
 1. 模块定义恰当处理了作用域，避免污染全局命名空间。
@@ -408,6 +455,14 @@
 
 3. 优化选项说明
 
+所有选项说明可以从这里查看：<a href="
+https://github.com/jrburke/r.js/blob/master/build/example.build.js
+">
+https://github.com/jrburke/r.js/blob/master/build/example.build.js
+</a>
+
+以下例举主要选项：
+
 * appDir
 
     应用程序的最顶层目录。可选的，如果设置了的话，r.js 会认为脚本在这个路径的子目录中，应用程序的文件都会被拷贝到输出目录（dir 定义的路径）。如果不设置，则使用下面的 baseUrl 路径。
@@ -461,7 +516,7 @@
     * include：额外引入的模块，和 name 定义的模块一起压缩合并；
     * exclude：要排除的模块。有些模块有公共的依赖模块，在合并的时候每个都会压缩进去，
         例如一些基础库。使用 exclude 就可以把这些模块在压缩在一个更早之前加载的模块中，
-        其它模块不用重复引入。    
+        其它模块不用重复引入。`注意，其是一个数组类型`    
 
 
 

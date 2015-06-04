@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/page.css" />
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+</head>
+<body>
+    <div id="nav" class="row">
+<a class="text-info pull-right" href="javascript:history.back()">Back</a>
+    </div>
+
+<h1> 个人云备忘</h1>
+
+<p>2015-05</p>
+
+
+<p>两台个人云服务器，存储容量分别为<code>3T</code>。</p>
+<ol><li>mybooklive: http://mybooklive.local</li>
+<li>wdmycloud: http://wdmycloud.local </li></ol>
+<p>没有购买磁盘阵列，购买两个主要为了backup，以防某台服务器挂了，数据也不至于全部丢失。</p>
+<p>开始尝试使用safe points做安全点备份，但是解决不了硬件损坏时的麻烦（都坏了，怎么安全点恢复？）</p>
+<p>实际上，核心诉求是有两处不同的拷贝，要解决这个问题，就是两个服务器的镜像关系。</p>
+
+
+<h2> 制作镜像</h2>
+<p>第一种方式，是通过电脑作为中转控制，在资源浏览器中分别打开两台服务器，通过文件复制方式进行镜像。这种方式
+对于少许文件操作尚可，但是对于大批量文件操作，在操作繁琐和速度上会大打折扣。</p>
+<p>第二种方式，可以考虑服务器之间的对拷。因为都是Linux Server，通过scp命令，直接进行文件复制</p>
+<ol><li>开启ssh访问，wdmycloud直接有菜单选择开启，mybooklive需要输入指定url才能进入ssh开启界面</li>
+<li>登录主服务器：<pre><code>ssh root@mybooklive.local </code></pre>
+</li>
+<li>拷贝文件，假设从服务器的ip为192.168.1.5：<pre><code>cd /DataVolume/path
+scp -p test.jpg root@192.168.1.5:/DataVolume/path </code></pre>
+<p>注意：<code>-p</code>选项用于保持文件属性；带空格的目录名，需要用反斜线转义空格，并包含在双引号中， 如：</p>
+<pre><code>scp -rp NOKIA root@192.168.1.101:"/DataVolume/shares/Public/Shared\ Pictures" </code></pre>
+<p>而不是：</p>
+<pre><code>scp -rp NOKIA root@192.168.1.101:/DataVolume/shares/Public/Shared\ Pictures  </code></pre>
+</li></ol>
+<h2> 拷贝文件的技巧</h2>
+<p>在这两台Linux Server上，shell命令没有manual可调，同时显示效果不好，使用Mac Pro自带的Terminal直连ssh，
+如果目录名称带有中文，则显示乱码。但实际上，这两个server已经进行了locale配置，而且Terminal也做了encoding
+配置，仍然显示乱码。</p>
+<pre><code>echo $LANG
+zh_CN.UTF-8 </code></pre>
+<p>目录显示乱码：</p>
+<pre><code>MyBookLive:/DataVolume/shares/Public/Shared Pictures/IXUS851S# ls
+2008??????  2009??????  2010??????  2011??????  2012??????  2013?????? </code></pre>
+<p>但是，敲命令的时候，如果使用tab键进行提示，中文却能正常显示。</p>
+<p>另，Server上的VIM也很基本，中文输入照样支持不好，先将命令保存成文件的方案也比较麻烦，但是如果对复杂拷贝，还是有用的。</p>
+<p>使用纯命令行的方式，能解决挺大一部分的问题，如下：</p>
+<pre><code>MyBookLive:/DataVolume/shares/Public/Shared Pictures/IXUS851S# for i in `ls | head -2 | tail -1`; do scp -rp $i "root@192.168.1.105:/DataVolume/shares/Public/Shared\ Pictures/IXUS851S"; done </code></pre>
+<p>以上命令，将第二个目录复制到另一个server，由于使用了高速路由，复制速度比较快，达到<code>15M/s</code></p>
+
+
+
+
+
+
+
+
+    <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
+</body>
+</html>
+<script type="text/javascript" src="/docs/markdown_res/js/footer.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>

@@ -57,6 +57,36 @@ require(['scripts/config']), function() {
 <li>包含URL协议，比如<code>http:</code>或者<code>https:</code></li></ul>
 <p>当然，推荐使用baseUrl</p>
 </li></ul>
+<h2> 关于require.config</h2>
+<blockquote><p> <code>完整配置说明：</code> http://requirejs.org/docs/api.html#config</p></blockquote><ol><li>shim配置，针对非AMD模块，比如bootstrap<pre><code>require.config({
+    baseUrl: '.'
+    , waitSeconds: 0 // disable timeout check
+    , paths: {
+        'jquery': '../bower_components/jquery/dist/jquery'
+        , 'bootstrap': '../bower_components/bootstrap/dist/js/bootstrap'
+        , 'underscore': '../bower_components/underscore/underscore'
+        , 'rocket-p': '../bower_components/rocket-p/dist/rocket-p'
+        , 'main': 'main'
+    }       
+    , shim: {
+        // no exports, only supply deps
+        'bootstrap': ['jquery']
+        , 'backbone': {
+            deps: ['underscore', 'jquery']
+            , exports: 'Backbone'
+        }
+        , 'foo': {
+            deps: ['bar']
+            , exports: 'Foo'
+            , init: function (bar) {
+                return this.Foo.noConflict();
+            }
+        }
+    }
+});   </code></pre>
+<p><code>例子：</code>提供jQuery插件的shim配置方式， https://github.com/requirejs/example-jquery-shim</p>
+<p>jQuery的特点是，不管是否运行AMD模式，都会注册window.jQuery和window.$</p>
+</li></ol>
 <h2> 定义模块</h2>
 <ol><li>模块定义恰当处理了作用域，避免污染全局命名空间。</li>
 <li>显式列出依赖模块，并且能获得依赖模块的引用，而不需要通过全局对象的方式。使用了<p><a href="http://www.adequatelygood.com/JavaScript-Module-Pattern-In-Depth.html">
@@ -303,6 +333,12 @@ function(require,   alpha,   beta) {
 }  </code></pre>
 </li>
 <li>优化选项说明</li></ol>
+<p>所有选项说明可以从这里查看：<a href="
+https://github.com/jrburke/r.js/blob/master/build/example.build.js
+">
+https://github.com/jrburke/r.js/blob/master/build/example.build.js</p>
+</a>
+<p>以下例举主要选项：</p>
 <ul><li>appDir<p>应用程序的最顶层目录。可选的，如果设置了的话，r.js 会认为脚本在这个路径的子目录中，应用程序的文件都会被拷贝到输出目录（dir 定义的路径）。如果不设置，则使用下面的 baseUrl 路径。</p>
 </li>
 <li>baseUrl<p>默认情况下，所有的模块都是相对于这个路径的。如果没有设置，则模块的加载是相对于 build 文件所在的目录。另外，如果设置了appDir，那么 baseUrl 应该定义为相对于 appDir 的路径。</p>
@@ -334,7 +370,7 @@ function(require,   alpha,   beta) {
 <li>create：如果不存在，是否创建。默认 false；</li>
 <li>include：额外引入的模块，和 name 定义的模块一起压缩合并；</li>
 <li>exclude：要排除的模块。有些模块有公共的依赖模块，在合并的时候每个都会压缩进去，<p>例如一些基础库。使用 exclude 就可以把这些模块在压缩在一个更早之前加载的模块中，
-其它模块不用重复引入。    </p>
+其它模块不用重复引入。<code>注意，其是一个数组类型</code>    </p>
 </li></ul>
 </li></ul>
 <h3> 3. 优化原理</h3>
