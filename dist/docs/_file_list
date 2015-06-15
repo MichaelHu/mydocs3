@@ -5,9 +5,14 @@
 ./c/stdlib.h.md
 ./c/string.h.md
 ./c/variant_arguments.md
+./didi/client/task-150609.md
+./didi/deploy.md
+./didi/new-commer.md
 ./didi/oneyuan.md
 ./didi/products.md
 ./didi/tips.md
+./didi/todo.md
+./didi/wx-open-app.md
 ./didi/xinshouli.md
 ./frontend/amd-build.md
 ./frontend/backbone.md
@@ -47,6 +52,7 @@
 ./html5/myslides.md
 ./html5/reset-vs-normalize.md
 ./html5/ua.md
+./html5/websocket.md
 ./http/http-basics.md
 ./ios/ios-develop.md
 ./linux/expect-command.md
@@ -59,6 +65,7 @@
 ./network/cname_a.md
 ./nodejs/node-example.md
 ./nodejs/node-gyp.md
+./nodejs/node-install.md
 ./nodejs/npm-server.md
 ./nodejs/npm.md
 ./other/resume.md
@@ -97,6 +104,7 @@
 ./ssh/ssh-proxy.md
 ./svn/svn-apache-server.md
 ./svn/svn-doc-server.md
+./tools/proxy.md
 ./tpls/common-templates.md
 ./vim/vim-eval.md
 ./vim/vim-memo.md

@@ -5,6 +5,21 @@
 
 
 
+
+## 15-06-11
+
+1. 调试时，使用`console.log`或者`页面DOM输出`，代替`alert`，避免事件流混乱，带来更多的bug
+
+        console.log = function (log) {
+            $('#log')[0].innerHTML += '<br>' + log;
+        };
+
+
+
+
+
+
+
 ## 15-05-19
 
 1. apr和apr-util经常在linux环境下的源码安装中被依赖，比较环保的方案是先安装这两个东东。

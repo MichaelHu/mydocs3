@@ -19,6 +19,12 @@
 <blockquote><p> 记下，以备后续查看</p></blockquote>
 
 
+
+<h2> 15-06-11</h2>
+<ol><li>调试时，使用<code>console.log</code>或者<code>页面DOM输出</code>，代替<code>alert</code>，避免事件流混乱，带来更多的bug<pre><code>console.log = function (log) {
+    $('#log')[0].innerHTML += '&lt;br>' + log;
+};       </code></pre>
+</li></ol>
 <h2> 15-05-19</h2>
 <ol><li>apr和apr-util经常在linux环境下的源码安装中被依赖，比较环保的方案是先安装这两个东东。<p>源码可以在<code>http://www.apache.org</code>的<code>Download</code>下，任意一个mirror下的apr目录下找到。</p>
 <p>自行制定prefix即可，确保环保。然后通过<code>with-apr</code>和<code>with-apr-util</code>选项引入。</p>
