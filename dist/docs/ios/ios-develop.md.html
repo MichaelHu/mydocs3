@@ -5,19 +5,43 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
-    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/github-markdown.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/page.css" />
-    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.min.js"></script>
+    <style type="text/css">
+
+    </style>
+
 </head>
-<body>
+<body class="markdown-body">
     <div id="nav" class="row">
 <a class="text-info pull-right" href="javascript:history.back()">Back</a>
     </div>
 
 <h1> ios开发笔记</h1>
-<blockquote><p> 目标：有自己的代言产品</p></blockquote><h2> 2015-03-24</h2>
-<ol><li>编译输出平台，可以针对32位系统和64位系统输出程序包。对于不同的体系架构，需要注意数据类型的长度变化。<p>比如iPhone 5及以前都是32位系统，iPhone 5s及以后都是64位系统。</p>
+<blockquote><p> 目标：有自己的代言产品</p></blockquote>
+
+<h2> 2015-07-21</h2>
+
+
+<h3> 1 Obj-C的特殊符号：@</h3>
+<ul><li>@selector</li>
+<li>@property</li>
+<li>@interface</li>
+<li>@implementation</li>
+<li>@synthesize</li>
+<li>@end</li>
+<li>@autoreleasepool</li>
+<li>@"string"</li></ul>
+<h3> 2 @property属性：</h3>
+<ul><li>weak</li>
+<li>strong</li>
+<li>retain</li>
+<li>atomic</li>
+<li>nonatomic</li></ul>
+<h2> 2015-03-24</h2>
+<ol><li>编译输出平台，可以针对32位系统和64位系统输出程序包。对于不同的体系架构，需要注意数据类型的长度变化。<p>比如<code>iPhone 5</code>及以前都是32位系统，<code>iPhone 5s及以后都是64位系统</code>。</p>
 <ul><li>动态类型，32位系统就是32位，64位系统就是64位：<pre><code>CGPoint </code></pre>
 </li>
 <li>固定类型，不管系统都是32位：<pre><code>Float32
@@ -26,12 +50,11 @@ Float32Point  </code></pre>
 </li></ol>
 <h2> 2015-03-11</h2>
 <ol><li>storyboard操作实际上挺简单，但是如果没掌握要领的话，还是会一头雾水，甚至觉得很难用。<p>要领就是<code>Ctrl-drag</code>，还有<code>Assist Editor</code>。
-<code>Ctrl-drag</code>在添加<code>Outlets, Action</code>进代码时很有用，这是需要打开<code>Assist Editor</code></p>
+<code>Ctrl-drag</code>在添加<code>Outlets, Action</code>进代码时很有用，这时需要打开<code>Assist Editor</code></p>
 </li></ol>
 
-    <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>
 </html>
 <script type="text/javascript" src="/docs/markdown_res/js/footer.js"></script>
-<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>
 <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>

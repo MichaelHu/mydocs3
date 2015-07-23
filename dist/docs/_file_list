@@ -7,6 +7,7 @@
 ./c/variant_arguments.md
 ./didi/client/task-150609.md
 ./didi/deploy.md
+./didi/native-sdk.md
 ./didi/new-commer.md
 ./didi/oneyuan.md
 ./didi/products.md
@@ -14,6 +15,7 @@
 ./didi/todo.md
 ./didi/wx-open-app.md
 ./didi/xinshouli.md
+./encoding/base64.md
 ./frontend/amd-build.md
 ./frontend/backbone.md
 ./frontend/bootstrap.md

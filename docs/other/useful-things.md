@@ -6,6 +6,15 @@
 
 
 
+## 15-07-17
+
+1. jdk环境，linux下安装，可以支持安装包下载后，解压即可使用。类似`server-jre-8u51-linux-x64.tar.gz`，
+    在`http://10.10.10.184:8088/svn_repos/softwares`可以找到。
+
+
+
+
+
 ## 15-06-11
 
 1. 调试时，使用`console.log`或者`页面DOM输出`，代替`alert`，避免事件流混乱，带来更多的bug

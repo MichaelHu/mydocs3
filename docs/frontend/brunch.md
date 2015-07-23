@@ -8,9 +8,9 @@
 
 ## 第一印象
 
-1. 和FIS最像的构建工具，因为其引入了项目规范，比如目录规范
+1. 和`FIS`最像的构建工具，因为其引入了项目规范，比如目录规范
 2. 减少了grunt file的复杂，但需要知道其隐含的规范
-3. 提供skeleton，也就是脚手架方式，这个和yeoman相似
+3. 提供`skeleton`，也就是脚手架方式，这个和yeoman相似
 
 
 介绍文章：http://alxhill.com/blog/articles/brunch-coffeescript-angular/

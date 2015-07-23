@@ -14,6 +14,11 @@
     curl https://nodejs.org | grep -Eo "Current Version: *v[^<]+"
 
 
+mac下进行`-g`安装，出现EACCES错误，原因是对/usr/local/lib/node_modules没有权限导致
+
+    chown -R hudamin /usr/local/lib/node_modules
+
+
 
 
 ## 包注册与发布
@@ -114,6 +119,18 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
 
 一旦发布，不可再用。
 
+包发布需要先注册`npm账号`，没有提供网页注册，需要命令行注册，使用`npm adduser`命令：
+
+    hudamin@local beat-command-release $ npm adduser
+    Username: MichaelHu
+    npm WARN Username must be lowercase 
+    Username: michaelhu
+    Password: 
+    Email: (this IS public) hdm0571@163.com
+    hudamin@local beat-command-release $ git push origin master
+    Everything up-to-date
+    hudamin@local beat-command-release $ npm publish
+    + beat-command-release@0.0.1
 
 
 

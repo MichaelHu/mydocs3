@@ -1,10 +1,18 @@
-# user group
+# USER:GROUP under LINUX
+
+
+
+
 
 
 ## 文件
 
 * `/etc/group`：包含所有组 
 * `/etc/passwd`及`/etc/shadow`：包含系统存在的所有用户名
+
+
+
+
 
 ## usermod
 
@@ -14,9 +22,17 @@
 
 或者可以直接修改`/etc/passwd`
 
+
+
+
+
 ## userconf
 
 [`Mac OS不存在该命令`]。
+
+
+
+
 
 ## useradd
 
@@ -24,12 +40,21 @@
 
 [`Mac OS不存在该命令`]。
 
+
+
+
 ## userdel
 
 删除用户账号
 
 [`Mac OS不存在该命令`]。
 
+
+
+## 特殊用户组
+
+* `wheel`：管理员组，只有该组成员才可以通过su获取root后权限，或者sudo命令，输入管理员账号获得。wheel实际上已经成了`管理员组`的代名词
+* `staff`：全体用户组。因此，如果改变用户的组权限为staff，则所有用户都有权限操作该文件
 
 
 
@@ -41,12 +66,21 @@ whois指令会去查找并显示指定帐号的用户相关信息，因为它是
 
     $ whois 258i.com
 
+
+
+
+
 ## whoami
 
 显示自身用户名称
 
     $ whoami
     hudamin
+
+
+
+
+
 
 ## who
 
@@ -73,6 +107,10 @@ whois指令会去查找并显示指定帐号的用户相关信息，因为它是
     hudamin  ttys009  Oct 29 14:38
 
 
+
+
+
+
 ## w
 
 显示目前登录系统的用户信息
@@ -94,7 +132,10 @@ whois指令会去查找并显示指定帐号的用户相关信息，因为它是
 
 mac os新版本已经不支持options
 
-# finger
+
+
+
+## finger
 
 查询用户的信息，通常会显示系统中某个用户的用户名、主目录、停滞时间、登录时间、登录shell等信息。如果要查询远程机上的用户信息，需要在用户名后面接“@主机名”，采用[用户名@主机名]的格式，不过要查询的网络主机需要运行finger守护进程。
 
@@ -128,4 +169,18 @@ mac os新版本已经不支持options
     On since 三 10 29 14:38 (CST) on ttys009
     No Mail.
     No Plan.
+
+
+
+
+## chown
+
+修改文件拥有者和组
+
+    chown [OPTION] user[:group] file ...
+
+比如：
+
+    chown -R $USER /usr/local/lib/node_modules
+
 

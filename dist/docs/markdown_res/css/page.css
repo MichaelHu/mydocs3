@@ -29,3 +29,9 @@ blockquote {
     font-size: 14px !important;
 }
 
+.markdown-body {
+    margin: 40px 0 0 180px;
+    padding: 0 50px;
+    overflow: auto;
+}
+

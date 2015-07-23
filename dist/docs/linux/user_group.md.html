@@ -5,17 +5,25 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
-    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/markdown-7.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/github-markdown.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/page.css" />
-    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.min.js"></script>
+    <style type="text/css">
+
+    </style>
+
 </head>
-<body>
+<body class="markdown-body">
     <div id="nav" class="row">
 <a class="text-info pull-right" href="javascript:history.back()">Back</a>
     </div>
 
-<h1> user group</h1>
+<h1> USER:GROUP under LINUX</h1>
+
+
+
+
 
 <h2> 文件</h2>
 <ul><li><code>/etc/group</code>：包含所有组 </li>
@@ -24,25 +32,38 @@
 <p>修改当前用户所属组</p>
 <p>[<code>Mac OS不存在该命令</code>]。</p>
 <p>或者可以直接修改<code>/etc/passwd</code></p>
+
+
+
+
 <h2> userconf</h2>
 <p>[<code>Mac OS不存在该命令</code>]。</p>
+
+
+
+
 <h2> useradd</h2>
 <p>添加用户账号</p>
 <p>[<code>Mac OS不存在该命令</code>]。</p>
+
+
+
 <h2> userdel</h2>
 <p>删除用户账号</p>
 <p>[<code>Mac OS不存在该命令</code>]。</p>
 
 
-
+<h2> 特殊用户组</h2>
+<ul><li><code>wheel</code>：管理员组，只有该组成员才可以通过su获取root后权限，或者sudo命令，输入管理员账号获得。wheel实际上已经成了<code>管理员组</code>的代名词</li>
+<li><code>staff</code>：全体用户组。因此，如果改变用户的组权限为staff，则所有用户都有权限操作该文件</li></ul>
 <h2> whois</h2>
 <pre><code>whois [options] name </code></pre>
 <p>whois指令会去查找并显示指定帐号的用户相关信息，因为它是到Network Solutions 的WHOIS数据库去查找，所以该帐号名称必须在上面注册方能寻获，且名称没有大小写的差别。</p>
-<pre><code>$ whois 258i.com </code></pre>
+<pre><code>$ whois 258i.com     </code></pre>
 <h2> whoami</h2>
 <p>显示自身用户名称</p>
 <pre><code>$ whoami
-hudamin </code></pre>
+hudamin      </code></pre>
 <h2> who</h2>
 <p>显示目前登录系统的用户信息</p>
 <pre><code>$ who
@@ -63,7 +84,7 @@ $ who am i
 hudamin  ttys009  Oct 29 14:38
 $ who -Hm
 USER     LINE     WHEN         
-hudamin  ttys009  Oct 29 14:38  </code></pre>
+hudamin  ttys009  Oct 29 14:38      </code></pre>
 <h2> w</h2>
 <p>显示目前登录系统的用户信息</p>
 <pre><code>$ w
@@ -81,7 +102,10 @@ hudamin  s007     -                14:01      44 vim conf/httpd.conf
 hudamin  s008     -                14:08      44 -bash
 hudamin  s009     -                14:38       - w  </code></pre>
 <p>mac os新版本已经不支持options</p>
-<h1> finger</h1>
+
+
+
+<h2> finger</h2>
 <p>查询用户的信息，通常会显示系统中某个用户的用户名、主目录、停滞时间、登录时间、登录shell等信息。如果要查询远程机上的用户信息，需要在用户名后面接“@主机名”，采用[用户名@主机名]的格式，不过要查询的网络主机需要运行finger守护进程。</p>
 <pre><code>$ finger
 Login    Name                 TTY  Idle  Login  Time   Office  Phone
@@ -112,11 +136,15 @@ On since 三 10 29 14:01 (CST) on ttys007, idle 0:47
 On since 三 10 29 14:08 (CST) on ttys008, idle 0:47
 On since 三 10 29 14:38 (CST) on ttys009
 No Mail.
-No Plan.  </code></pre>
+No Plan.    </code></pre>
+<h2> chown</h2>
+<p>修改文件拥有者和组</p>
+<pre><code>chown [OPTION] user[:group] file ... </code></pre>
+<p>比如：</p>
+<pre><code>chown -R $USER /usr/local/lib/node_modules   </code></pre>
 
-    <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.js"></script>
 </body>
 </html>
 <script type="text/javascript" src="/docs/markdown_res/js/footer.js"></script>
-<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>
 <script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>

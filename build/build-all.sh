@@ -95,6 +95,12 @@ cat <<EOF
 </div>
 </nav>
 
+<script>
+document.querySelector('body').style.marginLeft = 'auto';
+document.querySelector('body').style.marginRight = 'auto';
+document.querySelector('body').style.width = '80%';
+</script>
+
 
 <ul>
 
