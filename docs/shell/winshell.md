@@ -497,7 +497,7 @@ else子句`必须出现在if子句结束的同一行上面`。
 1.  `(file-set)方式`：变量赋值来自解析文件内容。针对集合中的每个文件，打开并解析该文件，
     按某种解析方式给变量赋值，再运行后面的循环体。可以使用通配符，*表示当前目录下所有文件。
 2.  `("string")方式`：变量赋值来自字符串的解析。
-3.  `('command')方式`（单引号方式，而不是back-tick）：变量赋值来自命令输出的解析。
+3.  `('command')方式`（单引号方式，而不是back-tick）：变量赋值来自命令输出的解析。注意，command`只支持单个命令`，不允许其中带有管道操作。
 4.  `"options"`，提供/F扩展的`文本行解析方式`。选项使用双引号包围，选项内部的子选项使用空格分隔。
 
     包含以下子选项：
@@ -750,7 +750,12 @@ for语句支持嵌套，但是循环退出会存在一些问题。比如以下�
     call:label arguments
 
 
+
+
+
 ### 9.1 批处理参数
+
+
 
 #### 9.1.1 批处理程序获取命令行参数
 
@@ -764,6 +769,8 @@ for语句支持嵌套，但是循环退出会存在一些问题。比如以下�
     rem 使用call命令
     #call a.bat arg1 arg2
 
+
+
 #### 9.1.2 标签子例程获取命令行参数
 
 被调用的标签子例程，其下文由call语句传递的arguments决定，引用参数使用`%0, %1, ...`，
@@ -776,6 +783,27 @@ for语句支持嵌套，但是循环退出会存在一些问题。比如以下�
 `与其他local变量不同的是`，即使在.bat文件中，对批处理参数的引用还是使用单个%，而不是两个%。
 
 > 实际上，到目前为止，你会发现，批处理程序（包括.bat和子例程）接收外传参数时，可以使用%1, %2, ...，也可以使用%1%, %2%, ...
+
+
+
+
+#### 9.1.3 参数格式
+
+1. 命令行模式：
+
+        本地变量： %i
+        环境变量： %i%
+
+
+2. 批处理文件模式：
+
+        本地变量： %%i
+        环境变量： %i% 或者 !i!
+        批处理文件参数：%0, %1, %2, ... 
+        子例程参数： %0, %1, %2, ...
+
+
+
 
 
 ### 9.2 批处理参数扩展
@@ -796,7 +824,7 @@ todo
 
 命令语法：
 
-DIR [drive:][path][filename] [/A[[:]attributes]] [/B] [/C] [/D] [/L] [/N]  [/O[[:]sortorder]] [/P] [/Q] [/R] [/S] [/T[[:]timefield]] [/W] [/X] [/4]
+    DIR [drive:][path][filename] [/A[[:]attributes]] [/B] [/C] [/D] [/L] [/N]  [/O[[:]sortorder]] [/P] [/Q] [/R] [/S] [/T[[:]timefield]] [/W] [/X] [/4]
 
 1.  不带任何参数，只输dir，默认情况下该命令会列出当前目录(.)下的所有文件和子目录的信息，包括文件时间、大小、名称等信息。还有一些标题和其他统计信息。
 2.  /c参数，指示显示文件size的时候，用千分位的逗号，若不用千分位的逗号，使用/-c参数。
@@ -855,7 +883,27 @@ DIR [drive:][path][filename] [/A[[:]attributes]] [/B] [/C] [/D] [/L] [/N]  [/O[[
     * 正则表达式需用`双引号括起来`，否则行首限定符`"^"`不起作用；
     * 行首开始查找，还可以使用`/b开关`
 
-2. todo
+2. 查找svn两个版本间的差异文件
+
+        $ svn diff -r1234 | findstr "^Index"
+        Index: static/stpages/img/fangtan-0730/all_cfad578.png
+        Index: static/stpages/img/fangtan-0730/all_cfad578.png
+        Index: template/stpages/page/fangtan-0730.html
+
+3. 查找当前版本的URL和Revision字段。
+    查询字符串可以包含多个，它们之间用空格分格：
+
+        $ svn info | findstr "^URL ^Revision"
+        URL: https://svn.....
+        Revision: 118011
+
+4. 若希望查询字符串是一个整体，空格也属于查询字符串的一部分，则使用`\C:`开关：
+
+        $ svn info | findstr /C:"L: https://"
+        URL: https://svn.....
+
+
+
 
 
 ## 13. setlocal
@@ -863,6 +911,10 @@ DIR [drive:][path][filename] [/A[[:]attributes]] [/B] [/C] [/D] [/L] [/N]  [/O[[
 todo
 
     setlocal enabledelayedexpansion
+    ...
+    endlocal
+
+和`endlocal`配合使用
 
 
 
@@ -964,5 +1016,28 @@ todo
 
 1.  命令不区分大小写，包括命令名、变量名、开关选项名。
 2.  好习惯：字符串都用双引号包围。
+
+
+
+
+
+## 22. start
+
+开启一个单独的窗口运行指定的程序或命令。如果传入文件，会根据后缀判断该打开的程序，并在该程序中打开该文件。
+
+    rem 打开记事本
+    $ start notepad
+    rem 用浏览器打开abc.html
+    $ start abc.html
+
+
+
+
+## 23. more
+
+对应Linux下的less
+
+    $ svn log | more
+
 
 

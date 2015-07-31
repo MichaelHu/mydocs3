@@ -7,6 +7,7 @@
 ./c/variant_arguments.md
 ./didi/client/task-150609.md
 ./didi/deploy.md
+./didi/jsbridge.md
 ./didi/native-sdk.md
 ./didi/new-commer.md
 ./didi/oneyuan.md
@@ -23,6 +24,7 @@
 ./frontend/class_extend.md
 ./frontend/coffee.md
 ./frontend/commonjs.md
+./frontend/cookie.md
 ./frontend/fis.md
 ./frontend/grunt.md
 ./frontend/gulp.md
@@ -57,6 +59,7 @@
 ./html5/websocket.md
 ./http/http-basics.md
 ./ios/ios-develop.md
+./jsdoc/jsdoc.md
 ./linux/expect-command.md
 ./linux/network.md
 ./linux/user_group.md

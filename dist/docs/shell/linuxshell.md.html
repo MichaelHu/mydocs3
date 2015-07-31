@@ -164,8 +164,31 @@ _=/usr/bin/env </code></pre>
 </li>
 <li>NodeJs bin文件：<pre><code>#!/usr/bin/env node
 var hello = require('hello-node');
-hello.sayHello();       </code></pre>
+hello.sayHello();   </code></pre>
 </li></ol>
+<h2> man ascii</h2>
+<blockquote><p> Linux, Mac</p></blockquote><p>输出<code>ascii</code>编码</p>
+
+
+<h2> cal</h2>
+<blockquote><p> Linux, Mac</p></blockquote><p>输出日历</p>
+<pre><code>$ cal
+     七月 2015
+日 一 二 三 四 五 六
+          1  2  3  4
+ 5  6  7  8  9 10 11
+12 13 14 15 16 17 18
+19 20 21 22 23 24 25
+26 27 28 29 30 31  </code></pre>
+<h2> date</h2>
+<blockquote><p> Linux, Mac</p></blockquote><p>输出系统时间</p>
+<pre><code>$ date
+2015年 7月30日 星期四 20时22分29秒 CST
+$ export LANG=en_US.UTF-8
+$ date
+Thu Jul 30 20:24:56 CST 2015
+$ date +%Y-%m-%d\ %H:%M:%S
+2015-07-30 20:27:53     </code></pre>
 <h2> pbcopy & pbpaste</h2>
 <p>这两个工具可以打通命令行和剪贴板。当然用鼠标操作复制粘贴也可以，但这两个工具的真正威力，发挥在将其用作Unix工具的时候。意思就是说：可以将这两个工具用作管道、IO重定向以及和其他命令的整合。例如：</p>
 <pre><code>$ ls ~ | pbcopy </code></pre>

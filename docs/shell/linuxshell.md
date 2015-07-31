@@ -10,6 +10,8 @@ hudamin 2014
 * & - stdout and stderr
 * `>, >>, <, <<, &n, &-, /dev/null`
 
+
+
 ### Examples
 
 > `>, >>, <, <<`与文件描述符（不是文件名）相连接的时候，注意`不能有空格`！文件描述符
@@ -214,6 +216,44 @@ hudamin 2014
         hello.sayHello();
 
 
+
+## man ascii
+
+> Linux, Mac
+
+输出`ascii`编码
+
+
+
+## cal
+
+> Linux, Mac
+
+输出日历
+
+    $ cal
+         七月 2015
+    日 一 二 三 四 五 六
+              1  2  3  4
+     5  6  7  8  9 10 11
+    12 13 14 15 16 17 18
+    19 20 21 22 23 24 25
+    26 27 28 29 30 31
+
+
+## date
+
+> Linux, Mac
+
+输出系统时间
+
+    $ date
+    2015年 7月30日 星期四 20时22分29秒 CST
+    $ export LANG=en_US.UTF-8
+    $ date
+    Thu Jul 30 20:24:56 CST 2015
+    $ date +%Y-%m-%d\ %H:%M:%S
+    2015-07-30 20:27:53
 
 
 

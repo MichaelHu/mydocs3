@@ -364,7 +364,7 @@ FOR /F ["options"] %variable IN ('command') DO command [command-parameters] </co
 <ol><li><code>(file-set)方式</code>：变量赋值来自解析文件内容。针对集合中的每个文件，打开并解析该文件，<p>按某种解析方式给变量赋值，再运行后面的循环体。可以使用通配符，*表示当前目录下所有文件。</p>
 </li>
 <li><code>("string")方式</code>：变量赋值来自字符串的解析。</li>
-<li><code>('command')方式</code>（单引号方式，而不是back-tick）：变量赋值来自命令输出的解析。</li>
+<li><code>('command')方式</code>（单引号方式，而不是back-tick）：变量赋值来自命令输出的解析。注意，command<code>只支持单个命令</code>，不允许其中带有管道操作。</li>
 <li><code>"options"</code>，提供/F扩展的<code>文本行解析方式</code>。选项使用双引号包围，选项内部的子选项使用空格分隔。<p>包含以下子选项：</p>
 <ul><li><code>eol=c</code>   指定行注释符，解析时会略过以字符c开头的行</li>
 <li><code>skip=n</code>  配置解析时，跳过文件起始的n行</li>
@@ -520,8 +520,10 @@ for /l %%j in (10,2,16) do (
 <pre><code>for /f "tokens=3 delims=\t" %i in ('dir /s') do @(if "%~xi" == ".png" echo %~xi)       </code></pre>
 <h2> 9. call命令</h2>
 <blockquote><p> 允许一个批处理程序调用另一个批处理程序。</p></blockquote><pre><code>CALL [drive:][path]filename [batch-parameters] </code></pre>
-<blockquote><p> 命令扩展启用以后，可以在同一个批处理程序中调用子例程：</p></blockquote><pre><code>call:label arguments  </code></pre>
+<blockquote><p> 命令扩展启用以后，可以在同一个批处理程序中调用子例程：</p></blockquote><pre><code>call:label arguments     </code></pre>
 <h3> 9.1 批处理参数</h3>
+
+
 <h4> 9.1.1 批处理程序获取命令行参数</h4>
 <p>.bat文件获取命令行参数，使用<code>%0%, %1%, ...</code></p>
 <p>包括两种方式的调用：一是直接调用.bat文件；二是使用call命令调用。</p>
@@ -529,7 +531,7 @@ for /l %%j in (10,2,16) do (
 #a.bat arg1 arg2
 
 rem 使用call命令
-#call a.bat arg1 arg2 </code></pre>
+#call a.bat arg1 arg2   </code></pre>
 <h4> 9.1.2 标签子例程获取命令行参数</h4>
 <p>被调用的标签子例程，其下文由call语句传递的arguments决定，引用参数使用<code>%0, %1, ...</code>，
 分别对应当前批处理程序名称（或子例程标签）和传递的参数。</p>
@@ -537,6 +539,17 @@ rem 使用call命令
 <pre><code>#call :build arg1 arg2 </code></pre>
 <p><code>与其他local变量不同的是</code>，即使在.bat文件中，对批处理参数的引用还是使用单个%，而不是两个%。</p>
 <blockquote><p> 实际上，到目前为止，你会发现，批处理程序（包括.bat和子例程）接收外传参数时，可以使用%1, %2, ...，也可以使用%1%, %2%, ...</p></blockquote>
+
+
+<h4> 9.1.3 参数格式</h4>
+<ol><li>命令行模式：<pre><code>本地变量： %i
+环境变量： %i%  </code></pre>
+</li>
+<li>批处理文件模式：<pre><code>本地变量： %%i
+环境变量： %i% 或者 !i!
+批处理文件参数：%0, %1, %2, ... 
+子例程参数： %0, %1, %2, ...     </code></pre>
+</li></ol>
 <h3> 9.2 批处理参数扩展</h3>
 <p>同for循环的参数扩展。不同之处在于使用%还是%%。</p>
 <h3> 9.3 两次exit问题</h3>
@@ -547,7 +560,7 @@ rem 使用call命令
 
 <h2> 10 dir命令</h2>
 <blockquote><p> 显示目录中的文件和子目录的信息。</p></blockquote><p>命令语法：</p>
-<p>DIR [drive:][path][filename] [/A[[:]attributes]] [/B] [/C] [/D] [/L] [/N]  [/O[[:]sortorder]] [/P] [/Q] [/R] [/S] [/T[[:]timefield]] [/W] [/X] [/4]</p>
+<pre><code>DIR [drive:][path][filename] [/A[[:]attributes]] [/B] [/C] [/D] [/L] [/N]  [/O[[:]sortorder]] [/P] [/Q] [/R] [/S] [/T[[:]timefield]] [/W] [/X] [/4] </code></pre>
 <ol><li>不带任何参数，只输dir，默认情况下该命令会列出当前目录(.)下的所有文件和子目录的信息，包括文件时间、大小、名称等信息。还有一些标题和其他统计信息。</li>
 <li>/c参数，指示显示文件size的时候，用千分位的逗号，若不用千分位的逗号，使用/-c参数。<pre><code>C:\Windows\System32>dir /c sound.drv
  驱动器 C 中的卷是 System
@@ -583,10 +596,27 @@ ERASE [/P] [/F] [/S] [/Q] [/A[[:]attributes]] names </code></pre>
 <ul><li>正则表达式需用<code>双引号括起来</code>，否则行首限定符<code>"^"</code>不起作用；</li>
 <li>行首开始查找，还可以使用<code>/b开关</code></li></ul>
 </li>
-<li>todo</li></ol>
+<li>查找svn两个版本间的差异文件<pre><code>$ svn diff -r1234 | findstr "^Index"
+Index: static/stpages/img/fangtan-0730/all_cfad578.png
+Index: static/stpages/img/fangtan-0730/all_cfad578.png
+Index: template/stpages/page/fangtan-0730.html </code></pre>
+</li>
+<li>查找当前版本的URL和Revision字段。<p>查询字符串可以包含多个，它们之间用空格分格：</p>
+<pre><code>$ svn info | findstr "^URL ^Revision"
+URL: https://svn.....
+Revision: 118011 </code></pre>
+</li>
+<li>若希望查询字符串是一个整体，空格也属于查询字符串的一部分，则使用<code>\C:</code>开关：<pre><code>$ svn info | findstr /C:"L: https://"
+URL: https://svn.....     </code></pre>
+</li></ol>
 <h2> 13. setlocal</h2>
 <p>todo</p>
-<pre><code>setlocal enabledelayedexpansion   </code></pre>
+<pre><code>setlocal enabledelayedexpansion
+...
+endlocal </code></pre>
+<p>和<code>endlocal</code>配合使用</p>
+
+
 <h2> 14. type命令</h2>
 <pre><code>$ type file_name </code></pre>
 <p>将file_name文件的内容输出到标准输出，类似于Linux下的cat命令。</p>
@@ -644,6 +674,15 @@ $ mshta javascript:alert(0xa0fe-0x8140)  </code></pre>
 <h2> 21. 建议</h2>
 <ol><li>命令不区分大小写，包括命令名、变量名、开关选项名。</li>
 <li>好习惯：字符串都用双引号包围。</li></ol>
+<h2> 22. start</h2>
+<p>开启一个单独的窗口运行指定的程序或命令。如果传入文件，会根据后缀判断该打开的程序，并在该程序中打开该文件。</p>
+<pre><code>rem 打开记事本
+$ start notepad
+rem 用浏览器打开abc.html
+$ start abc.html    </code></pre>
+<h2> 23. more</h2>
+<p>对应Linux下的less</p>
+<pre><code>$ svn log | more    </code></pre>
 
 </body>
 </html>
