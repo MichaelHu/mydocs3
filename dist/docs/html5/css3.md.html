@@ -22,6 +22,13 @@
 <h1> CSS3 Memo</h1>
 
 
+<h2> rem单位</h2>
+
+
+<img src="./img/font-size.jpg">
+
+
+
 
 <h2> CSS3 case</h2>
 
@@ -126,7 +133,8 @@
     left: -200%; 
 } </code></pre>
 <p>将其移出显示区，进行预渲染。后续用到的同样的动画，就会变得流畅，不会出现白色图片。</p>
-</li></ul>
+</li>
+<li>在动画开始前，先将目标设置为<code>visibility:hidden</code>，触发强制渲染。这种方式在<code>1块钱上下班</code>项目中使用</li></ul>
 </li></ol>
 <h2> CSS3特效</h2>
 <ol><li><code>miniMAC/magic (3299 stars)</code> : <p><a target="_blank" href="
@@ -178,7 +186,14 @@ http://textillate.js.org
      */
     -ms-user-select: none;
     user-select: none;
-}  </code></pre>
+} </code></pre>
+</li>
+<li>去默认边框： <p>去除Android， iOS上元素click时默认出现的边框：</p>
+<pre><code>-webkit-tap-hightlight-color: rgba(0,0,0,0); </code></pre>
+<p>iOS下移除按钮原生样式：</p>
+<pre><code>-webkit-appearance: none; </code></pre>
+<p>PC下移除a标签等元素点击时的虚线框：</p>
+<pre><code>outline: none;    </code></pre>
 </li></ol>
 <h3> 参考网站</h3>
 <ol><li>http://css-infos.net/</li>

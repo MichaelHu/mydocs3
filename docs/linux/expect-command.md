@@ -2,7 +2,7 @@
 
 hudamin
 
-> 与可交互程序进行编程式对话，使得命令行自动化
+> 与可交互程序进行`编程式对话`，使得命令行自动化
 
 `expect [ -dDinN ] [ -c cmds ] [ [ -[f|b] ] cmdfile ] [ args ]`
 
@@ -78,6 +78,8 @@ hudamin
 4. interact
 
     将当前进程的控制权交给用户，使得键盘输入传送给当前进程，当前进程的stdout和stderr返回给用户。
+
+
 
 ## 其他命令
 

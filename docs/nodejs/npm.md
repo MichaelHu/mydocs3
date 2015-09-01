@@ -7,16 +7,22 @@
 
 ## 安装方式
 
-通过安装新版本的nodejs，自动包含npm的安装。
+通过安装新版本的`nodejs`，自动包含npm的安装。
 
 自动检测nodejs的最新版本（mac适用）：
 
     curl https://nodejs.org | grep -Eo "Current Version: *v[^<]+"
 
 
-mac下进行`-g`安装，出现EACCES错误，原因是对/usr/local/lib/node_modules没有权限导致
+mac下进行`-g`安装，出现`EACCES`错误，原因是对`/usr/local/lib/node_modules`没有权限导致。
+解决办法如下：
 
-    chown -R hudamin /usr/local/lib/node_modules
+    $ cd /usr/local/lib
+    $ ls -l
+    drwxr-xr-x  32 24561  wheel  1088  8  6 13:08 node_modules
+    $ sudo chown -R hudamin /usr/local/lib/node_modules
+    $ ls -l
+    drwxr-xr-x  32 hudamin  wheel  1088  8  6 13:08 node_modules
 
 
 
@@ -28,8 +34,8 @@ mac下进行`-g`安装，出现EACCES错误，原因是对/usr/local/lib/node_mo
 * 官方地址：http://registry.npmjs.org/
 * 镜像地址：http://skimdb.npmjs.com/registry
 
-服务器使用CouchDB数据库，couchapp的代码托管在github上：http://github.com/npm/npm-registry-couchapp。
-服务器提供好用的RESTful API，举例如下：
+服务器使用`CouchDB`数据库，couchapp的代码托管在github上：http://github.com/npm/npm-registry-couchapp。
+服务器提供好用的`RESTful API`，举例如下：
 
     $ curl http://registry.npmjs.org
     {"db_name":"registry","doc_count":113003,"doc_del_count":380,"update_seq":450451,"purge_seq":0,"compact_running":false,"disk_size":1045799035,"data_size":407768840,"instance_start_time":"1414070581227712","disk_format_version":6,"committed_update_seq":450451}
@@ -42,7 +48,7 @@ mac下进行`-g`安装，出现EACCES错误，原因是对/usr/local/lib/node_mo
 
 ### registry决定
 
-* 首先由scope来定，scope与registry可以通过以下方式绑定：
+* 首先由`scope`来定，scope与registry可以通过以下方式绑定：
 
         npm config set @scope:registry ...
 
@@ -119,7 +125,7 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
 
 一旦发布，不可再用。
 
-包发布需要先注册`npm账号`，没有提供网页注册，需要命令行注册，使用`npm adduser`命令：
+包发布需要先注册`npm账号`，没有提供网页注册，需要`命令行注册`，使用`npm adduser`命令：
 
     hudamin@local beat-command-release $ npm adduser
     Username: MichaelHu
@@ -157,6 +163,9 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
 * npm-debug.log
 
 所有node_modules下的文件也被忽略，除了依赖文件。
+
+
+
 
 ### 总是包含的文件
 
@@ -275,6 +284,8 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
     npm ls
     npm ls -g
 
+
+
 ### npm root
 
 查看本地包和全局包的安装路径
@@ -282,9 +293,13 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
     npm root
     npm root -g
 
+
+
 ### npm help
 
     npm help
+
+
 
 ### npm config
 

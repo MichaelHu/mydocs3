@@ -16,10 +16,14 @@
 不过，`假如数据很复杂，或者数据需要更多的变化以体现真实数据，又或者需要几十套数据`。
 那么模拟过程就比较麻烦了。哈哈，对于工程师来说，这些任务不应该是手动的，而应该交给程序来`自动化`完成。
 
+
+
 ## MC WebServer
+
 这是一个`试验性`的作品，仅供个人用于研究HTTP Web Server的原理，同时增加一些特色小功能，经过封装以后，可以用于辅助前端开发。
 
 她有以下一些特点：
+
 * `轻量`
 * `单个`可执行文件，不需安装包
 * 随意目录可设置
@@ -40,11 +44,16 @@
     1. application/vnd.android.package-archive
     1. 默认为：text/plain
 
+
 ## FORK ME ON GITHUB
+
 `https://github.com/MichaelHu/capp/tree/master/src/mcwebserver`
 
+
 ## 使用方式
+
 Mac或Linux下：
+
 1. 安装`GCC环境`，MAC需要安装XCode，Linux如果没有的话，Google一下
 2. 下载源码，make，获得webserver.out输出文件
         git clone https://github.com/MichaelHu/capp
@@ -56,7 +65,11 @@ Mac或Linux下：
 4. 使用，最简单的方式为将任意一个目录变为htdocs：
         webserver /some/dir 8000
 
+
+
+
 ## 高级使用方式
+
 确保本地安装了php-cgi，然后将请求映射到某个php文件，该文件的作用为请求远程内容，并返回。
 
     export PHP_CGI=/usr/bin/php-cgi
@@ -66,5 +79,7 @@ Mac或Linux下：
 所以，只需要在网络好的时候做一次请求，如果有多种数据，也都请求一遍，web server自动将请求内容缓存住，
 那么当你的电脑不能连接网络时，仍然可以使用这些数据。
 
+
 ## Web Server原理
+
 待续

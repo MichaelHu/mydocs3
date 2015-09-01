@@ -22,9 +22,23 @@
 <h1> 代理工具</h1>
 
 
+<h2> HTTP代理</h2>
+<p><code>HTTP代理如何为HTTPS连接提供代理服务？</code></p>
+<p><code>HTTP代理</code>，提供网络代理服务，但不局限于HTTP协议的代理，HTTPS甚至FTP都可以使用HTTP代理。
+<code>HTTPS</code>连接HTTP代理服务器使用的是<code>HTTP CONNECT</code>指令。实现提供HTTPS代理服务的HTTP代理只需在响应
+CONNECT指令后，进行二进制的数据读取即可。</p>
+<p>如果确实需要对HTTPS进行抓包，需要使用<code>伪证书</code>。</p>
+
+
+
+
+
+
 
 <p>apache代理</p>
 <p>NProxy代理</p>
+<p>还是蛮好用的，支持各类responder</p>
+
 <p>Fiddler代理</p>
 <p>MacProxy代理</p>
 

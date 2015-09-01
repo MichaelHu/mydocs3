@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/github-markdown.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/page.css" />
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.min.js"></script>
+    <style type="text/css">
+
+    </style>
+
+</head>
+<body class="markdown-body">
+    <div id="nav" class="row">
+<a class="text-info pull-right" href="javascript:history.back()">Back</a>
+    </div>
+
+<h1> wx jssdk 备忘</h1>
+
+<p>http://mp.weixin.qq.com/wiki/7/aaa137b55fb2e0456bf8dd9148dd613f.html</p>
+
+<p>6.0.2添加接口检测功能，支持批量</p>
+<pre><code>wx.checkJsApi({
+    jsApiList: ['chooseImage'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+    success: function(res) {
+        // 以键值对的形式返回，可用的api值true，不可用为false
+        // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+    }
+});   </code></pre>
+<p>图片选择接口，成功后获得localID：</p>
+
+<pre><code>wx.chooseImage({
+    count: 1, // 默认9
+    sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+    success: function (res) {
+        var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+    }
+}); </code></pre>
+
+</body>
+</html>
+<script type="text/javascript" src="/docs/markdown_res/js/footer.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>

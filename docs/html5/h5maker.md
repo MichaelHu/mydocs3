@@ -1,9 +1,20 @@
 # HTML5 Maker调研
 
+
+
+
 ## 调研对象
 
 1. H5版：<a href="http://strut.io/editor/">Strut</a>
 2. flash版本H5 Maker： <a href="http://html5maker.com/app?token=aa9cf4fc37266521135e1b93671b841c26efb15a1d8f74a9">HTML5 Maker</a>
+3. epub
+4. 易企秀
+5. 码卡平台
+6. 蜜享
+7. 。。。
+
+
+
 
 ## 描述数据格式
 

@@ -21,6 +21,7 @@
 
 <h1> CommonJS Modules/1.1.1</h1>
 <blockquote><p> A way to build up the JavaScript ecosystem for web servers, desktop and command line  apps and in the browser.</p></blockquote><p><code>CommonJS wiki:</code> <a href="http://wiki.commonjs.org/wiki/CommonJS">CommonJS</a></p>
+
 <h2> require</h2>
 <ul><li>require是一个函数<ul><li>接收模块标识参数</li>
 <li>返回外部模块导出的API</li>
@@ -51,6 +52,7 @@ the call to require that led to the current module's execution.</p>
 <li>module可能有一个<code>uri</code>属性，该属性不能存在于sandbox中</li></ul>
 </li></ol>
 <h2> module标识</h2>
+
 <ol><li>A module identifier is a String of <code>"terms"</code> delimited by forward slashes</li>
 <li>A term must be a camelCase identifier, <code>"."</code>, or <code>".."</code></li>
 <li>Module identifiers may not have file-name extensions like <code>".js"</code></li>
@@ -60,6 +62,7 @@ the call to require that led to the current module's execution.</p>
 <li>Relative identifiers are resolved relative to the identifier of the module in which <p><code>"require"</code> is written and called</p>
 </li></ol>
 <h2> 例子</h2>
+
 <ol><li>math.js<pre><code>exports.add = function() {
     var sum = 0, i = 0, args = arguments, l = args.length;
     while (i &lt; l) {

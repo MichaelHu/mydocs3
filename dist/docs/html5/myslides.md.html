@@ -22,7 +22,9 @@
 <h1> MySlides设计及备忘</h1>
 <p>2015-01-15</p>
 
-<blockquote><p> 致力于方便创建H5分享页面的利器</p></blockquote><h2> 框架考虑</h2>
+<blockquote><p> 致力于方便创建H5分享页面的利器</p></blockquote>
+
+<h2> 框架考虑</h2>
 <ol><li>类继承机制，使用<code>this._super()</code>调用父类<p>按C++类继承机制，父类构造函数先执行，再执行子类构造函数，析构函数正好相反。框架类继承时也遵行这个机制。</p>
 </li>
 <li>Slide以及GlobalView自行append至<code>#wrapper</code></li>

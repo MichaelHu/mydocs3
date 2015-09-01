@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/github-markdown.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/page.css" />
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.min.js"></script>
+    <style type="text/css">
+
+    </style>
+
+</head>
+<body class="markdown-body">
+    <div id="nav" class="row">
+<a class="text-info pull-right" href="javascript:history.back()">Back</a>
+    </div>
+
+<h1> MongoDB Memo</h1>
+<blockquote><p> Agility, scalability, performance. Pick three. 敏捷，扩展性，性能。三者皆得。</p></blockquote><ul><li>Main: https://www.mongodb.org</li>
+<li>Install: http://docs.mongodb.org/manual/installation/</li>
+<li>Drivers: https://docs.mongodb.org/ecosystem/drivers/</li>
+<li><code>Docs</code>: http://docs.mongodb.org/manual/</li></ul>
+<h2> 评价</h2>
+
+<p>MongoDB是一个<code>面向文档</code>的数据库，目前由<code>10gen</code>开发并维护，它的功能丰富，齐全，所以完全可以替代MySQL。
+与MySQL等关系型数据库相比，MongoDB的<code>优点</code>如下：</p>
+<ul><li>弱一致性，更能保证用户的访问速度。</li>
+<li>文档结构的存储方式，能够更便捷的获取数据。</li>
+<li>内置<code>GridFS</code>，支持大容量的存储。</li>
+<li>内置Sharding。</li>
+<li>第三方支持丰富。（这是与其他的NoSQL相比，MongoDB也具有的优势）</li>
+<li>性能优越</li></ul>
+<h2> 特点介绍</h2>
+<ul><li><code>JSON</code>风格语法，MongoDB中的JSON文档称其为<code>BSON</code>，是JSON的二进制表达方式。</li>
+<li><code>面向文档</code>：<code>Documents</code>类似于编程语言中的<code>结构体</code>，保存<code>key-value</code> pairs。</li>
+<li><code>Collection</code>：集合，包含多个Document，类似于Table</li></ul>
+<h2> 安装</h2>
+
+<p><code>普通青年</code>，HomeBrew安装：</p>
+<pre><code># 更新brew packages database
+$ brew update
+$ brew install mongodb </code></pre>
+<p>另：</p>
+<pre><code># 支持TLS/SSL
+$ brew install mongodb --with-openssl
+# 安装最新的开发版本
+$ brew install mongodb --devel  </code></pre>
+<p><code>文艺青年</code>，二进制包安装：</p>
+<ul><li>下载二进制包</li>
+<li>解压至你希望的有权限的任何目录</li>
+<li>添加<code>PATH</code></li></ul>
+<h2> 使用</h2>
+<ol><li>建立数据目录 <pre><code>$ mkdir -p /path/to/db/data </code></pre>
+<p><code>默认的</code>mongodb数据文件目录是<code>/data/db</code></p>
+<pre><code>$ mkdir -p /data/db </code></pre>
+<p>如果不是使用默认目录，则需要在启动时使用<code>--dbpath</code>选项传入</p>
+</li>
+<li>check： 确保启动mongodb的用户对数据目录有<code>读写权限</code></li>
+<li>启动<pre><code>$ mongod </code></pre>
+<p>如果自定义数据目录：</p>
+<pre><code>$ mongod --dbpath /path/to/db/data </code></pre>
+<p>配置文件： </p>
+<pre><code>$ mongod --config /usr/local/etc/mongod.conf  </code></pre>
+</li>
+<li>交互命令行<p>$ mongo</p>
+</li></ol>
+<h2> CRUD操作</h2>
+<h3> find</h3>
+<p>每一次查询对应一个<code>Collection</code>，<code>find</code>命令通过JSON格式提供查询标准或条件</p>
+<pre><code>$ db.users.find( { age: { $gt: 18 } } ).sort( { age: 1 } ); </code></pre>
+<img src="./img/crud-query-stages.png">
+
+
+<h3> insert </h3>
+<pre><code>$ db.users.insert({name: "sue", age: 26, status: "A", groups: ["news", "sports"]}); </code></pre>
+<img src="./img/crud-insert-stages.png">
+
+
+<h2> 与NodeJS的配合</h2>
+<p>主要通过<code>express</code></p>
+
+
+
+
+
+
+
+
+</body>
+</html>
+<script type="text/javascript" src="/docs/markdown_res/js/footer.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>

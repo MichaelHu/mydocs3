@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/github-markdown.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/page.css" />
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.min.js"></script>
+    <style type="text/css">
+
+    </style>
+
+</head>
+<body class="markdown-body">
+    <div id="nav" class="row">
+<a class="text-info pull-right" href="javascript:history.back()">Back</a>
+    </div>
+
+<h1> EDP Memo</h1>
+
+<p>文档： http://ecomfe.github.io/edp/doc/initialization/install/</p>
+
+<h2> 1 使用</h2>
+
+<p>安装</p>
+<pre><code>$ npm install -g edp </code></pre>
+<p>一次性安装更多的命令</p>
+<pre><code>$ npm i -g edp edp-build edp-webserver edp-bcs </code></pre>
+<p>查看已经安装的package</p>
+<pre><code>$ edp -v </code></pre>
+<p>查看命令帮助</p>
+<pre><code>$ edp webserver --help  </code></pre>
+<p>WebServer功能</p>
+<pre><code>$ edp webserver start </code></pre>
+<p>查看当前支持的命令列表</p>
+<pre><code>$ edp </code></pre>
+<p>项目构建</p>
+<pre><code>$ edp build </code></pre>
+<p>指定输出目录</p>
+<pre><code>$ edp build --output ../myproject-dist </code></pre>
+<p>输出目录覆盖，执行前会清空输出目录下所有文件</p>
+<pre><code>$ edp build -f </code></pre>
+<p>指定build配置文件</p>
+<pre><code>$ edp build --config my-build-conf.js    </code></pre>
+
+</body>
+</html>
+<script type="text/javascript" src="/docs/markdown_res/js/footer.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>

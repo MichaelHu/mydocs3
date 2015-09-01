@@ -5,7 +5,9 @@
 
 `CommonJS wiki:` <a href="http://wiki.commonjs.org/wiki/CommonJS">CommonJS</a>
 
+
 ## require
+
 * require是一个函数
     * 接收模块标识参数
     * 返回外部模块导出的API
@@ -27,7 +29,9 @@
         * If the "paths" attribute exists, it is the loader's prorogative to resolve, normalize, 
             or canonicalize the paths provided.
 
+
 ## module上下文
+
 1. 有一个自由变量`require`
 2. 有一个自由变量`exports`，在模块执行过程中，可能将其API添加到该对象中
     使用`exports`必须是模块导出API的唯一方法
@@ -38,7 +42,10 @@
 
     * module可能有一个`uri`属性，该属性不能存在于sandbox中
 
+
+
 ## module标识
+
 
 1. A module identifier is a String of `"terms"` delimited by forward slashes
 2. A term must be a camelCase identifier, `"."`, or `".."`
@@ -50,7 +57,9 @@
     `"require"` is written and called
 
 
+
 ## 例子
+
 
 1. math.js
 

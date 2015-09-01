@@ -23,21 +23,27 @@
 <blockquote><p style="color:green;font-size:18px">Node Packaged Modules.  <a href="http://www.npmjs.org"> [ npmjs ] </a></p></blockquote>
 
 <h2> 安装方式</h2>
-<p>通过安装新版本的nodejs，自动包含npm的安装。</p>
+<p>通过安装新版本的<code>nodejs</code>，自动包含npm的安装。</p>
 <p>自动检测nodejs的最新版本（mac适用）：</p>
 <pre><code>curl https://nodejs.org | grep -Eo "Current Version: *v[^&lt;]+"  </code></pre>
-<p>mac下进行<code>-g</code>安装，出现EACCES错误，原因是对/usr/local/lib/node_modules没有权限导致</p>
-<pre><code>chown -R hudamin /usr/local/lib/node_modules    </code></pre>
+<p>mac下进行<code>-g</code>安装，出现<code>EACCES</code>错误，原因是对<code>/usr/local/lib/node_modules</code>没有权限导致。
+解决办法如下：</p>
+<pre><code>$ cd /usr/local/lib
+$ ls -l
+drwxr-xr-x  32 24561  wheel  1088  8  6 13:08 node_modules
+$ sudo chown -R hudamin /usr/local/lib/node_modules
+$ ls -l
+drwxr-xr-x  32 hudamin  wheel  1088  8  6 13:08 node_modules    </code></pre>
 <h2> 包注册与发布</h2>
 <h3> 包托管地址</h3>
 <ul><li>官方地址：http://registry.npmjs.org/</li>
 <li>镜像地址：http://skimdb.npmjs.com/registry</li></ul>
-<p>服务器使用CouchDB数据库，couchapp的代码托管在github上：http://github.com/npm/npm-registry-couchapp。
-服务器提供好用的RESTful API，举例如下：</p>
+<p>服务器使用<code>CouchDB</code>数据库，couchapp的代码托管在github上：http://github.com/npm/npm-registry-couchapp。
+服务器提供好用的<code>RESTful API</code>，举例如下：</p>
 <pre><code>$ curl http://registry.npmjs.org
 {"db_name":"registry","doc_count":113003,"doc_del_count":380,"update_seq":450451,"purge_seq":0,"compact_running":false,"disk_size":1045799035,"data_size":407768840,"instance_start_time":"1414070581227712","disk_format_version":6,"committed_update_seq":450451}       </code></pre>
 <h3> registry决定</h3>
-<ul><li>首先由scope来定，scope与registry可以通过以下方式绑定：<pre><code>npm config set @scope:registry ... </code></pre>
+<ul><li>首先由<code>scope</code>来定，scope与registry可以通过以下方式绑定：<pre><code>npm config set @scope:registry ... </code></pre>
 </li>
 <li>如果没有scope，则使用默认registry。默认registry通过以下方式绑定：<pre><code>npm config set registry ...     </code></pre>
 </li></ul>
@@ -72,7 +78,7 @@ npm客户端自动兼容非范围包与范围包的处理。</p>
 <pre><code>npm publish &lt;tarball> [--tag &lt;tag>]
 npm publish &lt;folder> [--tag &lt;tag>] </code></pre>
 <blockquote><p> Once a package is published with a given name and version, that specific  name and version combination can never be used again, even if it is removed with npm-unpublish(1).</p></blockquote><p>一旦发布，不可再用。</p>
-<p>包发布需要先注册<code>npm账号</code>，没有提供网页注册，需要命令行注册，使用<code>npm adduser</code>命令：</p>
+<p>包发布需要先注册<code>npm账号</code>，没有提供网页注册，需要<code>命令行注册</code>，使用<code>npm adduser</code>命令：</p>
 <pre><code>hudamin@local beat-command-release $ npm adduser
 Username: MichaelHu
 npm WARN Username must be lowercase 
@@ -99,6 +105,9 @@ hudamin@local beat-command-release $ npm publish
 <li>CVS</li>
 <li>npm-debug.log</li></ul>
 <p>所有node_modules下的文件也被忽略，除了依赖文件。</p>
+
+
+
 <h3> 总是包含的文件</h3>
 <p>以下文件总是被包含，即使加到ignore文件中，也无法剔除。</p>
 <ul><li>package.json</li>
@@ -164,13 +173,13 @@ npm un &lt;name>  </code></pre>
 npm update -g npm </code></pre>
 <h3> npm ls</h3>
 <pre><code>npm ls
-npm ls -g </code></pre>
+npm ls -g   </code></pre>
 <h3> npm root</h3>
 <p>查看本地包和全局包的安装路径</p>
 <pre><code>npm root
-npm root -g </code></pre>
+npm root -g   </code></pre>
 <h3> npm help</h3>
-<pre><code>npm help </code></pre>
+<pre><code>npm help   </code></pre>
 <h3> npm config</h3>
 <pre><code>npm config list
 npm config set &lt;key> &lt;value> [-g]

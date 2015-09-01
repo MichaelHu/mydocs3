@@ -205,8 +205,10 @@ EOF
 
 
 # generate preview.md file
+
 cat _header _list _footer > preview.md
-rm _header _list _footer
+cat ./markdown_res/header.tpl.html preview.md ./markdown_res/footer.tpl.html > preview.md.html
+rm _header _list _footer preview.md
 
 
 

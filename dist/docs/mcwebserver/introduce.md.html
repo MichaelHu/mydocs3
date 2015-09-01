@@ -30,6 +30,8 @@
 <p>当然，可以直接将数据请求并事先保存成文件，放在本地服务器。</p>
 <p>不过，<code>假如数据很复杂，或者数据需要更多的变化以体现真实数据，又或者需要几十套数据</code>。
 那么模拟过程就比较麻烦了。哈哈，对于工程师来说，这些任务不应该是手动的，而应该交给程序来<code>自动化</code>完成。</p>
+
+
 <h2> MC WebServer</h2>
 <p>这是一个<code>试验性</code>的作品，仅供个人用于研究HTTP Web Server的原理，同时增加一些特色小功能，经过封装以后，可以用于辅助前端开发。</p>
 <p>她有以下一些特点：</p>
@@ -54,6 +56,7 @@
 </li></ul>
 <h2> FORK ME ON GITHUB</h2>
 <p><code>https://github.com/MichaelHu/capp/tree/master/src/mcwebserver</code></p>
+
 <h2> 使用方式</h2>
 <p>Mac或Linux下：</p>
 <ol><li>安装<code>GCC环境</code>，MAC需要安装XCode，Linux如果没有的话，Google一下</li>
@@ -64,7 +67,7 @@ make</code></pre>
 <li>部署该文件，比如最简单的：<pre><code>mv webserver.out ~/bin/webserver
 chmod +x ~/bin/webserver</code></pre>
 </li>
-<li>使用，最简单的方式为将任意一个目录变为htdocs：<pre><code>webserver /some/dir 8000 </code></pre>
+<li>使用，最简单的方式为将任意一个目录变为htdocs：<pre><code>webserver /some/dir 8000    </code></pre>
 </li></ol>
 <h2> 高级使用方式</h2>
 <p>确保本地安装了php-cgi，然后将请求映射到某个php文件，该文件的作用为请求远程内容，并返回。</p>
@@ -73,6 +76,7 @@ webserver /some/dir 8900 debug </code></pre>
 <p>这时，请求的结果将会被缓存，当第二次发起同样的请求时，不再需要向远程发送请求。
 所以，只需要在网络好的时候做一次请求，如果有多种数据，也都请求一遍，web server自动将请求内容缓存住，
 那么当你的电脑不能连接网络时，仍然可以使用这些数据。</p>
+
 <h2> Web Server原理</h2>
 <p>待续</p>
 

@@ -7,6 +7,7 @@
 ## 2015-03-19
 
 * 关于magic quotes
+
     1. 开关打开以后，所有的`', ", \, NULL`字符之前都会加上一个`\ `
     2. 有三种magic quotes：
         * `magic_quotes_gpc`: 影响请求数据（GET， POST， 以及COOKIE）。默认打开

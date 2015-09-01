@@ -1,5 +1,10 @@
 # RegExp Memo
 
+
+> JS, PHP, vim, sed, grep, awk等，都有正则表达式的使用。
+
+
+
 ## 字符实体
 
     \w          [a-zA-Z0-9_]

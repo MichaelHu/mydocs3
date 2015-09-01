@@ -2,6 +2,12 @@
 
 
 
+## FIS3
+
+
+
+
+
 ## 本地服务器
 
 有几种方式：
@@ -15,7 +21,7 @@
     rewrite ^\/pinche\/oneyuan\/bingcoupon oneyuan/data/news.php 
 
 需使用`php-cgi`来启动php脚本运行，Mac系统本身的php安装版本只是作为Apache的一个Module
-安装，没有php-cgi版本，需要自行安装，选用无污染安装（可以参考<a
+安装，`没有php-cgi版本`，需要自行安装，选用无污染安装（可以参考<a
 href="
 /docs/php/php-configure.md.html
 ">PHP configure and install</a>）。
@@ -28,7 +34,7 @@ href="
     fis server start -p 8300 --php_exec=/Users/hudamin/softwares/php/bin/php-cgi \
         --rewrite
 
-需要注意的是，`--php_exec`选项必须使用绝对路径，使用
+需要注意的是，`--php_exec`选项必须使用`绝对路径`，使用
 `~/softwares/php/bin/php-cgi`无效，会提示php-cgi不支持信息。
 另，和`--rewrite`配套的，还需要安装rewrite组件：
 

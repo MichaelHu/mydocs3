@@ -2,7 +2,9 @@
 
 
 
+## amdjs规范
 
+https://github.com/amdjs/amdjs-api
 
 
 

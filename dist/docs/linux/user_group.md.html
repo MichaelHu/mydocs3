@@ -25,9 +25,48 @@
 
 
 
-<h2> 文件</h2>
+<h2> 1 文件</h2>
 <ul><li><code>/etc/group</code>：包含所有组 </li>
 <li><code>/etc/passwd</code>及<code>/etc/shadow</code>：包含系统存在的所有用户名</li></ul>
+<h3> 1.1 /etc/group</h3>
+
+<p>每行格式：</p>
+<pre><code>group_name:passwd:GID:user_list </code></pre>
+<p>例如：</p>
+<pre><code>staff:*:20:root </code></pre>
+<p><code>staff</code>组只有一个用户<code>root</code>。</p>
+<pre><code>wheel:*:0:root
+daemon:*:1:root
+kmem:*:2:root
+sys:*:3:root
+tty:*:4:root
+operator:*:5:root
+procview:*:8:root
+procmod:*:9:root
+staff:*:20:root
+certusers:*:29:root,_jabber,_postfix,_cyrus,_calendar,_dovecot
+admin:*:80:root </code></pre>
+<p>root用户属于<code>wheel, daemon, kmem, sys, ..., admin</code>组成员。</p>
+
+<h3> 1.2 /etc/passwd</h3>
+<p>每行格式：</p>
+<pre><code>user_name:passwd:UID:GID:description:home:shell </code></pre>
+<p>例如：</p>
+<pre><code>root:*:0:0:System Administrator:/var/root:/bin/sh </code></pre>
+<p><code>root</code>用户，属于GID为0的组，对应<code>/etc/group</code>中的<code>wheel</code>组。描述为系统管理员，用户目录为<code>/var/root</code></p>
+
+<h3> 1.3 疑问</h3>
+<blockquote><p> <code>?</code> Mac下为什么找不到user_name为hudamin的配置行呢？</p></blockquote><p>MacOS已经不同于Linux，它采用<code>BSD的权限管理系统</code>。虽然仍然有/etc/group和/etc/passwd文件，它们只用于单用户模式下的权限管理。GUI系统启动以后，使用全新一套权限管理系统。所以你在通常的Linux权限管理文件中，根本找不到自己的用户名。</p>
+<p>可以参考： http://wenku.baidu.com/link?url=uCKDCnaflnijR7nMvBP4XbJJVGT_UPMs6lpVDYtMWerou01LfCazWNXDxqqD7fg3zufhlSR6AM0lBgct9BqPLKXun-BISbCekAcjYExadVS</p>
+<p>真正想要查看自己用户名所属组、权限等信息，可以通过<code>Directory Utility</code>工具的<code>目录编辑器</code>中查看。</p>
+
+
+
+
+<h2> id</h2>
+<p>查看当前用户的组信息。</p>
+<pre><code>$ id
+uid=501(hudamin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),98(_lpadmin),33(_appstore),100(_lpoperator),204(_developer),398(com.apple.access_screensharing),399(com.apple.access_ssh)    </code></pre>
 <h2> usermod</h2>
 <p>修改当前用户所属组</p>
 <p>[<code>Mac OS不存在该命令</code>]。</p>

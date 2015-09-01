@@ -42,7 +42,20 @@
             .prepend($navbar)
             .scrollspy({ target: '#navbar-auto' })
             .on('activate.bs.scrollspy', function (dd) {
-                //console.log(dd);
+                var $target = $(dd.target).closest('li'),
+                    $cont = $target.closest('#navbar-auto'),
+                    offsetTop = $target[0].offsetTop,
+                    scrollTop = $cont[0].scrollTop,
+                    contHeight = $cont[0].offsetHeight,
+                    scrollHeight = $cont[0].scrollHeight;
+
+                // console.log(offsetTop, scrollTop, contHeight, scrollHeight);
+                if (offsetTop - scrollTop < 50) {
+                    $cont[0].scrollTop = offsetTop - 50;
+                }
+                else if (offsetTop - contHeight - scrollTop > -80) {
+                    $cont[0].scrollTop = offsetTop - contHeight + 80;
+                }  
             });
     }
 

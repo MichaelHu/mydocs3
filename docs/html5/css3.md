@@ -2,6 +2,14 @@
 
 
 
+## rem单位
+
+
+<img src="./img/font-size.jpg">
+
+
+
+
 
 ## CSS3 case
 
@@ -131,6 +139,7 @@
             }
 
         将其移出显示区，进行预渲染。后续用到的同样的动画，就会变得流畅，不会出现白色图片。
+    * 在动画开始前，先将目标设置为`visibility:hidden`，触发强制渲染。这种方式在`1块钱上下班`项目中使用
 
 
 
@@ -214,6 +223,22 @@
             -ms-user-select: none;
             user-select: none;
         }
+
+4. 去默认边框： 
+
+    去除Android， iOS上元素click时默认出现的边框：
+
+        -webkit-tap-hightlight-color: rgba(0,0,0,0);
+
+    iOS下移除按钮原生样式：
+
+        -webkit-appearance: none;
+
+    PC下移除a标签等元素点击时的虚线框：
+
+        outline: none;
+
+
 
 
 ### 参考网站

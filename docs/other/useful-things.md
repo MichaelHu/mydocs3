@@ -4,6 +4,50 @@
 
 
 
+## 15-08-28
+
+一段令人摸不着头脑的JS代码：
+
+    var a = [ 
+            [1, 2, 3]
+            [4, 5, 6]
+        ];
+
+    console.log(a);
+
+答案是： `[undefined]`，长度为1的数组，第一个元素的值是`undefined`。
+
+    console.log([1] [2]); 
+    undefined
+    console.log([] []); 
+    Error
+
+
+## 15-08-27
+
+
+知道创宇研发技能表v3.0
+
+http://blog.knownsec.com/Knownsec_RD_Checklist/v3.0.html
+
+
+
+## 15-08-07
+
+
+去除Android， iOS上元素click时默认出现的边框：
+
+    -webkit-tap-hightlight-color: rgba(0,0,0,0);
+
+iOS下移除按钮原生样式：
+
+    -webkit-appearance: none;
+
+PC下移除a标签等元素点击时的虚线框：
+
+    outline: none;
+
+
 
 
 ## 15-07-17

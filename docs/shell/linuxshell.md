@@ -349,13 +349,49 @@ hudamin 2014
 
 
 
+### grep
+
+
+文件查找
+
+
+查找文件内包含文本`hello`的行：
+
+    $ grep 'hello' file
+
+
+输出所有文件中`hello`出现的次数：
+
+    $ grep -c 'hello' file
+
+
+查找目录树下的所有文件，输出出现`mongodb`的行，并且不区分大小写：
+
+    $ grep -irE 'mongodb' --color=auto . # Mac版本
+
+
+
+
+
+
 ## 实用例子
 
 1. 批量进行文件改名： 
 
         find . -type f -exec echo "mv {} {}" \; | sed -e "s/ \([^ ]*\)@3x.png$/ ..\/\1.png/g" | sh -x
 
-    注意sed的正则同vim正则。
+    注意`sed的正则`基本等同`vim正则`。当然也有一些差别，比如：
+
+        $ sed -E -e "s/a/ & /g" file
+        $ sed -e "s/a/ & /g" file
+        $ sed -E -e "s/(a)/ \1 /g" file
+        $ sed -e "s/\(a\)/ \1 /g" file
+
+        vim:
+
+        :s/a/ \0 /g
+        
+    sed有perl style的扩展正则功能，vim只有magic方式的初级正则。反向匹配串引用也存在区别，主要是整串匹
 
 
 2. 查询近24小时内修改过的文件：

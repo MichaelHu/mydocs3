@@ -7,9 +7,18 @@
 
 `docs`: <a href="http://getbootstrap.com">http://getbootstrap.com</a>
 
+
+
 > 为每一人每一处而设计
 
 CSS`预处理器`［Sass和less］；`一个框架任何设备`；拥有`各类特性`：文档、组件以及jQuery插件
+
+
+
+
+bootstrap 4 即将来临
+
+
 
 ## CSS
 
@@ -18,6 +27,8 @@ CSS`预处理器`［Sass和less］；`一个框架任何设备`；拥有`各类�
 `全局CSS`设置，通过扩展类强化了的`基础HTML元素`，高级`栅格系统`。
 
 `CSS体系说明`：<a href="http://getbootstrap.com/css">http://getbootstrap.com/css</a>
+
+
 
 ### HTML规范
 
@@ -53,6 +64,11 @@ CSS`预处理器`［Sass和less］；`一个框架任何设备`；拥有`各类�
         <div class="container-fluid">
           ...
         </div>  
+
+
+
+
+
 
 ### 栅格系统
 

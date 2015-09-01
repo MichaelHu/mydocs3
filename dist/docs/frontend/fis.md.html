@@ -22,6 +22,11 @@
 <h1> FIS Memo</h1>
 
 
+<h2> FIS3</h2>
+
+
+
+
 <h2> 本地服务器</h2>
 <p>有几种方式：</p>
 <ol><li>无java，只用node</li>
@@ -30,7 +35,7 @@
 <p>本地服务器，使用<code>server-conf/server.conf</code>配置rewrite，rewrite配置如下：</p>
 <pre><code>rewrite ^\/pinche\/oneyuan\/bingcoupon oneyuan/data/news.php  </code></pre>
 <p>需使用<code>php-cgi</code>来启动php脚本运行，Mac系统本身的php安装版本只是作为Apache的一个Module
-安装，没有php-cgi版本，需要自行安装，选用无污染安装（可以参考<a
+安装，<code>没有php-cgi版本</code>，需要自行安装，选用无污染安装（可以参考<a
 href="
 /docs/php/php-configure.md.html
 ">PHP configure and install</a>）。</p>
@@ -39,7 +44,7 @@ href="
 <p>启动本地服务器，如下方式：</p>
 <pre><code>fis server start -p 8300 --php_exec=/Users/hudamin/softwares/php/bin/php-cgi \
     --rewrite </code></pre>
-<p>需要注意的是，<code>--php_exec</code>选项必须使用绝对路径，使用
+<p>需要注意的是，<code>--php_exec</code>选项必须使用<code>绝对路径</code>，使用
 <code>~/softwares/php/bin/php-cgi</code>无效，会提示php-cgi不支持信息。
 另，和<code>--rewrite</code>配套的，还需要安装rewrite组件：</p>
 <pre><code>cd ~/.fis-tmp/www
