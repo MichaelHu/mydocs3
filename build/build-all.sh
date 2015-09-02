@@ -151,6 +151,12 @@ var $list = $('.list ul'),
 (function(){
 
     var rRegEscape = /[\\\[\]($){}*+.?-]/,
+
+        // For result selection
+        currentResult = [],
+        $currentItem = null,
+        currentIndex = 0,
+
         isClear = false;
 
     function doFilter(key){
@@ -159,10 +165,14 @@ var $list = $('.list ul'),
             reg1 = new RegExp(text.replace(rRegEscape, '\\$&'), 'i'),
             count = 0;
 
+        // Reset when a new filter start
+        resetCurrentResult();
+
         $links.each(function(index, item){
             var $link = $(item);
             if( reg1.test( $link.text() ) ) {
                 $link.parent().show();
+                currentResult.push($link);
                 count++;
             }
             else {
@@ -179,19 +189,105 @@ var $list = $('.list ul'),
         }
     })
     .on('keydown', function(e){
+        var RETURN = 13,
+            TAB = 9; 
+
+        if ( RETURN == e.keyCode ) {
+            e.preventDefault();
+            $(this).blur();
+            // Highlight the first item
+            selectItem(0);
+        }
+        else if ( TAB == e.keyCode ) {
+            e.preventDefault();
+        }
+
         e.stopPropagation();
     })
     ;
 
-    $('#clear_search').on('click', function(){
+
+
+
+    function resetCurrentResult () {
+        $currentItem 
+            && $currentItem.closest('li').removeClass('selected');
+        $currentItem = null;
+        currentIndex = 0;
+
+        currentResult.length = 0;
+    }
+
+    function selectItem (index) {
+        index = index || 0;
+        $currentItem 
+            && $currentItem.closest('li').removeClass('selected');
+        if ( index < currentResult.length ) {
+            $currentItem = currentResult[index];
+            $currentItem.closest('li').addClass('selected');
+        }
+    }
+
+
+
+
+
+    function clearSearch () {
         isClear = true;
         $('#search').val('');
         isClear = false;
         doFilter($('#search').val());
+    }
+
+    $('#clear_search').on('click', function(){
+        clearSearch();
     });
+
+
+
 
     $(window).on('load', function(){
         doFilter($('#search').val());
+        selectItem(currentIndex);
+    });
+
+
+
+    $(document).on('keydown', function(e){
+        var BACKSPACE = 8,
+            RETURN = 13,
+            TAB = 9,
+            SLASH = 191,
+            KEY_K = 75,
+            LEFT = 37;
+
+        // Start search
+        if ( SLASH == e.keyCode ) {
+            $('#search').focus();
+            // prevent search input 
+            e.preventDefault();
+        }
+        // Backspace to clear search 
+        else if ( BACKSPACE == e.keyCode ) {
+            clearSearch();
+            // prevent search input 
+            e.preventDefault();
+        }
+        // Navigate between items
+        else if ( TAB == e.keyCode ) {
+            // prevent search input 
+            e.preventDefault();
+            if (currentResult.length > 0) {
+                currentIndex = ( currentIndex + 1 ) % currentResult.length;
+            }
+            selectItem( currentIndex );
+        }
+        // Go page
+        else if ( RETURN == e.keyCode ) {
+            // prevent search input 
+            e.preventDefault();
+            location.href = $currentItem.attr('href');
+        }
     });
 
 

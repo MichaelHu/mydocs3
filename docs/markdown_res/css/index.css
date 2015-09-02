@@ -66,7 +66,7 @@ h1 {
     clear: both;
 }
 
-.list li{
+.list li {
     float: left;
     margin-top: 7px;
     margin-right: 20px;
@@ -77,4 +77,6 @@ h1 {
     background-color: #dfebf3;
 }
 
-
+.list li.selected {
+    background-color: #fc9;
+}

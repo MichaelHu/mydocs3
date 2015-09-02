@@ -97,10 +97,10 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
     git add -u
 
     # 根据当前工作目录树来添加、修改或者移除索引 
-    git add -all .
+    git add --all .
 
     # 根据整个工作目录树来添加、修改或者移除索引 
-    git add -all
+    git add --all
 
 
 
