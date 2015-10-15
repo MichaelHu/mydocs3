@@ -84,37 +84,182 @@ MongoDB是一个`面向文档`的数据库，目前由`10gen`开发并维护，�
 
         $ mongod --config /usr/local/etc/mongod.conf
 
+    自定义端口：
+
+        $ mongod --port 27017
+
 
 4. 交互命令行
 
-    $ mongo
+        $ mongo
 
 
 
 ## CRUD操作
 
-### find
-
-每一次查询对应一个`Collection`，`find`命令通过JSON格式提供查询标准或条件
-
-    $ db.users.find( { age: { $gt: 18 } } ).sort( { age: 1 } );
-
-<img src="./img/crud-query-stages.png">
+查看<a href="./mongodb-curd.md.html">MongoDB CURDs</a>
 
 
+## Operators操作符
 
-### insert 
+DOCs: http://docs.mongodb.org/manual/reference/operator/
 
-    $ db.users.insert({name: "sue", age: 26, status: "A", groups: ["news", "sports"]});
+`4大类`：
 
-<img src="./img/crud-insert-stages.png">
+1. Query and Projection Operators
+
+    查看<a href="./mongodb-operators.md.html">MongoDB Operators</a>
 
 
+2. Update Operators
+
+    Update operators are operators that enable you to modify the data in your database or add additional data.
+
+3. Aggregation Pipeline Operators
+
+    Aggregation pipeline operations have a collection of operators available to define and manipulate documents in pipeline stages.
+
+4. Query Modifiers
+
+    Query modifiers determine the way that queries will be executed.
+
+
+
+
+
+## MongoDB Shell
+
+<a href="./mongodb-shell.md.html">MongoDB Shell Memo</a>
+
+
+
+
+
+### 索引
+
+MongoDB默认在创建collection时添加`_id`索引字段
+
+后续可以使用`createIndex()`创建collection的索引字段
+
+1. 单字段索引
+
+        $ db.restaurants.createIndex( { "cuisine": 1 } )
+        {
+            "createdCollectionAutomatically" : false,
+            "numIndexesBefore" : 1,
+            "numIndexesAfter" : 2,
+            "ok" : 1
+        }
+
+
+2. 复合索引
+
+        $ db.restaurants.createIndex( { "cuisine": 1, "address.zipcode": -1 } )
+        {
+           "createdCollectionAutomatically" : false,
+           "numIndexesBefore" : 2,
+           "numIndexesAfter" : 3,
+           "ok" : 1
+        }
+
+
+
+    
+
+
+## BSON Types
+
+> BSON是存储文档和RPC时使用的`二进制序列`化格式。MongoDB BSON provides support for additional data types than JSON.
+
+
+
+* `BSON Types`: http://docs.mongodb.org/manual/reference/bson-types
+
+### 支持的BSON数据类型
+
+支持`20种`数据类型
+
+
+
+### Comparison/Sort Order
+
+
+
+
+
+
+
+> MongoDB提供多种语言支持的`驱动器（Driver）`
 
 ## 与NodeJS的配合
 
-主要通过`express`
 
+驱动器： `node-mongodb-native`
+
+* `github`: https://github.com/mongodb/node-mongodb-native
+* `docs`: http://mongodb.github.io/node-mongodb-native/2.0/api/
+
+
+
+### 连接数据库
+
+
+使用`MongoClient`：
+
+    var MongoClient = require('mongodb').MongoClient,
+        assert = require('assert');
+
+    // Connection URL
+    var url = 'mongodb://localhost:27017/myproject';
+    // Use connect method to connect to the Server
+    MongoClient.connect(url, function(err, db) {
+        assert.equal(null, err);
+        console.log("Connected correctly to server");
+
+        db.close();
+    });
+
+
+
+`插入数据`：
+
+    var insertDocuments = function(db, callback) {
+        // Get the documents collection
+        var collection = db.collection('documents');
+
+        // Insert some documents
+        collection.insert(
+            [
+                {a : 1}, {a : 2}, {a : 3}
+            ]
+            , function(err, result) {
+                assert.equal(err, null);
+                assert.equal(3, result.result.n);
+                assert.equal(3, result.ops.length);
+                console.log("Inserted 3 documents into the document collection");
+                callback(result);
+            }
+        );
+    }
+
+
+`更新数据`：
+
+    var updateDocument = function(db, callback) {
+        // Get the documents collection
+        var collection = db.collection('documents');
+        // Update document where a is 2, set b equal to 1
+        collection.update(
+            { a : 2 }
+            , { $set: { b : 1 } }
+            , function(err, result) {
+                assert.equal(err, null);
+                assert.equal(1, result.result.n);
+                console.log("Updated the document with the field a equal to 2");
+                callback(result);
+            }
+        );  
+    }
 
 
 

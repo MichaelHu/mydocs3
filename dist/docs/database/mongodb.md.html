@@ -2,6 +2,7 @@
 <html>
 <head>
     <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
@@ -64,31 +65,122 @@ $ brew install mongodb --devel  </code></pre>
 <p>如果自定义数据目录：</p>
 <pre><code>$ mongod --dbpath /path/to/db/data </code></pre>
 <p>配置文件： </p>
-<pre><code>$ mongod --config /usr/local/etc/mongod.conf  </code></pre>
+<pre><code>$ mongod --config /usr/local/etc/mongod.conf </code></pre>
+<p>自定义端口：</p>
+<pre><code>$ mongod --port 27017  </code></pre>
 </li>
-<li>交互命令行<p>$ mongo</p>
+<li>交互命令行<pre><code>$ mongo   </code></pre>
 </li></ol>
 <h2> CRUD操作</h2>
-<h3> find</h3>
-<p>每一次查询对应一个<code>Collection</code>，<code>find</code>命令通过JSON格式提供查询标准或条件</p>
-<pre><code>$ db.users.find( { age: { $gt: 18 } } ).sort( { age: 1 } ); </code></pre>
-<img src="./img/crud-query-stages.png">
+<p>查看<a href="./mongodb-curd.md.html">MongoDB CURDs</a></p>
+
+<h2> Operators操作符</h2>
+<p>DOCs: http://docs.mongodb.org/manual/reference/operator/</p>
+<p><code>4大类</code>：</p>
+<ol><li>Query and Projection Operators<p>查看<a href="./mongodb-operators.md.html">MongoDB Operators</a></p>
+</li>
+<li>Update Operators<p>Update operators are operators that enable you to modify the data in your database or add additional data.</p>
+</li>
+<li>Aggregation Pipeline Operators<p>Aggregation pipeline operations have a collection of operators available to define and manipulate documents in pipeline stages.</p>
+</li>
+<li>Query Modifiers<p>Query modifiers determine the way that queries will be executed.</p>
+</li></ol>
+<h2> MongoDB Shell</h2>
+
+<a href="./mongodb-shell.md.html">MongoDB Shell Memo</a>
 
 
-<h3> insert </h3>
-<pre><code>$ db.users.insert({name: "sue", age: 26, status: "A", groups: ["news", "sports"]}); </code></pre>
-<img src="./img/crud-insert-stages.png">
 
 
-<h2> 与NodeJS的配合</h2>
-<p>主要通过<code>express</code></p>
+<h3> 索引</h3>
+<p>MongoDB默认在创建collection时添加<code>_id</code>索引字段</p>
+<p>后续可以使用<code>createIndex()</code>创建collection的索引字段</p>
+<ol><li>单字段索引<pre><code>$ db.restaurants.createIndex( { "cuisine": 1 } )
+{
+    "createdCollectionAutomatically" : false,
+    "numIndexesBefore" : 1,
+    "numIndexesAfter" : 2,
+    "ok" : 1
+}  </code></pre>
+</li>
+<li>复合索引<pre><code>$ db.restaurants.createIndex( { "cuisine": 1, "address.zipcode": -1 } )
+{
+   "createdCollectionAutomatically" : false,
+   "numIndexesBefore" : 2,
+   "numIndexesAfter" : 3,
+   "ok" : 1
+}      </code></pre>
+</li></ol>
+<h2> BSON Types</h2>
+<blockquote><p> BSON是存储文档和RPC时使用的<code>二进制序列</code>化格式。MongoDB BSON provides support for additional data types than JSON.</p></blockquote>
+
+<ul><li><code>BSON Types</code>: http://docs.mongodb.org/manual/reference/bson-types</li></ul>
+<h3> 支持的BSON数据类型</h3>
+<p>支持<code>20种</code>数据类型</p>
+
+
+<h3> Comparison/Sort Order</h3>
 
 
 
 
 
 
+<blockquote><p> MongoDB提供多种语言支持的<code>驱动器（Driver）</code></p></blockquote><h2> 与NodeJS的配合</h2>
 
+<p>驱动器： <code>node-mongodb-native</code></p>
+<ul><li><code>github</code>: https://github.com/mongodb/node-mongodb-native</li>
+<li><code>docs</code>: http://mongodb.github.io/node-mongodb-native/2.0/api/</li></ul>
+<h3> 连接数据库</h3>
+
+<p>使用<code>MongoClient</code>：</p>
+<pre><code>var MongoClient = require('mongodb').MongoClient,
+    assert = require('assert');
+
+// Connection URL
+var url = 'mongodb://localhost:27017/myproject';
+// Use connect method to connect to the Server
+MongoClient.connect(url, function(err, db) {
+    assert.equal(null, err);
+    console.log("Connected correctly to server");
+
+    db.close();
+});   </code></pre>
+<p><code>插入数据</code>：</p>
+<pre><code>var insertDocuments = function(db, callback) {
+    // Get the documents collection
+    var collection = db.collection('documents');
+
+    // Insert some documents
+    collection.insert(
+        [
+            {a : 1}, {a : 2}, {a : 3}
+        ]
+        , function(err, result) {
+            assert.equal(err, null);
+            assert.equal(3, result.result.n);
+            assert.equal(3, result.ops.length);
+            console.log("Inserted 3 documents into the document collection");
+            callback(result);
+        }
+    );
+}  </code></pre>
+<p><code>更新数据</code>：</p>
+<pre><code>var updateDocument = function(db, callback) {
+    // Get the documents collection
+    var collection = db.collection('documents');
+    // Update document where a is 2, set b equal to 1
+    collection.update(
+        { a : 2 }
+        , { $set: { b : 1 } }
+        , function(err, result) {
+            assert.equal(err, null);
+            assert.equal(1, result.result.n);
+            console.log("Updated the document with the field a equal to 2");
+            callback(result);
+        }
+    );  
+}       </code></pre>
 
 </body>
 </html>

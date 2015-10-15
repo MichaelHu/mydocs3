@@ -7,7 +7,7 @@
     padding-right: 5px;
     box-shadow: 2px 0 3px #bbb;
     -webkit-box-shadow: 2px 0 3px #bbb;
-    overflow: scroll;
+    overflow: auto;
     background-color: #fff;
     border-right: 2px solid #eee; 
 }

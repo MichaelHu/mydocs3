@@ -372,6 +372,20 @@ hudamin 2014
 
 
 
+### mail
+
+发送邮件，同`mailx`
+
+    $ mail -s "SUBJECT" abc@example.com < file.txt 
+
+有些时候file.txt内容`没有作为message body发送`，而默认作为附件（名为ATT00001.bin）发送，即使文件内容是纯文本。这时邮件客户端查看不太方便，通常需要保存以后，再用编辑器打开。解决的方法是，将文件作为附件发送：
+
+    $ mail -s "SUBJECT" -a file.txt abc@example.com <<EOF
+        Build Successfully!
+    EOF
+
+
+
 
 
 ## 实用例子

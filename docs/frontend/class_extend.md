@@ -177,7 +177,8 @@
 2. 子类方法（原型链方法）通过`this._super`，可调用父类对应方法 
 3. 可以自行提供子类的构造函数，使用`constructor`字段
 
-具体实现如下：
+
+类具有名为`classExtend`的静态方法，通过该方法可以派生新的子类。该静态方法具体实现如下：
 
     function classExtend(protoProps, staticProps){
                                                  
@@ -234,3 +235,12 @@
 
         return subClass;
     }
+
+
+具体使用方式为：
+
+    function Base() {}
+    Base.classExtend = classExtend;
+    var subClass = Base.classExtend(protoProps, staticProps);
+
+

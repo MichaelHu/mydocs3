@@ -2,6 +2,7 @@
 <html>
 <head>
     <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
@@ -262,7 +263,14 @@ github.com mail is handled by 10 ALT3.ASPMX.L.GOOGLE.com.   </code></pre>
 <p>输出所有文件中<code>hello</code>出现的次数：</p>
 <pre><code>$ grep -c 'hello' file  </code></pre>
 <p>查找目录树下的所有文件，输出出现<code>mongodb</code>的行，并且不区分大小写：</p>
-<pre><code>$ grep -irE 'mongodb' --color=auto . # Mac版本      </code></pre>
+<pre><code>$ grep -irE 'mongodb' --color=auto . # Mac版本    </code></pre>
+<h3> mail</h3>
+<p>发送邮件，同<code>mailx</code></p>
+<pre><code>$ mail -s "SUBJECT" abc@example.com &lt; file.txt  </code></pre>
+<p>有些时候file.txt内容<code>没有作为message body发送</code>，而默认作为附件（名为ATT00001.bin）发送，即使文件内容是纯文本。这时邮件客户端查看不太方便，通常需要保存以后，再用编辑器打开。解决的方法是，将文件作为附件发送：</p>
+<pre><code>$ mail -s "SUBJECT" -a file.txt abc@example.com &lt;&lt;EOF
+    Build Successfully!
+EOF     </code></pre>
 <h2> 实用例子</h2>
 <ol><li>批量进行文件改名： <pre><code>find . -type f -exec echo "mv {} {}" \; | sed -e "s/ \([^ ]*\)@3x.png$/ ..\/\1.png/g" | sh -x </code></pre>
 <p>注意<code>sed的正则</code>基本等同<code>vim正则</code>。当然也有一些差别，比如：</p>

@@ -2,6 +2,7 @@
 <html>
 <head>
     <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
@@ -171,7 +172,7 @@ Q.Class.extend = function(className, prop, classMethods) {
 <ol><li>子类通过<code>Class._superClass</code>获得父类的引用</li>
 <li>子类方法（原型链方法）通过<code>this._super</code>，可调用父类对应方法 </li>
 <li>可以自行提供子类的构造函数，使用<code>constructor</code>字段</li></ol>
-<p>具体实现如下：</p>
+<p>类具有名为<code>classExtend</code>的静态方法，通过该方法可以派生新的子类。该静态方法具体实现如下：</p>
 <pre><code>function classExtend(protoProps, staticProps){
 
     var parentClass = this;                  
@@ -226,7 +227,11 @@ Q.Class.extend = function(className, prop, classMethods) {
     subClass._superClass = parentClass;
 
     return subClass;
-} </code></pre>
+}  </code></pre>
+<p>具体使用方式为：</p>
+<pre><code>function Base() {}
+Base.classExtend = classExtend;
+var subClass = Base.classExtend(protoProps, staticProps);   </code></pre>
 
 </body>
 </html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/github-markdown.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/page.css" />
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.min.js"></script>
+    <style type="text/css">
+
+    </style>
+
+</head>
+<body class="markdown-body">
+    <div id="nav" class="row">
+<a class="text-info pull-right" href="javascript:history.back()">Back</a>
+    </div>
+
+<h1> MongoDB Shell</h1>
+<blockquote><p> The mongo shell is an <code>interactive JavaScript interface</code> to MongoDB and is a component of the MongoDB package. You can use the mongo shell to query and update data as well as perform administrative operations.</p></blockquote>
+<h2> Common Shell</h2>
+<ul><li><code>Shell Help</code>: http://docs.mongodb.org/manual/tutorial/access-mongo-shell-help/</li>
+<li><code>URI</code>: https://docs.mongodb.org/getting-started/shell/client/</li></ul>
+<p>mongo命令帮助：</p>
+<pre><code>$ mongo --help  </code></pre>
+<p>启动：</p>
+<pre><code>$ mongo  </code></pre>
+<p>帮助：</p>
+<pre><code>$ help
+$ db.help()  </code></pre>
+<p>列出数据库：</p>
+<pre><code>$ show dbs
+local
+myproject </code></pre>
+<p>也可使用：<code>show databases</code></p>
+<p>列出当前使用的数据库：</p>
+<pre><code>$ db  </code></pre>
+<p>选择数据库：</p>
+<pre><code>$ use myproject   </code></pre>
+<p>列出collection（等同于MySQL的table）：</p>
+<pre><code>$ show collections </code></pre>
+<p>collection帮助：</p>
+<pre><code>$ db.collection.help() </code></pre>
+<collection>是任意collection的名称，即使不存在也是可以的。不存在的collection会被创建。
+<p>db下一级的属性，是collection级别的。</p>
+<pre><code>$ db.abc.help() </code></pre>
+<p>abc这个collection还不会在<code>show collections</code>命令后显示：</p>
+<pre><code>$ show collections </code></pre>
+<p>但是如果进行实质性数据操作后，比如：</p>
+<pre><code>$ db.abc.insert({name: 'hudamin'})
+$ show collections
+abc </code></pre>
+<p>如果collection的名称含有一些特殊字符，不能直接接在db后面，可以使用以下方式：</p>
+<pre><code>$ db["3test"].find()
+$ db.getCollection("3test").find()   </code></pre>
+<p>列出用户列表：</p>
+<pre><code>$ show users  </code></pre>
+<p>列出用户角色：</p>
+<pre><code>$ show roles
+> show roles
+{
+    "role" : "dbAdmin",
+    "db" : "local",
+    "isBuiltin" : true,
+    "roles" : [ ],
+    "inheritedRoles" : [ ]
+}
+{
+    "role" : "dbOwner",
+    "db" : "local",
+    "isBuiltin" : true,
+    "roles" : [ ],
+    "inheritedRoles" : [ ]
+}
+{
+    "role" : "read",
+    "db" : "local",
+    "isBuiltin" : true,
+    "roles" : [ ],
+    "inheritedRoles" : [ ]
+}
+{
+    "role" : "readWrite",
+    "db" : "local",
+    "isBuiltin" : true,
+    "roles" : [ ],
+    "inheritedRoles" : [ ]
+}
+{
+    "role" : "userAdmin",
+    "db" : "local",
+    "isBuiltin" : true,
+    "roles" : [ ],
+    "inheritedRoles" : [ ]
+}  </code></pre>
+<p>退出mongo，使用<code>CTRL-C</code>或者：</p>
+<pre><code>$ quit()    </code></pre>
+<p>其他：</p>
+<pre><code>$ db.version()
+$ db.hostInfo()
+$ db.getName()
+$ db.auth(username, password)
+...    </code></pre>
+<h2> print</h2>
+<p>不带格式输出：</p>
+<pre><code>$ print() </code></pre>
+<p>带格式输出：</p>
+<pre><code>$ printjson()
+$ print(tojson())   </code></pre>
+<h2> .mongorc.js</h2>
+<p>rc文件，$HOME目录下，如果存在<code>.mongorc.js</code>文件，则在第一次显示shell提示语前，先执行该文件。</p>
+<p>@todo</p>
+
+<h2> 环境变量</h2>
+<p><code>EDITOR：</code></p>
+<pre><code>$ export EDITOR=vim
+$ mongo    </code></pre>
+<h2> help</h2>
+<blockquote><p> help非常强大，好好利用</p></blockquote><ol><li>Command Line Help<pre><code>$ mongo --help </code></pre>
+</li>
+<li>Shell Help<p>查看可用命令</p>
+<pre><code>$ help </code></pre>
+</li>
+<li>Database Help<pre><code>$ show dbs
+$ db.help()
+$ db.&lt;methodname> </code></pre>
+</li>
+<li>Collection Help<pre><code>$ db.collection.help() </code></pre>
+</li>
+<li>Cursor Help<pre><code>$ db.collection.find().help()    </code></pre>
+</li></ol>
+<h2> Shell Scripts</h2>
+<ul><li><code>Shell Scripts</code>: http://docs.mongodb.org/manual/tutorial/write-scripts-for-the-mongo-shell/</li></ul>
+<p>Shell和Shell Scripts在写法上的区别：</p>
+
+<p>区别：</p>
+<pre><code>show dbs, show databases    
+db.adminCommand('listDatabases')
+
+use &lt;db>    
+db = db.getSiblingDB('&lt;db>')
+
+show collections    
+db.getCollectionNames()
+
+show users  
+db.getUsers()
+
+show roles  
+db.getRoles({showBuiltinRoles: true})
+
+show log &lt;logname>  
+db.adminCommand({ 'getLog' : '&lt;logname>' })
+
+show logs   
+db.adminCommand({ 'getLog' : '*' })
+
+it  
+cursor = db.collection.find()
+if ( cursor.hasNext() ){
+   cursor.next();
+}  </code></pre>
+<p><code>--eval</code>选项</p>
+<pre><code>$ mongo test --eval "printjson(db.getCollectionNames())" </code></pre>
+<p>传入一个js片段用于执行，以上命令将collection的名称作为命令返回。</p>
+
+<p>执行一个js文件：</p>
+<pre><code>$ mongo localhost:27017/test myjsfile.js  </code></pre>
+<p>在shell中载入一个js文件：</p>
+<pre><code>$ load('mytest.js')    </code></pre>
+<h2> Shell Types</h2>
+<blockquote><p> Mongo Shell支持的一些数据类型，是BSON提供的额外的比JSON多的数据类型</p></blockquote><p><code>Shell Types</code>: http://docs.mongodb.org/manual/core/shell-types/</p>
+<ul><li>Date</li>
+<li>ISODate</li>
+<li>ObjectId</li>
+<li>NumberLong</li>
+<li>NumberInt</li></ul>
+<p>检验数据类型</p>
+<pre><code>$ myDate instanceof Date
+$ typeof myDate   </code></pre>
+<h2> Shell Methods</h2>
+
+<p>db.collection.***</p>
+<p>cursor.***</p>
+<p>db.***</p>
+<pre><code>db.eval() // Deprecated
+db.runCommand()
+db.getCollection()
+db.getMongo()
+db.getName()
+db.help()
+db.hostInfo()
+db.logout()
+db.stats()
+db.version()
+db.repaireDatabase()
+db.copyDatabase()
+db.cloneDatabase()
+...  </code></pre>
+<p>PlanCache.***</p>
+<p>Bulk.***</p>
+
+<p>User Management:</p>
+<pre><code>db.auth()
+db.createUser()
+...  </code></pre>
+<p>Role Management: </p>
+<pre><code>db.createRole()
+db.getRole()
+...  </code></pre>
+<p>Sharding:</p>
+<pre><code>sh.help()
+...  </code></pre>
+<p>Constructor:</p>
+<pre><code>Date()
+UUID()
+...  </code></pre>
+<p>Connection:</p>
+<pre><code>Mongo()
+Mongo.getDB()
+...     </code></pre>
+<h2> Shell Examples</h2>
+
+<h3> 关于[object Object]</h3>
+<pre><code>// Deprecated
+$ db.documents.copyTo('abc')
+51008
+
+$ db.abc.copyTo(db.docs)
+51008
+$ show collections 
+[object Object]
+abc
+documents </code></pre>
+<p>想看看<code>[objcet Object]</code>是个什么鬼，需要怎么操作呢？</p>
+<p>先看看各个collection的信息，可以看到<code>ns</code>字段：</p>
+<pre><code>$ db.printCollectionStats()
+
+[object Object]
+{
+    "ns" : "myproject.[object Object]",
+    "count" : 50108,
+... </code></pre>
+<p>知道ns以后，我们想把这个奇怪的collection干掉，可以这么操作：</p>
+<pre><code>$ db.getCollection('[object Object]').drop()
+true     </code></pre>
+
+</body>
+</html>
+<script type="text/javascript" src="/docs/markdown_res/js/footer.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>

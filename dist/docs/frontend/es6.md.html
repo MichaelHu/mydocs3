@@ -2,6 +2,7 @@
 <html>
 <head>
     <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
@@ -20,14 +21,76 @@
     </div>
 
 <h1> ES6 Memo</h1>
+<blockquote><p> 2015年初发布ES6</p></blockquote>
+<p>实时转码DEMO：</p>
+<p>http://google.github.io/traceur-compiler/demo/repl.html</p>
 
-<p>箭头操作符</p>
-<p>类支持</p>
-<p>增强的对象字面量</p>
-<p>字符串模板</p>
+
+
+<h2> 箭头操作符</h2>
+<pre><code>var array = [1, 2, 3];
+//传统写法
+array.forEach(function(v, i, a) {
+    console.log(v);
+});
+//ES6
+array.forEach(v = > console.log(v));    </code></pre>
+<h2> 类支持</h2>
+<pre><code>//类的定义
+class Animal {
+    //ES6中新型构造器
+    constructor(name) {
+        this.name = name;
+    }
+    //实例方法
+    sayName() {
+        console.log('My name is '+this.name);
+    }
+}
+//类的继承
+class Programmer extends Animal {
+    constructor(name) {
+        //直接调用父类构造器进行初始化
+        super(name);
+    }
+    program() {
+        console.log("I'm coding...");
+    }
+}
+//测试我们的类
+var animal=new Animal('dummy'),
+wayou=new Programmer('wayou');
+animal.sayName();//输出 ‘My name is dummy’
+wayou.sayName();//输出 ‘My name is wayou’
+wayou.program();//输出 ‘I'm coding...’    </code></pre>
+<h2> 增强的对象字面量</h2>
+
+<pre><code>//通过对象字面量创建对象
+var human = {
+    breathe() {
+        console.log('breathing...');
+    }
+};
+var worker = {
+    __proto__: human, //设置此对象的原型为human,相当于继承human
+    company: 'freelancer',
+    work() {
+        console.log('working...');
+    }
+};
+human.breathe();//输出 ‘breathing...’
+//调用继承来的breathe方法
+worker.breathe();//输出 ‘breathing...’  </code></pre>
+<ul><li>可以在对象字面量里面定义原型</li>
+<li>定义方法可以不用function关键字</li>
+<li>直接调用父类方法</li></ul>
+<h2> 字符串模板</h2>
 <pre><code>var num = Math.random();
 console.log(`your num is ${num}`); </code></pre>
-<p>解构</p>
+<p>支持<code>backtick</code></p>
+
+
+<h2> 解构</h2>
 <pre><code>var [x,y]=getVal(), // 函数返回值的解构
     [name,,age]=['wayou','male','secrect']; // 数组解构
 
@@ -36,8 +99,8 @@ function getVal() {
 }
 
 console.log('x:' + x + ', y:' + y); // 输出：x:1, y:2 
-console.log('name:' + name + ', age:' + age); // 输出： name:wayou, age:secrect   </code></pre>
-<p>参数默认值，不定参数，拓展参数</p>
+console.log('name:' + name + ', age:' + age); // 输出： name:wayou, age:secrect      </code></pre>
+<h2> 参数默认值，不定参数，拓展参数</h2>
 <pre><code>function sayHello2(name='dude'){
     console.log(`Hello ${name}`);
 }
@@ -46,18 +109,59 @@ console.log('name:' + name + ', age:' + age); // 输出： name:wayou, age:secre
 function add(...x){
     return x.reduce((m,n)=>m+n);
 }  </code></pre>
-<p>let与const 关键字</p>
-<pre><code>for (let i=0;i&lt;2;i++)console.log(i); // 输出: 0,1  </code></pre>
-<p>for of 值遍历</p>
-<p>iterator, generator</p>
-<p>模块</p>
-<p>Proxies</p>
+<h2> let与const 关键字</h2>
+<pre><code>for (let i=0;i&lt;2;i++)console.log(i); // 输出: 0,1     </code></pre>
+<h2> for of 值遍历</h2>
+<h2> iterator, generator</h2>
 
-<p>Symbols</p>
+<h2> 模块</h2>
 
-<p>Math，Number，String，Object 的新API</p>
-<p>Promises</p>
+<h2> Proxies</h2>
 
+<h2> Symbols</h2>
+
+
+
+<h2> Math，Number，String，Object 的新API</h2>
+<pre><code>Number.EPSILON
+Number.isInteger(Infinity) // false
+Number.isNaN("NaN") // false
+
+Math.acosh(3) // 1.762747174039086
+Math.hypot(3, 4) // 5
+Math.imul(Math.pow(2, 32) - 1, Math.pow(2, 32) - 2) // 2
+
+"abcde".contains("cd") // true
+"abc".repeat(3) // "abcabcabc"
+
+Array.from(document.querySelectorAll('*')) // Returns a real Array
+Array.of(1, 2, 3) // Similar to new Array(...), but without special one-arg behavior
+[0, 0, 0].fill(7, 1) // [0,7,7]
+[1,2,3].findIndex(x => x == 2) // 1
+["a", "b", "c"].entries() // iterator [0, "a"], [1,"b"], [2,"c"]
+["a", "b", "c"].keys() // iterator 0, 1, 2
+["a", "b", "c"].values() // iterator "a", "b", "c"
+
+Object.assign(Point, { origin: new Point(0,0) })     </code></pre>
+<h2> Promises</h2>
+
+<pre><code>//创建promise
+var promise = new Promise(function(resolve, reject) {
+    // 进行一些异步或耗时操作
+    if ( /*如果成功 */ ) {
+        resolve("Stuff worked!");
+    } else {
+        reject(Error("It broke"));
+    }
+});
+//绑定处理程序
+promise.then(function(result) {
+    //promise成功的话会执行这里
+    console.log(result); // "Stuff worked!"
+}, function(err) {
+    //promise失败会执行这里
+    console.log(err); // Error: "It broke"
+});  </code></pre>
 <p>http://www.cnblogs.com/Wayou/p/es6_new_features.html</p>
 
 </body>
