@@ -23,7 +23,7 @@
 <h1> git使用备忘</h1>
 
 
-
+<blockquote><p> 参考图文教程： <a href="http://pcottle.github.io/learnGitBranching/?demo">http://pcottle.github.io/learnGitBranching/?demo</a></p></blockquote>
 
 <h2> ssh访问</h2>
 <ol><li>本地机器上生成SSH Key<ol><li>先查看是否存在<code>~/.ssh</code>，该目录下存在两个文件<pre><code>id_rsa
@@ -44,6 +44,13 @@ Hi MichaelHu! You've successfully authenticated, but GitHub does not provide she
 <p>windows机器上添加sshkey，可以使用<code>git bash</code>来生成。</p>
 
 
+
+<h2> git checkout</h2>
+
+<p>常用命令：</p>
+<pre><code>git checkout -b abc
+git checkout master^
+git checkout master^^   </code></pre>
 <h2> git diff</h2>
 <p>常用命令：</p>
 <pre><code># 当前文件与暂存区文件比较
@@ -113,7 +120,10 @@ git push --all
 
 # 镜像同步远程仓库，包括branch、tag等，
 # 本地存在、远程不存在的会上传；本地删除、远程存在的会在远程删除
-git push --mirror      </code></pre>
+git push --mirror    </code></pre>
+<h2> git rebase</h2>
+<p>常用命令：</p>
+<pre><code>git rebase master topic        </code></pre>
 
 </body>
 </html>

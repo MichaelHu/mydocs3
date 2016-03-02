@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/github-markdown.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/page.css" />
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.min.js"></script>
+    <style type="text/css">
+
+    </style>
+
+</head>
+<body class="markdown-body">
+    <div id="nav" class="row">
+<a class="text-info pull-right" href="javascript:history.back()">Back</a>
+    </div>
+
+<h1> 个人信息管理系统</h1>
+
+
+<p>分三个模块 </p>
+
+<p>notes2_data
+建库
+MongoDB进行数据存储，将*.md文件进行按行存储，同时解析每个文件的档案信息，包括标题等</p>
+<pre><code>git clone https://github.com/MichaelHu/notes2_data.git
+cd notes2_data
+npm install
+cd src
+mongod --dbpath 
+node index.js [--dburl &lt;dburl>] &lt;docroot>  </code></pre>
+<p>notes2
+Server端
+提供数据接口，支持文档列表、全文检索等通用数据接口</p>
+<pre><code>git clone https://github.com/MichaelHu/notes2.git
+cd notes2
+npm install
+cd app
+node --use-strict --harmony notes2.js  </code></pre>
+<p>mynotes
+前端
+提供web展示，使用vim操作方式</p>
+<pre><code>git clone https://github.com/MichaelHu/rocket_apps.git
+cd mynotes
+fis server start -p 8700 --PHP_EXEC /Users/hudamin/softwares/php/bin/php-cgi --rewrite
+fis release -c          </code></pre>
+
+</body>
+</html>
+<script type="text/javascript" src="/docs/markdown_res/js/footer.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>

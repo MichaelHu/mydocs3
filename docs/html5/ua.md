@@ -1,6 +1,13 @@
 # UserAgent 分析
 
 
+## 微信UA
+
+Mozilla/5.0 (iPhone; CPU iPhone OS 9_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13C75 MicroMessenger/6.3.9 NetType/WIFI Language/zh_CN
+
+从中可以看出，有NetType/WIFI字段，可以直接判断网络类型。
+
+
 ## 对canvas CSS压缩或scale支持不好
 
 酷派原生：

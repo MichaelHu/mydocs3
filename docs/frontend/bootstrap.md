@@ -3,9 +3,9 @@
 > @[style="color:green;font-size:18px"]The most popular HTML, CSS, and JavaScript 
 > framework for developing responsive, mobile first projects on the web.
 
-`github`: <a href="https://github.com/twbs/bootstrap">https://github.com/twbs/bootstrap</a>
+`github`: <https://github.com/twbs/bootstrap>
 
-`docs`: <a href="http://getbootstrap.com">http://getbootstrap.com</a>
+`docs`: <http://getbootstrap.com>
 
 
 
@@ -26,7 +26,7 @@ bootstrap 4 即将来临
 
 `全局CSS`设置，通过扩展类强化了的`基础HTML元素`，高级`栅格系统`。
 
-`CSS体系说明`：<a href="http://getbootstrap.com/css">http://getbootstrap.com/css</a>
+`CSS体系说明`：<http://getbootstrap.com/css>
 
 
 

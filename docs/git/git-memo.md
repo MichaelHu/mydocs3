@@ -2,6 +2,8 @@
 
 
 
+> 参考图文教程： <http://pcottle.github.io/learnGitBranching/?demo>
+
 
 
 ## ssh访问
@@ -31,6 +33,18 @@
 
 
 windows机器上添加sshkey，可以使用`git bash`来生成。
+
+
+
+
+## git checkout
+
+
+常用命令：
+
+    git checkout -b abc
+    git checkout master^
+    git checkout master^^
 
 
 
@@ -123,6 +137,17 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
     # 镜像同步远程仓库，包括branch、tag等，
     # 本地存在、远程不存在的会上传；本地删除、远程存在的会在远程删除
     git push --mirror
+
+
+
+
+## git rebase
+
+常用命令：
+
+    git rebase master topic
+
+
 
 
 

@@ -286,6 +286,39 @@ vim:
 </li>
 <li>查询近24小时内修改过的文件：<pre><code>find . -type f -name "*.md" -mtime -1 </code></pre>
 <p>注意，<code>-mtime</code>后面的数字，仅当和<code>+</code>和<code>-</code>配合才有意义。</p>
+</li>
+<li>查看某天顺风车发单量和成交量：<pre><code>date > orders-1517.log
+
+total=0
+for i in `cat ../api.lst`
+    do  
+        # echo $i
+        ssh $i 'cd /home/xiaoju/webroot/beatles/log/webapi; grep -P "\/order\/create\?" didi.log | grep "time=2015-11-17 " | grep errno=0 | grep -Po "\x22order_id\x22:\x22[^\x22]+\x22" | sort | uniq | wc -l'
+    done \
+    > tmp 
+
+for i in `cat tmp`
+    do  
+        (( total += $i ))
+    done
+
+echo "Total orders: $total" >> orders-1517.log
+
+
+total=0
+for i in `cat ../api.lst`
+    do  
+        # echo $i
+        ssh $i 'cd /home/xiaoju/webroot/beatles/log/webapi; grep -P "\/order\/pay\?" didi.log | grep "time=2015-11-17 " | grep errno=0 | grep -Po "\x22order_id\x22:\x22[^\x22]+\x22" | sort | uniq | wc -l'
+    done \
+    > tmp 
+
+for i in `cat tmp`
+    do  
+        (( total += $i ))
+    done
+
+echo "Total deals: $total" >> orders-1517.log   </code></pre>
 </li></ol>
 
 </body>

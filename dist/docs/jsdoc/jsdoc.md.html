@@ -132,14 +132,20 @@ This symbol is meant to be read-only.</p>
 This file requires a JavaScript module.</p>
 <p>@returns (synonyms: @return)
 Document the return value of a function.</p>
-<p>@see
-Refer to some other documentation for more information.</p>
-<p>@since
-When was this feature added?</p>
-<p>@static
-Document a static member.</p>
-<p>@summary
-A shorter version of the full description.</p>
+<section ee>
+<p>Refer to some other documentation for more information.</p>
+
+</section>
+<section ince>
+<p>When was this feature added?</p>
+
+</section>
+<section tatic>
+<p>Document a static member.</p>
+
+</section>
+<section ummary>
+<p>A shorter version of the full description.</p>
 <p>@this
 What does the 'this' keyword refer to here?</p>
 <p>@throws (synonyms: @exception)
@@ -156,21 +162,12 @@ Document a custom type.</p>
 Distinguish different objects with the same name.</p>
 <p>@version
 Documents the version number of an item.</p>
-
-
-
 <h3> 1.2 内联标签</h3>
 <p>{@link} (synonyms: {@linkcode}, {@linkplain})
 Link to another item in the documentation.</p>
 <p>{@tutorial}
 Link to a tutorial.</p>
-
-
-
-
-
 <h2> 2 例子</h2>
-
 <h3> 2.1 @description 或 @desc</h3>
 <p>第一行写说明，可以省略@desc，其他地方，需要带上。</p>
 <pre><code>/**
@@ -193,7 +190,6 @@ function add(a, b) {
     return a + b;
 }   </code></pre>
 <h3> 2.2 @param 或 @arg 或 @argument</h3>
-
 <p>Name only</p>
 <pre><code>/**
  * @param somebody
@@ -356,7 +352,6 @@ function sum(a, b, retArr) {
     return a + b;
 }      </code></pre>
 <h2> 4 AMD Modules</h2>
-
 <p>Function that returns an object literal</p>
 <pre><code>define('my/shirt', function() {
    /**
@@ -481,6 +476,9 @@ define('tag', function() {
 
     return tag;
 }); </code></pre>
+
+</section>
+
 
 </body>
 </html>

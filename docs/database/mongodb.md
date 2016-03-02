@@ -3,10 +3,10 @@
 > Agility, scalability, performance. Pick three.
 > 敏捷，扩展性，性能。三者皆得。
 
-* Main: https://www.mongodb.org
-* Install: http://docs.mongodb.org/manual/installation/
-* Drivers: https://docs.mongodb.org/ecosystem/drivers/
-* `Docs`: http://docs.mongodb.org/manual/
+* Main: <https://www.mongodb.org>
+* Install: <http://docs.mongodb.org/manual/installation/>
+* Drivers: <https://docs.mongodb.org/ecosystem/drivers/>
+* `Docs`: <http://docs.mongodb.org/manual/>
 
 
 
@@ -57,6 +57,10 @@ MongoDB是一个`面向文档`的数据库，目前由`10gen`开发并维护，�
 * 解压至你希望的有权限的任何目录
 * 添加`PATH`
 
+`Linux下安装：`除了常用系统的rpm包，还提供通用Linux版本的tarball包，兼容绝大部份的Linux系统，但不包含TLS/SSL支持。如果不需要TLS/SSL，tarball方法也是比较方便的。
+
+
+
 
 ## 使用
 
@@ -88,6 +92,13 @@ MongoDB是一个`面向文档`的数据库，目前由`10gen`开发并维护，�
 
         $ mongod --port 27017
 
+    监听27017端口可能不一定能成功，比如该端口已被占用，
+    这时需要通过`--port`选项，设置新的端口。
+
+        $ mongod --dbpath=./data --fork --syslog --port 8345
+
+    启动server进程，使用`--fork --syslog`选项。使用`nohup`和`&`无效。
+
 
 4. 交互命令行
 
@@ -102,7 +113,7 @@ MongoDB是一个`面向文档`的数据库，目前由`10gen`开发并维护，�
 
 ## Operators操作符
 
-DOCs: http://docs.mongodb.org/manual/reference/operator/
+DOCs: <http://docs.mongodb.org/manual/reference/operator/>
 
 `4大类`：
 

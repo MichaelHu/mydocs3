@@ -26,8 +26,8 @@ load(resources, callback);
 
 > HTML5 Game Engine
 
-* 官网：<a href="http://www.html5quintus.com">http://www.html5quintus.com</a>
-* GIT: <a href="https://github.com/cykod/Quintus">https://github.com/cykod/Quintus</a>
+* 官网：<http://www.html5quintus.com>
+* GIT: <https://github.com/cykod/Quintus>
 
 ### 初始化部分：
 

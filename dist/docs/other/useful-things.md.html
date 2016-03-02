@@ -23,6 +23,26 @@
 <h1> 有用的小抄 </h1>
 <blockquote><p> 记下，以备后续查看</p></blockquote>
 
+
+
+<h2> 15-11-1</h2>
+<pre><code>Date.parse('2015/10/31 0:00')
+Date.parse('2015/10/31 0:00 GMT+0800')
+Date.parse('2015/10/31 00:00:00 GMT+0800')
+Date.parse('Oct 31 2015 00:00:00 GMT+0800') </code></pre>
+<ol><li><code>2015/10/31 24:00</code>是不合法的，应该是<code>2015/11/1 0:00</code></li>
+<li>兼容性好的写法是使用<code>/</code>分隔，iOS系统不支持<code>-</code>分隔符</li>
+<li>兼容性最好的写法应该是<code>Oct 31 2015 00:00:00 GMT+0800</code></li></ol>
+<h2> 15-10-27</h2>
+<p>升级至Mac OX El Capitan，10.11.1以后，发现原来的Virtual Box 4.3装载的Windows 7系统，无法识别USB设备。
+解决方案是，升级至Virtual Box 5.x版本，并且安装相应的Additions。并在Windows虚拟机打开后，安装相应配套的Gust Addition</p>
+
+
+<h2> 15-10-23</h2>
+<p>SweetAlert: http://t4t5.github.io/sweetalert/
+友好的弹窗组件库。</p>
+
+
 <h2> 15-08-28</h2>
 <p>一段令人摸不着头脑的JS代码：</p>
 <pre><code>var a = [ 

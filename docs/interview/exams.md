@@ -67,6 +67,38 @@
 8. typeof null == 'object'
 9. typeof undefined == 'object'
 
+10. Promise, Generator函数 
+
+11. `use strict`
+
+12. ES6新特性
+
+13. Koa/Express
+
+14. new关键字的作用
+
+        new func1(); // 创建对象，并设置原型链
+        func1();     // 执行函数
+
+15. 在浏览器的地址栏输入URL到网页展现完毕，这期间都发生了什么？
+    
+    * DNS解析
+    * 浏览器缓存
+    * HTML文档返回
+    * 解析link、style、script，阻塞特性
+    * 服务端发生什么
+
+
+16. 橡皮擦效果，关键使用了哪个关键的Canvas属性？
+
+        context.globalCompositeOperation = 'destination-out';
+
+17. AMD与CMD的区别？
+
+18. Function之apply与call的区别？
+
+
+
 
 
 
@@ -82,6 +114,7 @@
 ## 3 综合知识
 
 1. 编译原理：lex/yacc, flex/bison
+2. 前端性能优化
 
 
 
@@ -93,6 +126,21 @@
 1. 删除当前目录下（包含子目录）所有以`.png`为后缀的文件
 
         find . -type f -iregex '.*\.png$' -exec rm -rf {} \;
+
+
+
+
+## 5 css面试
+
+1. 垂直居中 
+2. 二列布局
+3. flex-box
+
+
+
+## 6 架构能力
+
+
 
 
 

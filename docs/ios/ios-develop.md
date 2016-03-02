@@ -4,6 +4,56 @@
 
 
 
+## 2015-12-30
+
+
+### iOS Application Games
+
+3D飞机模型
+
+ship.scn应该是使用SceneKit来编辑，但仍然没有找到门道
+
+但了解了`SCN*`相关的一系列类的使用，在viewDidLoad方法中进行场景的创建和初始化。
+
+
+
+### @interface
+
+存在于.h文件中：
+
+    @interface AppDelegate : UIResponder <UIApplicationDelegate>
+    // 公共属性
+    @property (strong, nonatomic) UIWindow *window;
+    @end
+
+存在于.m文件中：
+
+    @interface AppDelegate ()
+    ...
+    @end
+
+
+### 两种主要类型的事件
+
+1. touch events，其主要处理方法：
+
+        touchesBegan:withEvent:
+        touchesMoved:withEvent:
+        touchesEnded:withEvent:
+        touchesCancelled:withEvent:
+
+    任何时候，手指在屏幕上触摸、拉动、离开，都会有一个`UIEvent`对象生成，每一个手指由一个`UITouch`对象表示。
+
+2. motion events，其主要处理方法：
+
+        motionBegan:withEvent:
+        motionEnded:withEvent:
+        motionCancelled:withEvent:
+
+
+
+
+
 ## 2015-07-21
 
 

@@ -2,6 +2,11 @@
 
 
 
+mongodb 用户 权限 设置 详解
+<http://blog.51yip.com/nosql/1575.html>
+
+
+
 Name    Description
 createUser  Creates a new user.
 updateUser  Updates a user’s data.

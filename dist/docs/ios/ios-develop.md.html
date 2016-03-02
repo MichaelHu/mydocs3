@@ -23,6 +23,35 @@
 <h1> ios开发笔记</h1>
 <blockquote><p> 目标：有自己的代言产品</p></blockquote>
 
+<h2> 2015-12-30</h2>
+
+<h3> iOS Application Games</h3>
+<p>3D飞机模型</p>
+<p>ship.scn应该是使用SceneKit来编辑，但仍然没有找到门道</p>
+<p>但了解了<code>SCN*</code>相关的一系列类的使用，在viewDidLoad方法中进行场景的创建和初始化。</p>
+
+
+<h3> @interface</h3>
+<p>存在于.h文件中：</p>
+<pre><code>@interface AppDelegate : UIResponder &lt;UIApplicationDelegate>
+// 公共属性
+@property (strong, nonatomic) UIWindow *window;
+@end </code></pre>
+<p>存在于.m文件中：</p>
+<pre><code>@interface AppDelegate ()
+...
+@end  </code></pre>
+<h3> 两种主要类型的事件</h3>
+<ol><li>touch events，其主要处理方法：<pre><code>touchesBegan:withEvent:
+touchesMoved:withEvent:
+touchesEnded:withEvent:
+touchesCancelled:withEvent: </code></pre>
+<p>任何时候，手指在屏幕上触摸、拉动、离开，都会有一个<code>UIEvent</code>对象生成，每一个手指由一个<code>UITouch</code>对象表示。</p>
+</li>
+<li>motion events，其主要处理方法：<pre><code>motionBegan:withEvent:
+motionEnded:withEvent:
+motionCancelled:withEvent:     </code></pre>
+</li></ol>
 <h2> 2015-07-21</h2>
 
 

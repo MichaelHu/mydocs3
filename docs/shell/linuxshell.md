@@ -416,4 +416,39 @@ hudamin 2014
 
 
 
+3. 查看某天顺风车发单量和成交量：
+
+        date > orders-1517.log
+
+        total=0
+        for i in `cat ../api.lst`
+            do  
+                # echo $i
+                ssh $i 'cd /home/xiaoju/webroot/beatles/log/webapi; grep -P "\/order\/create\?" didi.log | grep "time=2015-11-17 " | grep errno=0 | grep -Po "\x22order_id\x22:\x22[^\x22]+\x22" | sort | uniq | wc -l'
+            done \
+            > tmp 
+
+        for i in `cat tmp`
+            do  
+                (( total += $i ))
+            done
+
+        echo "Total orders: $total" >> orders-1517.log
+
+
+        total=0
+        for i in `cat ../api.lst`
+            do  
+                # echo $i
+                ssh $i 'cd /home/xiaoju/webroot/beatles/log/webapi; grep -P "\/order\/pay\?" didi.log | grep "time=2015-11-17 " | grep errno=0 | grep -Po "\x22order_id\x22:\x22[^\x22]+\x22" | sort | uniq | wc -l'
+            done \
+            > tmp 
+
+        for i in `cat tmp`
+            do  
+                (( total += $i ))
+            done
+
+        echo "Total deals: $total" >> orders-1517.log
+
 
