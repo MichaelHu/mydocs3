@@ -312,7 +312,7 @@ rm _header _list _footer preview.md
 # do markdown parsing for files modified in 3 days
 find . -type f \
     -regex "\..*\.md" \
-    -and -mtime -3000 \
+    -and -mtime -3 \
     -exec sh $ROOT/build/build-markdown.sh {} \;
 
 find . -type f -name "*.md" -exec rm {} \;
