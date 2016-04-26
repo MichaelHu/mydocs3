@@ -39,6 +39,9 @@
 root用户属于`wheel, daemon, kmem, sys, ..., admin`组成员。
 
 
+
+
+
 ### 1.2 /etc/passwd
 
 每行格式：
@@ -50,6 +53,21 @@ root用户属于`wheel, daemon, kmem, sys, ..., admin`组成员。
     root:*:0:0:System Administrator:/var/root:/bin/sh
 
 `root`用户，属于GID为0的组，对应`/etc/group`中的`wheel`组。描述为系统管理员，用户目录为`/var/root`
+
+举个例子，比如建立一个git用户，用于基于ssh的git访问，但是又需要禁用git用户的shell功能：
+
+    useradd git
+    vi /etc/passwd
+
+修改
+    
+    git:x:501:501::/home/git:/bin/bash
+
+为
+
+    git:x:501:501::/home/git:/usr/bin/git-shell
+
+
 
 
 ### 1.3 疑问
@@ -79,6 +97,8 @@ MacOS已经不同于Linux，它采用`BSD的权限管理系统`。虽然仍然�
 ## usermod
 
 修改当前用户所属组
+
+    # usermod -G root irice
 
 [`Mac OS不存在该命令`]。
 
@@ -117,6 +137,8 @@ MacOS已经不同于Linux，它采用`BSD的权限管理系统`。虽然仍然�
 
 * `wheel`：管理员组，只有该组成员才可以通过su获取root后权限，或者sudo命令，输入管理员账号获得。wheel实际上已经成了`管理员组`的代名词
 * `staff`：全体用户组。因此，如果改变用户的组权限为staff，则所有用户都有权限操作该文件
+
+配置sudo，可以参考：<a href="../other/ecs.md.preview.html">ECS</a>
 
 
 

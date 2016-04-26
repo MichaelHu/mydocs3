@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ROOT=/Users/hudamin/projects/git/mydocs
+ROOT=/Users/hudamin/projects/git/mydocs2
 DOCDIR=$ROOT/docs
 DISTDIR=$ROOT/dist
 

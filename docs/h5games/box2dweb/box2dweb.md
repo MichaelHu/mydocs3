@@ -4,11 +4,11 @@
 > 一个是`box2djs`，已经停止维护，一个是`box2dweb`。 
 
 在Google Code上维护：
-`Source URL:` <a href="https://code.google.com/p/box2dweb/">box2dweb</a>
+`Source URL:` <https://code.google.com/p/box2dweb/>
 
-`Slide URL:` <a href="http://www.slideshare.net/szafranek/slides-en">Box2D</a>
+`Slide URL:` <http://www.slideshare.net/szafranek/slides-en>
 
-`box2dflash实现的游戏：`<a href="http://www.gibbetsgame.com">Gibbets</a>
+`box2dflash实现的游戏：`<http://www.gibbetsgame.com>
 
 ## box2d
 

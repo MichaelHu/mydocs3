@@ -1,7 +1,7 @@
 # npm备忘
 
 > @[style="color:green;font-size:18px"]Node Packaged Modules. 
-> <a href="http://www.npmjs.org"> [ npmjs ] </a>
+> <http://www.npmjs.org>
 
 
 

@@ -2,7 +2,7 @@
 
 > js单元测试工具，由jQuery团队开发，也是jQuery的官方测试套装。
 
-<a href="http://qunitjs.com/">qunitjs.com</a>
+<http://qunitjs.com/>
 
 npm: `npm install --save-dev qunitjs`
 

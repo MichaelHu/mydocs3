@@ -272,7 +272,7 @@ Robin:
 1. h5小游戏编辑器（h5.cocoachina.com)，基于cocos2d-js制作的H5小游戏，将素材、音乐、代码等
     资源配置抽取出来，可以在线修改，同时预览效果。
 
-    <a href="http://h5.cocoachina.com/template/">Game Creator Online</a>
+    <http://h5.cocoachina.com/template/>
 
 2. 积木网，H5微杂志是一种新的微信应用，形式生动，富有趣味性，更容易在朋友圈中传播。
     这种场景应用有多种用途，例如杂志、贺卡、会议邀请函、产品展示、年度报告、公司宣传。

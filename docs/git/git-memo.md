@@ -150,6 +150,61 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
 
 
 
+## git config
+
+写在.git/config文件中：
+
+    git config user.name MichaelHu
+    git config user.email hdm258i@gmail.com
+
+写在全局~/.gitconfig文件中：
+
+    git config --global user.name MichaelHu
+    git config --global user.email hdm258i@gmail.com
+
+
+
+## git remote
+
+添加远程origin仓库的URL：
+
+    git remote add origin https://github.com/MichaelHu/fast-slides.git
+
+删除：
+
+    git remote rm origin
+
+问题解决：在某些机器（比如测试机或机房机器）使用git时，可以正常clone、fetch，但是push的时候出现以下错误提示：
+
+    [irice@iZ25o3dvl9aZ fast-slides]$ git push origin master
+    error: The requested URL returned error: 403 Forbidden while accessing https://MichaelHu@github.com/MichaelHu/fast-slides.git/info/refs
+
+    fatal: HTTP request failed
+
+命令过程也没有提示输入密码，所以有错误提示也是正常的。靠谱的解决办法是：
+
+    git remote set-url origin https://MichaelHu@github.com/MichaelHu/fast-slides.git
+
+关键在于`username@`这一部分的添加。设置好以后，再次push的时候，就会提示输入密码。
+
+另外按网上的方案通过`git config [--global] user.name ...`和`git config [--global] user.email ...`来设置用户名和邮箱，也不行（至少我这里没有试成功）。
+
+这时，运行`git remote show origin`，得到如下信息：
+
+    [irice@iZ25o3dvl9aZ fast-slides]$ git remote show origin
+    * remote origin
+      Fetch URL: https://github.com/MichaelHu/fast-slides.git
+      Push  URL: https://MichaelHu@github.com/MichaelHu/fast-slides.git
+      HEAD branch: master
+      Remote branch:
+        master tracked
+      Local branch configured for 'git pull':
+        master merges with remote master
+      Local ref configured for 'git push':
+        master pushes to master (fast-forwardable)
+
+Push URL需要身份验证。
+
 
 
 

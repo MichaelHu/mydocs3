@@ -3,7 +3,7 @@
 > A way to build up the JavaScript ecosystem for web servers, desktop and command line 
 > apps and in the browser.
 
-`CommonJS wiki:` <a href="http://wiki.commonjs.org/wiki/CommonJS">CommonJS</a>
+`CommonJS wiki:` <http://wiki.commonjs.org/wiki/CommonJS>
 
 
 ## require

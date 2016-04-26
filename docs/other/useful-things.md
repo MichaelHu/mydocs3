@@ -5,6 +5,57 @@
 
 
 
+## 16-04-21
+
+JS位操作符
+
+小数取整的方法，以下皆可：
+
+    1.5 >> 0
+    1.5 | 0
+
+关键在于：小数按位操作前，会进行`ToInt32()`操作
+    
+
+
+
+## 16-04-14
+
+月影前端分享：《我们是前端攻城师》 <http://matrix.h5jun.com/slide/show?id=96>
+
+
+## 16-03-24
+
+查看Linux操作系统类别，比如是RedHat还是Ubuntu等：
+
+    # way 1
+    lsb_release -a
+    # way 2
+    cat /proc/version
+
+
+## 16-03-22
+
+启动本地简单服务器的方式：
+
+    python -m SimpleHTTPServer 8888 &
+
+or for Python 3+
+
+    python3 -m http.server 8888 &
+
+If you have PHP installed you could try
+
+    php -S localhost:8888
+
+or if you are running Ruby you can use
+
+    ruby -run -e httpd . -p 8888
+
+
+
+
+
 
 ## 15-11-1
 
@@ -163,7 +214,7 @@ PC下移除a标签等元素点击时的虚线框：
 
 ## 15-05-05
 
-1. 语义化版本号：<a href="http://semver.org">http://semver.org</a>
+1. 语义化版本号：<http://semver.org>
 
 
 

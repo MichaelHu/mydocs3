@@ -148,43 +148,19 @@
 
 ## CSS3特效
 
-1. `miniMAC/magic (3299 stars)` : 
-
-    <a target="_blank" href="
-    http://minimamente.com/example/magic_animations/
-    ">
-    http://minimamente.com/example/magic_animations/
-    </a>
+1. `miniMAC/magic (3299 stars)` : <http://minimamente.com/example/magic_animations/>
    
     <img src="./img/magic-animations.png" style="max-width:400px">
 
-2. `joemottershaw/animations (338 stars)`: 
-
-    <a target="_blank" href="
-    http://www.cloud-eight.com/github/animations/ 
-    ">
-    http://www.cloud-eight.com/github/animations/ 
-    </a>
+2. `joemottershaw/animations (338 stars)`: <http://www.cloud-eight.com/github/animations/>
 
 3. `Flux Slider (1214 stars)`: 
 
-    基于图片的动画特效
-
-    <a target="_blank" href="
-    http://www.joelambert.co.uk/flux/ 
-    ">
-    http://www.joelambert.co.uk/flux/ 
-    </a>
+    基于图片的动画特效：<http://www.joelambert.co.uk/flux/> 
 
     <img src="./img/flux-slider.png" style="max-width:400px">
 
-4. `textillate (2065 stars)`: 
-
-    <a target="_blank" href="
-    http://textillate.js.org
-    ">
-    http://textillate.js.org
-    </a>
+4. `textillate (2065 stars)`: <http://textillate.js.org>
 
     基于文本的动画效果，是一个jquery插件，需要引入自带的`animation.css`文件
 
@@ -243,15 +219,15 @@
 
 ### 参考网站
 
-1. http://css-infos.net/
-2. http://css-infos.net/properties/webkit，包含非官方的webkit css属性
+1. <http://css-infos.net/>
+2. <http://css-infos.net/properties/webkit>，包含非官方的webkit css属性
 
 
 
 
 ## 3D CSS Tester
 
-<a href="http://thewebrocks.com/demos/3D-css-tester/">3D-CSS-Tester</a>
+<http://thewebrocks.com/demos/3D-css-tester/>
 
 
 
@@ -374,7 +350,7 @@
 * iOS3.2 +
 * Android 2.1+
 
-`检测页面：` <a href="http://bjango.com/articles/min-device-pixel-ratio/">min-device-pixel-ratio</a>
+`检测页面：` <http://bjango.com/articles/min-device-pixel-ratio/>
 
 例如，针对3倍设备像素比的设备，使用`@3x`图片，可使用以下代码：
 
@@ -393,8 +369,8 @@
 
 ## Media Queries
 
-1. `W3C：`<a href="http://www.w3.org/TR/css3-mediaqueries/"></a>
-2. `参考页面：`<a href="http://www.cnblogs.com/asqq/archive/2012/04/13/2445912.html">Media Queries详解</a>
+1. `W3C：`<http://www.w3.org/TR/css3-mediaqueries/>
+2. `参考页面：`<http://www.cnblogs.com/asqq/archive/2012/04/13/2445912.html>
 
     <link rel="stylesheet" media="screen and (max-width:600px)" href="small.css" type="text/css" />
     <link rel="stylesheet" media="screen and (min-width:900px)" href="big.css" type="text/css"  />

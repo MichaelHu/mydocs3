@@ -3,9 +3,9 @@
 
 > @[style="color:green;font-size:18px"]Leaner CSS
 
-`github`: <a href="https://github.com/less/less.js">https://github.com/less/less.js</a>
+`github`: <https://github.com/less/less.js>
 
-`docs`: <a href="http://lesscss.org">http://lesscss.org</a>
+`docs`: <http://lesscss.org>
 
 Less是一个CSS预处理器，扩展了CSS语言，添加了新的特性：允许变量、mixin、
 函数以及其他使得css更加容易维护和扩展的技术。

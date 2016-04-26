@@ -2,12 +2,14 @@
 
 
 
-分三个模块 
+> 分三个模块 
 
 
-notes2_data
-建库
-MongoDB进行数据存储，将*.md文件进行按行存储，同时解析每个文件的档案信息，包括标题等
+## 数据端
+
+> notes2_data
+
+使用MongoDB进行数据存储，将`*.md`文件进行`按行存储`，同时解析每个文件的档案信息，包括标题等
 
     git clone https://github.com/MichaelHu/notes2_data.git
     cd notes2_data
@@ -17,9 +19,11 @@ MongoDB进行数据存储，将*.md文件进行按行存储，同时解析每个
     node index.js [--dburl <dburl>] <docroot>
 
 
-notes2
-Server端
-提供数据接口，支持文档列表、全文检索等通用数据接口
+## Server端
+
+> notes2
+
+提供数据接口，支持`文档列表、全文检索`等通用数据接口
 
     git clone https://github.com/MichaelHu/notes2.git
     cd notes2
@@ -28,8 +32,10 @@ Server端
     node --use-strict --harmony notes2.js
 
 
-mynotes
-前端
+## 前端
+
+> mynotes
+
 提供web展示，使用vim操作方式
 
     git clone https://github.com/MichaelHu/rocket_apps.git

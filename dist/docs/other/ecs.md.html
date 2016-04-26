@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/bootstrap/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/github-markdown.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/nav.css" />
+    <link rel="stylesheet" type="text/css" href="/docs/markdown_res/css/page.css" />
+    <script type="text/javascript" src="/docs/markdown_res/js/jquery-1.9.1.min.js"></script>
+    <style type="text/css">
+
+    </style>
+
+</head>
+<body class="markdown-body">
+    <div id="nav" class="row">
+<a class="text-info pull-right" href="javascript:history.back()">Back</a>
+    </div>
+
+<h1> ECS配置记录</h1>
+
+<p>配置ECS实例，选择Linux系统为Centos，可以ssh直接登录机器：</p>
+<pre><code>ssh root@xxx.xxx.xxx.xxx </code></pre>
+<p>直接给root账号，可以自己添加普通账号：</p>
+<pre><code># useradd -b /home irice
+# su irice
+$ cd
+$ id
+uid=500(irice) gid=500(irice) 组=500(irice)  </code></pre>
+<p>安装PHP：</p>
+<pre><code># yum search php
+# yum install php.x86_64 </code></pre>
+<p>自动安装了Apache，并默认将php作为Apache的一个module，可以在Apache的modules目录下看到<code>libphp5.so</code>。</p>
+<p>现可查看Apache和PHP配置：</p>
+<pre><code># httpd -V
+# php --ini </code></pre>
+<p>通过以上命令拿到默认配置项，可以进行相应配置。</p>
+<p>配置好以后，就可以启动</p>
+
+
+<p>安装Apache的fcgid模块：</p>
+<pre><code># yum install mod_fcgid.x86_64 </code></pre>
+<p>自动在<code>/etc/httpd/conf.d/</code>目录下添加fcgid.conf，该文件内容为：</p>
+<pre><code>LoadModule fcgid_module modules/mod_fcgid.so
+
+# Use FastCGI to process .fcg .fcgi &amp; .fpl scripts
+AddHandler fcgid-script fcg fcgi fpl
+
+# Sane place to put sockets and shared memory file
+FcgidIPCDir /var/run/mod_fcgid
+FcgidProcessTableFile /var/run/mod_fcgid/fcgid_shm  </code></pre>
+<p>启动httpd，不报fastcgi错误，表示成功安装：</p>
+<pre><code>/etc/init.d/httpd start  </code></pre>
+<p>配置php的fastcgi（可参考<a href="http://httpd.apache.org/mod_fcgid/mod/mod_fcgid.html#examples">http://httpd.apache.org/mod_fcgid/mod/mod_fcgid.html#examples</a>），在<code>/etc/httpd/conf.d/</code>目录下添加文件<code>fcgid.php.conf</code>，内容如下：</p>
+<pre><code>Alias /phpapp/ /home/irice/phpapp/
+&lt;Location /phpapp/>
+AddHandler fcgid-script .php
+Options +ExecCGI
+FcgidWrapper /usr/local/bin/php-wrapper .php
+
+# Customize the next two directives for your requirements.
+Order allow,deny
+Allow from all
+&lt;/Location> </code></pre>
+<p>同时添加文件<code>/usr/local/bin/php-wrapper</code>，是一个shell文件，内容如下：</p>
+<pre><code>#!/bin/sh
+# Set desired PHP_FCGI_* environment variables.
+# Example:
+# PHP FastCGI processes exit after 500 requests by default.
+PHP_FCGI_MAX_REQUESTS=1000
+export PHP_FCGI_MAX_REQUESTS
+
+# Replace with the path to your FastCGI-enabled PHP executable
+exec /usr/local/bin/php-cgi </code></pre>
+<p>并设置php-wrapper文件的可执行属性：</p>
+<pre><code>chmod +x /usr/local/bin/php-cgi  </code></pre>
+<p>在/home/irice/phpapp/目录下添加index.php文件：</p>
+<pre><code>&lt;?php
+phpinfo(); </code></pre>
+<p>重新启动httpd：</p>
+<pre><code>/etc/init.d/httpd restart  </code></pre>
+<p>访问：<a href="http://123.56.89.145/phpapp/index.php">http://123.56.89.145/phpapp/index.php</a></p>
+
+<p>安装nodejs</p>
+<pre><code>yum search nodejs
+yum install nodejs
+node -v   </code></pre>
+<p>安装git服务器，用于ECS机器和本地机器的数据传输，个人使用，只需基于ssh服务的访问就行。如果需要HTTP访问，可以通过配置Apache的DAV来完成，另有文章记录。</p>
+<ol><li>第一步，确保ssh服务可用，当然ECS本来就是可用的，直接用就可以</li>
+<li>第二步，创建用于访问git服务的登录用户，需要root账户<pre><code>useradd git
+vim /etc/passwd </code></pre>
+<p>修改</p>
+<pre><code>git:x:501:501::/home/git:/bin/bash </code></pre>
+<p>为</p>
+<pre><code>git:x:501:501::/home/git:/usr/bin/git-shell </code></pre>
+<p>这样git用户可以通过ssh访问服务器，但是无法使用shell，因为git-shell一登录就会退出。</p>
+</li>
+<li>添加git仓库并初始化<pre><code>cd /home/git
+mkdir git-repos
+cd git-repos
+git init --bare --shared irice.git </code></pre>
+<p>注意，<code>--shared</code>选项很重要，避免push操作的失败。
+另外避免目录权限问题，需要将git-repos目录的所有者改成git用户：</p>
+<pre><code>chown -R git:git git-repos </code></pre>
+</li>
+<li>添加本机公钥到git服务器：<ul><li>本机生成SSH key<pre><code>ssh-keygen -t rsa </code></pre>
+</li>
+<li>将本机的公钥内容拷贝至服务器<code>/home/git/.ssh/auhorized_keys</code>文件中</li></ul>
+</li>
+<li>OK了，可以直接使用了<pre><code>git clone git@123.56.89.145:/home/git/git-repos/irice.git     </code></pre>
+</li></ol>
+
+</body>
+</html>
+<script type="text/javascript" src="/docs/markdown_res/js/footer.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/docs/markdown_res/js/scrollspy.js"></script>

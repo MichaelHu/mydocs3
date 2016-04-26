@@ -49,13 +49,22 @@ certusers:*:29:root,_jabber,_postfix,_cyrus,_calendar,_dovecot
 admin:*:80:root </code></pre>
 <p>root用户属于<code>wheel, daemon, kmem, sys, ..., admin</code>组成员。</p>
 
+
+
+
 <h3> 1.2 /etc/passwd</h3>
 <p>每行格式：</p>
 <pre><code>user_name:passwd:UID:GID:description:home:shell </code></pre>
 <p>例如：</p>
 <pre><code>root:*:0:0:System Administrator:/var/root:/bin/sh </code></pre>
 <p><code>root</code>用户，属于GID为0的组，对应<code>/etc/group</code>中的<code>wheel</code>组。描述为系统管理员，用户目录为<code>/var/root</code></p>
-
+<p>举个例子，比如建立一个git用户，用于基于ssh的git访问，但是又需要禁用git用户的shell功能：</p>
+<pre><code>useradd git
+vi /etc/passwd </code></pre>
+<p>修改</p>
+<pre><code>git:x:501:501::/home/git:/bin/bash </code></pre>
+<p>为</p>
+<pre><code>git:x:501:501::/home/git:/usr/bin/git-shell    </code></pre>
 <h3> 1.3 疑问</h3>
 <blockquote><p> <code>?</code> Mac下为什么找不到user_name为hudamin的配置行呢？</p></blockquote><p>MacOS已经不同于Linux，它采用<code>BSD的权限管理系统</code>。虽然仍然有/etc/group和/etc/passwd文件，它们只用于单用户模式下的权限管理。GUI系统启动以后，使用全新一套权限管理系统。所以你在通常的Linux权限管理文件中，根本找不到自己的用户名。</p>
 <p>可以参考： http://wenku.baidu.com/link?url=uCKDCnaflnijR7nMvBP4XbJJVGT_UPMs6lpVDYtMWerou01LfCazWNXDxqqD7fg3zufhlSR6AM0lBgct9BqPLKXun-BISbCekAcjYExadVS</p>

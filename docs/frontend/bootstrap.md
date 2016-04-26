@@ -49,7 +49,7 @@ bootstrap 4 即将来临
 
 3. 排版和链接，参考less文件：`scaffolding.less`
 
-4. 跨浏览器渲染，使用reset css： <a href="http://necolas.github.io/normalize.css/">Normalize.css</a>
+4. 跨浏览器渲染，使用reset css： <http://necolas.github.io/normalize.css/>
 
 5. 容器，两个类：`.container`和`.container-fluid`
     

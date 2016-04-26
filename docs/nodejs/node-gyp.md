@@ -8,7 +8,7 @@ nodejs编写的跨平台命令行工具。
 
 nodejs的C++模块的编译工具，node的0.8版本之前，用的是`node-waf`编译，该版本之后，就进入使用node-gyp编译工具。
 
-`GITHUB`: <a href="https://github.com/TooTallNate/node-gyp/">node-gyp</a>
+`GITHUB`: <https://github.com/TooTallNate/node-gyp/>
 
 其配置文件名为`binding.gyp`
 

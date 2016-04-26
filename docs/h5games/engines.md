@@ -321,8 +321,8 @@ load(resources, callback);
 
 ## Crafty
 
-* 官网：<a href="http://craftyjs.com">http://craftyjs.com</a>，不太容易打开
-* GIT: <a href="https://github.com/craftyjs/Crafty">https://github.com/craftyjs/Crafty</a>
+* 官网：<http://craftyjs.com>，不太容易打开
+* GIT: <https://github.com/craftyjs/Crafty>
 
  
 

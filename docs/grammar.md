@@ -2,9 +2,9 @@
 
 ## 1. 前言
 
-`MARKDOWN`作为一种非官方的流行HTML编写语言，有多种实现方案。百度新闻文档库的MARKDOWN解析器是基于lex-yacc (flex-bison)编写的C解析器，其解析的语法是<a href="http://daringfireball.net/projects/markdown/" target="_blank">markdown语法</a>的一个子集。
+`MARKDOWN`作为一种非官方的流行HTML编写语言，有多种实现方案。百度新闻文档库的MARKDOWN解析器是基于lex-yacc (flex-bison)编写的C解析器，其解析的语法是<http://daringfireball.net/projects/markdown/>的一个子集。
 
-`markdown解析器GITHUB地址`：<a href="https://github.com/MichaelHu/markdown-slides">`https://github.com/MichaelHu/markdown-slides`</a>
+`markdown解析器GITHUB地址`：<https://github.com/MichaelHu/markdown-slides>
 
 ## 2. 标签支持能力
 

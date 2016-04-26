@@ -27,7 +27,7 @@ windows提供类似工具`nmake`。`Cygwin`可以执行标准unix的Makefile
 
 dependencies中如果有一个及以上的文件比target文件要新的话，command所定义的命令就会被执行。
 
-`reference: `<a href="https://www.gnu.org/software/make/manual/make.html#Introduction">GNU Makefile</a>
+`reference: `<https://www.gnu.org/software/make/manual/make.html#Introduction>
 
 1. 第一个target是默认目标，所以clean不要放在第一个target位置
 2. 文件名，可以是`Makefile`（推荐），也可以是`makefile`。还可以是`GNUmakefile`（GMUMake专用）

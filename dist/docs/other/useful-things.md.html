@@ -22,9 +22,21 @@
 
 <h1> 有用的小抄 </h1>
 <blockquote><p> 记下，以备后续查看</p></blockquote>
-
-
-
+<h2> 16-03-24</h2>
+<p>查看Linux操作系统类别，比如是RedHat还是Ubuntu等：</p>
+<pre><code># way 1
+lsb_release -a
+# way 2
+cat /proc/version  </code></pre>
+<h2> 16-03-22</h2>
+<p>启动本地简单服务器的方式：</p>
+<pre><code>python -m SimpleHTTPServer 8888 &amp; </code></pre>
+<p>or for Python 3+</p>
+<pre><code>python3 -m http.server 8888 &amp; </code></pre>
+<p>If you have PHP installed you could try</p>
+<pre><code>php -S localhost:8888 </code></pre>
+<p>or if you are running Ruby you can use</p>
+<pre><code>ruby -run -e httpd . -p 8888      </code></pre>
 <h2> 15-11-1</h2>
 <pre><code>Date.parse('2015/10/31 0:00')
 Date.parse('2015/10/31 0:00 GMT+0800')

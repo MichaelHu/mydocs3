@@ -20,7 +20,7 @@
 以上插件内容均在github上可以找到，在我的github starred里面可以找到。
 
 适合我的`.vimrc`文件： 
-<a href="https://github.com/MichaelHu/myscripts/blob/master/vim/vimrc">.vimrc from MichaelHu</a>
+<https://github.com/MichaelHu/myscripts/blob/master/vim/vimrc>
 
 
 

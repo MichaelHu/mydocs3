@@ -2,7 +2,7 @@
 
 ## 预定义动画
 
-预定义动画使用了<a href="http://tympanus.net/Development/PageTransitions/">Page Transitions</a>提供的`35个动画`：
+预定义动画使用了<http://tympanus.net/Development/PageTransitions/>提供的`35个动画`：
 
 ### 1. 横向动画（LR后缀）
 
