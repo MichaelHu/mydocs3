@@ -44,7 +44,11 @@
     telnet [-468EFKLNacdfruxy] [-S tos] [-X authtype] [-e escapechar] [-k realm] [-l user] [-n tracefile] [-s src_addr] [host [port]]
 
 
+
+
 ## netstat
+
+显示传输和接收字节数
 
     netstat -b
 
@@ -52,6 +56,25 @@
 
     netstat -f inet
 
+查看tcp协议的信息：
+
+    netstat -Ab -p tcp
+
+查看路由表：
+
+    netstat -r
+
+查看路由表，只显示ipv4：
+
+    netstat -r -f inet
+
+查看路由表，只显示ipv6：
+
+    netstat -r -f inet6
+
+查看路由表，网络地址用数字（IP地址）展示：
+
+    netstat -rn
 
 
 

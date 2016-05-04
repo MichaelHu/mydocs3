@@ -2,18 +2,23 @@
 
 > The HTML5 `<canvas>` tag is used to draw graphics, on the fly, via scripting (usually JavaScript). 
 
-`W3C Schools Ref:` http://www.w3schools.com/tags/ref_canvas.asp
+`W3C Schools Ref:` <http://www.w3schools.com/tags/ref_canvas.asp>
+
+
+
+<script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
+<style type="text/css">
+@import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
+</style>
 
 
 ## 有用的属性
 
-devicePixelRatio
+`devicePixelRatio`：<http://www.html5rocks.com/en/tutorials/canvas/hidpi/>
 
-http://www.html5rocks.com/en/tutorials/canvas/hidpi/
+绘制不失真的Canvas： High DPI Canvas
 
-High DPI Canvas
-
-    /**
+    @[data-script="javascript"]/**
      * Writes an image into a canvas taking into
      * account the backing store pixel ratio and
      * the device pixel ratio.
@@ -83,8 +88,42 @@ High DPI Canvas
 
         }
 
-        context.drawImage(pic, srcx, srcy, srcw, srch, desx, desy, desw, desh);
+        context.drawImage(image, srcx, srcy, srcw, srch, desx, desy, desw, desh);
     }
+
+
+
+
+<div id="test_10" class="test">
+<div class="test-container">
+<canvas width="200" height="200" style="display:block;"></canvas>
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_10');
+        var canvas = $('#test_10 canvas').get(0);
+        canvas.width = 200;
+        canvas.height = 200;
+
+        var image = new Image();
+        image.src = './img/arcto_radius-100.png';
+        image.onload = function(){
+            drawImage({
+                canvas: canvas 
+                , image: image 
+                , srcw: 192
+                , srch: 190
+            });
+        };
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
 
 
 Android 4.1.x Stock Browser Canvas Solution

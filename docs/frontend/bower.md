@@ -15,7 +15,8 @@
 
     bower register irice-snippets https://github.com/MichaelHu/snippets.git
 
-bower.json
+
+配置文件：`bower.json`
 
 其中的version字段注意要设置好，并且按version打tag，并发布到github。
 

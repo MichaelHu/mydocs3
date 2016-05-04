@@ -4,6 +4,7 @@ __tmp/
 *.preview.html
 *.tar.gz
 
+docs/sophon
 docs/didi
 dist/docs/didi
 docs/private
