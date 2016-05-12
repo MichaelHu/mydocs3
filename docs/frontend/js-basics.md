@@ -1,6 +1,13 @@
 # js basics
 
 
+
+<style type="text/css">
+@import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
+</style>
+<script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
+
+
 ## 绝对等式
 
     typeof null === 'object'
@@ -11,6 +18,51 @@
     num === +num
 
 IE9以下，hasEnumBug
+
+
+## typeof
+
+`typeof`输出是`字符串`类型，有以下一些值：
+
+* number
+* string
+* boolean
+* object
+* function
+* undefined
+
+<div id="test_10" class="test">
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_10');
+        var items = [
+            1
+            , 'Hello, World!'
+            , true 
+            , null
+            , undefined
+            , [ 1, 2, 3]
+            , Array
+            , { name: 'Michael' }
+            , new Object()
+            , function(){}
+            , new Number(1) 
+            , new String('Hello')
+        ];
+        s.show('typeofs: ');
+        for(var i=0; i<items.length; i++){
+            s.append_show(items[i], typeof items[i]);
+        }
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
 
 
 ## 一般等式

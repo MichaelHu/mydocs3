@@ -20,175 +20,13 @@
 
 
 
-<script src="http://123.56.89.145/static/bower_components/jquery/dist/jquery.min.js"></script>
-<script src="http://123.56.89.145/static/bower_components/lodash/dist/lodash.min.js"></script>
-
-<script>
-
-function random(min, max){
-    return min + Math.random() * ( max - min );
-}
-
-function randomData(min, max, size) {
-    var data = [];
-    for ( var i=0; i<size; i++ ) {
-        data.push(random(min, max));
-    }
-    return data;
-}
-
-var Display = {
-
-    show: function($cont, $console){
-        return function(){
-            var arr = [], txt;
-            if(arguments.length){
-                for(var i=0; i<arguments.length; i++){
-                    arr.push(JSON.stringify(arguments[i]));
-                } 
-                txt = arr.join(' | ')
-                        .replace(/</g, '&lt;')
-                        ;
-            }
-            else {
-                txt = $cont.html()
-                    .replace(/</g, '&lt;')
-                    ;
-            }
-
-            $console.html(txt)
-        };
-    }
-
-    , append_show: function($cont, $console){
-        return function(content){
-            var arr = [], txt;
-            if(arguments.length){
-                for(var i=0; i<arguments.length; i++){
-                    arr.push(JSON.stringify(arguments[i]));
-                } 
-                txt = arr.join(' | ')
-                        .replace(/</g, '&lt;')
-                        ;
-            }
-            else {
-                txt = $cont.html()
-                    .replace(/</g, '&lt;')
-                    ;
-            }
-
-            $console.html(
-                $console.html() 
-                + '<br>'
-                + txt 
-            ); 
-        };
-    }
-
-};
-
-function createShow(wrapper) {
-
-    var $wrapper = $(wrapper); 
-
-    var $cont = $wrapper.find('.test-container')
-        , $console = $wrapper.find('.test-console');
-
-    var show = Display.show($cont, $console);
-    var append_show = Display.append_show($cont, $console);
-
-    return {
-        show: show
-        , append_show: append_show
-    };
-}
-
-$(function(){
-
-    $('pre').each(function(index, item){
-        var $pre = $(item);
-
-        function execScript(){
-            $(
-                '<' + 'script>'
-                + $pre.text()
-                + '</' + 'script>'
-            )
-            .insertBefore($pre)
-            ;
-        }
-
-        if($pre.data('script') == 'javascript'){
-
-            execScript();
-
-            $pre.find('code')
-                .attr('contenteditable', "true")
-                .on('blur', function(){
-                    execScript();
-                })
-                ;
-        }
-    });
-
-});
-
-</script>
-
-
-
-
-
-
-
 
 <style type="text/css">
-
-.test::before {
-    display: block;
-    text-align: right;
-    padding-right: 10px;
-    content: 'testing area';
-    color: #bbb;
-}
-
-.test {
-    margin: 15px 0;
-    padding: 10px;
-    cursor: pointer;
-    background-color: #eee;
-    border-radius: 5px;
-}
-
-.test-container span {
-    display: inline-block;
-    margin-right: 10px;
-    margin-bottom: 10px;
-    padding: 0 10px;
-    border: 1px solid #bbb;
-    background-color: #eee;
-    color: #f00;
-}
-
-.test-container code {
-    outline: none;
-}
-
-.test-panel button {
-    margin: 5px;
-}
-
-.test-console {
-    margin: 10px;
-    padding: 5px;
-    font-family: courier;
-    font-size: 14px;
-    line-height: 20px;
-    color: #f66;
-}
-
+@import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
 </style>
-
+<script src="http://123.56.89.145/static/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="http://123.56.89.145/static/bower_components/lodash/dist/lodash.min.js"></script>
+<script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 
 
 
@@ -204,7 +42,7 @@ $(function(){
     @[data-script="javascript"]
     (function(){
 
-        var s = createShow('#test_10');
+        var s = fly.createShow('#test_10');
         var rslt = _.countBy([6.1, 4.2, 6.3], Math.floor);
         s.show(1, rslt);
 
@@ -234,7 +72,7 @@ $(function(){
     @[data-script="javascript"]
     (function(){
 
-        var s = createShow('#test_20');
+        var s = fly.createShow('#test_20');
         var rslt;
 
         var users = [
@@ -274,7 +112,7 @@ $(function(){
     (function(){
 
 
-        var s = createShow('#test_30');
+        var s = fly.createShow('#test_30');
 
         var rslt;
 
@@ -321,7 +159,7 @@ $(function(){
     (function(){
 
 
-        var s = createShow('#test_40');
+        var s = fly.createShow('#test_40');
 
         var rslt;
 
@@ -369,7 +207,7 @@ $(function(){
     (function(){
 
 
-        var s = createShow('#test_50');
+        var s = fly.createShow('#test_50');
 
         var rslt;
 
@@ -415,7 +253,7 @@ $(function(){
     (function(){
 
 
-        var s = createShow('#test_60');
+        var s = fly.createShow('#test_60');
 
         var rslt;
 
@@ -478,7 +316,7 @@ $(function(){
     (function(){
 
 
-        var s = createShow('#test_70');
+        var s = fly.createShow('#test_70');
 
         var i = 1
             , j = 1
@@ -537,7 +375,7 @@ $(function(){
     (function(){
 
 
-        var s = createShow('#test_80');
+        var s = fly.createShow('#test_80');
 
         $('#test_80_btn_10').on(
             'click'

@@ -18,7 +18,7 @@ http://google.github.io/traceur-compiler/demo/repl.html
         console.log(v);
     });
     //ES6
-    array.forEach(v = > console.log(v));
+    array.forEach(v => console.log(v));
 
 
 

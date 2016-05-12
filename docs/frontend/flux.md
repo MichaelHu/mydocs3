@@ -31,3 +31,8 @@ Facebook使用的webapp应用架构，用于控制数据流。它提出一种应
 <img src="./img/flux-diagram-white-background.png" width="700">
 
 
+
+Redux是一个接受度比较高的应用框架，Flux的设计思想的实现者。
+
+Flux之于Redux，正如CommonJS之于RequireJS。
+

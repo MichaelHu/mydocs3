@@ -1,7 +1,7 @@
-# REACTJS <img src="./img/react_logo.svg" width="60">
+# REACTJS 
 
 
-> A JAVASCRIPT LIBRARY FOR BUILDING USER INTERFACES
+> <img src="./img/react_logo.svg" width="60"> A JAVASCRIPT LIBRARY FOR BUILDING USER INTERFACES
 
 
 Reactjs: <http://facebook.github.io/react/docs/getting-started.html>
@@ -341,6 +341,31 @@ Introduce: <http://www.ruanyifeng.com/blog/2015/03/react.html>
 <div class="test-panel">
 </div>
 </div>
+
+
+## 四、组件（Components）
+
+TODO:
+
+* 实例API
+* 生命周期API，render必选，其他可选
+
+
+
+## 五、Thinking in React
+
+> 伟大的思想能变成巨大的财富。 —— 塞内加
+
+TODO:
+* 与Rocket的比较，分治的思想是一致的，不过React更加深入
+
+
+
+
+
+
+
+
 
 
 

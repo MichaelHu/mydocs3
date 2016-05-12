@@ -4,6 +4,10 @@
 
 ## 一、初识es2015
 
+6.0版： <http://www.ecma-international.org/ecma-262/6.0/>
+
+5.0及以前版本： <http://www.ecmascript.org>
+
 教程： <http://es6.ruanyifeng.com>
 
 在线js编译： <https://babeljs.io/repl/>
@@ -315,6 +319,177 @@ textarea {
 
 
 
+## 六、扩展运算符&rest运算符
+
+
+格式：`...`
+
+
+### 6.1 扩展运算符
+
+`用于数组`：
+
+<div id="test_120" class="test">
+<div class="test-container">
+
+    @[data-script="compile-es2015 editable"](function(){
+        var foo = function(a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+        var arr = [1, 2, 3];
+        // 传统写法
+        // foo(arr[0], arr[1], arr[2]);
+
+        // 使用扩展运算符
+        foo(...arr);
+
+        var arr1 = arr
+            , arr2 = [...arr]
+            ;
+
+        var str = 'love'
+            , arr3 = [...str]
+            ;
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+`用于对象`：
+
+note: es6貌似不支持。
+
+参考Redux的这篇文章：<http://redux.js.org/docs/recipes/UsingObjectSpreadOperator.html>
+
+<div id="test_121" class="test">
+<div class="test-container">
+
+    @[data-script="compile-es2015 editable"](function(){
+        const a = {name: 1, age: 2};
+        const b = {name: 1, age: 2};
+
+        var c = { ...a, ...b };
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
 
 
 
+### 6.2 rest运算符
+
+<div id="test_130" class="test">
+<div class="test-container">
+
+    @[data-script="compile-es2015 editable"](function(){
+        var bar = function(...args) {
+                for (let el of args) {
+                    console.log(el);
+                }
+            };
+
+        bar(1, 2, 3, 4);
+        // 1
+        // 2
+        // 3
+        // 4
+
+        bar = function(a, ...args) {
+            console.log(a);
+            console.log(args);
+        }
+        bar(1, 2, 3, 4);        
+        // 1
+        // [2, 3, 4]
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+### 6.3 rest与解构配合使用
+
+
+<div id="test_140" class="test">
+<div class="test-container">
+
+    @[data-script="compile-es2015 editable"](function(){
+        var [a, ...rest] = [1, 2, 3, 4];
+        console.log(a);
+        // 1
+        console.log(rest);
+        // [2, 3, 4]
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+## 七、import & export
+
+必须出现在模块顶级作用域中。比如它们是不能出现在闭包中的。
+
+
+<div id="test_150" class="test">
+<div class="test-container">
+
+    @[data-script="compile-es2015 editable"]import { createStore } from 'redux'
+    import todoApp from './reducers'
+    let store = createStore(todoApp)
+    export default store;
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+## 八、箭头操作符
+
+格式：`=>`，=与>`不能分开`，比如`= >`是不可以的。
+
+常用于`简化函数的编写`。
+
+<div id="test_160" class="test">
+<div class="test-container">
+
+    @[data-script="compile-es2015 editable"](function(){
+        var array = [1, 2, 3];
+
+        // 传统写法
+        array.forEach(function(v, i, a) {
+            console.log(v);
+        });
+
+        // es6
+        array.forEach(v => console.log(v));
+        array.map((v) => v * v);
+
+        let max = (x, y) => {
+            return x > y ? x : y;
+        };
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>

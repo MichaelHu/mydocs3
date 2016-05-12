@@ -25,7 +25,9 @@
 
 
 
-快速启动
+## 二、快速启动
+
+以下代码提供`sigma`实例的生成器，根据`实例ID`在上下文中只保持一个实例，即使`多次调用`也是如此。
 
     @[data-script="javascript"]
     function getUniqueSigmaInstance(instId, config){
@@ -65,7 +67,7 @@
         for(i=0; i<N; i++){
             g.nodes.push({
                 id: 'n' + i
-                , label: 'Node ' + i
+                , label: '' + i
                 , x: Math.random()
                 , y: Math.random()
                 , size: isFixSize ? 0.05 : Math.random()
@@ -80,7 +82,8 @@
                 , target: 'n' + (Math.random() * N | 0) 
                 , size: isFixSize ? 0.01 : Math.random()
                 , type: 'curve'
-                , color: fly.randomColor() 
+                // , color: fly.randomColor() 
+                , color: '#ccc'
                 , hover_color: '#f00'
             });
         }
@@ -88,6 +91,11 @@
         return g;
     }
 
+
+
+## 三、从例子开始
+
+两个节点一条边。
 
 <div id="test_10" class="test">
 <div class="test-container">
@@ -133,11 +141,12 @@
                 , source: 'n0' 
                 , target: 'n1'
                 // , type: 'curve'
+                , color: '#ccc'
             }) 
             ;
 
-        s.show(sm.graph.nodes());
-        s.append_show(sm.graph.edges());
+        s.show(1, sm.graph.nodes());
+        s.append_show(2, sm.graph.edges());
 
         sm.refresh();
 
@@ -158,11 +167,15 @@
 
 
 
-Renderers
+## 四、Renderers
 
-目前支持Canvas和WebGL
 
-canvas绘制，5个layer，node、edge、labels、捕获鼠标事件层以及显示hover对象层。
+目前支持Canvas、WebGL、SVG。
+
+canvas绘制，`5`个`layer`：node、edge、labels、捕获鼠标事件层以及显示hover对象层。
+
+
+### 4.1 自定义renderer插件
 
 自定义节点渲染插件，比如`sigma.canvas.nodes.squares：`
 
@@ -184,26 +197,7 @@ canvas绘制，5个layer，node、edge、labels、捕获鼠标事件层以及显
     };
 
 
-
-
-
-Settings
-
-非常类似javascript的prototype chain。
-
-三个层次的settings，组件本身的配置、sigma实例的配置以及全局默认配置，也按照这个顺序逐次往上获取。
-
-三条规则：
-
-1. It must be possible to have two running instances of sigma with different parameters.
-2. It must be possible to have two running renderers of the same sigma instance with different parameters.
-3. The settings of each renderer, of each instance, and the global settings must be modifiable at any time.
-
-
-
-
-
-sigma实例的创建
+### 4.2 sigma实例的创建
 
 不带任何参数，只创建graph，不绑定renderer：
 
@@ -213,6 +207,25 @@ sigma实例的创建
 
     var sm = new sigma(containerId);
     var sm = new sigma(containerDom);
+
+
+
+
+
+## 五、Settings
+
+非常类似javascript的`prototype chain`。
+
+`三个`层次的settings，组件本身的配置、sigma实例的配置以及全局默认配置，也按照这个顺序逐次往上获取。
+
+三条`规则`：
+
+1. It must be possible to have two running instances of sigma with different parameters.
+2. It must be possible to have two running renderers of the same sigma instance with different parameters.
+3. The settings of each renderer, of each instance, and the global settings must be modifiable at any time.
+
+
+
 
 
 
@@ -284,7 +297,7 @@ sigma实例的创建
 
 
 
-事件绑定
+## 六、事件绑定
 
 
 
@@ -423,6 +436,11 @@ sigma实例的创建
 
 
 
+## 七、Cameras
+
+
+决定视角或者坐标系。
+
 
 <style type="text/css">
 #test_40 .test-graph {
@@ -522,9 +540,17 @@ sigma实例的创建
 </div>
 
 
-滑块控制缩放
+## 八、滑块控制缩放
+
+todo
 
 
 
-自动布局
+
+
+
+
+
+
+
 
