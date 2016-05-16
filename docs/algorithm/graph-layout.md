@@ -97,7 +97,7 @@
         return getUniqueSigmaInstance(instId, null, 2);
     }
 
-    function getRandomGraph(numOfNodes, numOfEdges, isFixSize){
+    function getRandomGraph(numOfNodes, numOfEdges, fixSize){
 
         var i
             , s
@@ -112,7 +112,7 @@
                 , label: '' + i
                 , x: Math.random()
                 , y: Math.random()
-                , size: isFixSize ? 0.01 : Math.random()
+                , size: fixSize || Math.random()
                 , color: fly.randomColor() 
             });
         }
@@ -122,7 +122,7 @@
                 id: 'e' + i
                 , source: 'n' + (Math.random() * N | 0) 
                 , target: 'n' + (Math.random() * N | 0) 
-                , size: isFixSize ? 0.01 : Math.random()
+                , size: fixSize ? 1 : 1 * Math.random()
                 // , type: 'curve'
                 // , color: fly.randomColor() 
                 , color: '#ccc'
@@ -175,10 +175,17 @@
     float: left;
     height: 100%;
     width: 50%;
+    border: 1px dotted #666;
+}
+.test-graph div.test-graph-left-top,
+.test-graph div.test-graph-right-top,
+.test-graph div.test-graph-left-bottom,
+.test-graph div.test-graph-right-bottom {
+    height: 50%;
 }
 </style>
 
-
+<div id="test_10">
 <div class="test-container">
 <div id="test_10_graph" class="test-graph">
 <div class="test-graph-left"></div>
@@ -190,7 +197,7 @@
     (function(){
 
         var s = fly.createShow('#test_10');
-        var g1 = getRandomGraph(200, 200, true);
+        var g1 = getRandomGraph(200, 200, 1);
         var g2 = {
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice() 
@@ -308,7 +315,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
     (function(){
 
         var s = fly.createShow('#test_20');
-        var g = getRandomGraph(20, 40, true);
+        var g = getRandomGraph(20, 40, 1);
         var containerId = 'test_20_graph';
         var graph, renderer;
 
@@ -382,6 +389,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 以下例子使用sigmajs自带的`forceAtlas2`算法来实现。
 
 
+<div id="test_30">
 <div class="test-container">
 <div id="test_30_graph" class="test-graph">
 <div class="test-graph-left"></div>
@@ -393,7 +401,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
     (function(){
 
         var s = fly.createShow('#test_30');
-        // var g1 = getRandomGraph(80, 200, true);
+        // var g1 = getRandomGraph(80, 200, 1);
         var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
         var g2 = {
@@ -517,16 +525,32 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
         return this;
     });
 
+`getNodeById()`：根据`节点id`获取节点`对象`。
+
+    @[data-script="javascript"]sigma.utils.getNodeById
+        = function(nodes, id){
+            if(!nodes) {
+                return null;
+            }
+            for(var i=0; i<nodes.length; i++){
+                if(nodes[i].id == id){
+                    return nodes[i];
+                }
+            }
+            return null;
+        }
+
 `widthTravel(root)`：从root节点开始对图进行广度遍历，遍历过程中`忽略``父节点`和`兄弟`节点。
 
-    @[data-script="javascript"]sigma.classes.graph.addMethod(
-        'widthTravel'
-        , function(root, callbacks, excludes){
+    @[data-script="javascript"]sigma.utils.widthTravel
+        = function(nodes, edges, root, callbacks, excludes) {
 
-        var nodes = this.nodesArray
-            , edges = this.edgesArray
-            , me = this
-            , cbs = callbacks || {}
+        if(!nodes || !nodes.length){
+            return;
+        }
+    
+        var cbs = callbacks || {}
+            , edges = edges || []
             , queue = []
             , parentAndSiblingNodes = excludes || {}
             , node = root || notes[0]
@@ -565,7 +589,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
                     }
                     if(!parentAndSiblingNodes[childId]){
                         parentAndSiblingNodes[childId] = 1;
-                        child = me.nodes(childId);
+                        child = sigma.utils.getNodeById(nodes, childId);
                         child._wt_level = node._wt_level + 1;
                         children.push(child);
                     }
@@ -574,31 +598,55 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
             return children;
         }
 
-        return this;
+    };
+
+    sigma.classes.graph.addMethod(
+        'widthTravel'
+        , function(root, callbacks, excludes){
+
+        var me = this
+            , nodes = me.nodesArray
+            , edges = me.edgesArray
+            , root = root || notes[0]
+            , cbs = callbacks || {}
+            ;
+
+        sigma.utils.widthTravel(
+            nodes     
+            , edges
+            , root
+            , cbs
+            , excludes
+        );
+
+        return me;
 
     });
 
 
 `getLayoutForest()`：生成布局森林。对图进行`广度`遍历，获得其`遍历树`。
 
-    @[data-script="javascript"]sigma.classes.graph.addMethod(
-        'getLayoutForest'
-        , function(root){
-        var nodes = this.nodesArray
-            , me = this
+    @[data-script="javascript"]sigma.utils.getLayoutForest
+        = function(nodes, edges, options){
+
+        var opt = options || {}
             , nodesVisited = {}
             , forest = []
-            , node = root || nodes[0]
+            , node = opt.root || nodes[0]
+            , excludes = opt.excludes
             ;
 
         do {
-            this.widthTravel(
-                node
+            sigma.utils.widthTravel(
+                nodes
+                , edges
+                , node
                 , {
                     onNode: function(node){
                         nodesVisited[node.id] = true;
                     }
                 } 
+                , excludes
             )
             forest.push(node);
             ;
@@ -613,14 +661,26 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
             return 0;
         }
 
-
         return forest;
+    };
+
+    @[data-script="javascript"]sigma.classes.graph.addMethod(
+        'getLayoutForest'
+        , function(options){
+        var opt = options || {}
+            , me = this
+            , nodes = me.nodesArray
+            , edges = me.edgesArray
+            ;
+
+        return sigma.utils.getLayoutForest(nodes, edges, opt); 
     });
 
 
 `computeLeaves()`：计算布局森林每个节点包含的叶子节点数。
 
-    @[data-script="javascript editable"]function computeLeaves(forest){
+    @[data-script="javascript editable"]sigma.utils.computeLeaves
+        = function(forest){
         
         forest.forEach(function(tree){
 
@@ -661,20 +721,22 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
     }
 
 
-`depthTravel()`：从root节点开始对图进行深度遍历，遍历过程忽略已经访问过的节点。
+`depthTravel()`：从`root`节点开始对图进行深度遍历，遍历过程忽略已经访问过的节点。
 
-    @[data-script="javascript"]sigma.classes.graph.addMethod(
-        'depthTravel'
-        , function(root, callbacks){
+    @[data-script="javascript"]sigma.utils.depthTravel
+        = function(nodes, edges, root, callbacks) {
 
-        var nodes = this.nodesArray
-            , edges = this.edgesArray
-            , me = this
-            , cbs = callbacks || {}
+        if(!nodes || !nodes.length){
+            return;
+        }
+    
+        var cbs = callbacks || {}
             , visitedNodes = {}
-            , node = root
+            , node = root || nodes[0]
             , children
             ;
+
+        edges = edges || [];
 
         node._dt_level = 1;
         _depthTravel(node);
@@ -713,7 +775,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
                         childId = edge.target;
                     }
                     if(!visitedNodes[childId]){
-                        child = me.nodes(childId);
+                        child = sigma.utils.getNodeById(nodes, childId);
                         child._dt_level = node._dt_level + 1;
                         children.push(child);
                     }
@@ -722,26 +784,47 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
             return children;
         }
 
-        return this;
+    };
+
+    @[data-script="javascript"]sigma.classes.graph.addMethod(
+        'depthTravel'
+        , function(root, callbacks){
+
+        var me = this 
+            , nodes = me.nodesArray
+            , edges = me.edgesArray
+            ;
+
+        sigma.utils.depthTravel(
+            nodes
+            , edges
+            , root 
+            , callbacks
+        );
+
+        return me;
 
     });
 
 
-`getCircuits()`：从root节点开始，寻找所有回路。对图进行`深度`遍历，当根节点的一个`非邻接`节点有一条到根节点的边，则构成一条`回路`。
+`getCircuits()`：从root节点开始，寻找所有回路。`方式`为对图进行`深度`遍历，当`root`的一个`非邻接`节点有一条到root的边，则构成一条`回路`。
 
-    @[data-script="javascript"]sigma.classes.graph.addMethod(
-        'getCircuits'
-        , function(root){
+    @[data-script="javascript"]sigma.utils.getCircuits
+        = function(nodes, edges, root) {
 
-        var nodes = this.nodesArray
-            , edges = this.edgesArray
-            , me = this
+        if(!nodes || !nodes.length){
+            return;
+        }
+
+        var me = this
             , root = root || nodes[0]
             , visitedNodes = {}
             , children
             , path = []
             , circuits = []
             ;
+
+        edges = edges || [];
 
         root._dt_level = 1;
         _depthTravel(root);
@@ -787,7 +870,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
                     }
 
                     if(!visitedNodes[childId]){
-                        child = me.nodes(childId);
+                        child = sigma.utils.getNodeById(nodes, childId);
                         child._dt_level = node._dt_level + 1;
                         children.push(child);
                     }
@@ -797,33 +880,108 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
             return children;
         }
 
-    });
-
-`getCircleForest()`：获得圆形布局森林。
+    };
 
     @[data-script="javascript"]sigma.classes.graph.addMethod(
-        'getCircleForest'
+        'getCircuits'
         , function(root){
 
-        var nodes = this.nodesArray
-            , edges = this.edgesArray
+        var me = this
+            , nodes = me.nodesArray
+            , edges = me.edgesArray
+            , root = root || nodes[0]
+            ;
+
+        return sigma.utils.getCircuits(nodes, edges, root);
+
+    });
+
+
+
+`getMaxDegreeNode()`：获得图形最大度数节点。
+
+    @[data-script="javascript"]sigma.utils.getMaxDegreeNode
+        = function(nodes, edges){
+
+        if(!nodes || !edges) {
+            return null;
+        }
+
+        var degreeArr = [] 
+            , degree
+            , node, edge, i, j
+            ;
+        
+        for(i=0; i<nodes.length; i++){
+            node = nodes[i];
+            degree = {
+                id: node.id
+                , data: 0
+            };
+            degreeArr.push(degree);
+
+            for(j=0; j<edges.length; j++){
+                edge = edges[j]; 
+                if(
+                    edge.source  == node.id
+                    || edge.target  == node.id
+                ){
+                    degree.data++;
+                }
+            }
+        }
+        degreeArr.sort(function(a, b){
+            return b.data - a.data;
+        });
+
+        return degreeArr.length
+            ? sigma.utils.getNodeById(nodes, degreeArr[0].id)
+            : null;
+
+    };
+
+    @[data-script="javascript"]sigma.classes.graph.addMethod(
+        'getMaxDegreeNode'
+        , function(){
+
+        var nodes = nodes || this.nodesArray
+            , edges = edges || this.edgesArray
             , me = this
+            ;
+        
+        return sigma.utils.getMaxDegreeNode(nodes, edges);        
+    });
+
+
+`getCircleForest()`：获得`环形`布局`森林`。
+
+    @[data-script="javascript"]sigma.utils.getCircleForest
+        = function(nodes, edges, options){
+
+        var opt = options || {} 
             , circuits
             , circuit
-            , tree = root || nodes[0]
+            , tree = opt.root 
+                || ( opt.makeMaxDegreeNodeRoot 
+                    ? sigma.utils.getMaxDegreeNode(nodes, edges) : null )
+                || nodes[0]
             , excludes
             , nodesVisited = {}
             , forest = []
             ;
-        
+    
+        edges = edges || [];
+
         do {
-            circuits = me.getCircuits(tree);
+            circuits = sigma.utils.getCircuits(nodes, edges, tree);
             excludes = {};
 
             if(circuits.length > 0){
                 circuits.sort(function(a, b){
                     return b.length - a.length;
                 });
+
+                // the longest circuit
                 tree._circuit = circuit = circuits[0]; 
 
                 circuit.forEach(function(_node){
@@ -831,8 +989,10 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
                 });
 
                 circuit.forEach(function(_node){
-                    me.widthTravel(
-                        _node
+                    sigma.utils.widthTravel(
+                        nodes
+                        , edges
+                        , _node
                         , {
                             onNode: function(__node){
                                 nodesVisited[__node.id] = 1;
@@ -843,8 +1003,10 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
                 });
             }
             else {
-                me.widthTravel(
-                    tree
+                sigma.utils.widthTravel(
+                    nodes
+                    , edges
+                    , tree
                     , {
                         onNode: function(__node){
                             nodesVisited[__node.id] = 1;
@@ -854,6 +1016,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
             }
 
             forest.push(tree);
+
         } while((tree = hasMore()));
 
         function hasMore(){
@@ -867,12 +1030,25 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
         return forest;
 
+    };
+
+    @[data-script="javascript"]sigma.classes.graph.addMethod(
+        'getCircleForest'
+        , function(options){
+
+        var me = this
+            , nodes = me.nodesArray
+            , edges = me.edgesArray
+            ;
+
+        return sigma.utils.getCircleForest(nodes, edges, options);
     });
 
 
-`computeCircleTreeRect()`：获取`圆形布局树`的`空间`占用，用`矩形`表示。
+`computeCircleTreeRect()`：获取`环形布局树`的`空间`占用，用`矩形`表示。
 
-    @[data-script="javascript"]function computeCircleTreeRect(tree){
+    @[data-script="javascript"]sigma.utils.computeCircleTreeRect
+        = function(tree){
 
         var maxLevel = tree._wt_maxlevel
             , hasCircuit = tree._circuit ? 1 : 0
@@ -884,12 +1060,205 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
                 x: 0
                 , y: 0 
                 , w: width 
-                , h: width / 2 
+                , h: width 
             };
         }
 
         return null;
     }
+
+
+`computeHierarchyTreeRect()`：获取`层次布局树`的`空间`占用，用`矩形`表示。
+
+    @[data-script="javascript"]sigma.utils.computeHierarchyTreeRect
+        = function(tree){
+
+        var maxLevel = tree._wt_maxlevel
+            , hasCircuit = tree._circuit ? 1 : 0
+            , width = hasCircuit ? 2 * maxLevel : maxLevel
+            ;
+
+        if(maxLevel){
+            return {
+                x: 0
+                , y: 0 
+                , w: width 
+                , h: width 
+            };
+        }
+
+        return null;
+    }
+
+
+`getNodesRect()`：获取`节点集合`的`空间`占用，用`矩形`表示。
+
+    @[data-script="javascript"]sigma.utils.getNodesRect
+        = function(nodes, options){
+
+        var opt = options || {}
+            , xMin = Infinity
+            , yMin = Infinity
+            , xMax = -Infinity
+            , yMax = -Infinity
+            , readPrefix = opt.readPrefix || ''
+            , ignoreNodeSize = opt.ignoreNodeSize || true
+            , node, i, x, y, size
+            ;
+
+        i = nodes.length - 1;
+        while(i >= 0){
+            node = nodes[i];
+            x = node[readPrefix + 'x'];
+            y = node[readPrefix + 'y'];
+            size = ignoreNodeSize 
+                ? 0 : node[readPrefix + 'size'] || node['size'];
+            if(x - size < xMin){
+                xMin = x - size;
+            }
+            if(x + size > xMax){
+                xMax = x + size;
+            }
+            if(y - size < yMin){
+                yMin = y - size;
+            }
+            if(y + size > yMax){
+                yMax = y + size;
+            }
+            i--;
+        }
+
+        return {
+            x: xMin
+            , y: yMin
+            , w: xMax - xMin
+            , h: yMax - yMin
+        };
+    }
+
+
+`normalizeSophonNodes()`：标准化节点。
+
+    @[data-script="javascript"]sigma.utils.normalizeSophonNodes
+        = function(nodes, options){
+
+        if(!nodes){
+            return null;
+        }
+
+        var opt = options || {} 
+            , center = opt.center || {x:0, y:0}
+            , size = opt.size || 10
+            , readPrefix = opt.readPrefix || ''
+            , writePrefix = opt.writePrefix || ''
+            , rect = sigma.utils.getNodesRect(nodes, opt) 
+            , nodesCenter = {
+                x: rect.x + rect.w / 2
+                , y: rect.y + rect.w / 2
+            }
+            , dx = center.x - nodesCenter.x
+            , dy = center.y - nodesCenter.y
+            ;
+
+        nodes.forEach(function(node){
+            node[writePrefix + 'x'] += dx;
+            node[writePrefix + 'y'] += dy;
+            node.size = size;
+        });
+
+        return nodes;
+    }
+
+    sigma.prototype.normalizeSophonNodes
+        = function(options){
+
+        sigma.utils.normalizeSophonNodes(
+            this.graph.nodesArray
+            , options
+        );
+
+        return this;
+    };
+
+
+
+
+`alignCenter()`：对图形进行`居中全景`布局。
+
+    @[data-script="javascript editable"]sigma.prototype.alignCenter = function(options){
+        var opt = options || {} 
+            , me = this
+            , rect = sigma.utils.getNodesRect(me.graph.nodes(), opt) 
+            , cameras = me.cameras
+            , camera
+            , renderer
+            , readPrefix = opt.readPrefix || ''
+            , writePrefix = opt.writePrefix || ''
+            , height
+            , width
+            , i
+            ;
+
+        for(i in cameras){
+            camera = cameras[i];
+            renderer = me.renderersPerCamera[camera.id][0];
+            height = renderer.height;
+            width = renderer.width;
+
+            if(opt.wholeView){
+                sigma.middlewares.rescale.call(
+                    me
+                    , readPrefix
+                    , writePrefix
+                    , {
+                        width: width
+                        , height: height
+                        , autoRescale: ['nodePosition']
+                        , scalingMode: 'inside'
+                        , rescaleIgnoreSize: 1
+                        , sideMargin: Math.min(rect.h, rect.w) * 0.1 
+                    }
+                );
+                rect = sigma.utils.getNodesRect(me.graph.nodes(), opt);
+            }
+
+            setTimeout(function(){
+                camera.goTo({
+                    x: rect.x + rect.w / 2
+                    , y: rect.y + rect.h / 2
+                });
+            }, 0);
+        }
+
+        return me;
+    }
+
+
+`resize(ratio)`：按比例改变图形尺寸[`暂未验证`]。
+
+    @[data-script="javascript"]sigma.classes.graph.addMethod(
+        'resize'
+        , function(ratio){
+
+        var nodes = this.nodesArray
+            , edges = this.edgesArray
+            , me = this
+            , ratio = ratio || 1
+            , prefix = prefix || ''
+            , i = 0
+            ;
+
+        while(i<nodes.length){
+            nodes[i]['size'] *= ratio;
+            nodes[i]['x'] *= ratio;
+            nodes[i]['y'] *= ratio;
+            i++;
+        } 
+
+        return me;
+
+    });
+
 
     
 
@@ -1098,6 +1467,11 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
 
 
+
+
+
+
+
 ### 4.2 常用方法验证 
 
 以下验证`sortByNodesDegree`, `getLayoutForest`, `computeLeaves`, `widthTravel`以及`depthTravel`等方法：
@@ -1110,7 +1484,21 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
     @[data-script="javascript editable"](function(){
 
         var s = fly.createShow('#test_35');
-        var g = getRandomGraph(5, 10, true);
+        var g = getRandomGraph(5, 10, 18);
+        var color = fly.randomColor();
+        var g1 = {
+                nodes: [
+                    {id: 'n2', x: 0.1, y: -0.1, size: 1, label: '(1000, -1000)', color: color}
+                    , {id: 'n0', x: 0, y: 0, size: 1, label: '(0, 0)', color: color}
+                    , {id: 'n1', x: 0.1, y: 0.1, size: 1, label: '(1000, 1000)', color: color}
+                    , {id: 'n3', x: 0.2, y: 0, size: 1, label: '(2000, 0)', color: color}
+                    , {id: 'n4', x: 0.1, y: 0, size: 1, label: '(1000, 0)', color: color}
+                ]
+                , edges: [
+                    { id: 'e0', source: 'n0', target: 'n2' }
+                    , { id: 'e1', source: 'n1', target: 'n3' }
+                ]
+            };
         var containerId = 'test_35_graph';
         var rendererSettings = {
                 // captors settings
@@ -1135,6 +1523,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
                 // instance global settings
                 , enableEdgeHovering: true
                 , edgeHoverPrecision: 5
+                , autoRescale: false
             };
         var sm;
         if((sm = isSigmaInstanceExisted('test_35'))){
@@ -1175,7 +1564,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
         s.append_show('');
         s.append_show('start getLayoutForest: ');
         var forest = sm.graph
-            .getLayoutForest(sm.graph.nodes('n0'))
+            .getLayoutForest({root: sm.graph.nodes('n0')})
             ;
         s.append_show(
             'layout forest has ' + forest.length + ' trees'
@@ -1184,7 +1573,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
         s.append_show('');
         s.append_show('start computeLeaves: ');
-        computeLeaves(forest);
+        sigma.utils.computeLeaves(forest);
         s.append_show('tree width', forest.map(function(tree){return tree._wt_leaves;}));
 
         s.append_show('');
@@ -1230,6 +1619,24 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
             )
             ;
 
+        var cam0 = sm.cameras[0];
+        // solution 1
+        // cam0.settings('autoRescale', true);
+        // solution 2
+        sigma.middlewares.rescale.call(
+            sm
+            , ''
+            , ''
+            , {
+                width: sm.renderersPerCamera[cam0.id][0].width
+                , height: sm.renderersPerCamera[cam0.id][0].height
+                , autoRescale: ['nodePosition']
+                , scalingMode: 'inside'
+                , rescaleIgnoreSize: 0
+            }
+        );
+        sm.refresh();
+
     })();
 
 </div>
@@ -1239,7 +1646,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
 
 
-以下验证`getCircleForest`等方法：
+以下验证`getMaxDegreeNode`, `getCircleForest`等方法：
 
 <div id="test_35_5" class="test">
 <div class="test-console"></div>
@@ -1249,7 +1656,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
     @[data-script="javascript editable"](function(){
 
         var s = fly.createShow('#test_35_5');
-        var g = getRandomGraph(5, 10, true);
+        var g = getRandomGraph(5, 10, 1);
         var containerId = 'test_35_5_graph';
         var rendererSettings = {
                 // captors settings
@@ -1318,10 +1725,15 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
         });
 
         var forest = sm.graph.getCircleForest();
-        computeLeaves(forest);
+        sigma.utils.computeLeaves(forest);
 
         // 控制台中验证
         // console.log(forest);
+
+        s.append_show('start getMaxDegreeNode:');
+        var maxDegreeNode = sm.graph.getMaxDegreeNode();
+        s.append_show(maxDegreeNode.id);
+
     })();
 
 </div>
@@ -1344,7 +1756,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
     (function(){
 
         var s = fly.createShow('#test_36');
-        var g1 = getRandomGraph(10, 10, true);
+        var g1 = getRandomGraph(10, 10, 1);
         var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
         var g2 = {
@@ -1426,7 +1838,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
             , index = 0
             ;
 
-        computeLeaves(forest);
+        sigma.utils.computeLeaves(forest);
         forest.forEach(function(tree){
 
             depthTravel(tree);
@@ -1514,7 +1926,7 @@ todo:
     @[data-script="javascript editable"](function(){
 
         var s = fly.createShow('#test_39');
-        var g = getRandomGraph(5, 10, true);
+        var g = getRandomGraph(5, 10, 1);
         var sm = getUniqueSigmaInstance('test_39');
         sm.graph
             .clear()
@@ -1545,7 +1957,7 @@ todo:
     (function(){
 
         var s = fly.createShow('#test_40');
-        // var g1 = getRandomGraph(49, 100, true);
+        // var g1 = getRandomGraph(49, 100, 1);
         var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
         var g2 = {
@@ -1679,16 +2091,21 @@ todo:
 
 `层次布局算法`(`无优化`)：
 
-    @[data-script="javascript"]sigma.classes.graph.addMethod('layoutHierarchy', function(){
-        var forest = this.getLayoutForest()
+    @[data-script="javascript"]sigma.prototype.layoutHierarchy
+        = function(options){
+
+        var opt = options || {} 
+            , forest = this.graph.getLayoutForest(opt)
             , treeOffsetX = 0
+            , unit = opt.unit || 1
             ;
-        computeLeaves(forest);
+
+        sigma.utils.computeLeaves(forest);
 
         forest.forEach(function(tree){
 
             depthTravel(tree, treeOffsetX);
-            treeOffsetX += tree._wt_leaves;
+            treeOffsetX += unit * tree._wt_leaves;
 
             function depthTravel(node, parentX){
                 var children = node._wt_children
@@ -1698,21 +2115,22 @@ todo:
                     , currentX = 0
                     ;
 
-                node.hier_x = parentX + leaves / 2;
-                node.hier_y = level;
+                node.hier_x = parentX + unit * leaves / 2;
+                node.hier_y = unit * level;
 
                 if(children.length > 0){
                     children.forEach(function(child){
                         depthTravel(child, parentX + currentX);
-                        currentX += child._wt_leaves;
+                        currentX += unit * child._wt_leaves;
                     }); 
                 }
+                delete node._wt_children;
             }
 
         });
 
         return this;
-    });
+    };
 
 
 以下示例展示树状`层次`布局算法：
@@ -1729,7 +2147,7 @@ todo:
     (function(){
 
         var s = fly.createShow('#test_50');
-        var g1 = getRandomGraph(10, 18, true);
+        var g1 = getRandomGraph(10, 18, 8);
         // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
         var g2 = {
@@ -1765,6 +2183,7 @@ todo:
                 // instance global settings
                 , enableEdgeHovering: true
                 , edgeHoverPrecision: 5
+                , autoRescale: 0
             };
 
         var sm1, sm2;
@@ -1805,12 +2224,27 @@ todo:
                     }
                 ); 
 
-        sm1.refresh();
-
-        sm2.graph
-            .layoutHierarchy()
+        sm1
+            .normalizeSophonNodes()
+            .alignCenter({wholeView: 1})
+            .refresh()
             ;
-        sm2.refresh();
+
+        sm2
+            .normalizeSophonNodes()
+            .alignCenter({wholeView:1})
+            .refresh()
+            .layoutHierarchy()
+            .normalizeSophonNodes({
+                readPrefix: 'hier_'
+                , writePrefix: 'hier_'
+            })
+            .alignCenter({
+                wholeView: 1
+                , readPrefix: 'hier_'
+                , writePrefix: 'hier_'
+            })
+            ;
 
         setTimeout(function(){
             sigma.plugins.animate(
@@ -1842,14 +2276,14 @@ todo:
 todo
 
 
-### 4.4 圆形布局
+### 4.4 环形布局
 
 
-`圆形布局算法`：
+`环形布局算法`：
 
-从`中心点`root开始，对图进行`圆形`布局。
+从`中心点`root开始，对图进行`环形`布局。
 
-1. 从`中心点`开始，获取图的`圆形广度遍历森林`。可能包含`多棵`遍历树。
+1. 从`中心点`开始，获取图的`环形广度遍历森林`。可能包含`多棵`遍历树。
 2. 针对每棵遍历树`tree`，计算中心点的`回路`，若`有回路`，`goto 3`，`无回路`，`goto 4`
 3. 若`中心点`在一个`回路`中，则选取包含中心点的`最长回路`，将该回路的所有节点分布在`第一层`圆环上，然后将以每个节点为根的`布局树``按层次`排布在`外面`的`圆环`上
 4. 若中心点`不在`任何回路中，则中心点放置在图形`中点`，然后将以中心点为根的`布局树`按`层次`排布在`外面`的`圆环`上
@@ -1861,10 +2295,16 @@ todo
 * `angleStep`，在圆环上排布节点时的角度增量，该值对于不同层次的圆环不能一致，一般与半径成反比
 
 
-`圆形布局`算法如下：
+`优化`：
+
+* `root`选取，以`最大度数`节点作为获取遍历森林时的起点，可以一定程度上避免`边交叉`以及`树状`布局
+* `无回路`情况的tree，将根节点放置在`圆环中心`
+
+
+`环形布局`算法如下：
 
     @[data-script="javascript"]sigma.classes.graph.addMethod(
-        'layoutCircle'
+        'layoutCircleSimple'
         , function(){
 
         var forest = this.getCircleForest()
@@ -1874,18 +2314,9 @@ todo
             , radiusStep = radius 
             , initialAngleStep = 20 * PI / 180
             , angleStep = initialAngleStep
-            , grid = []
-            , gridSize = 33
             ;
 
-        for(var i=0; i<gridSize; i++){
-            grid.push([]);
-            for(var j=0; j<gridSize; j++){
-                grid[i].push(0);
-            }
-        }
-
-        computeLeaves(forest);
+        sigma.utils.computeLeaves(forest);
 
         forest.forEach(function(tree){
             var circuit
@@ -1944,46 +2375,40 @@ todo
 
         });
 
-        console.log(forest);
+        // console.log(forest);
 
         return this;
     });
 
 
-使用`均衡布局`优化的`圆形布局`算法如下：
+使用`均衡布局`优化的`环形布局`算法如下：
 
-    @[data-script="javascript"]sigma.classes.graph.addMethod(
-        'layoutCircle2'
-        , function(){
+    @[data-script="javascript"]sigma.prototype.layoutCircle
+        = function(options){
 
-        var forest = this.getCircleForest()
+        var opt = options || {}
+            , forest = this.graph.getCircleForest(opt)
             , treeOffsetX = 0
             , PI = Math.PI
-            , radius = 0.5 
+            , radius = opt.radius || 1 
             , radiusStep = radius 
-            , initialAngleStep = 20 * PI / 180
+            , initialAngleStep = 15 * PI / 180
             , angleStep = initialAngleStep
-            , grid = []
-            , gridSize = 33
+            // for tendency
+            , angleOffset = 20 * PI / 180
             ;
 
-        for(var i=0; i<gridSize; i++){
-            grid.push([]);
-            for(var j=0; j<gridSize; j++){
-                grid[i].push(0);
-            }
-        }
-
-        computeLeaves(forest);
+        sigma.utils.computeLeaves(forest);
 
         forest.forEach(function(tree){
             var circuit
-                , angle = 0
+                , angle = PI / 2 
                 , maxLevel = 1
+                , hasCircuit = tree._circuit ? 1 : 0
                 ; 
 
             // if there is a circuit, layout it with a circle
-            if(tree._circuit){
+            if(hasCircuit){
                 circuit = tree._circuit;     
                 angleStep = 2 * PI / circuit.length;
                 circuit.forEach(function(node){
@@ -1999,7 +2424,7 @@ todo
             // depthTravel(tree, treeOffsetX);
             // treeOffsetX += tree._wt_leaves;
 
-            function depthTravel(node, angle, radius){
+            function depthTravel(node, angle, radius, tendency){
                 var children = node._wt_children
                     , leaves = node._wt_leaves
                     , level = node._wt_level
@@ -2009,6 +2434,7 @@ todo
                     , angleStep = initialAngleStep / level
                     , angleStart = angle - len * angleStep / 2
                     , _angle = angleStart + angleStep / 2
+                    , tendency = tendency || 1
                     ;
 
                 if(level > maxLevel) {
@@ -2024,8 +2450,16 @@ todo
                 // console.log(radius, angle, circleX, circleY, angleStep);
 
                 if(len > 0){
+
+                    if(!hasCircuit && level == 1 && opt.makeRootCenter){
+                        angleStep = 2 * PI / len;  
+                    }
+
+                    if(len == 1) {
+                        // _angle = angleStart + ( tendency ? 1 : -1 ) * level * angleOffset;
+                    }
                     children.forEach(function(child){
-                        depthTravel(child, _angle, radius + radiusStep);
+                        depthTravel(child, _angle, radius + radiusStep, 1 - tendency);
                         _angle += angleStep;
                     }); 
                 }
@@ -2034,7 +2468,7 @@ todo
         });
 
 
-        var grid = new Grid(20, 20)
+        var grid = new Grid(40, 40)
             , debug = 1
             , id = 2
             ;
@@ -2044,7 +2478,7 @@ todo
         });
 
         forest.forEach(function(tree){
-            var spaceBlock = computeCircleTreeRect(tree)
+            var spaceBlock = sigma.utils.computeCircleTreeRect(tree)
                 ;
 
             grid.placeBlock(tree.id, spaceBlock, debug);
@@ -2056,7 +2490,7 @@ todo
                 }
             ).join('\n');
 
-        console.log(output);
+        // console.log(output);
 
         forest.forEach(function(tree){
             var spaceBlock = grid.getBlockRect(tree.id) 
@@ -2076,6 +2510,7 @@ todo
                 tree._circuit.forEach(function(node){
                     depthTravel(node);
                 });
+                delete tree._circuit;
             }
             else {
                 depthTravel(tree);
@@ -2087,9 +2522,6 @@ todo
                     , leaves = 0
                     ;
 
-                if('n0' == node.id)
-                    console.log(node.id);
-
                 node.circle_x += dx;
                 node.circle_y += dy;
 
@@ -2097,20 +2529,24 @@ todo
                     children.forEach(function(child){
                         depthTravel(child);
                     }); 
+                    delete node._wt_children;
                 }
             }
         });
 
         return this;
-    });
+    };
 
-以下示例展示`圆形`布局算法：
+
+以下示例展示`环形`布局算法：
 
 <div id="test_60" class="test">
 <div class="test-container">
-<div id="test_60_graph" class="test-graph">
-<div class="test-graph-left"></div>
-<div class="test-graph-right"></div>
+<div id="test_60_graph" class="test-graph" style="height: 800px">
+<div class="test-graph-left-top"></div>
+<div class="test-graph-right-top"></div>
+<div class="test-graph-left-bottom"></div>
+<div class="test-graph-right-bottom"></div>
 </div>
 <div class="test-console"></div>
 
@@ -2118,16 +2554,21 @@ todo
     (function(){
 
         var s = fly.createShow('#test_60');
-        var g1 = getRandomGraph(10, 18, true);
+        var g1 = getRandomGraph(10, 18, 8);
         // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
+
         var g2 = {
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice()
             }
             , g3 = {
                 nodes: g1.nodes.slice()
-                , edges: [] 
+                , edges: g1.edges.slice()
+            }
+            , g4 = {
+                nodes: g1.nodes.slice()
+                , edges: g1.edges.slice()
             }
             ;
         var containerId = 'test_60_graph';
@@ -2154,25 +2595,30 @@ todo
                 // instance global settings
                 , enableEdgeHovering: true
                 , edgeHoverPrecision: 5
+                , autoRescale: false
             };
 
-        var sm1, sm2;
+        var sm1, sm2, sm3, sm4;
 
-        if((sm1 = isSigmaInstanceExisted('test_60_left'))
-            && (sm2 = isSigmaInstanceExisted('test_60_right'))){
+        if((sm1 = isSigmaInstanceExisted('test_60_left_top'))
+            && (sm2 = isSigmaInstanceExisted('test_60_right_top'))
+            && (sm3 = isSigmaInstanceExisted('test_60_left_bottom'))
+            && (sm4 = isSigmaInstanceExisted('test_60_right_bottom'))){
             sm1.kill();
             sm2.kill();
+            sm3.kill();
+            sm4.kill();
         };
 
         sm1 = getUniqueSigmaInstance(
-                    'test_60_left'
+                    'test_60_left_top'
                     , {
                         settings: sigmaSettings 
                         , graph: g1
                         , renderers: [
                             {
                                 type: 'canvas' 
-                                , container: $('#' + containerId + ' .test-graph-left')[0]
+                                , container: $('#' + containerId + ' .test-graph-left-top')[0]
                                 , settings: rendererSettings
                             }
                         ]
@@ -2180,26 +2626,76 @@ todo
                 ); 
 
         sm2 = getUniqueSigmaInstance(
-                    'test_60_right'
+                    'test_60_right_top'
                     , {
                         settings: sigmaSettings 
                         , graph: g2
                         , renderers: [
                             {
                                 type: 'canvas' 
-                                , container: $('#' + containerId + ' .test-graph-right')[0]
+                                , container: $('#' + containerId + ' .test-graph-right-top')[0]
                                 , settings: rendererSettings
                             }
                         ]
                     }
                 ); 
 
-        sm1.refresh();
+        sm3 = getUniqueSigmaInstance(
+                    'test_60_left_bottom'
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g3
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: $('#' + containerId + ' .test-graph-left-bottom')[0]
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
 
-        sm2.graph
-            .layoutCircle2()
+        sm4 = getUniqueSigmaInstance(
+                    'test_60_right_bottom'
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g4
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: $('#' + containerId + ' .test-graph-right-bottom')[0]
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
+
+        
+
+        sm1
+            .normalizeSophonNodes()
+            .alignCenter({wholeView: 1})
+            .refresh()
             ;
-        sm2.refresh();
+
+        sm2
+            .normalizeSophonNodes()
+            .alignCenter({
+                wholeView: 1
+            })
+            .refresh()
+            .layoutCircle()
+            .normalizeSophonNodes({
+                readPrefix: 'circle_'
+                , writePrefix: 'circle_'
+            })
+            .alignCenter({
+                wholeView: 1
+                , readPrefix: 'circle_'
+                , writePrefix: 'circle_'
+            })
+            ;
+
 
         var useNoverlap = 0;
         setTimeout(function(){
@@ -2227,6 +2723,76 @@ todo
 
         }, 500);
 
+        sm3
+            .normalizeSophonNodes()
+            .alignCenter({
+                wholeView: 1
+            })
+            .refresh()
+            .layoutCircle({
+                makeRootCenter: 1
+            })
+            .normalizeSophonNodes({
+                readPrefix: 'circle_'
+                , writePrefix: 'circle_'
+            })
+            .alignCenter({
+                wholeView: 1
+                , readPrefix: 'circle_'
+                , writePrefix: 'circle_'
+            })
+            ;
+
+        setTimeout(function(){
+            sigma.plugins.animate(
+                sm3
+                , {
+                    x: 'circle_x'
+                    , y: 'circle_y'
+                }
+                , {
+                    duration: 1000
+                }
+            );
+
+        }, 500);
+
+        
+        sm4
+            .normalizeSophonNodes()
+            .alignCenter({
+                wholeView: 1
+            })
+            .refresh()
+            .layoutCircle({
+                makeRootCenter: 1
+                , makeMaxDegreeNodeRoot: 1
+            })
+            .normalizeSophonNodes({
+                readPrefix: 'circle_'
+                , writePrefix: 'circle_'
+            })
+            .alignCenter({
+                wholeView: 1
+                , readPrefix: 'circle_'
+                , writePrefix: 'circle_'
+            })
+            ;
+
+        setTimeout(function(){
+            sigma.plugins.animate(
+                sm4
+                , {
+                    x: 'circle_x'
+                    , y: 'circle_y'
+                }
+                , {
+                    duration: 1000
+                }
+            );
+
+        }, 500);
+
     })();
 
 </div>
@@ -2237,8 +2803,4 @@ todo
 
 
 ## 五、增量布局
-
-
-
-
 

@@ -32,6 +32,7 @@ IE9以下，hasEnumBug
 * undefined
 
 <div id="test_10" class="test">
+<div class="test-console"></div>
 <div class="test-container">
 
     @[data-script="javascript editable"](function(){
@@ -53,13 +54,19 @@ IE9以下，hasEnumBug
         ];
         s.show('typeofs: ');
         for(var i=0; i<items.length; i++){
-            s.append_show(items[i], typeof items[i]);
+            s.append_show(
+                'typeof ' + (
+                    typeof items[i] == 'function' 
+                    ? items[i].toString() 
+                        : JSON.stringify( items[i] ) 
+                )
+                , typeof items[i]
+            );
         }
 
     })();
 
 </div>
-<div class="test-console"></div>
 <div class="test-panel">
 </div>
 </div>
@@ -73,6 +80,35 @@ IE9以下，hasEnumBug
     false == ''
 
 
+<div id="test_20" class="test">
+<div class="test-console"></div>
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_20');
+        var items = [
+            [null, undefined]
+            , [0, '']
+            , [false, 0]
+            , [false, '']
+        ];
+        s.show('common equations: ');
+        for(var i=0; i<items.length; i++){
+            s.append_show(
+                items[i][0] + ' == ' + JSON.stringify(items[i][1])
+                , items[i][0] == items[i][1] 
+            );
+        }
+
+    })();
+
+</div>
+<div class="test-panel">
+</div>
+</div>
+
+
 ## TRUE表达式
 
     !null
@@ -82,6 +118,50 @@ IE9以下，hasEnumBug
     !''
 
 
+## 位运算符
+
+`~a`相当于
+
+    var b = -a;
+    b = b -1;
+
+<div id="test_30" class="test">
+<div class="test-console"></div>
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_30');
+        s.show('bit-wise operations: ');
+
+        s.append_show(
+            '~5'
+            , ~5    
+        );
+
+        s.append_show(
+            '~0'
+            , ~0    
+        );
+
+        s.append_show(
+            '~-1'
+            , ~-1    
+        );
+
+        s.append_show(
+            '( 3.1415 | 0 )'
+            , 3.1415 | 0 
+        );
+
+    })();
+
+</div>
+<div class="test-panel">
+</div>
+</div>
+
+
 ## Object.prototype.toString.call(obj)
 
 注意`不是Object.toString`，该toString来自`Function.prototype.toString`
@@ -89,6 +169,7 @@ IE9以下，hasEnumBug
     function(){}    [object Function]
     []              [object Array]
     10              [object Number]
+
 
 
 ## arguments是Array-like的
