@@ -1,4 +1,8 @@
-// @thanks liguang
+/**
+ * Create navigation list automatically, updated by hudamin
+ * @require jQuery
+ * @thanks liguang
+ */
 (function($){
 
     if(/\/(?:(?:index|preview)\.md\.html)?([?#].*)?$/.test(location.href)){
@@ -10,9 +14,12 @@
         var selector = window.scroll_selector || "h2"
             , pre = "nav_";
             
-        var list = $(selector).add("h3")
-            ,$li = null
-            ,$ul = $('<ul class="nav"></ul>');
+        var list = $(selector)
+                .add("h3")
+                .add("h4")
+            , $li = null
+            , $ul = $('<ul class="nav"></ul>')
+            ;
 
 
         list.each(function(i, item){
@@ -20,6 +27,9 @@
             $(item).attr("id", pre + i);
             if($(item)[0].tagName == "H3"){
                 $li.css({"text-indent":"1em"})
+            }
+            else if($(item)[0].tagName == "H4"){
+                $li.css({"text-indent":"2em"})
             }
             
             $li.append('<a href="#' + pre + i + '">'+ $(item).text() + "</a>");
