@@ -452,3 +452,8 @@ hudamin 2014
         echo "Total deals: $total" >> orders-1517.log
 
 
+4. 清除git仓库中未添加文件，这些未添加文件都在src目录下： 
+
+        git status | awk '/^\t+src/{printf "rm -rf %s\n",$0}' | sh -x
+
+    注意：`awk`的正则`不是``magic`方式。

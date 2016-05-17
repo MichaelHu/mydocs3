@@ -504,6 +504,9 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
 ### 4.1 新增常用方法
 
+
+#### 4.1.1 sortByNodesDegree
+
 `sortByNodesDegree()`：按节点度进行排序。
 
     @[data-script="javascript"]sigma.classes.graph.addMethod(
@@ -525,6 +528,9 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
         return this;
     });
 
+
+#### 4.1.2 getNodeById
+
 `getNodeById()`：根据`节点id`获取节点`对象`。
 
     @[data-script="javascript"]sigma.utils.getNodeById
@@ -539,6 +545,9 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
             }
             return null;
         }
+
+
+#### 4.1.3 widthTravel
 
 `widthTravel(root)`：从root节点开始对图进行广度遍历，遍历过程中`忽略``父节点`和`兄弟`节点。
 
@@ -624,6 +633,11 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
     });
 
 
+
+
+
+#### 4.1.4 getLayoutForest
+
 `getLayoutForest()`：生成布局森林。对图进行`广度`遍历，获得其`遍历树`。
 
     @[data-script="javascript"]sigma.utils.getLayoutForest
@@ -677,6 +691,10 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
     });
 
 
+
+
+#### 4.1.5 computeLeaves
+
 `computeLeaves()`：计算布局森林每个节点包含的叶子节点数。
 
     @[data-script="javascript editable"]sigma.utils.computeLeaves
@@ -720,6 +738,9 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
     }
 
+
+
+#### 4.1.6 depthTravel
 
 `depthTravel()`：从`root`节点开始对图进行深度遍历，遍历过程忽略已经访问过的节点。
 
@@ -806,6 +827,10 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
     });
 
+
+
+
+#### 4.1.7 getCircuits
 
 `getCircuits()`：从root节点开始，寻找所有回路。`方式`为对图进行`深度`遍历，当`root`的一个`非邻接`节点有一条到root的边，则构成一条`回路`。
 
@@ -898,6 +923,10 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
 
 
+
+#### 4.1.8 getMaxDegreeNode
+
+
 `getMaxDegreeNode()`：获得图形最大度数节点。
 
     @[data-script="javascript"]sigma.utils.getMaxDegreeNode
@@ -952,6 +981,11 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
         return sigma.utils.getMaxDegreeNode(nodes, edges);        
     });
 
+
+
+
+
+#### 4.1.9 getCircleForest
 
 `getCircleForest()`：获得`环形`布局`森林`。
 
@@ -1045,6 +1079,10 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
     });
 
 
+
+
+#### 4.1.10 computeCircleTreeRect
+
 `computeCircleTreeRect()`：获取`环形布局树`的`空间`占用，用`矩形`表示。
 
     @[data-script="javascript"]sigma.utils.computeCircleTreeRect
@@ -1067,6 +1105,10 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
         return null;
     }
 
+
+
+
+#### 4.1.11 computeHierarchyTreeRect
 
 `computeHierarchyTreeRect()`：获取`层次布局树`的`空间`占用，用`矩形`表示。
 
@@ -1091,6 +1133,10 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
     }
 
 
+
+
+#### 4.1.12 getNodesRect 
+
 `getNodesRect()`：获取`节点集合`的`空间`占用，用`矩形`表示。
 
     @[data-script="javascript"]sigma.utils.getNodesRect
@@ -1109,10 +1155,10 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
         i = nodes.length - 1;
         while(i >= 0){
             node = nodes[i];
-            x = node[readPrefix + 'x'];
-            y = node[readPrefix + 'y'];
+            x = node[readPrefix + 'x'] || 0;
+            y = node[readPrefix + 'y'] || 0;
             size = ignoreNodeSize 
-                ? 0 : node[readPrefix + 'size'] || node['size'];
+                ? 0 : node[readPrefix + 'size'] || node['size'] || 0;
             if(x - size < xMin){
                 xMin = x - size;
             }
@@ -1137,6 +1183,9 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
     }
 
 
+
+#### 4.1.13 normailizeSophonNodes 
+
 `normalizeSophonNodes()`：标准化节点。
 
     @[data-script="javascript"]sigma.utils.normalizeSophonNodes
@@ -1148,22 +1197,21 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
         var opt = options || {} 
             , center = opt.center || {x:0, y:0}
-            , size = opt.size || 10
-            , readPrefix = opt.readPrefix || ''
-            , writePrefix = opt.writePrefix || ''
+            // , size = opt.size || 10
+            , prefix = opt.readPrefix || ''
             , rect = sigma.utils.getNodesRect(nodes, opt) 
             , nodesCenter = {
                 x: rect.x + rect.w / 2
-                , y: rect.y + rect.w / 2
+                , y: rect.y + rect.h / 2
             }
             , dx = center.x - nodesCenter.x
             , dy = center.y - nodesCenter.y
             ;
 
         nodes.forEach(function(node){
-            node[writePrefix + 'x'] += dx;
-            node[writePrefix + 'y'] += dy;
-            node.size = size;
+            node[prefix + 'x'] += dx;
+            node[prefix + 'y'] += dy;
+            // node.size = size;
         });
 
         return nodes;
@@ -1183,6 +1231,9 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
 
 
+
+#### 4.1.14 alignCenter
+
 `alignCenter()`：对图形进行`居中全景`布局。
 
     @[data-script="javascript editable"]sigma.prototype.alignCenter = function(options){
@@ -1194,6 +1245,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
             , renderer
             , readPrefix = opt.readPrefix || ''
             , writePrefix = opt.writePrefix || ''
+            , ratio
             , height
             , width
             , i
@@ -1202,10 +1254,16 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
         for(i in cameras){
             camera = cameras[i];
             renderer = me.renderersPerCamera[camera.id][0];
+            ratio = camera.ratio;
             height = renderer.height;
             width = renderer.width;
 
+            // wholeview mode by setting an appropriate camera ratio
             if(opt.wholeView){
+                ratio = Math.max(rect.w / width, rect.h / height) * 1.3;
+            }
+            // another wholeview mode by rescaling coordinates 
+            else if(opt.rescaleToViewport){
                 sigma.middlewares.rescale.call(
                     me
                     , readPrefix
@@ -1216,23 +1274,27 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
                         , autoRescale: ['nodePosition']
                         , scalingMode: 'inside'
                         , rescaleIgnoreSize: 1
-                        , sideMargin: Math.min(rect.h, rect.w) * 0.1 
+                        , sideMargin: Math.min(rect.h, rect.w) * 0.2 
                     }
                 );
-                rect = sigma.utils.getNodesRect(me.graph.nodes(), opt);
+                ratio = 1;
             }
 
-            setTimeout(function(){
-                camera.goTo({
-                    x: rect.x + rect.w / 2
-                    , y: rect.y + rect.h / 2
-                });
-            }, 0);
+            camera.goTo({
+                x: rect.x + rect.w / 2
+                , y: rect.y + rect.h / 2
+                // prevents `ratio = 0`
+                , ratio: ratio || 1
+            });
         }
 
         return me;
     }
 
+
+
+
+#### 4.1.15 resize
 
 `resize(ratio)`：按比例改变图形尺寸[`暂未验证`]。
 
@@ -1261,6 +1323,10 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
 
     
+
+
+
+#### 4.1.16 Grid类
 
 
 `Grid工具类`：
@@ -1474,6 +1540,10 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
 ### 4.2 常用方法验证 
 
+
+
+#### 4.2.1 验证一
+
 以下验证`sortByNodesDegree`, `getLayoutForest`, `computeLeaves`, `widthTravel`以及`depthTravel`等方法：
 
 <div id="test_35" class="test">
@@ -1646,6 +1716,9 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
 
 
+
+#### 4.2.2 验证二
+
 以下验证`getMaxDegreeNode`, `getCircleForest`等方法：
 
 <div id="test_35_5" class="test">
@@ -1741,6 +1814,9 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 </div>
 </div>
 
+
+
+#### 4.2.3 验证三
 
 图形化展示，验证从`图形`获得`遍历森林`的过程：
 
@@ -1885,8 +1961,10 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
 
 
-### 4.2 矩阵布局
+### 4.3 矩阵布局
 
+
+#### 4.3.1 算法描述
 
 将节点按`方阵`排列。
 
@@ -1894,6 +1972,10 @@ todo:
 
 1. `部分`节点按方阵排列
 2. 对于`新加入`的节点按方阵排列
+
+
+
+#### 4.3.2 算法实现
 
 `矩阵布局`算法：
 
@@ -1942,6 +2024,9 @@ todo:
 </div>
 </div>
 
+
+
+#### 4.3.3 算法演示
 
 以下为演示区：
 
@@ -2074,7 +2159,10 @@ todo:
 
 
 
-### 4.2 层次布局
+### 4.4 层次布局
+
+
+#### 4.4.1 算法描述
 
 `相关概念`：
 
@@ -2088,6 +2176,8 @@ todo:
 1. `同层`兄弟节点有边，通过调整让`有边`的兄弟节点`靠近`
 2. 两个`上层`节点同时与一个`下层`节点`有边`，通过调整让有边的兄弟节点`靠近`
 
+
+#### 4.4.2 算法实现
 
 `层次布局算法`(`无优化`)：
 
@@ -2131,6 +2221,12 @@ todo:
 
         return this;
     };
+
+
+
+
+
+#### 4.4.3 算法演示
 
 
 以下示例展示树状`层次`布局算法：
@@ -2226,21 +2322,20 @@ todo:
 
         sm1
             .normalizeSophonNodes()
-            .alignCenter({wholeView: 1})
+            .alignCenter({rescaleToViewport: 1})
             .refresh()
             ;
 
         sm2
             .normalizeSophonNodes()
-            .alignCenter({wholeView:1})
+            .alignCenter({rescaleToViewport:1})
             .refresh()
             .layoutHierarchy()
             .normalizeSophonNodes({
-                readPrefix: 'hier_'
-                , writePrefix: 'hier_'
+                prefix: 'hier_'
             })
             .alignCenter({
-                wholeView: 1
+                rescaleToViewport: 1
                 , readPrefix: 'hier_'
                 , writePrefix: 'hier_'
             })
@@ -2271,13 +2366,15 @@ todo:
 
 
 
-### 4.3 块布局
+### 4.5 块布局
 
 todo
 
 
-### 4.4 环形布局
+### 4.6 环形布局
 
+
+#### 4.6.1 算法描述
 
 `环形布局算法`：
 
@@ -2301,7 +2398,9 @@ todo
 * `无回路`情况的tree，将根节点放置在`圆环中心`
 
 
-`环形布局`算法如下：
+#### 4.6.2 算法实现
+
+`环形布局`简版算法如下，`未做``均衡`算法，多棵`树`之间会产生`重叠`：
 
     @[data-script="javascript"]sigma.classes.graph.addMethod(
         'layoutCircleSimple'
@@ -2538,6 +2637,11 @@ todo
     };
 
 
+
+
+
+#### 4.6.3 算法演示
+
 以下示例展示`环形`布局算法：
 
 <div id="test_60" class="test">
@@ -2674,23 +2778,22 @@ todo
 
         sm1
             .normalizeSophonNodes()
-            .alignCenter({wholeView: 1})
+            .alignCenter({rescaleToViewport: 1})
             .refresh()
             ;
 
         sm2
             .normalizeSophonNodes()
             .alignCenter({
-                wholeView: 1
+                rescaleToViewport: 1
             })
             .refresh()
             .layoutCircle()
             .normalizeSophonNodes({
-                readPrefix: 'circle_'
-                , writePrefix: 'circle_'
+                prefix: 'circle_'
             })
             .alignCenter({
-                wholeView: 1
+                rescaleToViewport: 1
                 , readPrefix: 'circle_'
                 , writePrefix: 'circle_'
             })
@@ -2726,18 +2829,17 @@ todo
         sm3
             .normalizeSophonNodes()
             .alignCenter({
-                wholeView: 1
+                rescaleToViewport: 1
             })
             .refresh()
             .layoutCircle({
                 makeRootCenter: 1
             })
             .normalizeSophonNodes({
-                readPrefix: 'circle_'
-                , writePrefix: 'circle_'
+                prefix: 'circle_'
             })
             .alignCenter({
-                wholeView: 1
+                rescaleToViewport: 1
                 , readPrefix: 'circle_'
                 , writePrefix: 'circle_'
             })
@@ -2761,7 +2863,7 @@ todo
         sm4
             .normalizeSophonNodes()
             .alignCenter({
-                wholeView: 1
+                rescaleToViewport: 1
             })
             .refresh()
             .layoutCircle({
@@ -2769,16 +2871,16 @@ todo
                 , makeMaxDegreeNodeRoot: 1
             })
             .normalizeSophonNodes({
-                readPrefix: 'circle_'
-                , writePrefix: 'circle_'
+                prefix: 'circle_'
             })
             .alignCenter({
-                wholeView: 1
+                rescaleToViewport: 1
                 , readPrefix: 'circle_'
                 , writePrefix: 'circle_'
             })
             ;
 
+        var useLayoutHierarchy = 0;
         setTimeout(function(){
             sigma.plugins.animate(
                 sm4
@@ -2788,6 +2890,31 @@ todo
                 }
                 , {
                     duration: 1000
+                    , onComplete: function(){
+                        if(!useLayoutHierarchy) return;
+                        setTimeout(function(){
+                            sm4
+                                .layoutHierarchy()
+                                .normalizeSophonNodes({prefix: 'hier_'})
+                                .alignCenter({
+                                    rescaleToViewport: 1
+                                    , readPrefix: 'hier_'
+                                    , writePrefix: 'hier_'
+                                })
+                                .refresh()
+                                ;
+
+                            sigma.plugins.animate(
+                                sm4
+                                , {
+                                    x: 'hier_x'
+                                    , y: 'hier_y'
+                                }
+                               , {duration: 1000}
+                            ); 
+                        }, 1000);
+                    }
+
                 }
             );
 
@@ -2803,4 +2930,9 @@ todo
 
 
 ## 五、增量布局
+
+todo
+
+
+
 
