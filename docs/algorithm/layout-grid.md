@@ -1,6 +1,6 @@
 # layout grid
 
-> 布局网格
+> 布局网格，实现用于管理空间均衡的网格算法
 
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <style type="text/css">
@@ -15,6 +15,12 @@
 </style>
 
 
+
+## 一、算法描述
+
+todo
+
+## 二、算法实现
 
 
 `Grid工具类`：
@@ -223,7 +229,7 @@
 
 
 
-## 方法验证 
+## 三、算法验证 
 
 以下验证`Grid类`及其相关方法：
 

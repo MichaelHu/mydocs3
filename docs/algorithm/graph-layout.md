@@ -1113,19 +1113,20 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 `computeHierarchyTreeRect()`：获取`层次布局树`的`空间`占用，用`矩形`表示。
 
     @[data-script="javascript"]sigma.utils.computeHierarchyTreeRect
-        = function(tree){
+        = function(tree, offsetX){
 
         var maxLevel = tree._wt_maxlevel
-            , hasCircuit = tree._circuit ? 1 : 0
-            , width = hasCircuit ? 2 * maxLevel : maxLevel
+            , leaves = tree._wt_leaves
+            , height = maxLevel || 1
+            , width = leaves || 1
             ;
 
         if(maxLevel){
             return {
-                x: 0
+                x: offsetX || 0
                 , y: 0 
                 , w: width 
-                , h: width 
+                , h: height 
             };
         }
 
@@ -1148,7 +1149,8 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
             , xMax = -Infinity
             , yMax = -Infinity
             , readPrefix = opt.readPrefix || ''
-            , ignoreNodeSize = opt.ignoreNodeSize || true
+            , ignoreNodeSize = typeof opt.ignoreNodeSize == 'undefined'
+                ? true : opt.ignoreNodeSize
             , node, i, x, y, size
             ;
 
@@ -1158,7 +1160,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
             x = node[readPrefix + 'x'] || 0;
             y = node[readPrefix + 'y'] || 0;
             size = ignoreNodeSize 
-                ? 0 : node[readPrefix + 'size'] || node['size'] || 0;
+                ? 0 : node[readPrefix + 'size'] || node['size'] || 0.2;
             if(x - size < xMin){
                 xMin = x - size;
             }
@@ -1172,6 +1174,13 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
                 yMax = y + size;
             }
             i--;
+        }
+
+        if(nodes.length == 0){
+            xMin = 0;
+            yMin = 0;
+            xMax = 0;
+            yMax = 0;
         }
 
         return {
@@ -1221,7 +1230,8 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
         = function(options){
 
         sigma.utils.normalizeSophonNodes(
-            this.graph.nodesArray
+            // note: `this.graph.nodesArray` will not work
+            this.graph.nodes()
             , options
         );
 
@@ -2176,6 +2186,11 @@ todo:
 1. `同层`兄弟节点有边，通过调整让`有边`的兄弟节点`靠近`
 2. 两个`上层`节点同时与一个`下层`节点`有边`，通过调整让有边的兄弟节点`靠近`
 
+`适用场景`：
+
+1. 边数`不大于`点数的图形。
+
+
 
 #### 4.4.2 算法实现
 
@@ -2224,6 +2239,108 @@ todo:
 
 
 
+`层次布局算法`(`使用均衡优化`)：
+
+    @[data-script="javascript"]sigma.prototype.layoutHierarchy2
+        = function(options){
+
+        var opt = options || {} 
+            , forest = this.graph.getLayoutForest(opt)
+            , treeOffsetX = 0
+            , unit = opt.unit || 1
+            ;
+
+        sigma.utils.computeLeaves(forest);
+
+        forest.forEach(function(tree){
+
+            var maxLevel = 1;
+
+            depthTravel(tree, treeOffsetX * unit);
+            tree._wt_maxlevel = maxLevel;
+            tree._hier_offsetx = treeOffsetX;
+            treeOffsetX += tree._wt_leaves;
+
+            function depthTravel(node, parentX){
+                var children = node._wt_children
+                    , leaves = node._wt_leaves
+                    , level = node._wt_level
+                    , parentX = parentX || 0
+                    , currentX = 0
+                    ;
+
+                if(level > maxLevel) {
+                    maxLevel = level;
+                }
+
+                node.hier_x = parentX + unit * leaves / 2;
+                node.hier_y = unit * ( level - 1 );
+
+                if(children.length > 0){
+                    children.forEach(function(child){
+                        depthTravel(child, parentX + currentX);
+                        currentX += unit * child._wt_leaves;
+                    }); 
+                }
+            }
+
+        });
+
+        var grid = new Grid(40, 40)
+            , debug = 0
+            ;
+
+        forest.sort(function(a, b){
+            return Math.max(b._wt_leaves, b._wt_maxlevel)
+                - Math.max(a._wt_leaves, a._wt_maxlevel);
+        });
+
+        forest.forEach(function(tree){
+            var spaceBlock = sigma.utils.computeHierarchyTreeRect(
+                    tree
+                    , tree._hier_offsetx
+                )
+                ;
+
+            grid.placeBlock(tree.id, spaceBlock, debug);
+        });
+
+        var output = grid.grid.map(
+                function(row){
+                    return row.join('  ');
+                }
+            ).join('\n');
+
+        debug && console.log(output);
+
+        forest.forEach(function(tree){
+            var spaceBlock = grid.getBlockRect(tree.id)
+                , dx = ( spaceBlock.gridPos.x - spaceBlock.x ) * unit
+                , dy = ( spaceBlock.gridPos.y - spaceBlock.y ) * unit
+                ;
+
+            _depthTravel(tree);
+
+            function _depthTravel(node){
+                var children = node._wt_children
+                    ;
+
+                node.hier_x += dx;
+                node.hier_y += dy;
+
+                if(children.length > 0){
+                    children.forEach(function(child){
+                        _depthTravel(child);
+                    });
+                    delete node._wt_children;
+                }
+            }
+        });
+
+        return this;
+    };
+
+
 
 
 #### 4.4.3 算法演示
@@ -2243,7 +2360,7 @@ todo:
     (function(){
 
         var s = fly.createShow('#test_50');
-        var g1 = getRandomGraph(10, 18, 8);
+        var g1 = getRandomGraph(20, 18, 8);
         // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
         var g2 = {
@@ -2329,13 +2446,14 @@ todo:
         sm2
             .normalizeSophonNodes()
             .alignCenter({rescaleToViewport:1})
-            .refresh()
-            .layoutHierarchy()
+            .refresh() // note: must invoke `refresh()` to update coordinates
+
+            .layoutHierarchy2({unit: 30})
             .normalizeSophonNodes({
-                prefix: 'hier_'
+                readPrefix: 'hier_'
             })
             .alignCenter({
-                rescaleToViewport: 1
+                wholeView: 1
                 , readPrefix: 'hier_'
                 , writePrefix: 'hier_'
             })
@@ -2499,6 +2617,11 @@ todo
 
         sigma.utils.computeLeaves(forest);
 
+        var a = forest.map(function(tree){
+            return tree.id 
+        }).join(', ');
+        console.log(a);
+
         forest.forEach(function(tree){
             var circuit
                 , angle = PI / 2 
@@ -2568,7 +2691,7 @@ todo
 
 
         var grid = new Grid(40, 40)
-            , debug = 1
+            , debug = 0
             , id = 2
             ;
 
@@ -2617,8 +2740,6 @@ todo
 
             function depthTravel(node){
                 var children = node._wt_children
-                    , _leaves
-                    , leaves = 0
                     ;
 
                 node.circle_x += dx;
@@ -2636,6 +2757,267 @@ todo
         return this;
     };
 
+
+
+使用`均衡布局`、`自适应半径`优化的`环形布局`算法：
+
+* options.nodeSize，与
+* options.radiusStep
+* options.initialAngleRange
+
+算法实现如下：
+
+    @[data-script="javascript"]sigma.prototype.layoutCircle2
+        = function(options){
+
+        var opt = options || {}
+            , forest = this.graph.getCircleForest(opt)
+            , treeOffsetX = 0
+            , PI = Math.PI
+            // `nodeSize` is not exactly `node.size`
+            , nodeSize = opt.nodeSize || 0.2
+            , radiusStep = opt.radiusStep || 2 
+            , initialAngleRange = opt.initialAngleRange || PI 
+            , radius
+            ;
+
+        sigma.utils.computeLeaves(forest);
+
+        var a = forest.map(function(tree){
+            return tree.id 
+        }).join(', ');
+        console.log(a);
+
+        forest.forEach(function(tree){
+            var circuit
+                , angle = PI / 2 
+                , maxLevel = 1
+                , hasCircuit = tree._circuit ? 1 : 0
+                , angleStep
+                , config
+                ; 
+
+            // if there is a circuit, layout it with a circle
+            if(hasCircuit){
+                circuit = tree._circuit;     
+                config = _getAngleStepAndRadius(
+                    2 * PI // layout the circuit with a circle
+                    , nodeSize
+                    , circuit.length 
+                    , radiusStep
+                    , 0
+                );
+                angleStep = config.angleStep;
+                radius = config.radius; 
+                circuit.forEach(function(node){
+                    depthTravel(node, angle, radius);
+                    angle += angleStep; 
+                });
+            }
+            else {
+                depthTravel(tree, angle, 0);
+            }
+            tree._wt_maxlevel = maxLevel;
+
+            function depthTravel(node, angle, radius){
+                var children = node._wt_children
+                    , leaves = node._wt_leaves
+                    , level = node._wt_level
+                    , len = children.length
+                    , circleX
+                    , circleY
+                    , angleRange = initialAngleRange / level
+                    , config = _getAngleStepAndRadius(
+                        angleRange
+                        , nodeSize
+                        , len || 1
+                        , radiusStep
+                        , radius
+                    )
+                    , _angleStep = config.angleStep 
+                    , _radius = config.radius
+                    , angleStart = angle - angleRange / 2
+                    , _angle = angleStart + _angleStep / 2
+                    ;
+
+                if(level > maxLevel) {
+                    maxLevel = level;
+                }
+
+                circleX = radius * Math.cos(angle);
+                circleY = radius * Math.sin(angle); 
+
+                node.circle_x = circleX;
+                node.circle_y = circleY;
+
+                // console.log(radius, angle, circleX, circleY, _angleStep);
+
+                if(len > 0){
+
+                    if(!hasCircuit && level == 1 && opt.makeRootCenter){
+                        _angleStep = 2 * PI / len;  
+                    }
+
+                    children.forEach(function(child){
+                        depthTravel(child, _angle, _radius);
+                        _angle += _angleStep;
+                    }); 
+                }
+            }
+
+        });
+
+        function _getAngleStepAndRadius(
+            angleRange, nodeSize, nodeCount, radiusStep, radiusStart){
+
+            var radius
+                , angleStep
+                , i = 0
+                ;
+
+            while(1){
+                i++;
+                radius = radiusStart + i * radiusStep;
+                if(radius * angleRange / ( nodeSize * 3 ) >= nodeCount){
+                    break;
+                } 
+            }
+            angleStep = angleRange / nodeCount;
+            return {
+                radius: radius
+                , angleStep: angleStep
+            };
+        }
+
+
+
+        var grid = new Grid(40, 40)
+            , debug = 0
+            , id = 2
+            ;
+
+        function _computeTreeRect(tree){
+            var nodes = []
+                , circuit = tree._circuit
+                , rect
+                ; 
+
+            if(circuit){
+                circuit.forEach(function(node){
+                    __depthTravel(node);
+                });
+            }
+            else {
+                __depthTravel(tree);
+            }
+
+            rect = sigma.utils.getNodesRect(
+                nodes
+                , {
+                    readPrefix: 'circle_'
+                    , ignoreNodeSize: 0
+                }
+            );
+            nodes.length = 0;
+            tree._tmp_rect = rect; 
+            // debug && console.log(rect);
+            return rect;
+
+            function __depthTravel(node){
+                var children = node._wt_children
+                    , len = children.length
+                    ;
+                
+                nodes.push(node);
+                if(len > 0){
+                    children.forEach(function(child){
+                        __depthTravel(child); 
+                    });
+                }
+            }
+        }
+
+        function _normalizeTreeRect(tree, unit){
+            var rect = tree._tmp_rect
+                , spaceBlock = {}
+                ;
+
+            spaceBlock.x = rect.x;
+            spaceBlock.y = rect.y;
+            // `* 1.1` is reserved space for node-collision on boundaris
+            spaceBlock.w = Math.ceil(rect.w * 1.1 / unit);
+            spaceBlock.h = Math.ceil(rect.h * 1.1 / unit);
+            return spaceBlock;
+        }
+
+        forest.forEach(function(tree){
+            _computeTreeRect(tree);
+        });
+
+        forest.sort(function(a, b){
+            return b._tmp_rect.w * b._tmp_rect.h
+                - a._tmp_rect.w * a._tmp_rect.h
+                ;
+        });
+
+        forest.forEach(function(tree){
+            var spaceBlock = _normalizeTreeRect(tree, radiusStep) 
+                ;
+
+            grid.placeBlock(tree.id, spaceBlock, debug);
+        });
+
+        var output = grid.grid.map(
+                function(row){
+                    return row.join('  ');
+                }
+            ).join('\n');
+
+        debug && console.log(output);
+
+        forest.forEach(function(tree){
+            var spaceBlock = grid.getBlockRect(tree.id) 
+                , hasCircuit = tree._circuit ? 1 : 0
+                , dx = spaceBlock.gridPos.x * radiusStep - spaceBlock.x
+                , dy = spaceBlock.gridPos.y * radiusStep - spaceBlock.y
+                ;
+
+            debug && console.log(tree.id, spaceBlock);
+
+            // clear temporary attribures
+            if(tree._tmp_rect){
+                delete tree._tmp_rect;
+            }
+
+            // if there is a circuit
+            if(tree._circuit){
+                tree._circuit.forEach(function(node){
+                    depthTravel(node);
+                });
+                delete tree._circuit;
+            }
+            else {
+                depthTravel(tree);
+            }
+
+            function depthTravel(node){
+                var children = node._wt_children
+                    ;
+
+                node.circle_x += dx;
+                node.circle_y += dy;
+
+                if(children.length > 0){
+                    children.forEach(function(child){
+                        depthTravel(child);
+                    }); 
+                    delete node._wt_children;
+                }
+            }
+        });
+
+        return this;
+    };
 
 
 
@@ -2658,7 +3040,7 @@ todo
     (function(){
 
         var s = fly.createShow('#test_60');
-        var g1 = getRandomGraph(10, 18, 8);
+        var g1 = getRandomGraph(16, 20, 8);
         // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
 
@@ -2700,6 +3082,8 @@ todo
                 , enableEdgeHovering: true
                 , edgeHoverPrecision: 5
                 , autoRescale: false
+                , zoomMin: 0.01
+                , zoomMax: 100
             };
 
         var sm1, sm2, sm3, sm4;
@@ -2790,7 +3174,7 @@ todo
             .refresh()
             .layoutCircle()
             .normalizeSophonNodes({
-                prefix: 'circle_'
+                readPrefix: 'circle_'
             })
             .alignCenter({
                 rescaleToViewport: 1
@@ -2834,9 +3218,10 @@ todo
             .refresh()
             .layoutCircle({
                 makeRootCenter: 1
+                , makeMaxDegreeNodeRoot: 1
             })
             .normalizeSophonNodes({
-                prefix: 'circle_'
+                readPrefix: 'circle_'
             })
             .alignCenter({
                 rescaleToViewport: 1
@@ -2860,6 +3245,7 @@ todo
         }, 500);
 
         
+        /*
         sm4
             .normalizeSophonNodes()
             .alignCenter({
@@ -2871,10 +3257,35 @@ todo
                 , makeMaxDegreeNodeRoot: 1
             })
             .normalizeSophonNodes({
-                prefix: 'circle_'
+                readPrefix: 'circle_'
             })
             .alignCenter({
                 rescaleToViewport: 1
+                , readPrefix: 'circle_'
+                , writePrefix: 'circle_'
+            })
+            ;
+        */
+
+        sm4
+            .normalizeSophonNodes()
+            .alignCenter({
+                rescaleToViewport: 1
+            })
+            .refresh()
+            .layoutCircle2({
+                makeRootCenter: 1
+                , makeMaxDegreeNodeRoot: 1
+                // 设置该值来影响布局，不一定等同于node.size
+                , nodeSize: 30
+                , radiusStep: 180
+                , initialAngleRange: Math.PI / 3
+            })
+            .normalizeSophonNodes({
+                readPrefix: 'circle_'
+            })
+            .alignCenter({
+                wholeView: 1
                 , readPrefix: 'circle_'
                 , writePrefix: 'circle_'
             })
@@ -2895,7 +3306,7 @@ todo
                         setTimeout(function(){
                             sm4
                                 .layoutHierarchy()
-                                .normalizeSophonNodes({prefix: 'hier_'})
+                                .normalizeSophonNodes({readPrefix: 'hier_'})
                                 .alignCenter({
                                     rescaleToViewport: 1
                                     , readPrefix: 'hier_'
