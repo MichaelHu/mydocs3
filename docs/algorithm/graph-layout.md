@@ -34,7 +34,12 @@
 <script src="http://258i.com/static/bower_components/vivagraphjs/dist/vivagraph.min.js"></script>
 <script src="http://258i.com/static/bower_components/lodash/dist/lodash.min.js"></script>
 <script src="./js/network.js"></script>
+<script src="./js/network-0520.js"></script>
+<script src="./js/networkGraph0520-allEdges.js"></script>
+<script src="./js/network-grid-0521.js"></script>
+<script src="./js/networkGraph-tree-0521.js"></script>
 <script src="./js/network-forceAtlas2-0510.js"></script>
+<script src="./js/network-2circle-0523.js"></script>
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <style type="text/css">
 @import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
@@ -376,6 +381,8 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
 ### 3.3 forceAtlas2算法
 
+> `ForceAtlas2`, a `continuous graph layout` algorithm for handy network visualization designed for the `Gephi` software.
+
 
 `相连`节点间有`引力`，会互相`吸引`；`不相连`节点有`斥力`，会互相`远离`。
 
@@ -402,8 +409,12 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
         var s = fly.createShow('#test_30');
         // var g1 = getRandomGraph(80, 200, 1);
-        var g1 = networkGraph_FR;
+        // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
+        // var g1 = networkGraph0520_allEdges;
+        var g1 = networkGraph_grid_0521; 
+        var g1 = networkGraph_tree_0521;
+        var g1 = networkGraph_2circles_0523;
         var g2 = {
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice() 
@@ -424,7 +435,8 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
                 , edgeHoverColor: fly.randomColor() 
                 , edgeHoverSizeRatio: 1
                 , edgeHoverExtremities: true
-                , drawEdges: false
+                , drawEdges: true
+                , drawLabels: false
             };
         var sigmaSettings = {
                 // rescale settings 
@@ -834,7 +846,136 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
 `getCircuits()`：从root节点开始，寻找所有回路。`方式`为对图进行`深度`遍历，当`root`的一个`非邻接`节点有一条到root的边，则构成一条`回路`。
 
+`注意`：
+
+1. 这个算法需要找出从root开始的`所有`回路，所以算法中使用的深度遍历，`不完全``等同于``depthTravel`，一个节点只访问一次。该算法中，`节点`可能被`多次`访问。
+2. 需要`排除`这种回路： `n1` -> `n2` -> `n1`
+
+
+代码如下：
+
     @[data-script="javascript"]sigma.utils.getCircuits
+        = function(nodes, edges, root) {
+
+        var nLen = nodes.length || 1
+            , eLen = edges.length || 1
+            ;
+
+        if(eLen <= 50 && eLen / nLen <= 1.25){
+            return sigma.utils.getCircuitsSlow(nodes, edges, root); 
+        }
+        else { 
+            return sigma.utils.getCircuitsFast(nodes, edges, root); 
+        }
+        
+    };
+
+    sigma.classes.graph.addMethod(
+        'getCircuits'
+        , function(root){
+
+        var me = this
+            , nodes = me.nodesArray
+            , edges = me.edgesArray
+            , root = root || nodes[0]
+            ;
+
+        return sigma.utils.getCircuits(nodes, edges, root);
+
+    });
+
+
+提供了两个算法，`getCircuitsSlow`与`getCircuitsFast`，前者速度`快`，但`不一定`找出`所有`回路；后者速度`慢`，能找出`所有`回路。`getCircuits`方法根据`边的数目`来决定使用哪个算法。
+
+
+    @[data-script="javascript"]sigma.utils.getCircuitsSlow
+        = function(nodes, edges, root) {
+
+        if(!nodes || !nodes.length){
+            return;
+        }
+
+        var me = this
+            , root = root || nodes[0]
+            , children
+            , path = []
+            , circuits = []
+            , isStop = 0
+            ;
+
+        edges = edges || [];
+
+        root._dt_level = 1;
+        _depthTravel(root);
+        return circuits;
+
+        function _depthTravel(node){
+            if(isStop){
+                return;
+            }
+
+            if(!isNodeInPath(node)){
+                path.push(node);
+
+                var children = getChildren(node); 
+                if(children.length > 0){
+                    children.forEach(function(child){
+                        _depthTravel(child);
+                    });
+                }
+
+                path.pop(node);
+            }
+            else if(node.id == root.id
+                && path.length > 2){
+                circuits.push(path.slice());  
+                if(circuits.length >= 20){
+                    isStop = 1;
+                }
+            }
+        }
+
+        function isNodeInPath(node){
+            return path.map(function(_node){return _node.id;})
+                .indexOf(node.id)
+                != -1
+                ;
+        }
+
+        function getChildren(node){
+            var id = node.id
+                , children = []
+                , childId
+                , child
+                ;
+
+            if(node._tmp_children){
+                return node._tmp_children; 
+            }
+
+            edges.forEach(function(edge){
+                if(
+                    edge.source == id
+                    || edge.target == id
+                  ){
+                    childId = edge.source;
+                    if(childId == id){
+                        childId = edge.target;
+                    }
+
+                    child = sigma.utils.getNodeById(nodes, childId);
+                    children.push(child);
+                }
+            });
+
+            return (node._tmp_children = children);
+        }
+
+    };
+
+
+
+    @[data-script="javascript"]sigma.utils.getCircuitsFast
         = function(nodes, edges, root) {
 
         if(!nodes || !nodes.length){
@@ -887,16 +1028,12 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
                         childId = edge.target;
                     }
 
-                    // non-adjacent node has a link to root, there is a circuit 
-                    if(node._dt_level > 2){
-                        if(childId == root.id){
-                            circuits.push(path.slice());  
-                        }                        
-                    }
+                    if(childId == root.id && path.length > 2){
+                        circuits.push(path.slice());  
+                    }                        
 
                     if(!visitedNodes[childId]){
                         child = sigma.utils.getNodeById(nodes, childId);
-                        child._dt_level = node._dt_level + 1;
                         children.push(child);
                     }
 
@@ -906,20 +1043,6 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
         }
 
     };
-
-    @[data-script="javascript"]sigma.classes.graph.addMethod(
-        'getCircuits'
-        , function(root){
-
-        var me = this
-            , nodes = me.nodesArray
-            , edges = me.edgesArray
-            , root = root || nodes[0]
-            ;
-
-        return sigma.utils.getCircuits(nodes, edges, root);
-
-    });
 
 
 
@@ -1740,6 +1863,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
         var s = fly.createShow('#test_35_5');
         var g = getRandomGraph(5, 10, 1);
+        var g = networkGraph_2circles_0523;
         var containerId = 'test_35_5_graph';
         var rendererSettings = {
                 // captors settings
@@ -2053,8 +2177,11 @@ todo:
 
         var s = fly.createShow('#test_40');
         // var g1 = getRandomGraph(49, 100, 1);
-        var g1 = networkGraph_FR;
+        // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
+        var g1 = networkGraph_grid_0521; 
+        var g1 = networkGraph_tree_0521;
+        var g1 = networkGraph_2circles_0523;
         var g2 = {
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice() 
@@ -2360,9 +2487,12 @@ todo:
     (function(){
 
         var s = fly.createShow('#test_50');
-        var g1 = getRandomGraph(20, 18, 8);
+        // var g1 = getRandomGraph(20, 18, 8);
         // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
+        var g1 = networkGraph_grid_0521; 
+        var g1 = networkGraph_tree_0521;
+        var g1 = networkGraph_2circles_0523;
         var g2 = {
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice()
@@ -2620,7 +2750,7 @@ todo
         var a = forest.map(function(tree){
             return tree.id 
         }).join(', ');
-        console.log(a);
+        // console.log(a);
 
         forest.forEach(function(tree){
             var circuit
@@ -2786,7 +2916,7 @@ todo
         var a = forest.map(function(tree){
             return tree.id 
         }).join(', ');
-        console.log(a);
+        // console.log(a);
 
         forest.forEach(function(tree){
             var circuit
@@ -3043,6 +3173,10 @@ todo
         var g1 = getRandomGraph(16, 20, 8);
         // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
+        // var g1 = networkGraph0520;
+        var g1 = networkGraph_grid_0521; 
+        var g1 = networkGraph_tree_0521;
+        var g1 = networkGraph_2circles_0523;
 
         var g2 = {
                 nodes: g1.nodes.slice()
@@ -3073,6 +3207,7 @@ todo
                 , edgeHoverColor: fly.randomColor() 
                 , edgeHoverSizeRatio: 1
                 , edgeHoverExtremities: true
+                , drawLabels: false
             };
         var sigmaSettings = {
                 // rescale settings 
