@@ -33,6 +33,7 @@
 <script src="http://258i.com/static/build/sigma/plugins/sigma.layout.forceAtlas2.min.js"></script>
 <script src="http://258i.com/static/bower_components/vivagraphjs/dist/vivagraph.min.js"></script>
 <script src="http://258i.com/static/bower_components/lodash/dist/lodash.min.js"></script>
+
 <script src="./js/network.js"></script>
 <script src="./js/network-0520.js"></script>
 <script src="./js/networkGraph0520-allEdges.js"></script>
@@ -42,6 +43,8 @@
 <script src="./js/network-2circle-0523.js"></script>
 <script src="./js/network-edges-between-the-same-level-nodes-0524.js"></script>
 <script src="./js/network-edges-between-the-same-level-nodes-2-0524.js"></script>
+<script src="./js/network-tree-0524.js"></script>
+
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <style type="text/css">
 @import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
@@ -2752,6 +2755,7 @@ todo:
         var g1 = networkGraph_2circles_0523;
         var g1 = networkGraph_edges_between_the_same_level_nodes;
         var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        var g1 = networkGraph_tree_0524;
         var g2 = {
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice()
@@ -3441,6 +3445,7 @@ todo
         var g1 = networkGraph_2circles_0523;
         var g1 = networkGraph_edges_between_the_same_level_nodes;
         var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        var g1 = networkGraph_tree_0524;
 
         var g2 = {
                 nodes: g1.nodes.slice()
