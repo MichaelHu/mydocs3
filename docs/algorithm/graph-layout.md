@@ -40,6 +40,8 @@
 <script src="./js/networkGraph-tree-0521.js"></script>
 <script src="./js/network-forceAtlas2-0510.js"></script>
 <script src="./js/network-2circle-0523.js"></script>
+<script src="./js/network-edges-between-the-same-level-nodes-0524.js"></script>
+<script src="./js/network-edges-between-the-same-level-nodes-2-0524.js"></script>
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <style type="text/css">
 @import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
@@ -415,6 +417,8 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
         var g1 = networkGraph_grid_0521; 
         var g1 = networkGraph_tree_0521;
         var g1 = networkGraph_2circles_0523;
+        var g1 = networkGraph_edges_between_the_same_level_nodes;
+        var g1 = networkGraph_edges_between_the_same_level_nodes_2;
         var g2 = {
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice() 
@@ -992,7 +996,6 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
         edges = edges || [];
 
-        root._dt_level = 1;
         _depthTravel(root);
         return circuits;
 
@@ -1666,6 +1669,108 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
 
 
+#### 4.1.17 adjustSiblingsOrder()
+
+`adjustSiblingsOrder(parent, edges)`：`层次`布局中，`同层次`的`兄弟`节点之间如果存在边，则调整`有边`的兄弟节点`靠近`。
+
+    @[data-script="javascript"]sigma.utils.adjustSiblingsOrder
+        = function(parentNode, edges) {
+
+        if(!parentNode || !parentNode._wt_children){
+            console.log(arguments.callee
+                , 'parentNode is null or parentNode._wt_children is not existed');
+            return;
+        }
+        
+        var nodes = parentNode._wt_children
+            , edges = edges || []
+            , visitedNodes = {}
+            , node
+            , index
+            , len = nodes.length
+            , j
+            , adjacentNodes
+            , flagLeft
+            , flagRight
+            ;
+
+        while((index = _hasMoreIndex()) >= 0){
+            node = nodes[index];
+            visitedNodes[node.id] = 1;
+            adjacentNodes = _getAdjacentNodes(node, nodes);
+            flagLeft = 0;
+            flagRight = 0;
+            if(adjacentNodes && adjacentNodes.length){
+
+                if(index>0 && adjacentNodes.indexOf(nodes[index-1]) < 0){
+                    for(j=index-1; j>=0; j--){
+                        if(adjacentNodes.indexOf(nodes[j]) >= 0){
+                            nodes.splice(index, 1);
+                            nodes.splice(j, 0, node);
+                            flagLeft = 1;
+                            break;
+                        }
+                    }
+                } 
+
+                if(flagLeft){
+                    continue;
+                }
+
+                if(index<len - 1 && adjacentNodes.indexOf(nodes[index+1]) < 0){
+                    for(j=index+1; j<len; j++){
+                        if(adjacentNodes.indexOf(nodes[j]) >= 0){
+                            nodes.splice(j-1, 0, node);
+                            nodes.splice(index, 1);
+                            break;
+                        }
+                    }
+                } 
+
+            }
+        }
+
+        function _hasMoreIndex(){
+            for(var i=0; i<len; i++){
+                var _node = nodes[i];
+                if(!visitedNodes[_node.id]){
+                    return i;            
+                }
+            }
+            return -1;
+        }
+
+        function _getAdjacentNodes(node) {
+            var retNodes = [];
+            edges.forEach(function(edge){
+                var adjNodeId, adjNode;
+
+                if(edge.source == node.id){
+                    adjNodeId = edge.target;
+                }
+
+                if(edge.target == node.id){
+                    adjNodeId = edge.source;
+                }
+
+                if(!adjNodeId){
+                    return;
+                }
+
+                if(adjNodeId != node.id){
+                    if(nodes.map(function(node){return node.id;})
+                        .indexOf(adjNodeId) >= 0){
+                        adjNode = sigma.utils.getNodeById(nodes, adjNodeId);
+                        retNodes.push(adjNode);
+                    }
+                }
+            });
+            return retNodes;
+        }
+
+    }
+
+
 
 
 
@@ -2093,6 +2198,149 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
 
 
+#### 4.2.4 验证四
+
+
+验证`adjustSiblingsOrder`, `adjustTravelThroughEdges`等方法。
+
+
+<div id="test_37" class="test">
+<div class="test-container">
+<div id="test_37_graph" class="test-graph">
+<div class="test-graph-left"></div>
+<div class="test-graph-right"></div>
+</div>
+<div class="test-console"></div>
+
+    @[data-script="javascript editable"]
+    (function(){
+
+        var s = fly.createShow('#test_37');
+        var g1 = getRandomGraph(10, 10, 1);
+        var g1 = networkGraph_FR;
+        var g1 = networkGraph_ForceAtlas2;
+        var g1 = networkGraph_edges_between_the_same_level_nodes;
+        var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        var g2 = {
+                nodes: g1.nodes.slice()
+                , edges: g1.edges.slice()
+            }
+            ;
+        var containerId = 'test_37_graph';
+        var rendererSettings = {
+                // captors settings
+                doubleClickEnabled: true
+                , mouseWheelEnabled: false
+
+                // rescale settings
+                , minEdgeSize: 0.5
+                , maxEdgeSize: 1
+                , minNodeSize: 1 
+                , maxNodeSize: 5
+
+                // renderer settings
+                , edgeHoverColor: fly.randomColor() 
+                , edgeHoverSizeRatio: 1
+                , edgeHoverExtremities: true
+            };
+        var sigmaSettings = {
+                // rescale settings 
+                sideMargin: 0.1 
+
+                // instance global settings
+                , enableEdgeHovering: true
+                , edgeHoverPrecision: 5
+            };
+
+        var sm1, sm2;
+
+        if((sm1 = isSigmaInstanceExisted('test_37_left'))
+            && (sm2 = isSigmaInstanceExisted('test_37_right'))){
+            sm1.kill();
+            sm2.kill();
+        };
+
+        sm1 = getUniqueSigmaInstance(
+                    'test_37_left'
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g1
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: $('#' + containerId + ' .test-graph-left')[0]
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
+
+        sm2 = getUniqueSigmaInstance(
+                    'test_37_right'
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g2
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: $('#' + containerId + ' .test-graph-right')[0]
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
+
+        sm1.refresh();
+
+        var forest = sm2.graph.getLayoutForest()
+            , index = 0
+            ;
+
+        forest.forEach(function(tree){
+
+            s.show('before adjusting:');
+            s.append_show(
+                tree._wt_children.map(function(node){
+                    return node.id;
+                })
+            );
+    
+            sigma.utils.adjustSiblingsOrder(tree, sm2.graph.edges());
+
+            s.append_show('after adjusting:');
+            s.append_show(
+                tree._wt_children.map(function(node){
+                    return node.id;
+                })
+            );
+
+            tree = sm2.graph.nodes('n4'); 
+            s.append_show('before adjusting:');
+            s.append_show(
+                tree._wt_children.map(function(node){
+                    return node.id;
+                })
+            );
+    
+            sigma.utils.adjustSiblingsOrder(tree, sm2.graph.edges());
+
+            s.append_show('after adjusting:');
+            s.append_show(
+                tree._wt_children.map(function(node){
+                    return node.id;
+                })
+            );
+        });
+
+        sm2.refresh();
+
+    })();
+
+</div>
+<div class="test-panel"></div>
+</div>
+
+
 
 
 ### 4.3 矩阵布局
@@ -2182,6 +2430,8 @@ todo:
         var g1 = networkGraph_grid_0521; 
         var g1 = networkGraph_tree_0521;
         var g1 = networkGraph_2circles_0523;
+        var g1 = networkGraph_edges_between_the_same_level_nodes;
+        var g1 = networkGraph_edges_between_the_same_level_nodes_2;
         var g2 = {
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice() 
@@ -2312,6 +2562,7 @@ todo:
 
 1. `同层`兄弟节点有边，通过调整让`有边`的兄弟节点`靠近`
 2. 两个`上层`节点同时与一个`下层`节点`有边`，通过调整让有边的兄弟节点`靠近`
+3. 避免其他边`穿过`节点`中心`
 
 `适用场景`：
 
@@ -2366,15 +2617,17 @@ todo:
 
 
 
-`层次布局算法`(`使用均衡优化`)：
+`层次布局算法`(`使用均衡优化`、`优化策略1`)：
 
     @[data-script="javascript"]sigma.prototype.layoutHierarchy2
         = function(options){
 
         var opt = options || {} 
-            , forest = this.graph.getLayoutForest(opt)
+            , me = this
+            , forest = me.graph.getLayoutForest(opt)
             , treeOffsetX = 0
             , unit = opt.unit || 1
+            , edges = me.graph.edges()
             ;
 
         sigma.utils.computeLeaves(forest);
@@ -2395,6 +2648,10 @@ todo:
                     , parentX = parentX || 0
                     , currentX = 0
                     ;
+
+                if(opt.adjustSiblingsOrder){
+                    sigma.utils.adjustSiblingsOrder(node, edges);
+                }
 
                 if(level > maxLevel) {
                     maxLevel = level;
@@ -2493,6 +2750,8 @@ todo:
         var g1 = networkGraph_grid_0521; 
         var g1 = networkGraph_tree_0521;
         var g1 = networkGraph_2circles_0523;
+        var g1 = networkGraph_edges_between_the_same_level_nodes;
+        var g1 = networkGraph_edges_between_the_same_level_nodes_2;
         var g2 = {
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice()
@@ -2578,7 +2837,10 @@ todo:
             .alignCenter({rescaleToViewport:1})
             .refresh() // note: must invoke `refresh()` to update coordinates
 
-            .layoutHierarchy2({unit: 30})
+            .layoutHierarchy2({
+                unit: 50
+                , adjustSiblingsOrder: 1
+            })
             .normalizeSophonNodes({
                 readPrefix: 'hier_'
             })
@@ -3177,6 +3439,8 @@ todo
         var g1 = networkGraph_grid_0521; 
         var g1 = networkGraph_tree_0521;
         var g1 = networkGraph_2circles_0523;
+        var g1 = networkGraph_edges_between_the_same_level_nodes;
+        var g1 = networkGraph_edges_between_the_same_level_nodes_2;
 
         var g2 = {
                 nodes: g1.nodes.slice()
