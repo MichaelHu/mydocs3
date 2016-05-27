@@ -19,6 +19,21 @@
 <script src="http://258i.com/static/bower_components/react/react-dom.min.js"></script>
 <script src="http://258i.com/static/build/sigma/sigma.min.js"></script>
 
+<script src="./js/network.js"></script>
+<script src="./js/network-0520.js"></script>
+<script src="./js/networkGraph0520-allEdges.js"></script>
+<script src="./js/network-grid-0521.js"></script>
+<script src="./js/networkGraph-tree-0521.js"></script>
+<script src="./js/network-forceAtlas2-0510.js"></script>
+<script src="./js/network-2circle-0523.js"></script>
+<script src="./js/network-edges-between-the-same-level-nodes-0524.js"></script>
+<script src="./js/network-edges-between-the-same-level-nodes-2-0524.js"></script>
+<script src="./js/network-tree-0524.js"></script>
+<script src="./js/network-edges-between-levels-0526.js"></script>
+<script src="./js/network-many-children-0526.js"></script>
+<script src="./js/network-forest-0527.js"></script>
+
+
 
 
 ## 一、sigma实例生成器
@@ -427,9 +442,10 @@ sigmajs默认`不支持`节点拖动，使其支持节点拖动的方法带有�
     @[data-script="javascript editable"](function(){
 
         var s = fly.createShow('#test_30');
-        var g1 = getRandomGraph(10, 0, 10);
+        var g1 = getRandomGraph(2, 0, 10);
         var containerId = 'test_30_graph';
         var nodeSize = 10;
+        var coordinatesRatio = 100;
 
         var rendererSettings = {
                 // captors settings
@@ -706,15 +722,15 @@ sigmajs默认`不支持`节点拖动，使其支持节点拖动的方法带有�
             .on(
                 'click'
                 , function(e){
-                    var nodes = [];
+                    var nodes = [], edges = [];
 
                     sm1.graph
                         .nodes()
                         .forEach(function(node){
                             var _n = {};
                             _n.id = node.id;
-                            _n.x = node.x;
-                            _n.y = node.y;
+                            _n.x = node.x * coordinatesRatio | 0;
+                            _n.y = node.y * coordinatesRatio | 0;
                             _n.color = node.color;
                             _n.size = nodeSize;
                             _n.label = node.label;
@@ -722,9 +738,22 @@ sigmajs默认`不支持`节点拖动，使其支持节点拖动的方法带有�
                         })
                         ;
 
+                    sm1.graph
+                        .edges()
+                        .forEach(function(edge){
+                            var _e = {};
+                            _e.id = edge.id;
+                            _e.source = edge.source;
+                            _e.target = edge.target;
+                            _e.color = edge.color;
+                            _e.hoverColor = edge.hoverColor;
+                            edges.push(_e);
+                        })
+                        ;
+
                     s.show({
                         nodes: nodes 
-                        , edges: sm1.graph.edges()
+                        , edges: edges 
                     });
                 }
             )
@@ -770,3 +799,118 @@ sigmajs默认`不支持`节点拖动，使其支持节点拖动的方法带有�
 </div>
 </div>
 
+
+
+
+## 四、图形测试用例
+
+
+
+
+<div id="test_40" class="test">
+<div class="test-container">
+<div id="test_40_graph" class="test-graph" style="height:400px;">
+</div>
+<div class="test-panel">
+<select></select>
+</div>
+<div class="test-console"></div>
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_40');
+        var g1 = getRandomGraph(10, 20, 10);
+        var containerId = 'test_40_graph';
+
+        var rendererSettings = {
+                // captors settings
+                doubleClickEnabled: false
+                , mouseWheelEnabled: false
+
+                // rescale settings
+                , minEdgeSize: 0.5
+                , maxEdgeSize: 1
+                , minNodeSize: 1 
+                , maxNodeSize: 5
+
+                // renderer settings
+                , edgeHoverColor: fly.randomColor() 
+                , edgeHoverSizeRatio: 1
+                , edgeHoverExtremities: true
+                , drawLabels: false
+            };
+        var sigmaSettings = {
+                // rescale settings 
+                sideMargin: 10 
+
+                // instance global settings
+                , enableEdgeHovering: true
+                , edgeHoverPrecision: 5
+            };
+
+        var sm1
+            ;
+
+        if((sm1 = isSigmaInstanceExisted(containerId))){
+            sm1.kill();
+        };
+
+        sm1 = getUniqueSigmaInstance(
+                    containerId 
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g1
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: containerId 
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
+
+        sm1.refresh();
+        s.show(' restarted ');
+
+
+        var $select = $('#test_40 select').html('')
+            , firstItem
+            ;
+
+        for(var i in window){
+            if(!firstItem){
+                firstItem = 1;
+                refreshData(i);
+            }
+            if(/^networkGraph/.test(i)){
+                $select.append(
+                    '<option>' + i + '</option>'
+                );
+            }
+        }
+
+        $select
+            .off()
+            .bind(
+                'change'
+                , function(e){
+                    var varName = $select.val();
+                    refreshData(varName);
+                }
+            )
+            ;
+
+        function refreshData(varName){
+            sm1.graph
+                .clear()
+                .read(window[varName])
+                ;
+            sm1.refresh();
+            s.show('var g1 = ' + varName + ';');
+        }
+
+    })();
+
+</div>
+</div>

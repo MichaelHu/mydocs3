@@ -4,8 +4,16 @@
 
 ## 一、综述
 
-### 1.1 参考文献
+### 1.1 参考资料
 
+`Github`：
+1. <https://github.com/jacomyal/sigma.js>
+2. <https://github.com/anvaka/VivaGraphJS>
+3. <https://github.com/anvaka/ngraph.forcelayout>
+4. <https://github.com/dhotson/springy>
+
+
+`其他`：
 1. 一种改进的可视化布局算法IGVA; 徐红云,陈志锋
 2. VERVIEW OF ALGORITHMS FOR GRAPH DRAWING; Pajntar B.; <http://ailab.ijs.si/dunja/SiKDD2006/Papers/Pajntar.pdf>
 3. <http://cs.brown.edu/~rt/gdhandbook/>
@@ -18,11 +26,11 @@
 
 `美学标准`：
 
-1. 边交叉数量最小原则。
-2. 直线边原则。曲边会增加图的复杂度。
-3. 邻接点空间位置接近原则。这样可以减小边的长度。
-4. 边平衡布局原则。以相同节点为出发点的多条边应尽量以该节点为中心平衡布局。
-5. 节点层次布局原则。引入层的概念，将节点尽量布局在水平或竖直的不同层上。
+1. `边交叉`数量最小原则。
+2. `直线边`原则。曲边会增加图的复杂度。
+3. `邻接点`空间位置接近原则。这样可以减小边的长度。
+4. `边平衡`布局原则。以相同节点为出发点的多条边应尽量以该节点为中心平衡布局。
+5. 节点`层次`布局原则。引入层的概念，将节点尽量布局在水平或竖直的不同层上。
 
 
 
@@ -44,6 +52,9 @@
 <script src="./js/network-edges-between-the-same-level-nodes-0524.js"></script>
 <script src="./js/network-edges-between-the-same-level-nodes-2-0524.js"></script>
 <script src="./js/network-tree-0524.js"></script>
+<script src="./js/network-edges-between-levels-0526.js"></script>
+<script src="./js/network-many-children-0526.js"></script>
+<script src="./js/network-forest-0527.js"></script>
 
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <style type="text/css">
@@ -361,11 +372,14 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
                 , gravity: -1.2
             }
         );
+
+        // https://github.com/anvaka/VivaGraphJS/blob/master/src/View/renderer.js
         renderer = Viva.Graph.View.renderer(
             graph
             , {
                 container: $('#' + containerId)[0]
                 , layout: layout
+                , interactive: false
             }
         );
         $('#' + containerId).data('viva-renderer', renderer); 
@@ -389,14 +403,58 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 > `ForceAtlas2`, a `continuous graph layout` algorithm for handy network visualization designed for the `Gephi` software.
 
 
-`相连`节点间有`引力`，会互相`吸引`；`不相连`节点有`斥力`，会互相`远离`。
+`相连`节点间有`胡克引力`，会互相`吸引`；`不相连`节点有`库仑斥力`，会互相`远离`。以及所有节点都有`重力`，会向中心靠拢。
 
 * 对于`森林`的展示，效果不是很好
 * `收敛`速度慢，或者`长久无法`收敛，导致某些交互效果无法响应，比如hover。这时调用
 
-        sigmaInst.supervisor.stop();
+        sigmaInst.killForceAtlas2();
 
     可能是一个好办法。
+
+整个算法以一个`模拟``物理系统`的方式进行多次迭代，需要配置`合适`的`参数`来获得较好的布局效果。这个可能比较费时间。目前比较有效的几个参数如下：
+
+    {
+        worker: true
+        , barnesHutOptimize: false
+        , scalingRatio: 260
+        , slowDown: 3
+        , outboundAttractionDistribution: 1
+        , gravity: 15
+    }
+
+
+另外，`整个`系统能量的最小化比较容易达到，但是`局部`能量的最小化却比较不确定，容易出现`局部`节点`抖动`的情况。不过节点抖动也有一定的规律可循，通过增加新的优化选项字段`preventShaking`来避免。
+
+    {
+        preventShaking: true
+    }
+
+
+相关代码如下，思路为发现抖动的节点，则将其`设为静止`不再参与物理系统的运行：
+
+    ...
+    var shakingThreshold = W.settings.shakingThreshold || 0.05;
+    var dx = NodeMatrix[np(n, 'dx')];
+    var oldDx = NodeMatrix[np(n, 'old_dx')];
+    var dy = NodeMatrix[np(n, 'dy')];
+    var oldDy = NodeMatrix[np(n, 'old_dy')];
+
+    if(W.settings.preventShaking){
+      if(Math.abs(Math.abs(dx) - Math.abs(oldDx)) / Math.abs(dx) < shakingThreshold
+          && Math.abs(dx - oldDx) / ( 2 * Math.abs(dx) ) > 1 - shakingThreshold
+        || Math.abs(Math.abs(dy) - Math.abs(oldDy)) / Math.abs(dy) < shakingThreshold
+          && Math.abs(dy - oldDy) / ( 2 * Math.abs(dy) ) > 1 - shakingThreshold) {
+        NodeMatrix[np(n, 'fixed')] = 1;
+      }
+    }
+    ...
+
+
+在项目中，我们将这种算法获得的布局称为`Organic layout`（`有机体布局`）。该布局显示出一种`内在`的`平衡感`、`簇布局`、`少交叉边`等特点。本质上还是`力导向`布局算法的衍生。
+
+<http://docs.yworks.com/yfiles/doc/demo/layout/module/SmartOrganicLayoutModule.java.html>
+
 
 以下例子使用sigmajs自带的`forceAtlas2`算法来实现。
 
@@ -422,6 +480,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
         var g1 = networkGraph_2circles_0523;
         var g1 = networkGraph_edges_between_the_same_level_nodes;
         var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        var g1 = networkGraph_many_children_0526;
         var g2 = {
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice() 
@@ -496,10 +555,22 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
         sm2.startForceAtlas2({
             worker: true
             , barnesHutOptimize: false
+            , scalingRatio: 260
+            , slowDown: 3
+            , outboundAttractionDistribution: 1
+            , gravity: 15
         }); 
 
         setTimeout(function(){
-            sm2.supervisor.stop();
+            sm2.killForceAtlas2();
+            var noverlapListener = sm2.configNoverlap({
+                    nodeMargin: 0.1,
+                    scaleNodes: 1.05,
+                    gridSize: 20,
+                    easing: 'quadraticInOut',
+                    duration: 5000
+                });
+            sm2.startNoverlap();
         }, 5000);
 
     })();
@@ -2364,17 +2435,40 @@ todo:
 
 `矩阵布局`算法：
 
-    @[data-script="javascript"]sigma.classes.graph.addMethod('layoutRect', function(){
-        var nodes = this.nodesArray
+    @[data-script="javascript"]sigma.utils.getGridLayout
+        = function(nodes, options){
+
+        if(!nodes || !nodes.length){
+            return;
+        }
+
+        var opt = options || {}
             , r = Math.ceil(Math.sqrt(nodes.length))
             , i = 0
             , j = 0
-            , step = nodes[0].size * 3 
+            , nodeSize = nodes[0].size || 1
+            , step = opt.space || nodeSize  * 3 
+            , center = opt.center
+            , rect
+            , ltPoint
             ;
 
+        if(!center){
+            rect = sigma.utils.getNodesRect(nodes, opt);
+            center = {
+                x: rect.x + rect.w / 2
+                , y: rect.y + rect.h / 2
+            };
+        }
+
+        ltPoint = {
+            x: center.x - step * ( r - 1 ) / 2
+            , y: center.y - step * ( r - 1 ) / 2
+        };
+
         nodes.forEach(function(node){
-            node.rect_x = j * step;
-            node.rect_y = i * step; 
+            node.grid_x = j * step + ltPoint.x;
+            node.grid_y = i * step + ltPoint.y; 
             j++;
             if(j >= r) {
                 j = 0;
@@ -2382,8 +2476,13 @@ todo:
             }
         });
 
+        return nodes;
+    };
+
+    sigma.prototype.layoutRect = function(options){
+        sigma.utils.getGridLayout(this.graph.nodes(), options);
         return this;
-    });
+    }
 
 
 <div id="test_39" class="test">
@@ -2393,12 +2492,18 @@ todo:
     @[data-script="javascript editable"](function(){
 
         var s = fly.createShow('#test_39');
-        var g = getRandomGraph(5, 10, 1);
+        var g = getRandomGraph(4, 0, 1);
+        // var g = networkGraph_forest_0527;
         var sm = getUniqueSigmaInstance('test_39');
         sm.graph
             .clear()
             .read(g)
-            .layoutRect()
+            ;
+        sm
+            .layoutRect({
+                center: {x:100, y:100}
+                , space: 10
+            })
             ;
         s.show(sm.graph.nodes());
 
@@ -2435,6 +2540,8 @@ todo:
         var g1 = networkGraph_2circles_0523;
         var g1 = networkGraph_edges_between_the_same_level_nodes;
         var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        var g1 = networkGraph_many_children_0526;
+        // var g1 = networkGraph_forest_0527;
         var g2 = {
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice() 
@@ -2455,10 +2562,11 @@ todo:
                 , edgeHoverColor: fly.randomColor() 
                 , edgeHoverSizeRatio: 1
                 , edgeHoverExtremities: true
+                , drawLabels: false
             };
         var sigmaSettings = {
                 // rescale settings 
-                sideMargin: 0.1 
+                sideMargin: 10 
 
                 // instance global settings
                 , enableEdgeHovering: true
@@ -2504,37 +2612,18 @@ todo:
                 ); 
 
         sm1.refresh();
-        sm2.graph.layoutRect();
+        sm2.layoutRect();
         sm2.refresh();
 
         setTimeout(function(){
             sigma.plugins.animate(
                 sm2
                 , {
-                    x: 'rect_x'
-                    , y: 'rect_y'
+                    x: 'grid_x'
+                    , y: 'grid_y'
                 }
                 , {
                     duration: 1000
-                    , onComplete: function(){
-                        sm2.graph
-                            .sortByNodesDegree(1)
-                            .layoutRect()
-                            ;
-                        // s.show(sm2.graph.nodes());
-                        setTimeout(function(){
-                            sigma.plugins.animate(
-                                sm2
-                                , {
-                                    x: 'rect_x'
-                                    , y: 'rect_y'
-                                }
-                                , {
-                                    duration: 1000
-                                }
-                            );
-                        }, 1000);
-                    }
                 }
             );
 
@@ -2756,6 +2845,7 @@ todo:
         var g1 = networkGraph_edges_between_the_same_level_nodes;
         var g1 = networkGraph_edges_between_the_same_level_nodes_2;
         var g1 = networkGraph_tree_0524;
+        var g1 = networkGraph_many_children_0526;
         var g2 = {
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice()
@@ -3446,6 +3536,7 @@ todo
         var g1 = networkGraph_edges_between_the_same_level_nodes;
         var g1 = networkGraph_edges_between_the_same_level_nodes_2;
         var g1 = networkGraph_tree_0524;
+        var g1 = networkGraph_many_children_0526;
 
         var g2 = {
                 nodes: g1.nodes.slice()
@@ -3746,7 +3837,7 @@ todo
 
 ## 五、增量布局
 
-todo
+见`graph layout2`
 
 
 
