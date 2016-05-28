@@ -556,19 +556,21 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
             worker: true
             , barnesHutOptimize: false
             , scalingRatio: 260
-            , slowDown: 3
+            , slowDown: 1
             , outboundAttractionDistribution: 1
             , gravity: 15
+            , preventShaking: 1
+            , shakingThreshold: 0.1
         }); 
 
         setTimeout(function(){
             sm2.killForceAtlas2();
             var noverlapListener = sm2.configNoverlap({
-                    nodeMargin: 0.1,
+                    nodeMargin: 5,
                     scaleNodes: 1.05,
                     gridSize: 20,
                     easing: 'quadraticInOut',
-                    duration: 5000
+                    duration: 1000
                 });
             sm2.startNoverlap();
         }, 5000);
@@ -2479,7 +2481,7 @@ todo:
         return nodes;
     };
 
-    sigma.prototype.layoutRect = function(options){
+    sigma.prototype.layoutGrid = function(options){
         sigma.utils.getGridLayout(this.graph.nodes(), options);
         return this;
     }
@@ -2500,7 +2502,7 @@ todo:
             .read(g)
             ;
         sm
-            .layoutRect({
+            .layoutGrid({
                 center: {x:100, y:100}
                 , space: 10
             })
@@ -2612,7 +2614,7 @@ todo:
                 ); 
 
         sm1.refresh();
-        sm2.layoutRect();
+        sm2.layoutGrid();
         sm2.refresh();
 
         setTimeout(function(){

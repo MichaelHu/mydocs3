@@ -64,7 +64,8 @@
                 , x: null
                 , y: null
                 , size: 10
-                , color: fly.randomColor()
+                // , color: fly.randomColor()
+                , color: '#ff7f0e' 
             });
         }
 
@@ -77,7 +78,7 @@
                 id: id 
                 , source: graph.nodes[len1 * Math.random() | 0].id
                 , target: _nodes[len2 * Math.random() | 0].id
-                , color: '#ccc' 
+                , color: '#cedb9c' 
                 , hoverColor: '#c00'
             });
         }
@@ -89,8 +90,18 @@
 ### 5.2 矩阵增量布局
 
 
+`incLayoutGrid()`：矩阵增量布局，或者叫做网格增量布局。需提供参数：
+
+* `nodes`：原有节点数组
+* `newNodes`：新增节点数组。新节点需要确保`x, y`字段`存在`，即使其值是null
+* `selectedNodes`：`选中`节点数组。新增节点初始会出现在选中节点的`中心处`。
+* `options`：其他选项，同`getGridLayout()`方法的options
+
+
+算法实现如下：
+
     @[data-script="javascript editable"]sigma.utils.incLayoutGrid
-        = function(nodes, newNodes, options){
+        = function(nodes, newNodes, selectedNodes, options){
 
         if(!newNodes || !newNodes.length
             || !nodes || !nodes.length){
@@ -101,46 +112,58 @@
             , rect
             , center
             , newCenter
+            , oldNodes
             , newWidth = ( Math.ceil(Math.sqrt(newNodes.length)) - 1 ) * ( opt.space || 50 ) 
                 + ( newNodes[0].size || + 20 )
+            , gnr = sigma.utils.getNodesRect
             ;
 
-        rect = sigma.utils.getNodesRect(nodes, opt);
+        selectedNodes = selectedNodes || [];
+        if(!selectedNodes.length){
+            selectedNodes = nodes;
+        }
+        rect = gnr(nodes, opt);
         center = {
             x: rect.x + rect.w / 2
             , y: rect.y + rect.h / 2
         };
         newCenter = {
-            x: rect.x + rect.w + newWidth * 1.5
+            x: rect.x + rect.w + newWidth
             , y: rect.y + rect.h / 3
         };
 
 
-        opt.center = newCenter;
 
-        // from center point 
+        rect = gnr(selectedNodes, opt);
+        // from selected nodes' center point 
         newNodes.forEach(function(node){
-            node.x = center.x; 
-            node.y = center.y;
+            node.x = rect.x + rect.w / 2; 
+            node.y = rect.y + rect.h / 2;
         });
-        sigma.utils.getGridLayout(newNodes, opt);
 
+        // prepare for the next animation
         nodes.forEach(function(node){
             node.grid_x = node.x;
             node.grid_y = node.y;
         });
+
+        opt.center = newCenter;
+        sigma.utils.getGridLayout(newNodes, opt);
+
     };
 
 
 
     sigma.prototype.incLayoutGrid = function(
-        newNodes, options) {
+        newNodes, selectedNodes, options) {
         var me = this
+            , nodes = me.graph.nodes()
             ;
 
         sigma.utils.incLayoutGrid(
-            me.graph.nodes()
+            nodes
             , newNodes
+            , selectedNodes
             , options
         );
 
@@ -231,8 +254,24 @@
                 , newEdges = newData.edges
                 ; 
 
+            function getRandomSelectedNodes(){
+                var _nodes = sm.graph.nodes()
+                    , len = _nodes.length
+                    , retNodes = []
+                    ;
+
+                _nodes.forEach(function(_node){
+                    if(Math.random() > 0.8){
+                        _node.color = '#f00';
+                        retNodes.push(_node);
+                    }
+                });
+                return retNodes;
+            }
+
             sm.incLayoutGrid(
                 newNodes
+                , getRandomSelectedNodes()
                 , {
                     space: 10
                 }
@@ -249,18 +288,24 @@
 
             sm.refresh();
 
-            console.log(sm.graph.nodes());
-
-            sigma.plugins.animate(
-                sm
-                , {
-                    x: 'grid_x'
-                    , y: 'grid_y'
-                }
-                , {
-                    duration: 500
-                }
-            );
+            setTimeout(function(){
+                sigma.plugins.animate(
+                    sm
+                    , {
+                        x: 'grid_x'
+                        , y: 'grid_y'
+                    }
+                    , {
+                        duration: 500
+                        , onComplete: function(){
+                            sm.graph.nodes().forEach(function(node){
+                                delete node.grid_x;
+                                delete node.grid_y;
+                            });
+                        }
+                    }
+                );
+            }, 1000);
 
         }, 1000);
 
