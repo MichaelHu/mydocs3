@@ -39,7 +39,7 @@
 
 ### 5.1 构建新节点
 
-新节点的特点是x, y, size未设置确定的值。
+新节点的`特点`是`x`, `y`, `size`未设置确定的值，但不是`undefined`。
 
     @[data-script="javascript editable"]function createRawGraphData(
         nodeCount

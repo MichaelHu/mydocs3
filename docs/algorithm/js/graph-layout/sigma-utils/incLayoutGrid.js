@@ -39,12 +39,31 @@ sigma.utils.incLayoutGrid
         node.y = rect.y + rect.h / 2;
     });
 
-    opt.center = newCenter;
-    sigma.utils.getGridLayout(newNodes, opt);
-
     // prepare for the next animation
     nodes.forEach(function(node){
         node.grid_x = node.x;
         node.grid_y = node.y;
     });
+
+    opt.center = newCenter;
+    sigma.utils.getGridLayout(newNodes, opt);
+
+};
+
+
+
+sigma.prototype.incLayoutGrid = function(
+    newNodes, selectedNodes, options) {
+    var me = this
+        , nodes = me.graph.nodes()
+        ;
+
+    sigma.utils.incLayoutGrid(
+        nodes
+        , newNodes
+        , selectedNodes
+        , options
+    );
+
+    return me;
 };
