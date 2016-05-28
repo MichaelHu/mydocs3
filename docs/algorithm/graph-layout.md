@@ -55,6 +55,7 @@
 <script src="./js/network-edges-between-levels-0526.js"></script>
 <script src="./js/network-many-children-0526.js"></script>
 <script src="./js/network-forest-0527.js"></script>
+<script src="./js/network-simpletree-0528.js"></script>
 
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <style type="text/css">
@@ -642,6 +643,10 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 #### 4.1.3 widthTravel
 
 `widthTravel(root)`：从root节点开始对图进行广度遍历，遍历过程中`忽略``父节点`和`兄弟`节点。
+
+`广度`遍历过程可以形成`树形`结构。如下图所示：
+
+@[style="text-align:center"]<img src="./img/graph-width-travel.png" width="560">
 
     @[data-script="javascript"]sigma.utils.widthTravel
         = function(nodes, edges, root, callbacks, excludes) {
@@ -1869,6 +1874,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
         var s = fly.createShow('#test_35');
         var g = getRandomGraph(5, 10, 18);
+        var g = networkGraph_simpletree_0528;
         var color = fly.randomColor();
         var g1 = {
                 nodes: [
@@ -2657,6 +2663,7 @@ todo:
 1. `同层`兄弟节点有边，通过调整让`有边`的兄弟节点`靠近`
 2. 两个`上层`节点同时与一个`下层`节点`有边`，通过调整让有边的兄弟节点`靠近`
 3. 避免其他边`穿过`节点`中心`
+4. `大量`同层`叶子型`节点，形成矩阵
 
 `适用场景`：
 
