@@ -121,7 +121,7 @@
 
     /etc/init.d/httpd restart 
 
-访问：<http://123.56.89.145/phpapp/index.php>
+访问：<http://258i.com/phpapp/index.php>
 
 
 
@@ -168,7 +168,7 @@
 
 5. OK了，可以直接使用了
 
-        git clone git@123.56.89.145:/home/git/git-repos/irice.git
+        git clone git@258i.com:/home/git/git-repos/irice.git
 
 
 
