@@ -91,3 +91,43 @@ function getRandomGraph(numOfNodes, numOfEdges, fixSize){
 
     return g;
 } 
+
+
+function getClusterGraph(
+    numOfNodes
+    , options){
+
+    var opt = options || {} 
+        , graph = {nodes: [], edges: []}
+        , nid = 1
+        , eid = 1
+        , xMax = opt.xMax || 300
+        , yMax = opt.yMax || 200
+        , nodeSize = opt.nodeSize || 1
+        ;
+
+    for(var i=0; i<numOfNodes; i++){
+        graph.nodes.push({
+            id: 'n' + nid
+            , label: 'n' + nid++
+            , x: xMax * Math.random() 
+            , y: yMax * Math.random() 
+            , size: nodeSize
+            , color: fly.randomColor()
+        }); 
+    }
+
+    for(i=1; i<numOfNodes; i++){
+        graph.edges.push({
+            id: 'e' + eid++
+            , source: 'n1'
+            , target: graph.nodes[i].id
+            , color: '#ccc'
+            , hoverColor: '#f00'
+        });
+    }
+
+    return graph;
+}
+
+

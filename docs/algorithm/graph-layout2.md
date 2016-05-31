@@ -110,11 +110,11 @@
 
         var opt = options || {} 
             , rect
-            , center
             , newCenter
-            , oldNodes
+            , newLen = newNodes.length
             , newWidth = ( Math.ceil(Math.sqrt(newNodes.length)) - 1 ) * ( opt.space || 50 ) 
-                + ( newNodes[0].size || + 20 )
+                + ( newNodes[0].size || + 20 ) 
+                + ( newLen < 2 ? ( opt.space || 50 ) : 0 )
             , gnr = sigma.utils.getNodesRect
             ;
 
@@ -123,16 +123,10 @@
             selectedNodes = nodes;
         }
         rect = gnr(nodes, opt);
-        center = {
-            x: rect.x + rect.w / 2
-            , y: rect.y + rect.h / 2
-        };
         newCenter = {
             x: rect.x + rect.w + newWidth
             , y: rect.y + rect.h / 3
         };
-
-
 
         rect = gnr(selectedNodes, opt);
         // from selected nodes' center point 
@@ -323,8 +317,189 @@
 ### 5.3 增量球形布局 
 
 
+#### 5.3.1 interpolatesAngle()
+
+    @[data-script="javascript editable"]sigma.utils.interpolatesAngle
+        = function(
+            angleRange
+            , numOfFirstLevel
+            , levels
+            , angleStart
+        ) {
+        var retArr = []
+            , angleStart = angleStart || 0
+            , numOfCurrentLevel
+            , anglesOfCurrentLevel
+            , stepOfCurrentLevel
+            , angleOffset
+            , i, j
+            ;
+
+        for(i=0; i<levels; i++){
+            numOfCurrentLevel = ( i + 1 ) * numOfFirstLevel;
+            anglesOfCurrentLevel = [];
+            stepOfCurrentLevel = angleRange / numOfCurrentLevel;
+            angleOffset = stepOfCurrentLevel * ( i == 0 ? 0 : 0.5 );
+            angleOffset += angleStart;
+                
+            retArr.push(anglesOfCurrentLevel);
+            for(j=0; j<numOfCurrentLevel; j++){
+                anglesOfCurrentLevel.push(
+                    stepOfCurrentLevel * j + angleOffset
+                );
+            }
+        }
+
+        return retArr;
+    };
 
 
+
+#### 5.3.2 clustersNodes()
+
+    @[data-script="javascript editable"]sigma.utils.clustersNodes
+        = function(
+            root
+            , options
+        ) {
+
+        var opt = options || {}
+            , children
+            , numOfChildren 
+            , clusterLevels
+            , angleRange = opt.angleRange || 2 * Math.PI
+            , numOfFirstLevel = opt.numOfFirstLevel || 8
+            , radiusStep = opt.radiusStep || 100
+            , angleStart = opt.angleStart || 0
+            , radius = 0, _r
+            , i, j, k
+            , angles
+            ;
+
+        if(!root || !root._wt_children){
+            return;
+        }
+
+        children = root._wt_children;
+        numOfChildren = children.length; 
+        clusterLevels = _getClusterLevels(numOfFirstLevel, numOfChildren); 
+
+        angles = sigma.utils.interpolatesAngle(
+            angleRange
+            , numOfFirstLevel
+            , clusterLevels 
+            , angleStart
+        );
+
+        k = 0;
+        for(i=0; i<angles.length && k < numOfChildren; i++){
+            radius += radiusStep;
+            for(j=0; j<angles[i].length && k < numOfChildren; j++, k++){
+                _r = radius + 0.5 * radiusStep * Math.random();
+                children[k].x = root.x + _r * Math.cos(angles[i][j]);
+                children[k].y = root.y + _r * Math.sin(angles[i][j]);
+            }
+        }
+
+        function _getClusterLevels(numOfFirstLevel, totalNum){
+            var i = 1
+                , step = numOfFirstLevel
+                , all = 0
+                ;
+
+            do {
+                all += i * step;
+                i++;
+            }
+            while(all < totalNum);
+            return i - 1; 
+        }
+    };
+
+
+
+<div id="test_30" class="test">
+<div class="test-container">
+<div id="test_30_graph" class="test-graph">
+</div>
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_30');
+        var g1 = getClusterGraph(30, {xMax: 300, yMax: 200, nodeSize: 10});
+        var containerId = 'test_30_graph';
+        var rendererSettings = {
+                // captors settings
+                doubleClickEnabled: true
+                , mouseWheelEnabled: false
+
+                // rescale settings
+                , minEdgeSize: 0.5
+                , maxEdgeSize: 1
+                , minNodeSize: 1 
+                , maxNodeSize: 5
+
+                // renderer settings
+                , edgeHoverColor: fly.randomColor() 
+                , edgeHoverSizeRatio: 1
+                , edgeHoverExtremities: true
+                , drawLabels: false
+            };
+        var sigmaSettings = {
+                // rescale settings 
+                sideMargin: 10 
+
+                // instance global settings
+                , enableEdgeHovering: true
+                , edgeHoverPrecision: 5
+            };
+
+        var sm;
+
+        if((sm = isSigmaInstanceExisted(containerId))){
+            sm.kill();
+        };
+
+        sigma.utils.widthTravel(
+            g1.nodes
+            , g1.edges
+            , g1.nodes[0]
+        );
+
+        sigma.utils.clustersNodes(
+            g1.nodes[0]
+            , {
+                angleRange: Math.PI / 2
+                , numOfFirstLevel: 8
+                , radiusStep: 100
+                , angleStart: Math.PI / 2
+            }
+        );
+
+        sm = getUniqueSigmaInstance(
+                    containerId
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g1
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: containerId
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
+
+        sm.refresh();
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
 
 
 

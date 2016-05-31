@@ -51,6 +51,7 @@
 <script src="./js/network-2circle-0523.js"></script>
 <script src="./js/network-edges-between-the-same-level-nodes-0524.js"></script>
 <script src="./js/network-edges-between-the-same-level-nodes-2-0524.js"></script>
+<script src="./js/network-edges-between-the-same-level-nodes-3-0531.js"></script>
 <script src="./js/network-tree-0524.js"></script>
 <script src="./js/network-edges-between-levels-0526.js"></script>
 <script src="./js/network-many-children-0526.js"></script>
@@ -75,6 +76,9 @@
 
 
 ## 二、快速启动
+
+
+### 2.1 getUniqueSigmaInstance
 
 以下代码提供`sigma`实例的生成器，根据`实例ID`在上下文中只保持一个实例，即使`多次调用`也是如此。
 
@@ -119,7 +123,12 @@
         return getUniqueSigmaInstance(instId, null, 2);
     }
 
-    function getRandomGraph(numOfNodes, numOfEdges, fixSize){
+
+### 2.2 getRandomGraph()
+
+`getRandomGraph()`：获取随机生成的图形数据。
+
+    @[data-script="javascript editable"]function getRandomGraph(numOfNodes, numOfEdges, fixSize){
 
         var i
             , s
@@ -173,6 +182,50 @@
         return g;
     }
 
+
+### 2.3 getClusterGraph()
+
+`getClusterGraph()`：获取簇图形数据。
+
+
+    @[data-script="javascript editable"]function getClusterGraph(
+        numOfNodes
+        , options){
+
+        var opt = options || {} 
+            , graph = {nodes: [], edges: []}
+            , nid = 1
+            , eid = 1
+            , xMax = opt.xMax || 300
+            , yMax = opt.yMax || 200
+            , nodeSize = opt.nodeSize || 1
+            ;
+
+        for(var i=0; i<numOfNodes; i++){
+            graph.nodes.push({
+                id: 'n' + nid
+                , label: 'n' + nid++
+                , x: xMax * Math.random() 
+                , y: yMax * Math.random() 
+                , size: nodeSize
+                , color: fly.randomColor()
+            }); 
+        }
+
+        for(i=1; i<numOfNodes; i++){
+            graph.edges.push({
+                id: 'e' + eid++
+                , source: 'n1'
+                , target: graph.nodes[i].id
+                , color: '#ccc'
+                , hoverColor: '#f00'
+            });
+        }
+
+        return graph;
+    }
+
+    // console.log(getClusterGraph(30, {xMax: 300, yMax: 200, nodeSize: 10}));
 
 
 ## 三、自动布局
@@ -1849,12 +1902,88 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
             return retNodes;
         }
 
-    }
+    };
 
 
 
+#### 4.1.18 avoidSameLevelTravelThrough()
+
+`avoidSameLevelTravelThrough(nodesOfSameLevel, edges)`：层次布局中，属于`同一层级`的所有节点中，`非靠近`节点之间存在边相连，调整中间节点的`上下位置`，`避免`边`穿过`中间节点，造成不直观的效果。
+
+    @[data-script="javascript"]sigma.utils.avoidSameLevelTravelThrough
+        = function(nodesOfSameLevel, edges) {
+
+        if(!nodesOfSameLevel){
+            console.log(arguments.callee
+                , 'nodesOfSameLevel is null');
+            return;
+        }
+
+        var nodes = nodesOfSameLevel 
+            , edges = edges || []
+            , unit = unit || 1
+            , node, fromNode, toNode
+            , len = nodes.length
+            , i, j, k
+            ;
+
+        nodes.forEach(function(node){
+            delete node._wt_dy;
+        });
+
+        for(i=0; i<len; i++){
+            fromNode = nodes[i];
+            for(j=i+2; j<len; j++){
+                toNode = nodes[j];
+                if(_isConnected(fromNode, toNode)){
+                    for(k=i+1; k<j; k++){
+                        node = nodes[k];     
+                        // adjust once
+                        if(node._wt_dy) {
+                            continue;
+                        }
+                        node._wt_dy = ( k % 2 == 0 ? -1 : 1 );
+                    }
+                }
+            }
+        } 
+
+        function _isConnected(fromNode, toNode){
+            for(var i=0; i<edges.length; i++){
+                var edge = edges[i];
+                if(edge.source == fromNode.id
+                        && edge.target == toNode.id
+                    || edge.source == toNode.id
+                        && edge.target == fromNode.id) {
+                    return 1;
+                } 
+            }
+            return 0;
+        }
+
+    };
 
 
+
+#### 4.1.19 avoidChildrenTravelThrough()
+
+`avoidChildrenTravelThrough(parent, edges)`：层次布局中，属于`同一父节点`的所有`兄弟`节点中，`非靠近`节点之间存在边相连，调整中间节点的`上下位置`，`避免`边`穿过`中间节点，造成不直观的效果。
+
+
+    @[data-script="javascript"]sigma.utils.avoidChildrenTravelThrough
+        = function(parentNode, edges) {
+
+        if(!parentNode || !parentNode._wt_children){
+            console.log(arguments.callee
+                , 'parentNode is null or parentNode._wt_children is not existed');
+            return;
+        }
+
+        sigma.utils.avoidSameLevelTravelThrough(
+            parentNode._wt_children
+            , edges
+        );
+    };
 
 
 ### 4.2 常用方法验证 
@@ -2283,7 +2412,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 #### 4.2.4 验证四
 
 
-验证`adjustSiblingsOrder`, `adjustTravelThroughEdges`等方法。
+验证`adjustSiblingsOrder`, `avoidChildrenTravelThrough`等方法。
 
 
 <div id="test_37" class="test">
@@ -2299,15 +2428,8 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
         var s = fly.createShow('#test_37');
         var g1 = getRandomGraph(10, 10, 1);
-        var g1 = networkGraph_FR;
-        var g1 = networkGraph_ForceAtlas2;
-        var g1 = networkGraph_edges_between_the_same_level_nodes;
         var g1 = networkGraph_edges_between_the_same_level_nodes_2;
-        var g2 = {
-                nodes: g1.nodes.slice()
-                , edges: g1.edges.slice()
-            }
-            ;
+        var g2 = networkGraph_edges_between_the_same_level_nodes;
         var containerId = 'test_37_graph';
         var rendererSettings = {
                 // captors settings
@@ -2327,7 +2449,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
             };
         var sigmaSettings = {
                 // rescale settings 
-                sideMargin: 0.1 
+                sideMargin: 5 
 
                 // instance global settings
                 , enableEdgeHovering: true
@@ -2372,44 +2494,65 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
                     }
                 ); 
 
-        sm1.refresh();
-
-        var forest = sm2.graph.getLayoutForest()
-            , index = 0
+        var forest = sm1.graph.getLayoutForest()
             ;
 
         forest.forEach(function(tree){
 
-            s.show('before adjusting:');
+            s.show('before order adjusting:');
             s.append_show(
                 tree._wt_children.map(function(node){
                     return node.id;
                 })
             );
     
-            sigma.utils.adjustSiblingsOrder(tree, sm2.graph.edges());
+            sigma.utils.adjustSiblingsOrder(tree, sm1.graph.edges());
 
-            s.append_show('after adjusting:');
+            s.append_show('after order adjusting:');
             s.append_show(
                 tree._wt_children.map(function(node){
                     return node.id;
                 })
             );
 
-            tree = sm2.graph.nodes('n4'); 
-            s.append_show('before adjusting:');
+            tree = sm1.graph.nodes('n3'); 
+            s.append_show('before order adjusting:');
             s.append_show(
                 tree._wt_children.map(function(node){
                     return node.id;
                 })
             );
     
-            sigma.utils.adjustSiblingsOrder(tree, sm2.graph.edges());
+            sigma.utils.adjustSiblingsOrder(tree, sm1.graph.edges());
 
-            s.append_show('after adjusting:');
+            s.append_show('after order adjusting:');
             s.append_show(
                 tree._wt_children.map(function(node){
                     return node.id;
+                })
+            );
+        });
+
+        sm1.refresh();
+
+        forest = sm2.graph.getLayoutForest();
+        
+        forest.forEach(function(tree){
+
+            tree = sm2.graph.nodes('n0'); 
+            s.append_show('\nbefore travel through adjusting:');
+            s.append_show(
+                tree._wt_children.map(function(node){
+                    return node.id + ':' + ( node._wt_dy || 0 );
+                })
+            );
+    
+            sigma.utils.avoidChildrenTravelThrough(tree, sm2.graph.edges());
+
+            s.append_show('after travel through adjusting:');
+            s.append_show(
+                tree._wt_children.map(function(node){
+                    return node.id + ':' + ( node._wt_dy || 0 );
                 })
             );
         });
@@ -2661,8 +2804,8 @@ todo:
 `优化策略`：
 
 1. `同层`兄弟节点有边，通过调整让`有边`的兄弟节点`靠近`
-2. 两个`上层`节点同时与一个`下层`节点`有边`，通过调整让有边的兄弟节点`靠近`
-3. 避免其他边`穿过`节点`中心`
+2. 避免`同层`其他边`穿过`节点`中心`
+3. 两个`上层`节点同时与一个`下层`节点`有边`，通过调整让有边的兄弟节点`靠近`
 4. `大量`同层`叶子型`节点，形成矩阵
 
 `适用场景`：
@@ -2718,7 +2861,8 @@ todo:
 
 
 
-`层次布局算法`(`使用均衡优化`、`优化策略1`)：
+`层次布局算法`(`使用均衡优化`、`优化策略1`、`优化策略2`)：
+
 
     @[data-script="javascript"]sigma.prototype.layoutHierarchy2
         = function(options){
@@ -2735,12 +2879,28 @@ todo:
 
         forest.forEach(function(tree){
 
-            var maxLevel = 1;
+            var maxLevel = 1
+                , nodesOfSameLevel = {}
+                , avoidSameLevelTravelThrough = opt.avoidSameLevelTravelThrough
+                , delta = opt.avoidSameLevelTravelThroughDelta || 0.2
+                ;
 
             depthTravel(tree, treeOffsetX * unit);
             tree._wt_maxlevel = maxLevel;
             tree._hier_offsetx = treeOffsetX;
             treeOffsetX += tree._wt_leaves;
+            if(avoidSameLevelTravelThrough){
+                for(var i in nodesOfSameLevel){
+                    sigma.utils.avoidSameLevelTravelThrough(
+                        nodesOfSameLevel[i]
+                        , edges
+                    );
+                    nodesOfSameLevel[i].forEach(function(node){
+                        node.hier_y += 
+                            ( node._wt_dy || 0 ) * ( delta || 0.2 ) * unit;
+                    });
+                }
+            }
 
             function depthTravel(node, parentX){
                 var children = node._wt_children
@@ -2748,10 +2908,17 @@ todo:
                     , level = node._wt_level
                     , parentX = parentX || 0
                     , currentX = 0
+                    , nosl
                     ;
 
                 if(opt.adjustSiblingsOrder){
                     sigma.utils.adjustSiblingsOrder(node, edges);
+                }
+
+                if(avoidSameLevelTravelThrough){
+                    nosl = nodesOfSameLevel[level] 
+                        = nodesOfSameLevel[level] || [];
+                    nosl.push(node);
                 }
 
                 if(level > maxLevel) {
@@ -2759,7 +2926,7 @@ todo:
                 }
 
                 node.hier_x = parentX + unit * leaves / 2;
-                node.hier_y = unit * ( level - 1 );
+                node.hier_y = unit * ( level - 1 ); 
 
                 if(children.length > 0){
                     children.forEach(function(child){
@@ -2855,6 +3022,7 @@ todo:
         var g1 = networkGraph_edges_between_the_same_level_nodes_2;
         var g1 = networkGraph_tree_0524;
         var g1 = networkGraph_many_children_0526;
+        var g1 = networkGraph_edges_between_the_same_level_nodes_3;
         var g2 = {
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice()
@@ -2943,6 +3111,8 @@ todo:
             .layoutHierarchy2({
                 unit: 50
                 , adjustSiblingsOrder: 1
+                , avoidSameLevelTravelThrough: 1
+                , avoidSameLevelTravelThroughDelta: 0.2
             })
             .normalizeSophonNodes({
                 readPrefix: 'hier_'

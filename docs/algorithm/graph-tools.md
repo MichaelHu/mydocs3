@@ -28,6 +28,7 @@
 <script src="./js/network-2circle-0523.js"></script>
 <script src="./js/network-edges-between-the-same-level-nodes-0524.js"></script>
 <script src="./js/network-edges-between-the-same-level-nodes-2-0524.js"></script>
+<script src="./js/network-edges-between-the-same-level-nodes-3-0531.js"></script>
 <script src="./js/network-tree-0524.js"></script>
 <script src="./js/network-edges-between-levels-0526.js"></script>
 <script src="./js/network-many-children-0526.js"></script>
@@ -540,6 +541,22 @@ sigmajs默认`不支持`节点拖动，使其支持节点拖动的方法带有�
             sigInst.refresh();
         }
 
+        var _id = 0;
+        function initId(){
+            var nodes = sm1.graph.nodes();
+            nodes.forEach(function(node){
+                var rslt = node.id.match(/\d+/g)
+                    , id = 0
+                    ; 
+                if(rslt) {
+                    id = rslt[0]; 
+                }
+                _id = Math.max(_id, id);
+            }); 
+            _id++;
+        }
+        initId();
+
         sm1
             .bind(
                 'clickNode'
@@ -571,7 +588,7 @@ sigmajs默认`不支持`节点拖动，使其支持节点拖动的方法带有�
                             clearSelected(sm1, node);
                         }
                         else {
-                            id = 'newEdge' + sigma.utils.id(); 
+                            id = 'e' + _id++; 
                             sm1.graph.addEdge({
                                 id: id 
                                 , source: selectedNode.id
@@ -599,12 +616,12 @@ sigmajs默认`不支持`节点拖动，使其支持节点拖动的方法带有�
                     console.log(e);
                     if(selectedNode){
                         pointInfo = getPointInfo(e.data.captor, sm1);
-                        id = sigma.utils.id();
-                        nodeId = 'newNode' + id;
-                        edgeId = 'newEdge' + id;
+                        id = _id++;
+                        nodeId = 'n' + id;
+                        edgeId = 'e' + id;
                         node = {
                             id: nodeId
-                            , label: nodeId
+                            , label: '' + id
                             , x: pointInfo.x
                             , y: pointInfo.y
                             , color: fly.randomColor()
@@ -636,11 +653,11 @@ sigmajs默认`不支持`节点拖动，使其支持节点拖动的方法带有�
                         , node
                         ;
                     if(!selectedNode){
-                        id = sigma.utils.id();
-                        nodeId = 'newNode' + id;
+                        id = _id++;
+                        nodeId = 'n' + id;
                         node = {
                             id: nodeId
-                            , label: nodeId
+                            , label: '' + id
                             , x: pointInfo.x
                             , y: pointInfo.y
                             , color: fly.randomColor()
