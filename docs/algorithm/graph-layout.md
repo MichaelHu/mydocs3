@@ -2898,6 +2898,7 @@ todo:
                     nodesOfSameLevel[i].forEach(function(node){
                         node.hier_y += 
                             ( node._wt_dy || 0 ) * ( delta || 0.2 ) * unit;
+                        delete node._wt_dy;
                     });
                 }
             }
@@ -2908,7 +2909,6 @@ todo:
                     , level = node._wt_level
                     , parentX = parentX || 0
                     , currentX = 0
-                    , nosl
                     ;
 
                 if(opt.adjustSiblingsOrder){
@@ -2916,9 +2916,9 @@ todo:
                 }
 
                 if(avoidSameLevelTravelThrough){
-                    nosl = nodesOfSameLevel[level] 
-                        = nodesOfSameLevel[level] || [];
-                    nosl.push(node);
+                    ( nodesOfSameLevel[level] 
+                        = nodesOfSameLevel[level] || [] )
+                        .push(node);
                 }
 
                 if(level > maxLevel) {
