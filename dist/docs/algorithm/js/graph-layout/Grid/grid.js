@@ -30,48 +30,47 @@
             return this.blockList[id];
         }
 
-        , getMinRect: function(){
+        , getMinSquare: function(){
             var me = this
-                , rect = null
+                , square = null
                 , grid = me.grid
                 , i, j
-                , wMax = 0
-                , hMax = 0
+                , xMax = 0
+                , yMax = 0
+                , max
                 ;
 
-            for(i=0; i<me.ySize; i++){
-                for(j=0; j<me.xSize; j++){
+            for(i=0; i<me.xSize; i++){
+                for(j=0; j<me.ySize; j++){
                     if(grid[i][j]){
-                        wMax = Math.max(j + 1, wMax);
-                        hMax = Math.max(i + 1, hMax);
+                        xMax = Math.max(i + 1, xMax);
+                        yMax = Math.max(j + 1, xMax);
                     }
                 }
             } 
 
-            if(wMax > 0 && hMax > 0){
-                rect = {
-                    x: 0
-                    , y: 0
-                    , w: wMax
-                    , h: hMax
+            if(xMax > 0 && yMax > 0){
+                max = Math.max(xMax, yMax);
+                square = {
+                    x: 0, y: 0
+                    , w: max
+                    , h: max
                 }
             }
 
-            return rect;
+            return square;
         }
 
-        , getMaxSpareRect: function(minRect){
+        , getMaxSpareRect: function(minSquare){
             var me = this
                 , grid = me.grid
-                , minRect = minRect || me.getMinRect()
+                , square = minSquare || me.getMinSquare()
                 , rect
                 , iStart, jStart
                 , i, j
-                , expandDirection
-                , xRatio, yRatio
                 ; 
 
-            if(!minRect){
+            if(!square){
                 rect = {
                     x: 0 
                     , y: 0
@@ -80,32 +79,15 @@
                 };
             } 
             else {
-                jStart = minRect.x + minRect.w - 1;
-                iStart = minRect.y + minRect.h - 1;
-
-                xRatio = minRect.w / me.xSize;
-                yRatio = minRect.h / me.ySize;
-
-                if(xRatio < yRatio){
-                    expandDirection = 'X';
-                }
-                else if(yRatio < xRatio){
-                    expandDirection = 'Y';
-                }
-                else {
-                    expandDirection = 'XY';
-                }
+                jStart = square.x + square.w - 1;
+                iStart = square.y + square.h - 1;
 
                 if(grid[iStart][jStart]){
-                    if(iStart < me.ySize - 1 && expandDirection != 'X'){
+                    if(iStart < me.ySize - 1 && jStart < me.xSize - 1){
                         iStart++;
-                    }
-
-                    if(jStart < me.xSize - 1 && expandDirection != 'Y'){
                         jStart++;
                     }
-
-                    if(iStart == me.ySize - 1 && jStart == me.xSize - 1) {
+                    else {
                         rect = null;
                     }
                 }
@@ -146,12 +128,10 @@
                     }
                 }
 
-                if(rect !== null){
-                    areas.sort(function(a, b){
-                        return b.area - a.area;
-                    });
-                    rect = areas[0];
-                }
+                areas.sort(function(a, b){
+                    return b.area - a.area;
+                });
+                rect = areas[0];
             }
 
             return rect;
@@ -159,19 +139,19 @@
 
         , placeBlock: function(id, block, debug){
             var me = this
-                , minRect = me.getMinRect()
+                , minSquare = me.getMinSquare()
                 , maxSpareRect
                 , pos = {x: 0, y: 0}
                 ;
 
-            if(!minRect){
+            if(!minSquare){
                 pos.x = 0;
                 pos.y = 0;
             }
             else {
-                maxSpareRect = me.getMaxSpareRect(minRect);
+                maxSpareRect = me.getMaxSpareRect(minSquare);
                 if(!maxSpareRect) {
-                    pos.x = minRect.x + minRect.w;
+                    pos.x = minSquare.x + minSquare.w;
                     pos.y = 0;
                 }
                 else {
@@ -214,4 +194,5 @@
 
     window.Grid = Grid;
 
-})(); 
+})();
+

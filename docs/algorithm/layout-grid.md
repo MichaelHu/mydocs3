@@ -2,6 +2,8 @@
 
 > 布局网格，实现用于管理空间均衡的网格算法
 
+
+
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <style type="text/css">
 @import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
@@ -58,48 +60,48 @@ todo
                 return this.blockList[id];
             }
 
-            , getMinSquare: function(){
+            , getMinRect: function(){
                 var me = this
-                    , square = null
+                    , rect = null
                     , grid = me.grid
                     , i, j
-                    , xMax = 0
-                    , yMax = 0
-                    , max
+                    , wMax = 0
+                    , hMax = 0
                     ;
                 
-                for(i=0; i<me.xSize; i++){
-                    for(j=0; j<me.ySize; j++){
+                for(i=0; i<me.ySize; i++){
+                    for(j=0; j<me.xSize; j++){
                         if(grid[i][j]){
-                            xMax = Math.max(i + 1, xMax);
-                            yMax = Math.max(j + 1, xMax);
+                            wMax = Math.max(j + 1, wMax);
+                            hMax = Math.max(i + 1, hMax);
                         }
                     }
                 } 
 
-                if(xMax > 0 && yMax > 0){
-                    max = Math.max(xMax, yMax);
-                    square = {
-                        x: 0, y: 0
-                        , w: max
-                        , h: max
+                if(wMax > 0 && hMax > 0){
+                    rect = {
+                        x: 0
+                        , y: 0
+                        , w: wMax
+                        , h: hMax
                     }
                 }
 
-                s.append_show('square', square);
-                return square;
+                return rect;
             }
 
-            , getMaxSpareRect: function(minSquare){
+            , getMaxSpareRect: function(minRect){
                 var me = this
                     , grid = me.grid
-                    , square = minSquare || me.getMinSquare()
+                    , minRect = minRect || me.getMinRect()
                     , rect
                     , iStart, jStart
                     , i, j
+                    , expandDirection
+                    , xRatio, yRatio
                     ; 
                
-                if(!square){
+                if(!minRect){
                     rect = {
                         x: 0 
                         , y: 0
@@ -108,15 +110,32 @@ todo
                     };
                 } 
                 else {
-                    jStart = square.x + square.w - 1;
-                    iStart = square.y + square.h - 1;
+                    jStart = minRect.x + minRect.w - 1;
+                    iStart = minRect.y + minRect.h - 1;
+
+                    xRatio = minRect.w / me.xSize;
+                    yRatio = minRect.h / me.ySize;
+
+                    if(xRatio < yRatio){
+                        expandDirection = 'X';
+                    }
+                    else if(yRatio < xRatio){
+                        expandDirection = 'Y';
+                    }
+                    else {
+                        expandDirection = 'XY';
+                    }
 
                     if(grid[iStart][jStart]){
-                        if(iStart < me.ySize - 1 && jStart < me.xSize - 1){
+                        if(iStart < me.ySize - 1 && expandDirection != 'X'){
                             iStart++;
+                        }
+
+                        if(jStart < me.xSize - 1 && expandDirection != 'Y'){
                             jStart++;
                         }
-                        else {
+
+                        if(iStart == me.ySize - 1 && jStart == me.xSize - 1) {
                             rect = null;
                         }
                     }
@@ -157,31 +176,35 @@ todo
                         }
                     }
 
-                    areas.sort(function(a, b){
-                        return b.area - a.area;
-                    });
-                    rect = areas[0];
+                    if(rect !== null){
+                        areas.sort(function(a, b){
+                            return b.area - a.area;
+                        });
+                        rect = areas[0];
+                    }
                 }
                 
-                s.append_show('rect', rect);
                 return rect;
             }
 
             , placeBlock: function(id, block, debug){
                 var me = this
-                    , minSquare = me.getMinSquare()
+                    , minRect = me.getMinRect()
                     , maxSpareRect
                     , pos = {x: 0, y: 0}
                     ;
 
-                if(!minSquare){
+                s.append_show('\nblock id: ' + id);
+                s.append_show('min rect', minRect);
+                if(!minRect){
                     pos.x = 0;
                     pos.y = 0;
                 }
                 else {
-                    maxSpareRect = me.getMaxSpareRect(minSquare);
+                    maxSpareRect = me.getMaxSpareRect(minRect);
+                    s.append_show('max spare rect', maxSpareRect);
                     if(!maxSpareRect) {
-                        pos.x = minSquare.x + minSquare.w;
+                        pos.x = minRect.x + minRect.w;
                         pos.y = 0;
                     }
                     else {
@@ -189,6 +212,7 @@ todo
                         pos.y = maxSpareRect.y;
                     }
                 }
+                s.append_show('pos', pos);
                 
                 me.addBlock(id, pos, block, debug); 
             } 
@@ -241,7 +265,7 @@ todo
 
         var s = fly.createShow('#test_10');
         window.s = s;
-        var grid = new Grid(10, 10);
+        var grid = new Grid(20, 7);
         var debug = 1;
         var blocks = [
             {id: 1, data: {w: 4, h: 3}}
@@ -263,7 +287,7 @@ todo
         blocks.forEach(function(block){
             grid.placeBlock(block.id, block.data, debug);
         });
-        s.append_show('grid:');
+        s.append_show('\ngrid occupied states:');
         s.append_show(
             grid.grid.map(function(row){
                 return row.join('  ');
@@ -277,4 +301,8 @@ todo
 <div class="test-panel">
 </div>
 </div>
+
+
+> 勤勉而顽强地钻研，永远可以使你百尺竿头更进一步。—— 德国心理学家 舒曼
+
 

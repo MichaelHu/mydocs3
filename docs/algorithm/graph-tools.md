@@ -245,8 +245,17 @@
 
 `enableNodeDrag()`：使当前`sigma实例`支持节点`拖动`。
 
-sigmajs默认`不支持`节点拖动，使其支持节点拖动的方法带有一些特殊处理的地方，其中通过`verNode`和`outNode`事件的处理很有特点。
+sigmajs默认`不支持`节点拖动，使其支持节点拖动的方法带有一些特殊处理的地方，其中通过`overNode`和`outNode`事件的处理很有特点。
 
+归纳来看，drag事件起于`overNode`，终止于`click`。
+
+1. 在`overNode`事件中猜测用户可能需要进行节点拖动，进行`mousedown`事件的注册。
+2. 用户鼠标按下，则触发`mousedown`事件，此时注册`mousemove`和`mouseup`事件，进行节点拖动。
+3. `mousemove`事件中处理拖动相关逻辑；`mouseup`事件中已经完成节点拖动，解除`mousemove`和`mouseup`事件。同时，该事件后会触发`click`事件，为保万全，同样再次执行解除`mousemove`和`mouseup`事件。
+4. 在`outNode`事件中（用户可能点击拖动也可能只是鼠标经过），取消`mousedown`事件的注册，以便清理`overNode`的现场。
+
+
+代码实现如下：
 
     @[data-script="javascript"]function enableNodeDrag(sigInst, options){
 

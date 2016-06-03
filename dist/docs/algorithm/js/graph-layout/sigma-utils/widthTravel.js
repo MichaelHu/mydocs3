@@ -9,7 +9,7 @@ sigma.utils.widthTravel
         , edges = edges || []
         , queue = []
         , parentAndSiblingNodes = excludes || {}
-        , node = root || nodes[0]
+        , node = root || notes[0]
         , children
         ;
 

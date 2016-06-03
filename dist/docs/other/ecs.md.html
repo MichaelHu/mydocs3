@@ -22,15 +22,34 @@
 
 <h1> ECS配置记录</h1>
 
+
+<h2> 一、登录</h2>
 <p>配置ECS实例，选择Linux系统为Centos，可以ssh直接登录机器：</p>
 <pre><code>ssh root@xxx.xxx.xxx.xxx </code></pre>
-<p>直接给root账号，可以自己添加普通账号：</p>
+<p>直接给root账号，可以自己添加普通账号和密码：</p>
 <pre><code># useradd -b /home irice
+# passwd irice
 # su irice
 $ cd
 $ id
-uid=500(irice) gid=500(irice) 组=500(irice)  </code></pre>
-<p>安装PHP：</p>
+uid=500(irice) gid=500(irice) 组=500(irice) </code></pre>
+<p>很多时候需要有更多的权限，可以将irice用户添加到wheel组，并给wheel组添加sudo权限：</p>
+<pre><code># usermod -G wheel irice
+# su irice
+$ id
+uid=500(irice) gid=500(irice) 组=500(irice),10(wheel)
+# exit
+# vim /etc/sudoers </code></pre>
+<p>在文件中取消以下行的注释，作用为wheel组的用户可以使用<code>sudo</code>在输入密码后执行所有命令：</p>
+<pre><code>%wheel        ALL=(ALL)       ALL </code></pre>
+<p>重新login后生效。</p>
+
+
+
+
+
+<h2> 二、环境安装</h2>
+<h3> 2.1 安装PHP</h3>
 <pre><code># yum search php
 # yum install php.x86_64 </code></pre>
 <p>自动安装了Apache，并默认将php作为Apache的一个module，可以在Apache的modules目录下看到<code>libphp5.so</code>。</p>
@@ -41,6 +60,7 @@ uid=500(irice) gid=500(irice) 组=500(irice)  </code></pre>
 <p>配置好以后，就可以启动</p>
 
 
+<h3> 2.2 fcgid模块安装</h3>
 <p>安装Apache的fcgid模块：</p>
 <pre><code># yum install mod_fcgid.x86_64 </code></pre>
 <p>自动在<code>/etc/httpd/conf.d/</code>目录下添加fcgid.conf，该文件内容为：</p>
@@ -53,7 +73,8 @@ AddHandler fcgid-script fcg fcgi fpl
 FcgidIPCDir /var/run/mod_fcgid
 FcgidProcessTableFile /var/run/mod_fcgid/fcgid_shm  </code></pre>
 <p>启动httpd，不报fastcgi错误，表示成功安装：</p>
-<pre><code>/etc/init.d/httpd start  </code></pre>
+<pre><code>/etc/init.d/httpd start   </code></pre>
+<h3> 2.3 配置PHP-FCGI</h3>
 <p>配置php的fastcgi（可参考<a href="http://httpd.apache.org/mod_fcgid/mod/mod_fcgid.html#examples">http://httpd.apache.org/mod_fcgid/mod/mod_fcgid.html#examples</a>），在<code>/etc/httpd/conf.d/</code>目录下添加文件<code>fcgid.php.conf</code>，内容如下：</p>
 <pre><code>Alias /phpapp/ /home/irice/phpapp/
 &lt;Location /phpapp/>
@@ -82,12 +103,11 @@ exec /usr/local/bin/php-cgi </code></pre>
 phpinfo(); </code></pre>
 <p>重新启动httpd：</p>
 <pre><code>/etc/init.d/httpd restart  </code></pre>
-<p>访问：<a href="http://123.56.89.145/phpapp/index.php">http://123.56.89.145/phpapp/index.php</a></p>
+<p>访问：<a href="http://258i.com/phpapp/index.php">http://258i.com/phpapp/index.php</a></p>
 
-<p>安装nodejs</p>
-<pre><code>yum search nodejs
-yum install nodejs
-node -v   </code></pre>
+
+
+<h3> 2.4 配置GIT服务</h3>
 <p>安装git服务器，用于ECS机器和本地机器的数据传输，个人使用，只需基于ssh服务的访问就行。如果需要HTTP访问，可以通过配置Apache的DAV来完成，另有文章记录。</p>
 <ol><li>第一步，确保ssh服务可用，当然ECS本来就是可用的，直接用就可以</li>
 <li>第二步，创建用于访问git服务的登录用户，需要root账户<pre><code>useradd git
@@ -110,8 +130,12 @@ git init --bare --shared irice.git </code></pre>
 </li>
 <li>将本机的公钥内容拷贝至服务器<code>/home/git/.ssh/auhorized_keys</code>文件中</li></ul>
 </li>
-<li>OK了，可以直接使用了<pre><code>git clone git@123.56.89.145:/home/git/git-repos/irice.git     </code></pre>
+<li>OK了，可以直接使用了<pre><code>git clone git@258i.com:/home/git/git-repos/irice.git    </code></pre>
 </li></ol>
+<h3> 2.5 安装nodejs</h3>
+<pre><code>yum search nodejs
+yum install nodejs
+node -v   </code></pre>
 
 </body>
 </html>

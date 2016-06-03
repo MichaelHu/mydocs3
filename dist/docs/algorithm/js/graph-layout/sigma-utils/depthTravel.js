@@ -1,30 +1,36 @@
-sigma.utils.widthTravel
-    = function(nodes, edges, root, callbacks, excludes) {
+sigma.utils.depthTravel
+    = function(nodes, edges, root, callbacks) {
 
     if(!nodes || !nodes.length){
         return;
     }
 
     var cbs = callbacks || {}
-        , edges = edges || []
-        , queue = []
-        , parentAndSiblingNodes = excludes || {}
+        , visitedNodes = {}
         , node = root || nodes[0]
         , children
         ;
 
-    node._wt_level = 1;
-    queue.push(node);
-    parentAndSiblingNodes[node.id] = 1;
+    edges = edges || [];
 
-    while((node = queue.splice(0, 1)).length > 0){
-        node = node[0];
-        children = getChildren(node); 
-        node._wt_children = children;
-        queue = queue.concat(children);
+    node._dt_level = 1;
+    _depthTravel(node);
+
+    function _depthTravel(node){
+        if(visitedNodes[node.id]){
+            return;
+        }
+        visitedNodes[node.id] = 1;
 
         if(typeof cbs['onNode'] == 'function'){
             cbs['onNode'](node);
+        }
+
+        var children = getChildren(node); 
+        if(children.length > 0){
+            children.forEach(function(child){
+                _depthTravel(child);
+            });
         }
     }
 
@@ -43,10 +49,9 @@ sigma.utils.widthTravel
                 if(childId == id){
                     childId = edge.target;
                 }
-                if(!parentAndSiblingNodes[childId]){
-                    parentAndSiblingNodes[childId] = 1;
+                if(!visitedNodes[childId]){
                     child = sigma.utils.getNodeById(nodes, childId);
-                    child._wt_level = node._wt_level + 1;
+                    child._dt_level = node._dt_level + 1;
                     children.push(child);
                 }
             }

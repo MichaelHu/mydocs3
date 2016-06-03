@@ -357,32 +357,47 @@
 
 #### 5.3.2 clustersNodes()
 
+参数示意图：
+
+<img src="./img/input-angle.png" width="550">
+
+以下为实现代码：
+
     @[data-script="javascript editable"]sigma.utils.clustersNodes
         = function(
-            root
+            nodes
             , options
         ) {
 
         var opt = options || {}
-            , children
-            , numOfChildren 
+            , root = opt.root || {x: 0, y: 0}
+            , len 
+            , numOfFirstLevel
             , clusterLevels
             , angleRange = opt.angleRange || 2 * Math.PI
-            , numOfFirstLevel = opt.numOfFirstLevel || 8
             , radiusStep = opt.radiusStep || 100
-            , angleStart = opt.angleStart || 0
+            , angleInput = opt.angleInput || 0
+            , angleStart = angleInput
+            , writePrefix = opt.writePrefix || ''
+            , randomRadius = opt.randomRadius
             , radius = 0, _r
             , i, j, k
             , angles
+            , PI = Math.PI
+            , alen, mid, left, right
             ;
 
-        if(!root || !root._wt_children){
+        if(!nodes || !nodes.length){
             return;
         }
 
-        children = root._wt_children;
-        numOfChildren = children.length; 
-        clusterLevels = _getClusterLevels(numOfFirstLevel, numOfChildren); 
+        len = nodes.length; 
+        numOfFirstLevel = opt.numOfFirstLevel || _getNumOfFirstLevel(len, 15, 1);
+        clusterLevels = _getClusterLevels(numOfFirstLevel, len); 
+
+        if(angleRange < PI * 2){
+            angleStart = ( 2 * PI - angleRange ) / 2 + angleInput;
+        }
 
         angles = sigma.utils.interpolatesAngle(
             angleRange
@@ -391,14 +406,69 @@
             , angleStart
         );
 
+        root[writePrefix + 'x'] = root.x;
+        root[writePrefix + 'y'] = root.y;
+
         k = 0;
-        for(i=0; i<angles.length && k < numOfChildren; i++){
-            radius += radiusStep;
-            for(j=0; j<angles[i].length && k < numOfChildren; j++, k++){
-                _r = radius + 0.5 * radiusStep * Math.random();
-                children[k].x = root.x + _r * Math.cos(angles[i][j]);
-                children[k].y = root.y + _r * Math.sin(angles[i][j]);
+        if(opt.centerFirst){
+            for(i=0; i<angles.length && k < len; i++){
+                radius += radiusStep;
+                alen = angles[i].length;
+                mid = Math.floor(alen / 2);
+                for(j=0; j<=mid && k<len; j++, k++){
+                    _r = _getRadius(radius);
+                    nodes[k][writePrefix + 'x'] = root.x + _r * Math.cos(angles[i][mid - j]);
+                    nodes[k][writePrefix + 'y'] = root.y + _r * Math.sin(angles[i][mid - j]);
+
+                    _r = _getRadius(radius);
+                    if(k + 1 < len && mid + j < alen && j != 0){
+                        k++;
+                        nodes[k][writePrefix + 'x'] = root.x + _r * Math.cos(angles[i][mid + j]);
+                        nodes[k][writePrefix + 'y'] = root.y + _r * Math.sin(angles[i][mid + j]);
+                    }
+                }
             }
+        }
+        else if(opt.sidesFirst){
+            for(i=0; i<angles.length && k < len; i++){
+                radius += radiusStep;
+                alen = angles[i].length;
+                mid = Math.floor(alen / 2);
+                for(j=0; j<=mid && k<len; j++, k++){
+                    _r = _getRadius(radius);
+                    left = j;
+                    right = alen - 1 - j;
+                    if(left > right) {
+                        break;
+                    }
+
+                    nodes[k][writePrefix + 'x'] = root.x + _r * Math.cos(angles[i][left]);
+                    nodes[k][writePrefix + 'y'] = root.y + _r * Math.sin(angles[i][left]);
+
+                    if(k + 1 < len && left < right){
+                        k++;
+                        _r = _getRadius(radius);
+                        nodes[k][writePrefix + 'x'] = root.x + _r * Math.cos(angles[i][right]);
+                        nodes[k][writePrefix + 'y'] = root.y + _r * Math.sin(angles[i][right]);
+                    }
+                }
+            }
+        }
+        else {
+            for(i=0; i<angles.length && k < len; i++){
+                radius += radiusStep;
+                alen = angles[i].length;
+                for(j=0; j<alen && k<len; j++, k++){
+                    _r = _getRadius(radius);
+                    nodes[k][writePrefix + 'x'] = root.x + _r * Math.cos(angles[i][j]);
+                    nodes[k][writePrefix + 'y'] = root.y + _r * Math.sin(angles[i][j]);
+                }
+            }
+        }
+
+        function _getRadius(radius){
+            return radius 
+                + ( randomRadius ? 0.5 * radiusStep * Math.random() : 0 );
         }
 
         function _getClusterLevels(numOfFirstLevel, totalNum){
@@ -414,6 +484,53 @@
             while(all < totalNum);
             return i - 1; 
         }
+
+        function _getNumOfFirstLevel(totalNum, max, min){
+            var max = max || 18 
+                , min = min || 1
+                , i = 1
+                , t = 0
+                , m
+                ;
+            while(1){
+                t += i; 
+                m = Math.ceil(totalNum / t);
+                if(m >= min && m <= max){
+                    return m;
+                }
+                i++;
+            }
+        }
+    };
+
+
+
+#### 5.3.3 getAngleInput()
+
+`getAngleInput(fromNode, toNode)`：获取球形布局输入节点的角度。
+
+    @[data-script="javascript"]sigma.utils.getAngleInput
+        = function(fromNode, toNode){
+
+        var dy = fromNode.y - toNode.y
+            , dx = fromNode.x - toNode.x
+            , angleInput
+            ;
+        sin = dy / Math.sqrt( 
+                Math.pow(dx, 2) + Math.pow(dy, 2) 
+            );
+        cos = dx / Math.sqrt(
+                Math.pow(dx, 2) + Math.pow(dy, 2) 
+            );
+
+        if( sin >= 0 ) {
+            angleInput = Math.acos(cos);
+        }
+        else {
+            angleInput = 2 * Math.PI - Math.acos(cos);
+        }
+
+        return angleInput;
     };
 
 
@@ -422,11 +539,36 @@
 <div class="test-container">
 <div id="test_30_graph" class="test-graph">
 </div>
+<div class="test-console"></div>
 
     @[data-script="javascript editable"](function(){
 
         var s = fly.createShow('#test_30');
-        var g1 = getClusterGraph(30, {xMax: 300, yMax: 200, nodeSize: 10});
+        var g1 = getClusterGraph(20, {xMax: 200, yMax: 200, nodeSize: 10});
+        var root = g1.nodes[0];
+        var fromNode = {
+                id: 'n0'
+                , label: '0'
+                , x: 100
+                , y: 100
+                , size: 10
+                , cluster_x: 100
+                , cluster_y: 100
+                , color: fly.randomColor()
+            };
+        var g2 = {
+                nodes: [fromNode, root] 
+                , edges: [{
+                    id: 'e0'
+                    , source: fromNode.id 
+                    , target: root.id 
+                    , color: '#ccc'
+                }]
+            };
+        var g3 = {
+                nodes: g1.nodes.slice(1)
+                , edges: g1.edges
+            };
         var containerId = 'test_30_graph';
         var rendererSettings = {
                 // captors settings
@@ -452,6 +594,7 @@
                 // instance global settings
                 , enableEdgeHovering: true
                 , edgeHoverPrecision: 5
+                , autoRescale: false
             };
 
         var sm;
@@ -460,27 +603,21 @@
             sm.kill();
         };
 
-        sigma.utils.widthTravel(
-            g1.nodes
-            , g1.edges
-            , g1.nodes[0]
-        );
+        root.cluster_x = root.x;
+        root.cluster_y = root.y;
+        root.x = fromNode.x;
+        root.y = fromNode.y;
 
-        sigma.utils.clustersNodes(
-            g1.nodes[0]
-            , {
-                angleRange: Math.PI / 2
-                , numOfFirstLevel: 8
-                , radiusStep: 100
-                , angleStart: Math.PI / 2
-            }
+        angleInput = sigma.utils.getAngleInput(
+            {x: root.x, y: root.y}
+            , {x: root.cluster_x, y: root.cluster_y}
         );
 
         sm = getUniqueSigmaInstance(
                     containerId
                     , {
                         settings: sigmaSettings 
-                        , graph: g1
+                        , graph: g2
                         , renderers: [
                             {
                                 type: 'canvas' 
@@ -492,11 +629,67 @@
                 ); 
 
         sm.refresh();
+        sm.camera.goTo({
+            x: 100
+            , y: 100
+        });
+
+        sigma.plugins.animate(
+            sm
+            , {
+                x: 'cluster_x'
+                , y: 'cluster_y'
+            }
+            , {
+                duration: 500
+                , onComplete: function(){
+                    root = sm.graph.nodes('n1');
+
+                    g3.nodes.forEach(function(node){
+                        node.x = root.x;
+                        node.y = root.y;
+                    });
+
+                    sigma.utils.clustersNodes(
+                        g3.nodes 
+                        , {
+                            root: root  
+                            , angleRange: 3 * Math.PI / 2
+                            // , numOfFirstLevel: 8
+                            , radiusStep: 60
+                            , randomRadius: 1
+                            // , angleInput: 3 * Math.PI / 2
+                            , angleInput: angleInput 
+                            , writePrefix: 'cluster_'
+                            , centerFirst: 1
+                        }
+                    );
+
+                    sm.graph
+                        .read(g3)
+                        ;
+
+                    sm.refresh();
+
+                    setTimeout(function(){
+                        sigma.plugins.animate(
+                            sm
+                            , {
+                                x: 'cluster_x'
+                                , y: 'cluster_y'
+                            }
+                            , {
+                                duration: 500
+                            }
+                        );
+                    }, 500);
+                }
+            }
+        );
 
     })();
 
 </div>
-<div class="test-console"></div>
 <div class="test-panel">
 </div>
 </div>

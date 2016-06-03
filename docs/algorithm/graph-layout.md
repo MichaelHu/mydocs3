@@ -712,7 +712,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
             , edges = edges || []
             , queue = []
             , parentAndSiblingNodes = excludes || {}
-            , node = root || notes[0]
+            , node = root || nodes[0]
             , children
             ;
 
@@ -766,7 +766,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
         var me = this
             , nodes = me.nodesArray
             , edges = me.edgesArray
-            , root = root || notes[0]
+            , root = root || nodes[0]
             , cbs = callbacks || {}
             ;
 
@@ -1634,47 +1634,48 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
                 return this.blockList[id];
             }
 
-            , getMinSquare: function(){
+            , getMinRect: function(){
                 var me = this
-                    , square = null
+                    , rect = null
                     , grid = me.grid
                     , i, j
-                    , xMax = 0
-                    , yMax = 0
-                    , max
+                    , wMax = 0
+                    , hMax = 0
                     ;
-                
-                for(i=0; i<me.xSize; i++){
-                    for(j=0; j<me.ySize; j++){
+
+                for(i=0; i<me.ySize; i++){
+                    for(j=0; j<me.xSize; j++){
                         if(grid[i][j]){
-                            xMax = Math.max(i + 1, xMax);
-                            yMax = Math.max(j + 1, xMax);
+                            wMax = Math.max(j + 1, wMax);
+                            hMax = Math.max(i + 1, hMax);
                         }
                     }
                 } 
 
-                if(xMax > 0 && yMax > 0){
-                    max = Math.max(xMax, yMax);
-                    square = {
-                        x: 0, y: 0
-                        , w: max
-                        , h: max
+                if(wMax > 0 && hMax > 0){
+                    rect = {
+                        x: 0
+                        , y: 0
+                        , w: wMax
+                        , h: hMax
                     }
                 }
 
-                return square;
+                return rect;
             }
 
-            , getMaxSpareRect: function(minSquare){
+            , getMaxSpareRect: function(minRect){
                 var me = this
                     , grid = me.grid
-                    , square = minSquare || me.getMinSquare()
+                    , minRect = minRect || me.getMinRect()
                     , rect
                     , iStart, jStart
                     , i, j
+                    , expandDirection
+                    , xRatio, yRatio
                     ; 
-               
-                if(!square){
+
+                if(!minRect){
                     rect = {
                         x: 0 
                         , y: 0
@@ -1683,15 +1684,32 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
                     };
                 } 
                 else {
-                    jStart = square.x + square.w - 1;
-                    iStart = square.y + square.h - 1;
+                    jStart = minRect.x + minRect.w - 1;
+                    iStart = minRect.y + minRect.h - 1;
+
+                    xRatio = minRect.w / me.xSize;
+                    yRatio = minRect.h / me.ySize;
+
+                    if(xRatio < yRatio){
+                        expandDirection = 'X';
+                    }
+                    else if(yRatio < xRatio){
+                        expandDirection = 'Y';
+                    }
+                    else {
+                        expandDirection = 'XY';
+                    }
 
                     if(grid[iStart][jStart]){
-                        if(iStart < me.ySize - 1 && jStart < me.xSize - 1){
+                        if(iStart < me.ySize - 1 && expandDirection != 'X'){
                             iStart++;
+                        }
+
+                        if(jStart < me.xSize - 1 && expandDirection != 'Y'){
                             jStart++;
                         }
-                        else {
+
+                        if(iStart == me.ySize - 1 && jStart == me.xSize - 1) {
                             rect = null;
                         }
                     }
@@ -1700,7 +1718,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
                         , h
                         , wMax = Infinity
                         , areas = [];
-                   
+
                     h = 0;
 
                     for(i=iStart; i >= 0; i--){
@@ -1732,30 +1750,32 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
                         }
                     }
 
-                    areas.sort(function(a, b){
-                        return b.area - a.area;
-                    });
-                    rect = areas[0];
+                    if(rect !== null){
+                        areas.sort(function(a, b){
+                            return b.area - a.area;
+                        });
+                        rect = areas[0];
+                    }
                 }
-                
+
                 return rect;
             }
 
             , placeBlock: function(id, block, debug){
                 var me = this
-                    , minSquare = me.getMinSquare()
+                    , minRect = me.getMinRect()
                     , maxSpareRect
                     , pos = {x: 0, y: 0}
                     ;
 
-                if(!minSquare){
+                if(!minRect){
                     pos.x = 0;
                     pos.y = 0;
                 }
                 else {
-                    maxSpareRect = me.getMaxSpareRect(minSquare);
+                    maxSpareRect = me.getMaxSpareRect(minRect);
                     if(!maxSpareRect) {
-                        pos.x = minSquare.x + minSquare.w;
+                        pos.x = minRect.x + minRect.w;
                         pos.y = 0;
                     }
                     else {
@@ -1763,7 +1783,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
                         pos.y = maxSpareRect.y;
                     }
                 }
-                
+
                 me.addBlock(id, pos, block, debug); 
             } 
 
@@ -1797,9 +1817,8 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
         extend(Grid.prototype, prototype);
 
         window.Grid = Grid;
-    
-    })();
 
+    })(); 
 
 
 
@@ -2871,6 +2890,7 @@ todo:
             , me = this
             , forest = me.graph.getLayoutForest(opt)
             , treeOffsetX = 0
+            , spaceGrid = opt.spaceGrid || {xSize: 40, ySize: 40}
             , unit = opt.unit || 1
             , edges = me.graph.edges()
             ;
@@ -2938,7 +2958,7 @@ todo:
 
         });
 
-        var grid = new Grid(40, 40)
+        var grid = new Grid(spaceGrid.xSize, spaceGrid.ySize)
             , debug = 0
             ;
 
@@ -3276,6 +3296,7 @@ todo
             , radiusStep = radius 
             , initialAngleStep = 15 * PI / 180
             , angleStep = initialAngleStep
+            , spaceGrid = opt.spaceGrid || {xSize: 40, ySize: 40}
             // for tendency
             , angleOffset = 20 * PI / 180
             ;
@@ -3355,7 +3376,7 @@ todo
         });
 
 
-        var grid = new Grid(40, 40)
+        var grid = new Grid(spaceGrid.xSize, spaceGrid.ySize)
             , debug = 0
             , id = 2
             ;
@@ -3426,9 +3447,10 @@ todo
 
 使用`均衡布局`、`自适应半径`优化的`环形布局`算法：
 
-* options.nodeSize，与
+* options.nodeSize，与`node.size`不完全等同，可以认为nodeSize是你希望给一个节点的空间占用，而不是节点本身的尺寸
 * options.radiusStep
 * options.initialAngleRange
+
 
 算法实现如下：
 
@@ -3443,6 +3465,7 @@ todo
             , nodeSize = opt.nodeSize || 0.2
             , radiusStep = opt.radiusStep || 2 
             , initialAngleRange = opt.initialAngleRange || PI 
+            , spaceGrid = opt.spaceGrid || {xSize: 40, ySize: 40}
             , radius
             ;
 
@@ -3556,7 +3579,7 @@ todo
 
 
 
-        var grid = new Grid(40, 40)
+        var grid = new Grid(spaceGrid.xSize, spaceGrid.ySize)
             , debug = 0
             , id = 2
             ;

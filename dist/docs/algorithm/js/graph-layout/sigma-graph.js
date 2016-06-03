@@ -94,7 +94,7 @@ sigma.classes.graph.addMethod(
     var me = this
         , nodes = me.nodesArray
         , edges = me.edgesArray
-        , root = root || nodes[0]
+        , root = root || notes[0]
         , cbs = callbacks || {}
         ;
 

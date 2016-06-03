@@ -1,6 +1,14 @@
+./algorithm/badcases-graph-layout.md
+./algorithm/barnes-hut.md
 ./algorithm/brute-force.md
+./algorithm/graph-layout.md
+./algorithm/graph-layout2.md
+./algorithm/graph-tools.md
+./algorithm/layout-grid.md
 ./algorithm/nyquist-frequency.md
+./algorithm/quadtree.md
 ./algorithm/serpentine-matrix.md
+./algorithm/tick.md
 ./apache/httpd-conf.md
 ./arch/bigpipe.md
 ./arch/lodash.md
@@ -40,6 +48,7 @@
 ./didi/lib/reveal/css/theme/README.md
 ./didi/lift-template.md
 ./didi/monitor-for-thirdparty.md
+./didi/myblog.md
 ./didi/native-sdk.md
 ./didi/new-commer.md
 ./didi/oneyuan.md
@@ -55,6 +64,7 @@
 ./didi/wx-open-app.md
 ./didi/xinshouli.md
 ./encoding/base64.md
+./es/es6.md
 ./es/generator.md
 ./es/javascript-coding-style.md
 ./es/javascript.md
@@ -85,16 +95,22 @@
 ./frontend/promisejs.md
 ./frontend/qunit.md
 ./frontend/reactjs.md
+./frontend/redux.md
 ./frontend/regexp.md
 ./frontend/requirejs.md
 ./frontend/rewrite-history-back.md
 ./frontend/seajs.md
+./frontend/sigmajs-plugins.md
 ./frontend/sigmajs.md
+./frontend/svg.md
 ./frontend/templates.md
 ./frontend/useful_javascript_frameworks.md
 ./frontend/webpack.md
 ./git/git-memo.md
 ./git/git-server.md
+./graphics/ngraph.md
+./graphics/overview.md
+./graphics/visjs.md
 ./h5games/animation.md
 ./h5games/box2dweb/box2dweb.md
 ./h5games/canvas.md
@@ -130,6 +146,7 @@
 ./linux/sshd.md
 ./linux/sudo.md
 ./linux/user_group.md
+./mac/auto-launch.md
 ./make/make.md
 ./math/basics.md
 ./mcwebserver/introduce.md
@@ -138,6 +155,7 @@
 ./nativeapp/bridge-memo.md
 ./network/cname_a.md
 ./nodejs/co.md
+./nodejs/electron.md
 ./nodejs/flux.md
 ./nodejs/jade.md
 ./nodejs/koa.md
@@ -157,7 +175,6 @@
 ./other/gephi.md
 ./other/how-to-do-investigation.md
 ./other/linemax-x15.md
-./other/myblog.md
 ./other/notes2.md
 ./other/preference-test.md
 ./other/problematic-js.md
@@ -165,6 +182,7 @@
 ./other/schemas.md
 ./other/thinking.md
 ./other/useful-things.md
+./other/vpn.md
 ./php/php-configure.md
 ./php/php-dependencies.md
 ./php/php-memo.md
@@ -195,6 +213,9 @@
 ./shell/linux-expect.md
 ./shell/linuxshell.md
 ./shell/winshell.md
+./sophon/new-comer.md
+./sophon/sophon-web.md
+./sophon/weekly-report-201605.md
 ./ssh/ssh-key.md
 ./ssh/ssh-proxy.md
 ./svn/svn-apache-server.md
