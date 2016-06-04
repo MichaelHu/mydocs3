@@ -57,6 +57,7 @@
 <script src="./js/network-many-children-0526.js"></script>
 <script src="./js/network-forest-0527.js"></script>
 <script src="./js/network-simpletree-0528.js"></script>
+<script src="./js/network-simple-0604-1.js"></script>
 
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <style type="text/css">
@@ -535,6 +536,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
         var g1 = networkGraph_edges_between_the_same_level_nodes;
         var g1 = networkGraph_edges_between_the_same_level_nodes_2;
         var g1 = networkGraph_many_children_0526;
+        var g1 = networkGraph_simple_0604_1;
         var g2 = {
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice() 

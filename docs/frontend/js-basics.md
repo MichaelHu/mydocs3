@@ -30,6 +30,7 @@ IE9以下，hasEnumBug
 * object
 * function
 * undefined
+* symbol
 
 <div id="test_10" class="test">
 <div class="test-console"></div>
@@ -342,5 +343,117 @@ IE9以下，hasEnumBug
 
 `Safari`能输出`ClientRect`类型对象的内部内容，而`Chrome`只输出空对象`"{}"`。
 这也是上方`objectParse()`方法存在的原因，能保证`Chrome`能输出其内容。
+
+
+
+
+## hasOwnProperty() 与 in 操作符
+
+> <http://www.ecma-international.org/ecma-262/6.0/#sec-own-property>
+
+
+### hasOwnProperty()
+
+* `own property`: property that is directly contained by its object
+* `inherited property`: property of an object that is not an own property but is a property (either own or inherited) of the object’s prototype
+
+### in operator 
+
+The production RelationalExpression : RelationalExpression in ShiftExpression is evaluated as follows:
+1. Let `lref` be the result of evaluating RelationalExpression.
+2. Let `lval` be GetValue(lref).
+3. Let `rref` be the result of evaluating ShiftExpression.
+4. Let `rval` be GetValue(rref).
+5. If Type(rval) is not Object, throw a TypeError exception.
+6. Return the result of calling the `[[HasProperty]]` `internal` method of rval with argument ToString(lval).
+
+`in`使用的是内部方法`hasProperty()`，包含继承而来的属性。
+
+<div id="test_90" class="test">
+<div class="test-console"></div>
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_90')
+            , obj1 = {name: 'hudamin'}
+            ;
+
+        s.show('hasOwnProperty(): ');
+        s.append_show(obj1.hasOwnProperty('name'));
+
+        function Person(name, age, sex){
+            this.name = name;
+            this.age = age;
+            this.sex = sex;
+        }
+
+        Person.prototype.sayHello = function(){
+            s.append_show(this.name, this.age, this.sex);
+        }
+
+        function Student(name, age, sex, score){
+            Person.call(this, name, age, sex);
+            this.score = score;
+        }
+
+        Student.prototype = new Person();
+        Student.prototype.constructor = Student;
+        Student.prototype.sayHello = function(){
+            Person.prototype.sayHello.apply(this);
+            s.append_show(this.score);
+        }
+
+
+        var obj2 = new Student('hudamin', 20, 'male', 100)
+            , list = ['name', 'sayHello', 'sayYes']
+            , wrapper = {Person: Person, Student: Student}
+            ;
+
+        s.append_show('\nsayHello:');
+        obj2.sayHello();
+        obj2.sayYes = function(){
+            s.append_show('YES!');
+        };
+
+        s.append_show('\n');
+        list.forEach(function(key){
+            s.append_show(
+                'obj2.hasOwnProperty("' + key + '")'
+                , obj2.hasOwnProperty(key)
+            );
+        });
+
+        s.append_show('\nin operator:');
+
+        var props = []
+            , ownProps = [];
+        for(var i in obj2){
+            props.push(i); 
+            if(obj2.hasOwnProperty(i)){
+                ownProps.push(i);
+            }
+        }
+        s.append_show('property', props);
+        s.append_show('own property', ownProps);
+
+        s.append_show('\ninstanceof operator');
+        list = ['Student', 'Person'];
+        list.forEach(function(item){
+            s.append_show(
+                'obj2 instanceof ' + item
+                , obj2 instanceof wrapper[item]
+            );
+        });
+
+    })();
+
+</div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
 
 
