@@ -6,6 +6,13 @@
 
 `markdown解析器GITHUB地址`：<https://github.com/MichaelHu/markdown-slides>
 
+
+`todos`: 
+
+1. 链接扩展，支持`target="_blank"`
+2. 支持文件包含，类似`include "file"`
+
+
 ## 2. 标签支持能力
 
 1. 支持的元素：

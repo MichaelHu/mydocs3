@@ -16,6 +16,14 @@
 
 `devicePixelRatio`：<http://www.html5rocks.com/en/tutorials/canvas/hidpi/>
 
+a window extension by `CSSOM`:
+
+1. If there is no output device, return 1 and abort these steps.
+2. Let `CSS pixel size` be the size of a CSS pixel at the current `page zoom` scale factor and at a `pinch zoom` scale factor of 1.0.
+3. Let `device pixel size` be the vertical size of a device pixel of the output device.
+4. Return the result of dividing `CSS pixel size` by `device pixel size`.
+
+
 绘制不失真的Canvas： High DPI Canvas
 
     @[data-script="javascript"]/**
