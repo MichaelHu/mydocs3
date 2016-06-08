@@ -7,7 +7,8 @@
 <img src="./img/redux-logo.png" height="60"> 
 <http://redux.js.org/index.html>
 
-## 一、三条原则
+
+## 三条原则
 
 1. 整个应用`只有`一棵状态树
 2. 状态是`只读`的，唯一修改方法是`派发(dispatch)`actions
@@ -15,7 +16,7 @@
 
 
 
-## 二、Actions
+## Actions
 
 `Actions`：是信息载体，Store的唯一消息来源，通过`store.dispatch()`来发送。它表示某个事件的发生。
 Action是一个纯JS对象，`必须`有`type`字段，该字段通常被定义为字符串常量，app的规模较大的情况下，需要将常量放到单独的模块维护，以下从模块中引入常量：
@@ -58,7 +59,7 @@ Action是一个纯JS对象，`必须`有`type`字段，该字段通常被定义�
 
 
 
-## 三、Reducers
+## Reducers
 
 `Actions`描述了某个事件的发生，但是没有指出应用的状态该如何变化。这就是Reducer的工作了。
 `Reducer`需要操作应用的状态，开始之前，最好好好思考一下`表示应用状态的最小集合是什么`？
@@ -201,7 +202,7 @@ Redux提供了一个`combineReducers`的方法，以上步骤可以写成：
 
 
 
-## 四、Store
+## Store
 
 目前为止，`Actions`表示发生了什么事情，`Reducers`根据发生的事情更新状态。
 那么`Store`就是将Actions与Reducers联合起来的`桥梁`。
@@ -255,7 +256,7 @@ Redux提供了一个`combineReducers`的方法，以上步骤可以写成：
 
 
 
-## 五、Data Flow
+## Data Flow
 
 > `Strict Unidirectional Data Flow`，严格的`单向`数据流
 
@@ -270,10 +271,10 @@ Redux提供了一个`combineReducers`的方法，以上步骤可以写成：
 
 
 
-## 六、containers & components
+## containers & components
 
 
-### 6.1 两者区别
+### 两者区别
 
 `container`是Redux与React的`桥梁`，通过`container`将`store`传递给React的`component`。
 
@@ -287,7 +288,7 @@ Redux提供了一个`combineReducers`的方法，以上步骤可以写成：
 
 
 
-### 6.2 创建container
+### 创建container
 
 使用`connect()`，需要定义`两个`特殊函数：
 
@@ -295,7 +296,7 @@ Redux提供了一个`combineReducers`的方法，以上步骤可以写成：
 * `mapDispatchToProps()`：提供如何将dispatch封装到回调函数中，并通过prop注入到表现型components的props中
 
 
-### 6.3 Store的传递
+### Store的传递
 
 前面说过`container`作为`桥梁`将store传递给components，那么container又是`如何自动`获取到store的呢？
 
@@ -324,11 +325,44 @@ Redux提供了一个`combineReducers`的方法，以上步骤可以写成：
 
 
 
-## 七、Redux架构思想
+## Redux架构思想
 
 * 规则：数据流规则
 * 模型：概念化，深度描述清楚
 * 分治
 
+
+
+
+
+## Test
+
+Mocha推荐
+
+### npm istall:
+
+    npm install --save-dev mocha 
+    npm install --save-dev babel-register
+
+### .babelrc:
+
+    {
+        "presets": ["es2015"]
+    }
+
+
+### package.json:
+
+    {
+      ...
+      "scripts": {
+        ...
+        "test": "mocha --compilers js:babel-register --recursive",
+        "test:watch": "npm test -- --watch",
+      },
+      ...
+    }
+
+and `run npm test` to run it once, or `npm run test:watch` to test on every file change.
 
 

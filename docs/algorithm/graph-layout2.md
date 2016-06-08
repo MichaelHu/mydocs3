@@ -9,12 +9,19 @@
 .test-graph {
     height: 400px;
 }
+.test-graph div {
+    float: left;
+    height: 100%;
+    width: 50%;
+    border: 1px dotted #666;
+}
 </style>
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <script src="http://258i.com/static/build/sigma/sigma.min.js"></script>
 <script src="http://258i.com/static/build/sigma/plugins/sigma.plugins.animate.min.js"></script>
 
 <script src="./js/graph-layout/utils.js"></script>
+<script src="./js/graph-layout/Grid/grid.js"></script>
 <script src="./js/graph-layout/sigma-utils.js"></script>
 <script src="./js/graph-layout/sigma-graph.js"></script>
 <script src="./js/graph-layout/sigma-prototype.js"></script>
@@ -28,16 +35,18 @@
 <script src="./js/network-2circle-0523.js"></script>
 <script src="./js/network-edges-between-the-same-level-nodes-0524.js"></script>
 <script src="./js/network-edges-between-the-same-level-nodes-2-0524.js"></script>
+<script src="./js/network-edges-between-the-same-level-nodes-3-0531.js"></script>
 <script src="./js/network-tree-0524.js"></script>
 <script src="./js/network-edges-between-levels-0526.js"></script>
 <script src="./js/network-many-children-0526.js"></script>
 <script src="./js/network-forest-0527.js"></script>
+<script src="./js/network-simpletree-0528.js"></script>
+<script src="./js/network-simple-0604-1.js"></script>
+
+## 增量布局
 
 
-## 五、增量布局
-
-
-### 5.1 构建新节点
+### 构建新节点
 
 新节点的`特点`是`x`, `y`, `size`未设置确定的值，但不是`undefined`。
 
@@ -87,7 +96,7 @@
     }
 
 
-### 5.2 矩阵增量布局
+### 矩阵增量布局
 
 
 `incLayoutGrid()`：矩阵增量布局，或者叫做网格增量布局。需提供参数：
@@ -314,10 +323,10 @@
 
 
 
-### 5.3 增量球形布局 
+### 增量簇布局 
 
 
-#### 5.3.1 interpolatesAngle()
+#### interpolatesAngle()
 
     @[data-script="javascript editable"]sigma.utils.interpolatesAngle
         = function(
@@ -355,7 +364,7 @@
 
 
 
-#### 5.3.2 clustersNodes()
+#### clustersNodes()
 
 参数示意图：
 
@@ -379,25 +388,39 @@
             , angleInput = opt.angleInput || 0
             , angleStart = angleInput
             , writePrefix = opt.writePrefix || ''
+            , readPrefix = opt.readPrefix || ''
             , randomRadius = opt.randomRadius
             , radius = 0, _r
+            , _rx, _ry 
             , i, j, k
             , angles
             , PI = Math.PI
             , alen, mid, left, right
+            , retObj = null 
             ;
 
         if(!nodes || !nodes.length){
-            return;
+            return retObj;
         }
 
         len = nodes.length; 
-        numOfFirstLevel = opt.numOfFirstLevel || _getNumOfFirstLevel(len, 15, 1);
-        clusterLevels = _getClusterLevels(numOfFirstLevel, len); 
+        numOfFirstLevel = opt.numOfFirstLevel 
+            || sigma.utils.getNumOfFirstClusterLevel(len, 15, 1);
+        clusterLevels = sigma.utils.getClusterLevels(numOfFirstLevel, len); 
 
         if(angleRange < PI * 2){
             angleStart = ( 2 * PI - angleRange ) / 2 + angleInput;
         }
+
+        retObj = {
+            numOfFirstLevel: numOfFirstLevel
+            , numOfNodes: len
+            , clusterLevels: clusterLevels
+            , angleInput: angleInput
+            , angleRange: angleRange
+            , angleStart: angleStart
+            , radiusStep: radiusStep
+        };
 
         angles = sigma.utils.interpolatesAngle(
             angleRange
@@ -406,10 +429,15 @@
             , angleStart
         );
 
-        root[writePrefix + 'x'] = root.x;
-        root[writePrefix + 'y'] = root.y;
+        if(typeof root[writePrefix + 'x'] == 'undefined'){
+            root[writePrefix + 'x'] = root.x;
+            root[writePrefix + 'y'] = root.y;
+        }
 
         k = 0;
+        _rx = root[readPrefix + 'x'];
+        _ry = root[readPrefix + 'y'];
+
         if(opt.centerFirst){
             for(i=0; i<angles.length && k < len; i++){
                 radius += radiusStep;
@@ -417,14 +445,14 @@
                 mid = Math.floor(alen / 2);
                 for(j=0; j<=mid && k<len; j++, k++){
                     _r = _getRadius(radius);
-                    nodes[k][writePrefix + 'x'] = root.x + _r * Math.cos(angles[i][mid - j]);
-                    nodes[k][writePrefix + 'y'] = root.y + _r * Math.sin(angles[i][mid - j]);
+                    nodes[k][writePrefix + 'x'] = _rx + _r * Math.cos(angles[i][mid - j]);
+                    nodes[k][writePrefix + 'y'] = _ry + _r * Math.sin(angles[i][mid - j]);
 
                     _r = _getRadius(radius);
                     if(k + 1 < len && mid + j < alen && j != 0){
                         k++;
-                        nodes[k][writePrefix + 'x'] = root.x + _r * Math.cos(angles[i][mid + j]);
-                        nodes[k][writePrefix + 'y'] = root.y + _r * Math.sin(angles[i][mid + j]);
+                        nodes[k][writePrefix + 'x'] = _rx + _r * Math.cos(angles[i][mid + j]);
+                        nodes[k][writePrefix + 'y'] = _ry + _r * Math.sin(angles[i][mid + j]);
                     }
                 }
             }
@@ -442,14 +470,14 @@
                         break;
                     }
 
-                    nodes[k][writePrefix + 'x'] = root.x + _r * Math.cos(angles[i][left]);
-                    nodes[k][writePrefix + 'y'] = root.y + _r * Math.sin(angles[i][left]);
+                    nodes[k][writePrefix + 'x'] = _rx + _r * Math.cos(angles[i][left]);
+                    nodes[k][writePrefix + 'y'] = _ry + _r * Math.sin(angles[i][left]);
 
                     if(k + 1 < len && left < right){
                         k++;
                         _r = _getRadius(radius);
-                        nodes[k][writePrefix + 'x'] = root.x + _r * Math.cos(angles[i][right]);
-                        nodes[k][writePrefix + 'y'] = root.y + _r * Math.sin(angles[i][right]);
+                        nodes[k][writePrefix + 'x'] = _rx + _r * Math.cos(angles[i][right]);
+                        nodes[k][writePrefix + 'y'] = _ry + _r * Math.sin(angles[i][right]);
                     }
                 }
             }
@@ -460,60 +488,34 @@
                 alen = angles[i].length;
                 for(j=0; j<alen && k<len; j++, k++){
                     _r = _getRadius(radius);
-                    nodes[k][writePrefix + 'x'] = root.x + _r * Math.cos(angles[i][j]);
-                    nodes[k][writePrefix + 'y'] = root.y + _r * Math.sin(angles[i][j]);
+                    nodes[k][writePrefix + 'x'] = _rx + _r * Math.cos(angles[i][j]);
+                    nodes[k][writePrefix + 'y'] = _ry + _r * Math.sin(angles[i][j]);
                 }
             }
         }
+
+        return retObj;
 
         function _getRadius(radius){
             return radius 
                 + ( randomRadius ? 0.5 * radiusStep * Math.random() : 0 );
         }
 
-        function _getClusterLevels(numOfFirstLevel, totalNum){
-            var i = 1
-                , step = numOfFirstLevel
-                , all = 0
-                ;
-
-            do {
-                all += i * step;
-                i++;
-            }
-            while(all < totalNum);
-            return i - 1; 
-        }
-
-        function _getNumOfFirstLevel(totalNum, max, min){
-            var max = max || 18 
-                , min = min || 1
-                , i = 1
-                , t = 0
-                , m
-                ;
-            while(1){
-                t += i; 
-                m = Math.ceil(totalNum / t);
-                if(m >= min && m <= max){
-                    return m;
-                }
-                i++;
-            }
-        }
     };
 
 
 
-#### 5.3.3 getAngleInput()
+#### getAngleInput()
 
-`getAngleInput(fromNode, toNode)`：获取球形布局输入节点的角度。
+`getAngleInput(fromNode, toNode, options)`：获取簇布局输入节点的角度。
 
     @[data-script="javascript"]sigma.utils.getAngleInput
-        = function(fromNode, toNode){
+        = function(fromNode, toNode, options){
 
-        var dy = fromNode.y - toNode.y
-            , dx = fromNode.x - toNode.x
+        var opt = options || {} 
+            , readPrefix = opt.readPrefix || ''
+            , dy = fromNode[readPrefix + 'y'] - toNode[readPrefix + 'y']
+            , dx = fromNode[readPrefix + 'x'] - toNode[readPrefix + 'x']
             , angleInput
             ;
         sin = dy / Math.sqrt( 
@@ -532,6 +534,56 @@
 
         return angleInput;
     };
+
+
+
+#### getClusterLevels()
+
+`getClusterLevels(numOfFirstLevel, totalNum)`：计算簇布局的最大层数。
+
+    @[data-script="javascript"]sigma.utils.getClusterLevels
+        = function(numOfFirstLevel, totalNum){
+
+        var i = 1
+            , step = numOfFirstLevel
+            , all = 0
+            ;
+
+        do {
+            all += i * step;
+            i++;
+        }
+        while(all < totalNum);
+        return i - 1; 
+    }
+
+
+
+#### getNumOfFirstClusterLevel()
+
+`getNumOfFirstClusterLevel(totalNum, max, min)`：计算簇布局最里层节点数目。
+
+    @[data-script="javascript"]sigma.utils.getNumOfFirstClusterLevel
+        = function(totalNum, max, min){
+
+        var max = max || 18 
+            , min = min || 1
+            , i = 1
+            , t = 0
+            , m
+            ;
+        while(1){
+            t += i; 
+            m = Math.ceil(totalNum / t);
+            if(m >= min && m <= max){
+                return m;
+            }
+            i++;
+        }
+    }
+
+
+
 
 
 
@@ -695,4 +747,322 @@
 </div>
 
 
+
+
+
+## 复合布局
+
+综合使用多种布局，以达到更好的布局效果。
+
+
+### 簇布局
+
+#### 算法描述
+
+todo
+
+#### 算法实现
+
+`簇布局算法`：
+
+    @[data-script="javascript"]sigma.prototype.layoutCluster
+        = function(options){
+
+        var opt = options || {} 
+            , me = this
+            , distanceCoefficient = opt.distanceCoefficient || 1.5 
+            , forest = me.graph.getLayoutForest(opt)
+            , edges = me.graph.edges()
+            ;
+
+        forest.forEach(function(tree){
+
+            // temp
+            tree.cluster_x = tree.x;
+            tree.cluster_y = tree.y;
+
+            depthTravel(tree);
+
+            function depthTravel(node, angleInput){
+                var children = node._wt_children
+                    , angleInput = angleInput || Math.PI * 3 / 2
+                    , nonLeafChildren
+                    , clusterConfig
+                    , ai
+                    , distance
+                    ;
+
+                clusterConfig = sigma.utils.clustersNodes(
+                    children
+                    , {
+                        angleInput: angleInput
+                        , root: node
+                        , readPrefix: 'cluster_'
+                        , writePrefix: 'cluster_'
+                        , angleRange: opt.angleRange 
+                            || _getAngleRange(children.length) 
+                            || Math.PI / 2
+                        , radiusStep: opt.radiusStep
+                        , randomRadius: opt.randomRadius || 0
+                    }
+                );
+
+                children.forEach(function(child){
+                    console.log(child.cluster_x + ', ' + child.cluster_y);
+                });
+
+                nonLeafChildren = _getNonLeafChildren(children);
+
+                if(nonLeafChildren.length > 0){
+                    nonLeafChildren.forEach(function(child){
+                        distance = _getDistance(clusterConfig, child);
+                        _stretchNode(child, node, distance);
+                        ai = sigma.utils.getAngleInput(
+                            node
+                            , child
+                            , {
+                                readPrefix: 'cluster_'
+                            }
+                        );
+                        depthTravel(child, ai);
+                    }); 
+                }
+            }
+
+        });
+
+        function _getAngleRange(totalNum){
+            var ret = 1;
+            if(totalNum <= 2){
+                ret = 0.5;
+            }
+            else if(totalNum <= 5){
+                ret = 1;
+            }
+            else if(totalNum <= 8){
+                ret = 1.5;
+            }
+            else {
+                ret = 2;
+            }
+            return Math.PI * ret;
+        }
+
+        function _getDistance(clusterConfig, node){
+            var c = clusterConfig
+                , cl = c.clusterLevels
+                , rs = c.radiusStep
+                , distance
+                , childrenCount = cl.numOfNodes
+                , grandChildrenCount = node._wt_children.length
+                , childrenRadiius
+                , grandChildrenRadius
+                ;
+
+            childrenRadius = rs * cl;
+            if(c.randomRadius){
+                childrenRadius += radiusStep;
+            }
+            grandChildrenRadius = _getRadius(grandChildrenCount, rs); 
+
+            distance = ( childrenRadius + grandChildrenRadius ) 
+                * distanceCoefficient;
+
+            return distance;
+        }
+
+        function _getRadius(nodesCount, radiusStep){
+            var numOfFirstLevel = sigma.utils.getNumOfFirstClusterLevel(
+                    nodesCount
+                    , 15
+                    , 1
+                )
+                , clusterLevels = sigma.utils.getClusterLevels(
+                    numOfFirstLevel
+                    , nodesCount
+                ) 
+                ;
+
+            return radiusStep * clusterLevels;
+        }
+
+        function _stretchNode(node, fromNode, distance){
+            var d = Math.sqrt(
+                    Math.pow(node.cluster_x - fromNode.cluster_x, 2)
+                    + Math.pow(node.cluster_y - fromNode.cluster_y, 2)
+                )
+                , scale = distance / d
+                , newX, newY
+                ;
+
+            newX = fromNode.cluster_x 
+                + scale * ( node.cluster_x - fromNode.cluster_x );
+            newY = fromNode.cluster_y 
+                + scale * ( node.cluster_y - fromNode.cluster_y );
+
+            node.cluster_x = newX;
+            node.cluster_y = newY;
+        }
+
+        function _getNonLeafChildren(children){
+            var ret = [];
+            children.forEach(function(child){
+                if(child._wt_children
+                    && child._wt_children.length > 0){
+                    ret.push(child);
+                }
+            });
+            return ret;
+        }
+
+        return this;
+    };
+
+
+
+
+
+#### 算法演示
+
+
+<div id="test_50" class="test">
+<div class="test-container">
+<div id="test_50_graph" class="test-graph">
+<div class="test-graph-left"></div>
+<div class="test-graph-right"></div>
+</div>
+<div class="test-console"></div>
+
+    @[data-script="javascript editable"]
+    (function(){
+
+        var s = fly.createShow('#test_50');
+        var g1 = getRandomGraph(20, 18, 8);
+        var g1 = getClusterGraph(20, {xMax: 200, yMax: 200, nodeSize: 10});
+        var g1 = networkGraph_edges_between_the_same_level_nodes_3;
+        var g1 = networkGraph_FR;
+        var g1 = networkGraph_ForceAtlas2;
+        var g1 = networkGraph0520_allEdges;
+        var g1 = networkGraph_grid_0521; 
+        var g1 = networkGraph_tree_0521;
+        var g1 = networkGraph_2circles_0523;
+        var g1 = networkGraph_edges_between_the_same_level_nodes;
+        var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        var g1 = networkGraph_many_children_0526;
+
+        var g2 = {
+                nodes: g1.nodes.slice()
+                , edges: g1.edges.slice()
+            }
+            ;
+        var containerId = 'test_50_graph';
+        var rendererSettings = {
+                // captors settings
+                doubleClickEnabled: true
+                , mouseWheelEnabled: false
+
+                // rescale settings
+                , minEdgeSize: 0.5
+                , maxEdgeSize: 1
+                , minNodeSize: 1 
+                , maxNodeSize: 5
+
+                // renderer settings
+                , edgeHoverColor: fly.randomColor() 
+                , edgeHoverSizeRatio: 1
+                , edgeHoverExtremities: true
+            };
+        var sigmaSettings = {
+                // rescale settings 
+                sideMargin: 0.1 
+
+                // instance global settings
+                , enableEdgeHovering: true
+                , edgeHoverPrecision: 5
+                , autoRescale: 0
+            };
+
+        var sm1, sm2;
+
+        if((sm1 = isSigmaInstanceExisted('test_50_left'))
+            && (sm2 = isSigmaInstanceExisted('test_50_right'))){
+            sm1.kill();
+            sm2.kill();
+        };
+
+        sm1 = getUniqueSigmaInstance(
+                    'test_50_left'
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g1
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: $('#' + containerId + ' .test-graph-left')[0]
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
+
+        sm2 = getUniqueSigmaInstance(
+                    'test_50_right'
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g2
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: $('#' + containerId + ' .test-graph-right')[0]
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
+
+        sm1
+            .normalizeSophonNodes()
+            .alignCenter({rescaleToViewport: 1})
+            .refresh()
+            ;
+
+        sm2
+            .normalizeSophonNodes()
+            .alignCenter({rescaleToViewport:1})
+            .refresh() // note: must invoke `refresh()` to update coordinates
+
+            .layoutCluster({
+                distanceCoefficient: 1.1
+                , radiusStep: 50
+                , randomRadius: 1
+            })
+            .normalizeSophonNodes({
+                readPrefix: 'cluster_'
+            })
+            .alignCenter({
+                wholeView: 1
+                , readPrefix: 'cluster_'
+                , writePrefix: 'cluster_'
+            })
+            ;
+
+        setTimeout(function(){
+            sigma.plugins.animate(
+                sm2
+                , {
+                    x: 'cluster_x'
+                    , y: 'cluster_y'
+                }
+                , {
+                    duration: 1000
+                }
+            );
+
+        }, 500);
+
+    })();
+
+</div>
+<div class="test-panel"></div>
+</div>
 

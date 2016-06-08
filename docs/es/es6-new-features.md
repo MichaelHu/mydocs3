@@ -1,4 +1,4 @@
-# ES6 Memo
+# ES6 new features
 
 > 2015年初发布ES6
 

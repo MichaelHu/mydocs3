@@ -93,5 +93,4 @@ sigma.utils.adjustSiblingsOrder
         return retNodes;
     }
 
-} 
-
+};   

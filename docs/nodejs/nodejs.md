@@ -5,6 +5,10 @@
 
 <https://nodejs.org/api/>
 
+Changelog: <https://github.com/nodejs/node/blob/v4.4.5/CHANGELOG.md>
+* 2015-10-05 Version 4.1.2 Stable
+* 2015-09-08 Version 4.0.0 Stable
+* 2015-07-09 Version 0.12.7 Stable ， 对应 npm 2.11.3
 
 
 ## Assertion Testing

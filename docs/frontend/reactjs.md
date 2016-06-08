@@ -6,9 +6,12 @@
 
 Reactjs: <http://facebook.github.io/react/docs/getting-started.html>
 
+Github: <https://github.com/facebook/react>
+
 Flux: <https://facebook.github.io/flux/docs/overview.html>
 
 Introduce: <http://www.ruanyifeng.com/blog/2015/03/react.html>
+
 
 
 
@@ -43,7 +46,6 @@ Introduce: <http://www.ruanyifeng.com/blog/2015/03/react.html>
 ### 1.1 三大特点
 
 1. Just the UI
-
     MVC - V
 
 2. Virtual DOM
@@ -51,6 +53,10 @@ Introduce: <http://www.ruanyifeng.com/blog/2015/03/react.html>
     高性能，更简单的编程模型
 
 3. Data Flow
+
+
+### top-level APIs
+
 
 
 
@@ -144,7 +150,194 @@ Introduce: <http://www.ruanyifeng.com/blog/2015/03/react.html>
     使用了`React`和`ReactDOM`两个对象。
 
 
-### 3.1 简单组件
+
+
+### jsx注意事项
+
+jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有一些特殊的地方。
+
+1. 内联样式，使用`驼峰`键值的对象，就像设置`element.style.x`一样 
+1. `if-else`不要在`属性`部分使用，因为key-value的value部分无法使用if-else语句。可用三元操作符代替。或者将if-else放在jsx代码块之外；或者定义一个闭包函数直接执行。
+1. `false`作为`属性`部分和`内容`部分的区别：属性部分，输出字符串`"false"`；内容部分，输出为空 
+1. 组件的`render()`只能返回一个节点，而不能是多个节点；如果有多个节点，必须要将这些节点包裹在一个父级节点内
+1. jsx不能使用`<!-- ... -->`进行注释
+1. `this.props.children`的类型。如果存在多个孩子节点，则表现为Array类型；如果仅有一个孩子节点，则表现为仅有的孩子节点本身。
+
+
+
+#### 演示一
+
+<div id="test_5" class="test">
+<div class="test-container">
+
+    @[data-script="compile-react editable"](function(){
+        var mountNodeFalse = $('#test_5 .test-react.false').get(0)
+            , mountNodeIfElse = $('#test_5 .test-react.ifelse').get(0)
+            , mountNodeStyle = $('#test_5 .test-react.style').get(0)
+            ;
+
+        // about `false`
+        ReactDOM.render(<div id={false} />, mountNodeFalse);
+        ReactDOM.render(<input value={false} />, mountNodeFalse);
+        ReactDOM.render(<div>{false}</div>, mountNodeFalse);
+        ReactDOM.render(<div>{5 > 1 && 'You have more than one item'}</div>, mountNodeFalse);
+
+        // about `style`
+        var divStyle = {
+            color: 'red'
+            , height: 30 // rendered as 'height:10px'
+            , backgroundImage: 'url(...)'
+            // Vendor prefixes other than `ms` should begin with a capital letter.
+            , WebkitTransition: 'all'
+            , msTransition: 'all'
+        };        
+        ReactDOM.render(
+            <div style={divStyle}>Hello World!</div>
+            , mountNodeStyle
+        );
+
+        // about `if-else`
+        ReactDOM.render(
+            <div id={ 5 > 1 ? 'yes' : 'no'}>use ternary expression instead of if-else</div>
+            , mountNodeIfElse
+        );
+    })();
+
+</div>
+<div class="test-react false"></div>
+<div class="test-react style"></div>
+<div class="test-react ifelse"></div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+#### 演示二
+
+关于`this.props.children`的类型，与children个数有关。
+
+<div id="test_6" class="test">
+<div class="test-container">
+
+    @[data-script="compile-react editable"](function(){
+        var s = fly.createShow('#test_6');
+        var mountNodeOnlyOne = $('#test_6 .only-one').get(0)
+            , mountNodeMoreThanOne = $('#test_6 .more-than-one').get(0)
+            , GenericWrapper = React.createClass({
+                componentDidMount: function(){
+                    // s.append_show(Array.isArray(this.props.children)); 
+                }
+                , render: function(){
+                    return (
+                        <div>
+                            {
+                                '`this.props.children` '
+                                + ( Array.isArray(this.props.children)
+                                    ? 'is' : 'isn\'t' 
+                                )
+                                + ' an array'
+                            }
+                        </div>
+                    );
+                }
+            })
+            ;
+
+        ReactDOM.render(
+            <GenericWrapper>
+                <span>child 1</span>
+                <span>child 2</span>
+                <span>child 3</span>
+            </GenericWrapper>
+            , mountNodeMoreThanOne
+        );
+
+        ReactDOM.render(
+            <GenericWrapper>
+            hello
+            </GenericWrapper>
+            , mountNodeOnlyOne
+        );
+
+    })();
+
+</div>
+<div class="test-react more-than-one"></div>
+<div class="test-react only-one"></div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+#### 演示三：组件间通信
+
+`父子`关系的组件间通信，可以通过`props`进行。
+
+可以作为jsx xml组件标签的，可以是`ReactClass`，也可以是一个`function`。如下所示的`GroceryList`。
+
+<div id="test_7" class="test">
+<div class="test-container">
+
+    @[data-script="compile-react editable"](function(){
+        var s = fly.createShow('#test_7');
+        var mountNode = $('#test_7 .test-react').get(0)
+            , handleClick = function(i, props){
+                s.show('You clicked: ' + props.items[i]);
+                console.log(this);
+            }
+            ;
+
+        /*
+        function GroceryList(props){
+            return (
+                <div>
+                    {props.items.map(function(item, i){
+                        return (
+                            <div onClick={handleClick.bind(this, i, props)} key={i}>
+                            {item}
+                            </div>
+                        );
+                    })}
+                </div>
+            );
+        }
+        */
+
+        var GroceryList = React.createClass({
+            render: function(){
+                var me = this;
+                return (
+                    <div>
+                        {this.props.items.map(function(item, i){
+                            return (
+                                <div onClick={handleClick.bind(this, i, me.props)} key={i}>
+                                {item}
+                                </div>
+                            );
+                        })}
+                    </div>
+                );
+            }
+        });
+
+        ReactDOM.render(
+            <GroceryList items={['Apple', 'Banana', 'Cranberry']}/>
+            , mountNode
+        );
+
+    })();
+
+</div>
+<div class="test-react"></div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+### 简单组件
 
 <div id="test_10" class="test">
 <div class="test-container">
@@ -168,7 +361,7 @@ Introduce: <http://www.ruanyifeng.com/blog/2015/03/react.html>
 
 
 
-### 3.2 带状态的组件
+### 带状态的组件
 
 1. `关键组件方法`：
 
@@ -221,7 +414,7 @@ Introduce: <http://www.ruanyifeng.com/blog/2015/03/react.html>
 
 
 
-### 3.3 实现Todo应用
+### 实现Todo应用
 
 `关键思想`：
 1. 组件的嵌套
@@ -286,7 +479,7 @@ Introduce: <http://www.ruanyifeng.com/blog/2015/03/react.html>
 
 
 
-### 3.4 使用外部插件的组件
+### 使用外部插件的组件
 
 
 关键属性：
@@ -352,7 +545,7 @@ TODO:
 
 
 
-## 五、Thinking in React
+## Thinking in React
 
 > 伟大的思想能变成巨大的财富。 —— 塞内加
 
@@ -361,8 +554,36 @@ TODO:
 
 
 
+## 一些源码片段
 
 
+`调用链条`：
+
+    React.createElement
+    ReactDOM.render
+    ReactMount.render
+    instantiateReactComponent
+
+### ReactElement.js
+
+React.createElement()
+
+<https://github.com/facebook/react/blob/master/src/isomorphic/classic/element/ReactElement.js>
+
+
+### ReactDOM.js
+
+<https://github.com/facebook/react/blob/master/src/renderers/dom/ReactDOM.js>
+
+
+### ReactMount.render()
+
+<https://github.com/facebook/react/blob/master/src/renderers/dom/client/ReactMount.js#L530>
+
+
+### instantiateReactComponent
+
+<https://github.com/facebook/react/blob/master/src/renderers/shared/stack/reconciler/instantiateReactComponent.js#L84>
 
 
 

@@ -11,6 +11,10 @@
 
 ## TickEaseIn
 
+
+### 代码实现
+
+
     @[data-script="javascript"]function TickEaseIn(begin, end, steps, type){
         var me = this;
 
@@ -77,6 +81,8 @@
 
 
 
+
+### 示例
 
 <div id="test_10" class="test">
 <div class="test-console"></div>

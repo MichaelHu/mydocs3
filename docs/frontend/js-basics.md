@@ -454,6 +454,24 @@ The production RelationalExpression : RelationalExpression in ShiftExpression is
 </div>
 
 
+## Fundamental Objects
+
+<http://www.ecma-international.org/ecma-262/6.0/#sec-fundamental-objects>
+
+    Object.assign(target, ...sources)
+    Object.create(O [, Properties ])
+    Object.defineProperties(O, Properties)
+    Object.defineProperty(), P, Attributes)
+    Object.freeze(O)
+    Object.getOwnPropertyDescriptor(O, P)
+    Object.getOwnPropertyNames(O)
+    Object.getOwnPropertySymbols(O)
+    Object.getPrototypeOf(O)
+    Object.is(value1, value2)
+    ...
+
+
+
 
 
 
