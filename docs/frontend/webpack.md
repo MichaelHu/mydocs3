@@ -599,9 +599,9 @@ shimming
 参考： <https://webpack.github.io/docs/optimization.html>
 
 
-## 开发服务器
 
-    webpack
+
+
 
 
 
@@ -609,55 +609,77 @@ shimming
 
 > `加载器`是webpack很关键的抽象之一
 
-参考：
+### 参考：
 
 * <https://webpack.github.io/docs/using-loaders.html>
 * <https://webpack.github.io/docs/list-of-loaders.html>
 
 
-三种使用方式：
+### 三种使用方式：
 
 1. `inline`，`!`分隔loader与资源
 2. `configuration`
-3. CLI参数， `--module-bind`
+3. `CLI`参数， `--module-bind`
 
 
 
-loader命名规范： 
+### loader命名规范： 
 
 `style-loader`, `style`，两者`皆可`，后者为`缩写`方式。
 
 
 
-有用的loader：
+### 有用的loader：
 
-basic类
+#### basic类
 1. script: <https://github.com/webpack/script-loader>
 2. base64: <https://github.com/antelle/base64-loader>
 3. to-string: <https://github.com/gajus/to-string-loader>
 
-packaging类
+
+#### packaging类
 1. file: <https://github.com/webpack/file-loader>
 2. url: <https://github.com/webpack/url-loader>
 3. extract: <https://github.com/peerigon/extract-loader>
 
-templating类
+
+#### templating类
 1. html: <https://github.com/webpack/html-loader>
 2. markdown: <https://github.com/peerigon/markdown-loader>
 
-style类
+
+#### style类
 1. style: <https://github.com/webpack/style-loader>
 2. css: <ihttps://github.com/webpack/css-loader>
 3. less: <>
 4. sass: <>
 
+
+
+
+
+
 ## plugin技术
 
 
 
-参考：
+### 参考：
 
 * <https://webpack.github.io/docs/using-plugins.html>
 * <https://webpack.github.io/docs/how-to-write-a-plugin.html>
+
+
+
+
+
+
+
+
+## 开发服务器
+
+    npm install -g webpack-dev-server
+
+    webpack-dev-server --progress --colors
+
 
 
