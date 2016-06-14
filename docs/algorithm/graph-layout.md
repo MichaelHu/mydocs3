@@ -42,6 +42,10 @@
 <script src="http://258i.com/static/bower_components/vivagraphjs/dist/vivagraph.min.js"></script>
 <script src="http://258i.com/static/bower_components/lodash/dist/lodash.min.js"></script>
 
+<script src="./js/graph-layout/utils.js"></script>
+<script src="./js/graph-layout/sigma-utils.js"></script>
+<script src="./js/graph-layout/sigma-prototype.js"></script>
+
 <script src="./js/network.js"></script>
 <script src="./js/network-0520.js"></script>
 <script src="./js/networkGraph0520-allEdges.js"></script>
@@ -460,7 +464,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 
 `相连`节点间有`胡克引力`，会互相`吸引`；`不相连`节点有`库仑斥力`，会互相`远离`。以及所有节点都有`重力`，会向中心靠拢。
 
-* 对于`森林`的展示，效果不是很好
+* 对于`森林`的展示，效果不是很好。先进行节点`归类`比较好
 * `收敛`速度慢，或者`长久无法`收敛，导致某些交互效果无法响应，比如hover。这时调用
 
         sigmaInst.killForceAtlas2();
@@ -479,7 +483,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
     }
 
 
-另外，`整个`系统能量的最小化比较容易达到，但是`局部`能量的最小化却比较不确定，容易出现`局部`节点`抖动`的情况。不过节点抖动也有一定的规律可循，通过增加新的优化选项字段`preventShaking`来避免。
+另外，`整个`系统能量的最小化比较容易达到，但是`局部`能量的最小化却比较不确定，容易出现`局部`节点`抖动`的情况。不过节点抖动也有一定的`规律`可循，通过增加新的优化选项字段`preventShaking`来避免。
 
     {
         preventShaking: true
@@ -541,6 +545,7 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice() 
             };
+        var clusterPreprocessing = 0;
         var containerId = 'test_30_graph';
         var rendererSettings = {
                 // captors settings
@@ -608,6 +613,16 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
                 ); 
 
         sm1.refresh();
+
+        clusterPreprocessing && sm2.layoutCluster({
+                distanceCoefficient: 1.1
+                , radiusStep: 50
+                , randomRadius: 1
+            })
+            .applyLayoutInstantly({
+                readPrefix: 'cluster_'
+            })
+            ;
         sm2.startForceAtlas2({
             worker: true
             , barnesHutOptimize: false

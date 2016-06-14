@@ -94,6 +94,26 @@ sigma.utils.adjustSiblingsOrder
     }
 
 };   
+sigma.utils.applyLayoutInstantly
+    = function(nodes, options){
+    var opt = options || {}
+        , readPrefix = opt.readPrefix || ''
+        , writePrefix = opt.writePrefix || ''
+        , clearOld = opt.clearOld || 0
+        ;
+
+    if(!nodes || !nodes.length){
+        return;
+    }
+    nodes.forEach(function(node){
+        node[writePrefix + 'x'] = node[readPrefix + 'x'];
+        node[writePrefix + 'y'] = node[readPrefix + 'y'];
+        if(clearOld){
+            delete node[readPrefix + 'x'];
+            delete node[readPrefix + 'y'];
+        }
+    });
+};
 sigma.utils.avoidChildrenTravelThrough
     = function(parentNode, edges) {
 
@@ -157,6 +177,136 @@ sigma.utils.avoidSameLevelTravelThrough
             } 
         }
         return 0;
+    }
+
+};
+sigma.utils.clustersNodes
+    = function(
+        nodes
+        , options
+    ) {
+
+    var opt = options || {}
+        , root = opt.root || {x: 0, y: 0}
+        , len 
+        , numOfFirstLevel
+        , clusterLevels
+        , angleRange = opt.angleRange || 2 * Math.PI
+        , radiusStep = opt.radiusStep || 100
+        , angleInput = opt.angleInput || 0
+        , angleStart = angleInput
+        , writePrefix = opt.writePrefix || ''
+        , readPrefix = opt.readPrefix || ''
+        , randomRadius = opt.randomRadius
+        , radius = 0, _r
+        , _rx, _ry 
+        , i, j, k
+        , angles
+        , PI = Math.PI
+        , alen, mid, left, right
+        , retObj = null 
+        ;
+
+    if(!nodes || !nodes.length){
+        return retObj;
+    }
+
+    len = nodes.length; 
+    numOfFirstLevel = opt.numOfFirstLevel 
+        || sigma.utils.getNumOfFirstClusterLevel(len, 15, 1);
+    clusterLevels = sigma.utils.getClusterLevels(numOfFirstLevel, len); 
+
+    if(angleRange < PI * 2){
+        angleStart = ( 2 * PI - angleRange ) / 2 + angleInput;
+    }
+
+    retObj = {
+        numOfFirstLevel: numOfFirstLevel
+        , numOfNodes: len
+        , clusterLevels: clusterLevels
+        , angleInput: angleInput
+        , angleRange: angleRange
+        , angleStart: angleStart
+        , radiusStep: radiusStep
+    };
+
+    angles = sigma.utils.interpolatesAngle(
+        angleRange
+        , numOfFirstLevel
+        , clusterLevels 
+        , angleStart
+    );
+
+    if(typeof root[writePrefix + 'x'] == 'undefined'){
+        root[writePrefix + 'x'] = root.x;
+        root[writePrefix + 'y'] = root.y;
+    }
+
+    k = 0;
+    _rx = root[readPrefix + 'x'];
+    _ry = root[readPrefix + 'y'];
+
+    if(opt.centerFirst){
+        for(i=0; i<angles.length && k < len; i++){
+            radius += radiusStep;
+            alen = angles[i].length;
+            mid = Math.floor(alen / 2);
+            for(j=0; j<=mid && k<len; j++, k++){
+                _r = _getRadius(radius);
+                nodes[k][writePrefix + 'x'] = _rx + _r * Math.cos(angles[i][mid - j]);
+                nodes[k][writePrefix + 'y'] = _ry + _r * Math.sin(angles[i][mid - j]);
+
+                _r = _getRadius(radius);
+                if(k + 1 < len && mid + j < alen && j != 0){
+                    k++;
+                    nodes[k][writePrefix + 'x'] = _rx + _r * Math.cos(angles[i][mid + j]);
+                    nodes[k][writePrefix + 'y'] = _ry + _r * Math.sin(angles[i][mid + j]);
+                }
+            }
+        }
+    }
+    else if(opt.sidesFirst){
+        for(i=0; i<angles.length && k < len; i++){
+            radius += radiusStep;
+            alen = angles[i].length;
+            mid = Math.floor(alen / 2);
+            for(j=0; j<=mid && k<len; j++, k++){
+                _r = _getRadius(radius);
+                left = j;
+                right = alen - 1 - j;
+                if(left > right) {
+                    break;
+                }
+
+                nodes[k][writePrefix + 'x'] = _rx + _r * Math.cos(angles[i][left]);
+                nodes[k][writePrefix + 'y'] = _ry + _r * Math.sin(angles[i][left]);
+
+                if(k + 1 < len && left < right){
+                    k++;
+                    _r = _getRadius(radius);
+                    nodes[k][writePrefix + 'x'] = _rx + _r * Math.cos(angles[i][right]);
+                    nodes[k][writePrefix + 'y'] = _ry + _r * Math.sin(angles[i][right]);
+                }
+            }
+        }
+    }
+    else {
+        for(i=0; i<angles.length && k < len; i++){
+            radius += radiusStep;
+            alen = angles[i].length;
+            for(j=0; j<alen && k<len; j++, k++){
+                _r = _getRadius(radius);
+                nodes[k][writePrefix + 'x'] = _rx + _r * Math.cos(angles[i][j]);
+                nodes[k][writePrefix + 'y'] = _ry + _r * Math.sin(angles[i][j]);
+            }
+        }
+    }
+
+    return retObj;
+
+    function _getRadius(radius){
+        return radius 
+            + ( randomRadius ? 0.5 * radiusStep * Math.random() : 0 );
     }
 
 };
@@ -305,6 +455,31 @@ sigma.utils.depthTravel
 
 };
 
+sigma.utils.getAngleInput
+    = function(fromNode, toNode, options){
+
+    var opt = options || {} 
+        , readPrefix = opt.readPrefix || ''
+        , dy = fromNode[readPrefix + 'y'] - toNode[readPrefix + 'y']
+        , dx = fromNode[readPrefix + 'x'] - toNode[readPrefix + 'x']
+        , angleInput
+        ;
+    sin = dy / Math.sqrt( 
+            Math.pow(dx, 2) + Math.pow(dy, 2) 
+        );
+    cos = dx / Math.sqrt(
+            Math.pow(dx, 2) + Math.pow(dy, 2) 
+        );
+
+    if( sin >= 0 ) {
+        angleInput = Math.acos(cos);
+    }
+    else {
+        angleInput = 2 * Math.PI - Math.acos(cos);
+    }
+
+    return angleInput;
+}; 
 sigma.utils.getCircleForest
     = function(nodes, edges, options){
 
@@ -550,6 +725,21 @@ sigma.utils.getCircuitsSlow
     }
 
 };
+sigma.utils.getClusterLevels
+    = function(numOfFirstLevel, totalNum){
+
+    var i = 1
+        , step = numOfFirstLevel
+        , all = 0
+        ;
+
+    do {
+        all += i * step;
+        i++;
+    }
+    while(all < totalNum);
+    return i - 1; 
+}   
 sigma.utils.getGridLayout
     = function(nodes, options){
 
@@ -736,6 +926,24 @@ sigma.utils.getNodesRect
     };
 }   
 
+sigma.utils.getNumOfFirstClusterLevel
+    = function(totalNum, max, min){
+
+    var max = max || 18 
+        , min = min || 1
+        , i = 1
+        , t = 0
+        , m
+        ;
+    while(1){
+        t += i; 
+        m = Math.ceil(totalNum / t);
+        if(m >= min && m <= max){
+            return m;
+        }
+        i++;
+    }
+} 
 sigma.utils.incLayoutGrid
     = function(nodes, newNodes, selectedNodes, options){
 
@@ -804,6 +1012,39 @@ sigma.prototype.incLayoutGrid = function(
     );
 
     return me;
+};
+sigma.utils.interpolatesAngle
+    = function(
+        angleRange
+        , numOfFirstLevel
+        , levels
+        , angleStart
+    ) {
+    var retArr = []
+        , angleStart = angleStart || 0
+        , numOfCurrentLevel
+        , anglesOfCurrentLevel
+        , stepOfCurrentLevel
+        , angleOffset
+        , i, j
+        ;
+
+    for(i=0; i<levels; i++){
+        numOfCurrentLevel = ( i + 1 ) * numOfFirstLevel;
+        anglesOfCurrentLevel = [];
+        stepOfCurrentLevel = angleRange / numOfCurrentLevel;
+        angleOffset = stepOfCurrentLevel * ( i == 0 ? 0 : 0.5 );
+        angleOffset += angleStart;
+
+        retArr.push(anglesOfCurrentLevel);
+        for(j=0; j<numOfCurrentLevel; j++){
+            anglesOfCurrentLevel.push(
+                stepOfCurrentLevel * j + angleOffset
+            );
+        }
+    }
+
+    return retArr;
 };
 sigma.utils.normalizeSophonNodes
     = function(nodes, options){

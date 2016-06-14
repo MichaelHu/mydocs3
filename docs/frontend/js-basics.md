@@ -8,21 +8,9 @@
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 
 
-## 绝对等式
-
-    typeof null === 'object'
-    void 0 === undefined
-
-数字判断：
-
-    num === +num
-
-IE9以下，hasEnumBug
-
-
 ## typeof
 
-`typeof`输出是`字符串`类型，有以下一些值：
+`typeof`输出是`字符串`类型，输出为以下`7个`值之一：
 
 * number
 * string
@@ -79,6 +67,8 @@ IE9以下，hasEnumBug
     0 == ''
     false == 0
     false == ''
+    true == 1
+    true != 100
 
 
 <div id="test_20" class="test">
@@ -89,16 +79,21 @@ IE9以下，hasEnumBug
 
         var s = fly.createShow('#test_20');
         var items = [
-            [null, undefined]
-            , [0, '']
-            , [false, 0]
-            , [false, '']
-        ];
-        s.show('common equations: ');
+                [ 'null', 'undefined' ]
+                , [ '0', '""' ]
+                , [ 'false', '0' ]
+                , [ 'false', '""' ]
+                , [ '1', 'true' ]
+                , [ '100', 'true' ]
+            ]
+            , expr
+            ;
+        s.show('common equaltions test: \n');
         for(var i=0; i<items.length; i++){
+            expr = items[i][0] + ' == ' + items[i][1]; 
             s.append_show(
-                items[i][0] + ' == ' + JSON.stringify(items[i][1])
-                , items[i][0] == items[i][1] 
+                expr
+                , eval(expr)
             );
         }
 
@@ -108,6 +103,53 @@ IE9以下，hasEnumBug
 <div class="test-panel">
 </div>
 </div>
+
+
+
+
+## 绝对等式
+
+    typeof null === 'object'
+    void 0 === undefined
+
+数字判断：
+
+    num === +num
+
+IE9以下，`hasEnumBug`
+
+<div id="test_25" class="test">
+<div class="test-console"></div>
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_25');
+        var items = [
+                [ 'typeof null', '"object"' ]
+                , [ 'void 0', 'undefined' ]
+                , [ '5', '+5' ]
+                , [ '1', 'true' ]
+            ]
+            , expr
+            ;
+        s.show('absolute equaltions test: \n');
+        for(var i=0; i<items.length; i++){
+            expr = items[i][0] + ' === ' + items[i][1]; 
+            s.append_show(
+                expr
+                , eval(expr)
+            );
+        }
+
+    })();
+
+</div>
+<div class="test-panel">
+</div>
+</div>
+
+
 
 
 ## TRUE表达式

@@ -1,4 +1,4 @@
-# lesscss备忘
+# lesscss
 
 
 > @[style="color:green;font-size:18px"]Leaner CSS
@@ -7,8 +7,8 @@
 
 `docs`: <http://lesscss.org>
 
-Less是一个CSS预处理器，扩展了CSS语言，添加了新的特性：允许变量、mixin、
-函数以及其他使得css更加容易维护和扩展的技术。
+Less是一个CSS预处理器，扩展了CSS语言，添加了新的特性：允许`变量`、`mixin`、
+`函数`以及其他使得css更加容易维护和扩展的技术。
 
 ## 安装和使用
 

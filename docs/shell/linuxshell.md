@@ -1,5 +1,8 @@
 # Linux Shell Memo
 
+
+> 简单是终极的复杂。 —— 达芬奇
+
 hudamin 2014
 
 
@@ -385,6 +388,21 @@ hudamin 2014
     EOF
 
 
+### lsbom
+
+for `MAC`
+
+    lsbom -f -l -s -pf /var/db/receipts/org.nodejs.pkg.bom
+
+删除干净`nodejs`：
+
+    lsbom -f -l -s -pf /var/db/receipts/org.nodejs.pkg.bom \
+    | while read i; do
+      sudo rm /usr/local/${i}
+    done
+    sudo rm -rf /usr/local/lib/node \
+         /usr/local/lib/node_modules \
+         /var/db/receipts/org.nodejs.*
 
 
 
@@ -393,12 +411,12 @@ hudamin 2014
 
 几种快速清空文件内容的方法：
 
-　　$ : > filename              # 其中的`:`是一个占位符, 不产生任何输出.
-　　$ > filename
-　　$ echo "" > filename
-　　$ echo /dev/null > filename
-　　$ echo > filename
-　　$ cat /dev/null > filename
+    $ : > filename              # 其中的`:`是一个占位符, 不产生任何输出.
+    $ > filename
+    $ echo "" > filename
+    $ echo /dev/null > filename
+    $ echo > filename
+    $ cat /dev/null > filename
 
 
 
@@ -406,70 +424,75 @@ hudamin 2014
 
 ## 实用例子
 
-1. 批量进行文件改名： 
+### 批量进行文件改名 
 
-        find . -type f -exec echo "mv {} {}" \; | sed -e "s/ \([^ ]*\)@3x.png$/ ..\/\1.png/g" | sh -x
+    find . -type f -exec echo "mv {} {}" \; | sed -e "s/ \([^ ]*\)@3x.png$/ ..\/\1.png/g" | sh -x
 
-    注意`sed的正则`基本等同`vim正则`。当然也有一些差别，比如：
+注意`sed的正则`基本等同`vim正则`。当然也有一些差别，比如：
 
-        $ sed -E -e "s/a/ & /g" file
-        $ sed -e "s/a/ & /g" file
-        $ sed -E -e "s/(a)/ \1 /g" file
-        $ sed -e "s/\(a\)/ \1 /g" file
+    $ sed -E -e "s/a/ & /g" file
+    $ sed -e "s/a/ & /g" file
+    $ sed -E -e "s/(a)/ \1 /g" file
+    $ sed -e "s/\(a\)/ \1 /g" file
 
-        vim:
+    vim:
 
-        :s/a/ \0 /g
-        
-    sed有perl style的扩展正则功能，vim只有magic方式的初级正则。反向匹配串引用也存在区别，主要是整串匹
-
-
-2. 查询近24小时内修改过的文件：
-
-        find . -type f -name "*.md" -mtime -1
-
-    注意，`-mtime`后面的数字，仅当和`+`和`-`配合才有意义。
+    :s/a/ \0 /g
+    
+sed有`perl` style的扩展正则功能，vim只有`magic`方式的初级正则。反向匹配串引用也存在区别，主要是`整串匹配`
 
 
 
-3. 查看某天顺风车发单量和成交量：
 
-        date > orders-1517.log
+### 查询近24小时内修改过的文件
 
-        total=0
-        for i in `cat ../api.lst`
-            do  
-                # echo $i
-                ssh $i 'cd /home/xiaoju/webroot/beatles/log/webapi; grep -P "\/order\/create\?" didi.log | grep "time=2015-11-17 " | grep errno=0 | grep -Po "\x22order_id\x22:\x22[^\x22]+\x22" | sort | uniq | wc -l'
-            done \
-            > tmp 
+    find . -type f -name "*.md" -mtime -1
 
-        for i in `cat tmp`
-            do  
-                (( total += $i ))
-            done
-
-        echo "Total orders: $total" >> orders-1517.log
+注意，`-mtime`后面的数字，仅当和`+`和`-`配合才有意义。
 
 
-        total=0
-        for i in `cat ../api.lst`
-            do  
-                # echo $i
-                ssh $i 'cd /home/xiaoju/webroot/beatles/log/webapi; grep -P "\/order\/pay\?" didi.log | grep "time=2015-11-17 " | grep errno=0 | grep -Po "\x22order_id\x22:\x22[^\x22]+\x22" | sort | uniq | wc -l'
-            done \
-            > tmp 
 
-        for i in `cat tmp`
-            do  
-                (( total += $i ))
-            done
+### 查看某天顺风车发单量和成交量
 
-        echo "Total deals: $total" >> orders-1517.log
+    date > orders-1517.log
+
+    total=0
+    for i in `cat ../api.lst`
+        do  
+            # echo $i
+            ssh $i 'cd /home/xiaoju/webroot/beatles/log/webapi; grep -P "\/order\/create\?" didi.log | grep "time=2015-11-17 " | grep errno=0 | grep -Po "\x22order_id\x22:\x22[^\x22]+\x22" | sort | uniq | wc -l'
+        done \
+        > tmp 
+
+    for i in `cat tmp`
+        do  
+            (( total += $i ))
+        done
+
+    echo "Total orders: $total" >> orders-1517.log
 
 
-4. 清除git仓库中未添加文件，这些未添加文件都在src目录下： 
+    total=0
+    for i in `cat ../api.lst`
+        do  
+            # echo $i
+            ssh $i 'cd /home/xiaoju/webroot/beatles/log/webapi; grep -P "\/order\/pay\?" didi.log | grep "time=2015-11-17 " | grep errno=0 | grep -Po "\x22order_id\x22:\x22[^\x22]+\x22" | sort | uniq | wc -l'
+        done \
+        > tmp 
 
-        git status | awk '/^\t+src/{printf "rm -rf %s\n",$0}' | sh -x
+    for i in `cat tmp`
+        do  
+            (( total += $i ))
+        done
 
-    注意：`awk`的正则`不是``magic`方式。
+    echo "Total deals: $total" >> orders-1517.log
+
+
+
+
+### 清除git仓库中未添加文件，这些未添加文件都在src目录下 
+
+    git status | awk '/^\t+src/{printf "rm -rf %s\n",$0}' | sh -x
+
+注意：`awk`的正则`不是``magic`方式。
+

@@ -30,6 +30,7 @@
 <script src="./js/network-0520.js"></script>
 <script src="./js/networkGraph0520-allEdges.js"></script>
 <script src="./js/network-grid-0521.js"></script>
+<script src="./js/network-grid-0612.js"></script>
 <script src="./js/networkGraph-tree-0521.js"></script>
 <script src="./js/network-forceAtlas2-0510.js"></script>
 <script src="./js/network-2circle-0523.js"></script>
@@ -119,6 +120,10 @@
 
         var opt = options || {} 
             , rect
+            , oldRect
+            , oldCenter
+            , selectedCenter
+            , selectedRect
             , newCenter
             , newLen = newNodes.length
             , newWidth = ( Math.ceil(Math.sqrt(newNodes.length)) - 1 ) * ( opt.space || 50 ) 
@@ -131,20 +136,27 @@
         if(!selectedNodes.length){
             selectedNodes = nodes;
         }
-        rect = gnr(nodes, opt);
-        newCenter = {
-            x: rect.x + rect.w + newWidth
-            , y: rect.y + rect.h / 3
+        oldRect = rect = gnr(nodes, opt);
+        oldCenter = {
+            x: rect.x + rect.w / 2
+            , y: rect.y + rect.h / 2
         };
 
-        rect = gnr(selectedNodes, opt);
+        selectedRect = rect = gnr(selectedNodes, opt);
+        selectedCenter = {
+            x: rect.x + rect.w / 2
+            , y: rect.y + rect.h / 2
+        };
+
+        newCenter = _getNewCenter(oldRect, selectedRect, newWidth);
+
         // from selected nodes' center point 
         newNodes.forEach(function(node){
-            node.x = rect.x + rect.w / 2; 
-            node.y = rect.y + rect.h / 2;
+            node.x = selectedCenter.x; 
+            node.y = selectedCenter.y;
         });
 
-        // prepare for the next animation
+        // prepare for the next animation, preventing `undefined node.grid_*`
         nodes.forEach(function(node){
             node.grid_x = node.x;
             node.grid_y = node.y;
@@ -153,6 +165,66 @@
         opt.center = newCenter;
         sigma.utils.getGridLayout(newNodes, opt);
 
+        function _getNewCenter(oldRect, selectedRect, newSize){
+            var x0 = oldRect.x + oldRect.w / 2
+                , y0 = oldRect.y + oldRect.h / 2
+                , w0 = oldRect.w
+                , h0 = oldRect.h
+                , x1 = selectedRect.x + selectedRect.w / 2
+                , y1 = selectedRect.y + selectedRect.h / 2
+                , k
+                , x, y
+                ;
+
+            if(x1 - x0 != 0 && y1 - y0 != 0){
+                k = (y1 - y0) / (x1 - x0);
+                if(Math.abs(k) >= 1){
+                    if(y1 - y0 > 0){
+                        y = y0 + h0 / 2 + newSize; 
+                    }
+                    else{
+                        y = y0 - h0 / 2 - newSize; 
+                    }
+                    x = (y - y0) / k + x0;
+                }
+                else {
+                    if(x1 - x0 > 0){
+                        x = x0 + w0 / 2 + newSize;
+                    }
+                    else {
+                        x = x0 - w0 / 2 - newSize;
+                    }
+                    y = (x - x0) * k + y0;
+                }
+            }
+            else if(x1 - x0 == 0 && y1 - y0 != 0){
+                x = x0;
+                if(y1 - y0 > 0){
+                    y = y0 + h0 / 2 + newSize; 
+                }
+                else {
+                    y = y0 - h0 / 2 - newSize; 
+                }
+            }
+            else if(y1 - y0 == 0 && x1 - x0 != 0){
+                y = y0;
+                if(x1 - x0 > 0){
+                    x = x0 + w0 / 2 + newSize;
+                }
+                else {
+                    x = x0 - w0 / 2 - newSize;
+                }
+            }
+            else {
+                x = x0 + w0 / 2 + newSize;
+                y = y0 + h0 / 3;
+            }
+
+            return {
+                x: x
+                , y: y
+            };
+        }
     };
 
 
@@ -197,6 +269,7 @@
         var g1 = networkGraph_edges_between_the_same_level_nodes;
         var g1 = networkGraph_edges_between_the_same_level_nodes_2;
         var g1 = networkGraph_many_children_0526;
+        var g1 = networkGraph_grid_0612; 
         var containerId = 'test_10_graph';
         var rendererSettings = {
                 // captors settings
@@ -755,11 +828,65 @@
 综合使用多种布局，以达到更好的布局效果。
 
 
+### 工具方法
+
+
+以下提供一些方法，支持`复合`布局。
+
+
+#### applyLayoutInstantly
+
+`applyLayoutInstantly(options)`：立即应用新布局坐标。
+
+    @[data-script="javascript"]sigma.utils.applyLayoutInstantly
+        = function(nodes, options){
+        var opt = options || {}
+            , readPrefix = opt.readPrefix || ''
+            , writePrefix = opt.writePrefix || ''
+            , clearOld = opt.clearOld || 0
+            ;
+
+        if(!nodes || !nodes.length){
+            return;
+        }
+        nodes.forEach(function(node){
+            node[writePrefix + 'x'] = node[readPrefix + 'x'];
+            node[writePrefix + 'y'] = node[readPrefix + 'y'];
+            if(clearOld){
+                delete node[readPrefix + 'x'];
+                delete node[readPrefix + 'y'];
+            }
+        });
+    };
+
+    sigma.prototype.applyLayoutInstantly
+        = function(options){
+        sigma.utils.applyLayoutInstantly(
+            this.graph.nodes()
+            , options
+        );
+    };
+
+
+
+
+
 ### 簇布局
+
+`簇布局`作为一种`人工`布局，完全模拟力导向布局的效果还是有点困难。但是可以作为力导向布局的`前置`布局。
+
+将簇布局作为力导向布局的前置布局，目前实验结果`未显示`明显优化。
+
 
 #### 算法描述
 
-todo
+
+1. 获取布局森林
+2. 针对森林中的每一棵树`tree`，进行深度遍历，遍历过程中对每个节点`node`的处理如下：
+    * 如果不存在孩子节点，不作处理
+    * 如果存在孩子节点，则以`node`为中心，将孩子节点进行`簇布局`；并对`非叶子`的孩子节点进行`延伸`
+
+
 
 #### 算法实现
 
@@ -804,12 +931,13 @@ todo
                             || Math.PI / 2
                         , radiusStep: opt.radiusStep
                         , randomRadius: opt.randomRadius || 0
+                        , centerFirst: 1
                     }
                 );
 
-                children.forEach(function(child){
-                    console.log(child.cluster_x + ', ' + child.cluster_y);
-                });
+                // children.forEach(function(child){
+                //     console.log(child.cluster_x + ', ' + child.cluster_y);
+                // });
 
                 nonLeafChildren = _getNonLeafChildren(children);
 

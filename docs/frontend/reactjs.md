@@ -57,13 +57,16 @@ Introduce: <http://www.ruanyifeng.com/blog/2015/03/react.html>
 
 ### top-level APIs
 
+* React.createClass()
+* React.createElement()
+* ReactDOM.render()
 
 
 
 
 ## 二、cbScriptBlock回调
 
-以下代码针对`compile-react`代码块提供编辑后的处理逻辑，将react代码块进行编译输出。
+以下代码针对`compile-react`代码块提供编辑后的处理逻辑，将`react`代码块进行编译输出。
 
     @[data-script="javascript"]function cbScriptBlock(block, scriptType) {
         var $block = $(block)
@@ -156,9 +159,9 @@ Introduce: <http://www.ruanyifeng.com/blog/2015/03/react.html>
 
 jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有一些特殊的地方。
 
-1. 内联样式，使用`驼峰`键值的对象，就像设置`element.style.x`一样 
-1. `if-else`不要在`属性`部分使用，因为key-value的value部分无法使用if-else语句。可用三元操作符代替。或者将if-else放在jsx代码块之外；或者定义一个闭包函数直接执行。
-1. `false`作为`属性`部分和`内容`部分的区别：属性部分，输出字符串`"false"`；内容部分，输出为空 
+1. `内联`样式的写法，使用`驼峰`键值的对象，就像设置`element.style.x`一样 
+1. `if-else`不要在`属性`部分使用，因为key-value的value部分无法使用if-else语句。可用`三元操作符`代替。或者将if-else放在jsx代码块之外；或者定义一个闭包函数直接执行。
+1. `false`作为`属性`部分和`内容`部分的区别：属性部分，输出字符串`"false"`；`内容`部分，输出为`空` 
 1. 组件的`render()`只能返回一个节点，而不能是多个节点；如果有多个节点，必须要将这些节点包裹在一个父级节点内
 1. jsx不能使用`<!-- ... -->`进行注释
 1. `this.props.children`的类型。如果存在多个孩子节点，则表现为Array类型；如果仅有一个孩子节点，则表现为仅有的孩子节点本身。
@@ -275,7 +278,7 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
 
 `父子`关系的组件间通信，可以通过`props`进行。
 
-可以作为jsx xml组件标签的，可以是`ReactClass`，也可以是一个`function`。如下所示的`GroceryList`。
+允许作为jsx xml组件标签的，可以是`ReactClass`，也可以是一个`function`。如下所示的`GroceryList`。
 
 <div id="test_7" class="test">
 <div class="test-container">

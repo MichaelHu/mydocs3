@@ -7,12 +7,32 @@
 
 ## 安装方式
 
-通过安装新版本的`nodejs`，自动包含npm的安装。
+### 通过nodejs pkg安装
 
-自动检测nodejs的最新版本（mac适用）：
+通过安装新版本的`nodejs`，自动包含`npm`的安装（查看nodejs的安装）。
+
+自动检测`nodejs`的最新版本（mac适用）：
 
     curl https://nodejs.org | grep -Eo "Current Version: *v[^<]+"
 
+
+
+### 手动升级npm
+
+通过nodejs安装的npm通常版本都比较低，有时需要`手动升级`npm版本：
+
+    $ npm -v
+    2.15.5
+    $ sudo npm update -g npm
+    /usr/local/bin/npm -> /usr/local/lib/node_modules/npm/bin/npm-cli.js
+    npm@3.9.5 /usr/local/lib/node_modules/npm
+    $ nodejs $ npm -v
+    3.9.5
+
+
+### npm包安装问题
+
+#### EACCESS
 
 mac下进行`-g`安装，出现`EACCES`错误，原因是对`/usr/local/lib/node_modules`没有权限导致。
 解决办法如下：
@@ -24,6 +44,20 @@ mac下进行`-g`安装，出现`EACCES`错误，原因是对`/usr/local/lib/node
     $ ls -l
     drwxr-xr-x  32 hudamin  wheel  1088  8  6 13:08 node_modules
 
+#### 自动安装依赖
+
+> Note: npm deprecated `auto-installing` of peerDependencies `since npm@3`, so required peer dependencies like babel-core and webpack must be listed explicitly in your `package.json`.
+
+
+## 淘宝npm镜像
+
+<http://npm.taobao.org>
+
+使用淘宝定制的`cnpm`命令代替默认的`npm`。
+
+    $ npm install -g cnpm --registry=https://registry.npm.taobao.org
+
+cnpm支持除`publish`之外的所有命令。
 
 
 
@@ -233,10 +267,7 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
     npm install <git remote url>
 
 
-1. 没有`-g`或`--global`，则总是安装在本地的node_modules下
-
-
-`举例如下：`
+没有`-g`或`--global`，则总是安装在本地的`node_modules`下，`举例如下：`
 
 将依赖安装在本地node_modules目录下：
 

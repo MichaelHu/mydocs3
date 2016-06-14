@@ -8,7 +8,15 @@
 <http://redux.js.org/index.html>
 
 
-## 三条原则
+## 安装
+
+使用`npm`包管理器，如果不想用，可以从<https://npmcdn.com/redux/>直接下载代码文件。
+
+    npm install --save redux
+    
+
+
+## 三条原则(The Gist)
 
 1. 整个应用`只有`一棵状态树
 2. 状态是`只读`的，唯一修改方法是`派发(dispatch)`actions
