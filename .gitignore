@@ -6,6 +6,5 @@ __tmp/
 
 docs/sophon
 docs/didi
-dist/docs/didi
 docs/private
-dist/docs/private
+dist/docs
