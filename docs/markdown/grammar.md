@@ -209,7 +209,7 @@
 
 ### 可跨行标签
 
-为了方便在文档中嵌入样式和脚本，`style`与`script`标签的内容是可以跨行的，比如：
+为了方便在文档中嵌入样式和脚本，`style`, `script`, `svg`标签的内容是可以跨行的，比如：
 
     <style type="text/css">
     ... 
@@ -218,6 +218,10 @@
     <script type="text/javascript">
     ...
     </script> 
+
+    <svg ...>
+    ...
+    </svg>
 
 只要确保起止标签首列书写即可。
 

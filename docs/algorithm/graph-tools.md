@@ -23,6 +23,7 @@
 <script src="./js/network-0520.js"></script>
 <script src="./js/networkGraph0520-allEdges.js"></script>
 <script src="./js/network-grid-0521.js"></script>
+<script src="./js/network-grid-0612.js"></script>
 <script src="./js/networkGraph-tree-0521.js"></script>
 <script src="./js/network-forceAtlas2-0510.js"></script>
 <script src="./js/network-2circle-0523.js"></script>
@@ -94,10 +95,11 @@
 
 代码如下：
 
-    @[data-script="javascript"]function getRandomGraph(numOfNodes, numOfEdges, fixSize){
+    @[data-script="javascript"]function getRandomGraph(numOfNodes, numOfEdges, fixSize, options){
 
         var i
             , s
+            , opt = options || {}
             , N = numOfNodes
             , E = numOfEdges
             , g = { nodes: [], edges: [] }
@@ -110,7 +112,7 @@
                 , x: Math.random()
                 , y: Math.random()
                 , size: fixSize || Math.random()
-                , color: fly.randomColor() 
+                , color: opt.color || fly.randomColor() 
             });
         }
 

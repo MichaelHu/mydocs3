@@ -75,7 +75,8 @@
                 , y: null
                 , size: 10
                 // , color: fly.randomColor()
-                , color: '#ff7f0e' 
+                // , color: '#ff7f0e' 
+                , color: '#74c476' 
             });
         }
 
@@ -299,6 +300,10 @@
 
         var sm;
 
+        g1.nodes.forEach(function(node){
+            node.color = '#aaa';
+        });
+
         if((sm = isSigmaInstanceExisted(containerId))){
             sm.kill();
         };
@@ -338,7 +343,7 @@
 
                 _nodes.forEach(function(_node){
                     if(Math.random() > 0.8){
-                        _node.color = '#f00';
+                        _node.color = '#e6550d';
                         retNodes.push(_node);
                     }
                 });
