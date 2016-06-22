@@ -169,6 +169,37 @@
     :highlight clear
     :filetype on
 
+### 设置颜色主题
+
+    :colorscheme desert
+    " for short
+    :colo desert
+    :colo
+
+    :echo g:colors_name
+
+可用的`color scheme`主题文件存在于`/usr/share/vim/vim73/colors`，有以下主题可选：
+
+    blue
+    darkblue
+    default
+    delek
+    desert
+    elflord
+    evening
+    koehler
+    morning
+    murphy
+    pablo
+    peachpuff
+    ron
+    shine
+    slate
+    torte
+    zellner
+
+`default`类型的注释为蓝色，比较难以看清楚，`desert`主题个人比较喜欢。
+
 
 ## Folding
 

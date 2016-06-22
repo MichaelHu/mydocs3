@@ -14,10 +14,11 @@
 
 
 `其他`：
-1. 一种改进的可视化布局算法IGVA; 徐红云,陈志锋
-2. VERVIEW OF ALGORITHMS FOR GRAPH DRAWING; Pajntar B.; <http://ailab.ijs.si/dunja/SiKDD2006/Papers/Pajntar.pdf>
-3. <http://cs.brown.edu/~rt/gdhandbook/>
-4. <http://www.ogdf.net/doku.php>
+1. ForceAtlas2, a Continuous Graph Layout Algorithm for Handy Network Visualization Designed for the Gephi Software; <http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0098679>
+2. 一种改进的可视化布局算法IGVA; 徐红云,陈志锋
+3. VERVIEW OF ALGORITHMS FOR GRAPH DRAWING; Pajntar B.; <http://ailab.ijs.si/dunja/SiKDD2006/Papers/Pajntar.pdf>
+4. <http://cs.brown.edu/~rt/gdhandbook/>
+5. <http://www.ogdf.net/doku.php>
 
 
 ### 1.2 评价标准
@@ -371,7 +372,7 @@
 
 ### 3.2 FDA算法
 
-FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是最知名的图布局算法之一，在网络
+`FDA`(Force-directed Algorithm)是图布局研究中的重要研究成果，也是最知名的图布局算法之一，在网络
 节点布局中占据了主导地位，该算法也称为`弹性模型(Sprint Embedded Model)`。FDA算法中另一个比较著名
 的算法是`GVA(Grid Variant Algorithm)`，也叫做`FR算法`。
 
@@ -384,6 +385,10 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 依赖收敛时间，如果收敛时间太长，图形会一直跳动，有种`不稳定`的感觉。
 
 以下例子使用vivagraph来实现，使用了`Viva.Graph.Layout.forceDirected`布局算法。 
+
+相关： 
+* <https://github.com/anvaka/ngraph.physics.simulator>
+* <https://github.com/anvaka/ngraph.forcelayout>
 
 
 <div id="test_20" class="test">
@@ -460,6 +465,9 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 ### 3.3 forceAtlas2算法
 
 > `ForceAtlas2`, a `continuous graph layout` algorithm for handy network visualization designed for the `Gephi` software.
+
+
+`参考`：<http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0098679>
 
 
 `相连`节点间有`胡克引力`，会互相`吸引`；`不相连`节点有`库仑斥力`，会互相`远离`。以及所有节点都有`重力`，会向中心靠拢。
@@ -657,6 +665,8 @@ FDA(Force-directed Algorithm)是图布局研究中的重要研究成果，也是
 ### 3.4 Yifan Hu算法
 
 使用`Edge Bundling`（边捆绑技术）。Todo
+
+在这里：<a href="./YifanHu-layout.md.preview.html">YifanHu layout</a>
 
 
 

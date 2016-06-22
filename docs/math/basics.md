@@ -3,6 +3,16 @@
 
 
 
+## 工具
+
+数学公式在线编辑器：<http://latex.91maths.com>，比如输入：
+
+    \sqrt{(x_{i} - x_{j})^2 + (y_{i} - y_{j})^2}
+
+
+关于`p-norm`：<https://en.wikipedia.org/wiki/Norm_(mathematics)#p-norm>
+
+
 ## 三角函数
 
 贴图如下：

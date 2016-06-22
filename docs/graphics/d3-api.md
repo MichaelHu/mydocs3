@@ -807,7 +807,7 @@ padding取值区间为`[0, 1]`
 ### d3.svg.line
 
 
-####line构造器：
+#### line构造器
 
 
     // 默认构造器
@@ -826,39 +826,33 @@ padding取值区间为`[0, 1]`
 #### 示例
 
 <div id="test_60" class="test">
-<div class="test-container"></div>
 <div class="test-console"></div>
-<div class="test-panel">
-<button id="test_60_btn_1">line([ [20,50] ])</button>
-<button id="test_60_btn_2">line([ {x:20,y:50} ])</button>
-</div>
-</div>
+<div class="test-container">
 
     @[data-script="javascript editable"](function(){
-
-        var $cont = d3.select('#test_60 .test-container')
-            , $console = d3.select('#test_60 .test-console');
 
         var s = fly.createShow('#test_60');
         var show = s.show;
         var append_show = s.append_show;
 
-        d3.select('#test_60_btn_1').on('click', function(){
-            var line = d3.svg.line();
-            var def = line([[20, 50]]);
-            show(1, def);
-        });
+        var line = d3.svg.line();
+        var def = line([[20, 50], [11, 22], [90,765]]);
+        show(1, def);
 
-        d3.select('#test_60_btn_2').on('click', function(){
-            var line = d3.svg.line()
-                    .x(function(d){ return d.x; })
-                    .y(function(d){ return d.y; })
-                    ;
-            var def = line([ {x:20, y:50}]);
-            show(2, def);
-        });
+        var line = d3.svg.line()
+                .x(function(d){ return d.x; })
+                .y(function(d){ return d.y; })
+                ;
+        var def = line([ {x:20, y:50}, {x:30, y:99}]);
+        append_show(2, def);
 
     })();
+
+</div>
+<div class="test-panel">
+</div>
+</div>
+
 
 
 
