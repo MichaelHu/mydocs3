@@ -8,6 +8,7 @@
 
 
 
+
 ## YifanHu布局算法主要思路
 
 * Multilevel approach： 多级`粒度`布局，解决`局部最小`的问题
@@ -16,6 +17,30 @@
 * A general repulsize force model
 
 算法适用：无向图，直线边，力导向算法
+
+
+
+
+<style type="text/css">
+@import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
+.test-graph {
+    height: 400px;
+}
+.test-graph svg {
+    width: 100%;
+    height: 100%;
+}
+</style>
+<script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
+<script src="http://258i.com/static/build/sigma/sigma.min.js"></script>
+
+<script src="./js/graph-layout/utils.js"></script>
+<script src="./js/graph-layout/Grid/grid.js"></script>
+<script src="./js/graph-layout/quadTree/bhQuadTree.js"></script>
+<script src="./js/graph-layout/sigma-utils.js"></script>
+<script src="./js/graph-layout/sigma-graph.js"></script>
+<script src="./js/graph-layout/sigma-prototype.js"></script>
+
 
 
 
@@ -568,6 +593,258 @@ todo
 
 ## js实现
 
+
+### getDistance
+
+    @[data-script="javascript"]function getDistance(node1, node2){
+        return Math.sqrt(
+            Math.pow(node1.x - node2.x, 2)
+            + Math.pow(node1.y - node2.y, 2)
+        );
+    }
+
+
+
+### computeElectricalForce
+
+`computeElectricalForce()`，计算两个节点的`库仑`斥力。
+
+    @[data-script="javascript"]function computeElectricalForce(
+        node1, node2, distance, options){
+
+        var opt = options || {}
+            , relativeStrength = opt.relativeStrength
+            , optimalDistance = opt.optimalDistance 
+            , force = {
+                dx: node2.x - node1.x
+                , dy: node2.y - node1.y
+            }
+            , scale
+            ;
+
+        if(optimalDistance !== +optimalDistance
+            || relativeStrength !== +relativeStrength){
+            console.log('optimalDistance or relativeStrength error');
+        }
+         
+        scale = -relativeStrength * optimalDistance * optimalDistance
+            / distance / distance;
+
+        if(NaN == scale || Infinity == scale){
+            scale = -1;
+            console.log('NaN or Infinity');
+        }
+
+        force.dx *= scale;
+        force.dy *= scale;
+
+        return force;
+    }
+
+
+
+
+
+### computeRepulsionForce
+
+`computeRepulsionForce(nodes, tree, options)`：计算节点间`斥力`，使用`Barnes-Hut`算法。
+
+    @[data-script="javascript"]function computeRepulsionForce(
+        node, quadTree, options) {
+
+        var opt = options
+            , distance = getDistance(node, quadTree)
+            , tree = quadTree
+            , zeroForce = {dx:0, dy:0}
+            , force
+            ;
+
+        if(!opt){
+            throw new Error('computeRepulsionForce: options not specified!');
+        }
+
+        if(tree.isLeaf || tree.mass == 1){
+            if(distance < 1e-8){
+                force = zeroForce;
+            }
+            force = computeElectricalForce(node, tree, distance, opt);  
+        }
+        else if(distance * opt.barnesHutTheta > tree.size){
+            force = computeElectricalForce(node, tree, distance, opt); 
+            force.dx *= tree.mass;
+            force.dy *= tree.mass;
+        }
+        else {
+            force = zeroForce;
+            tree.children.forEach(function(child){
+                var f = computeRepulsionForce(node, child, options);
+                force.dx += f.dx;
+                force.dy += f.dy;
+            });
+        }
+
+        return force;
+    }
+
+
+
+
+
+### computeAttractionForce
+
+`computeAttractionForce(node1, node2, options)`：计算`边连接`的两个节点间的`引力`。
+
+    @[data-script="javascript"]function computeAttractionForce(
+        node1, node2, options){
+
+        var opt = options || {}
+            , optimalDistance = opt.optimalDistance
+            , force = {
+                dx: node2.x - node1.x
+                , dy: node2.y - node1.y
+            }
+            , distance = getDistance(node1, node2)
+            ;
+
+        if(opt.optimalDistance == undefined){
+            throw new Error('computeAttractionForce: optimalDistance not specified!');
+        }
+
+        force.dx *= distance / optimalDistance; 
+        force.dy *= distance / optimalDistance;
+        return force;
+    }
+
+    
+
+
+### layoutYifanHu
+
+扩展`sigma.prototype`，使其支持对当前graph进行`YifanHu`布局。
+
+    @[data-script="javascript"]sigma.prototype.layoutYifanHu
+        = function(options){
+        
+        var opt = options || {}
+            , me = this
+            , nodes = me.graph.nodes()
+            , edges = me.graph.edges()
+
+            , opt.stepRatio = opt.stepRatio || 0.95
+            , opt.relativeStrength = opt.relativeStrength || 0.2
+            , opt.optimalDistance = opt.optimalDistance 
+                || getOptimalDistance()
+            , opt.initialStep = opt.initialStep 
+                || opt.optimalDistance / 5 
+            , opt.quadTreeMaxLevel = opt.quadTreeMaxLevel || 8
+            , opt.barnesHutTheta = opt.barnesHutTheta || 1.2
+            , opt.convergenceThreshold = opt.convergenceThreshold || 0.0001
+            , opt.writePrefix = 'yfh_'
+
+            , quadTree
+
+            , energyPrev = Infinity
+            , energy = 0
+            , step = opt.initialStep
+            , isConverged = 1
+            , progress = 0
+            ;
+
+        do {
+
+            quadTree = buildBHQuadTree({nodes: nodes}, quadTreeMaxLevel);
+
+            nodes.forEach(function(node){
+                node.dx = node.dy = 0;
+            });
+
+            nodes.forEach(function(node){
+                var f = computeRepulsionForce(node, quadTree, opt);
+                node.dx += f.dx;
+                node.dy += f.dy;
+            });
+
+            edges.forEach(function(edge){
+                var node1 = edge.source
+                    , node2 = edge.target
+                    , force
+                    ;
+                if(node1.id != node2.id){
+                    force = computeAttractionForce(node1, node2);
+                    node1.dx += force.dx;
+                    node1.dy += force.dy;
+                    node2.dx -= force.dx;
+                    node2.dx -= force.dy;
+                }
+            });
+
+            // compute energy and move nodes according to force
+            energyPrev = energy;
+            enery = 0;
+            nodes.forEach(function(node){
+                var e, scale;
+
+                e = node.dx * node.dx + node.dy * node.dy;
+                scale = Math.sqrt(e);
+
+                enery += e;
+
+                // normalized vector
+                node.dx /= scale; 
+                node.dy /= scale;
+
+                node[writePrefix + 'x'] += step * node.dx;
+                node[writePrefix + 'y'] += step * node.dy;
+
+                delete node.dx;
+                delete node.dy;
+            });
+
+            // update step -- adaptive cooling
+            updateStep();
+
+            // check if converged
+            if(Math.abs(energy - energyPrev) / energy 
+                < opt.convergenceThreshold){
+                isConverged = 1;
+            }
+
+        } while (!isConverged);
+
+        // optimalDistance = C^(1/3) * averageEdgeLength
+        function getOptimalDistance(){
+            var edgeLength = 0
+                , len = edges.length
+                , avgLength
+                ;
+
+            edges.forEach(function(edge){
+                edgeLength += getDistance(edge.source, edge.target);
+            });
+            avgLength = edgeLength / len;
+            return Math.pow(opt.relativeStrength, 1/3) * avgLength;
+        }
+
+        function updateStep(){
+            if( energy < energyPrev){
+                progress++;
+                if(progress >= 5){
+                    progress = 0;
+                    step /= opt.stepRatio;
+                }
+            }
+            else{
+                progress = 0;
+                step *= opt.stepRatio;
+            }
+        }
+    
+    };
+
+
+
+
+## 算法验证
 
 
 

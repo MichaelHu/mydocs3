@@ -2,9 +2,9 @@
 
 > 网络拓扑图布局算法研究
 
-## 一、综述
+## 综述
 
-### 1.1 参考资料
+### 参考资料
 
 `Github`：
 1. <https://github.com/jacomyal/sigma.js>
@@ -21,7 +21,7 @@
 5. <http://www.ogdf.net/doku.php>
 
 
-### 1.2 评价标准
+### 评价标准
 
 评价标准：`性能`、`美观`并重
 
@@ -32,6 +32,8 @@
 3. `邻接点`空间位置接近原则。这样可以减小边的长度。
 4. `边平衡`布局原则。以相同节点为出发点的多条边应尽量以该节点为中心平衡布局。
 5. 节点`层次`布局原则。引入层的概念，将节点尽量布局在水平或竖直的不同层上。
+
+`前置布局`的依赖：受`直线`布局等前置布局的影响程度。 
 
 
 
@@ -81,10 +83,10 @@
 
 
 
-## 二、快速启动
+## 快速启动
 
 
-### 2.1 getUniqueSigmaInstance
+### getUniqueSigmaInstance
 
 以下代码提供`sigma`实例的生成器，根据`实例ID`在上下文中只保持一个实例，即使`多次调用`也是如此。
 
@@ -130,7 +132,7 @@
     }
 
 
-### 2.2 getRandomGraph()
+### getRandomGraph()
 
 `getRandomGraph()`：获取随机生成的图形数据。
 
@@ -189,7 +191,7 @@
     }
 
 
-### 2.3 getClusterGraph()
+### getClusterGraph()
 
 `getClusterGraph()`：获取簇图形数据。
 
@@ -234,13 +236,82 @@
     // console.log(getClusterGraph(30, {xMax: 300, yMax: 200, nodeSize: 10}));
 
 
-## 三、自动布局
+
+
+### getLineGraph
+
+`getLineGraph()`：获取直线图数据。
+
+    @[data-script="javascript editable"]function getLineGraph(
+        numOfNodes
+        , numOfEdges
+        , options){
+
+        var opt = options || {} 
+            , graph = {nodes: [], edges: []}
+            , nid = 1
+            , eid = 1
+            , xOffset = opt.xOffset || 0
+            , yOffset = opt.yOffset || 0
+            , xMax = opt.xMax || 300
+            , yMax = opt.yMax || 200
+            , nodeSize = opt.nodeSize || 1
+            , i
+            ;
+
+        for(var i=0; i<numOfNodes; i++){
+            graph.nodes.push({
+                id: 'n' + nid
+                , label: 'n' + nid++
+                , x: opt.vertical ? xOffset : xMax * Math.random() 
+                , y: opt.vertical ? yMax * Math.random() : yOffset
+                , size: nodeSize
+                , color: fly.randomColor()
+            }); 
+        }
+
+        for(i=0; i<numOfEdges; i++){
+            var edge = {
+                id: 'e' + i
+                , source: graph.nodes[Math.random() * numOfNodes | 0].id 
+                , target: graph.nodes[Math.random() * numOfNodes | 0].id 
+                , size: opt.fixSize ? 1 : 1 * Math.random()
+                // , type: 'curve'
+                // , color: fly.randomColor() 
+                , color: '#ccc'
+                , hover_color: '#f00'
+            };
+            
+            if(edgeExists(edge)){
+                continue;
+            }
+            else {
+                graph.edges.push(edge);
+            }
+            
+        }
+
+        function edgeExists(edge){
+            for(var i=0; i<graph.edges.length; i++){
+                if(graph.edges[i].source == edge.source
+                    && graph.edges[i].target == edge.target) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        return graph;
+    }
+
+    // console.log(getLineGraph(10, 10, {yOffset: 100, nodeSize: 10}));
 
 
 
+## 自动布局
 
 
-### 3.1 Noverlap算法
+### Noverlap算法
 
 
 静态布局，计算好目标位置后，再进行渲染。可能最终渲染时会添加部分补间动画，但能很快到达目标状态。有稳定的感觉。
@@ -279,6 +350,7 @@
 
         var s = fly.createShow('#test_10');
         var g1 = getRandomGraph(200, 200, 1);
+        // var g1 = getLineGraph(20, 20, {nodeSize: 1});
         var g2 = {
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice() 
@@ -370,7 +442,7 @@
 
 
 
-### 3.2 FDA算法
+### FDA算法
 
 `FDA`(Force-directed Algorithm)是图布局研究中的重要研究成果，也是最知名的图布局算法之一，在网络
 节点布局中占据了主导地位，该算法也称为`弹性模型(Sprint Embedded Model)`。FDA算法中另一个比较著名
@@ -401,6 +473,7 @@
 
         var s = fly.createShow('#test_20');
         var g = getRandomGraph(20, 40, 1);
+        // var g = getLineGraph(20, 40, {nodeSize: 1});
         var containerId = 'test_20_graph';
         var graph, renderer;
 
@@ -462,7 +535,7 @@
 
 
 
-### 3.3 forceAtlas2算法
+### forceAtlas2算法
 
 > `ForceAtlas2`, a `continuous graph layout` algorithm for handy network visualization designed for the `Gephi` software.
 
@@ -539,6 +612,7 @@
 
         var s = fly.createShow('#test_30');
         // var g1 = getRandomGraph(80, 200, 1);
+        // var g1 = getLineGraph(80, 200, {nodeSize: 1});
         // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
         // var g1 = networkGraph0520_allEdges;
@@ -662,7 +736,7 @@
 
 
 
-### 3.4 Yifan Hu算法
+### Yifan Hu算法
 
 使用`Edge Bundling`（边捆绑技术）。Todo
 
@@ -672,13 +746,13 @@
 
 
 
-## 四、固定布局
+## 固定布局
 
 
-### 4.1 新增常用方法
+### 新增常用方法
 
 
-#### 4.1.1 sortByNodesDegree
+#### sortByNodesDegree
 
 `sortByNodesDegree()`：按节点度进行排序。
 
@@ -702,7 +776,7 @@
     });
 
 
-#### 4.1.2 getNodeById
+#### getNodeById
 
 `getNodeById()`：根据`节点id`获取节点`对象`。
 
@@ -720,7 +794,7 @@
         }
 
 
-#### 4.1.3 widthTravel
+#### widthTravel
 
 `widthTravel(root)`：从root节点开始对图进行广度遍历，遍历过程中`忽略``父节点`和`兄弟`节点。
 
@@ -813,7 +887,7 @@
 
 
 
-#### 4.1.4 getLayoutForest
+#### getLayoutForest
 
 `getLayoutForest()`：生成布局森林。对图进行`广度`遍历，获得其`遍历树`。
 
@@ -870,7 +944,7 @@
 
 
 
-#### 4.1.5 computeLeaves
+#### computeLeaves
 
 `computeLeaves()`：计算布局森林每个节点包含的叶子节点数。
 
@@ -917,7 +991,7 @@
 
 
 
-#### 4.1.6 depthTravel
+#### depthTravel
 
 `depthTravel()`：从`root`节点开始对图进行深度遍历，遍历过程忽略已经访问过的节点。
 
@@ -1007,7 +1081,7 @@
 
 
 
-#### 4.1.7 getCircuits
+#### getCircuits
 
 `getCircuits()`：从root节点开始，寻找所有回路。`方式`为对图进行`深度`遍历，当`root`的一个`非邻接`节点有一条到root的边，则构成一条`回路`。
 
@@ -1211,7 +1285,7 @@
 
 
 
-#### 4.1.8 getMaxDegreeNode
+#### getMaxDegreeNode
 
 
 `getMaxDegreeNode()`：获得图形最大度数节点。
@@ -1272,7 +1346,7 @@
 
 
 
-#### 4.1.9 getCircleForest
+#### getCircleForest
 
 `getCircleForest()`：获得`环形`布局`森林`。
 
@@ -1368,7 +1442,7 @@
 
 
 
-#### 4.1.10 computeCircleTreeRect
+#### computeCircleTreeRect
 
 `computeCircleTreeRect()`：获取`环形布局树`的`空间`占用，用`矩形`表示。
 
@@ -1395,7 +1469,7 @@
 
 
 
-#### 4.1.11 computeHierarchyTreeRect
+#### computeHierarchyTreeRect
 
 `computeHierarchyTreeRect()`：获取`层次布局树`的`空间`占用，用`矩形`表示。
 
@@ -1423,7 +1497,7 @@
 
 
 
-#### 4.1.12 getNodesRect 
+#### getNodesRect 
 
 `getNodesRect()`：获取`节点集合`的`空间`占用，用`矩形`表示。
 
@@ -1480,7 +1554,7 @@
 
 
 
-#### 4.1.13 normailizeSophonNodes 
+#### normailizeSophonNodes 
 
 `normalizeSophonNodes()`：标准化节点。
 
@@ -1529,7 +1603,7 @@
 
 
 
-#### 4.1.14 alignCenter
+#### alignCenter
 
 `alignCenter()`：对图形进行`居中全景`布局。
 
@@ -1591,7 +1665,7 @@
 
 
 
-#### 4.1.15 resize
+#### resize
 
 `resize(ratio)`：按比例改变图形尺寸[`暂未验证`]。
 
@@ -1623,7 +1697,7 @@
 
 
 
-#### 4.1.16 Grid类
+#### Grid类
 
 
 `Grid工具类`：
@@ -1849,7 +1923,7 @@
 
 
 
-#### 4.1.17 adjustSiblingsOrder()
+#### adjustSiblingsOrder()
 
 `adjustSiblingsOrder(parent, edges)`：`层次`布局中，`同层次`的`兄弟`节点之间如果存在边，则调整`有边`的兄弟节点`靠近`。
 
@@ -1952,7 +2026,7 @@
 
 
 
-#### 4.1.18 avoidSameLevelTravelThrough()
+#### avoidSameLevelTravelThrough()
 
 `avoidSameLevelTravelThrough(nodesOfSameLevel, edges)`：层次布局中，属于`同一层级`的所有节点中，`非靠近`节点之间存在边相连，调整中间节点的`上下位置`，`避免`边`穿过`中间节点，造成不直观的效果。
 
@@ -2011,7 +2085,7 @@
 
 
 
-#### 4.1.19 avoidChildrenTravelThrough()
+#### avoidChildrenTravelThrough()
 
 `avoidChildrenTravelThrough(parent, edges)`：层次布局中，属于`同一父节点`的所有`兄弟`节点中，`非靠近`节点之间存在边相连，调整中间节点的`上下位置`，`避免`边`穿过`中间节点，造成不直观的效果。
 
@@ -2032,11 +2106,11 @@
     };
 
 
-### 4.2 常用方法验证 
+### 常用方法验证 
 
 
 
-#### 4.2.1 验证一
+#### 验证一
 
 以下验证`sortByNodesDegree`, `getLayoutForest`, `computeLeaves`, `widthTravel`以及`depthTravel`等方法：
 
@@ -2049,6 +2123,7 @@
 
         var s = fly.createShow('#test_35');
         var g = getRandomGraph(5, 10, 18);
+        // var g = getLineGraph(5, 10, {nodeSize: 18});
         var g = networkGraph_simpletree_0528;
         var color = fly.randomColor();
         var g1 = {
@@ -2212,7 +2287,7 @@
 
 
 
-#### 4.2.2 验证二
+#### 验证二
 
 以下验证`getMaxDegreeNode`, `getCircleForest`等方法：
 
@@ -2312,7 +2387,7 @@
 
 
 
-#### 4.2.3 验证三
+#### 验证三
 
 图形化展示，验证从`图形`获得`遍历森林`的过程：
 
@@ -2455,7 +2530,7 @@
 
 
 
-#### 4.2.4 验证四
+#### 验证四
 
 
 验证`adjustSiblingsOrder`, `avoidChildrenTravelThrough`等方法。
@@ -2614,10 +2689,10 @@
 
 
 
-### 4.3 矩阵布局
+### 矩阵布局
 
 
-#### 4.3.1 算法描述
+#### 算法描述
 
 将节点按`方阵`排列。
 
@@ -2628,7 +2703,7 @@ todo:
 
 
 
-#### 4.3.2 算法实现
+#### 算法实现
 
 `矩阵布局`算法：
 
@@ -2690,6 +2765,7 @@ todo:
 
         var s = fly.createShow('#test_39');
         var g = getRandomGraph(4, 0, 1);
+        // var g = getLineGraph(4, 0, {nodeSize: 1});
         // var g = networkGraph_forest_0527;
         var sm = getUniqueSigmaInstance('test_39');
         sm.graph
@@ -2713,7 +2789,7 @@ todo:
 
 
 
-#### 4.3.3 算法演示
+#### 算法演示
 
 以下为演示区：
 
@@ -2730,6 +2806,7 @@ todo:
 
         var s = fly.createShow('#test_40');
         // var g1 = getRandomGraph(49, 100, 1);
+        // var g1 = getLineGraph(49, 100, {nodeSize: 1});
         // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
         var g1 = networkGraph_grid_0521; 
@@ -2835,10 +2912,10 @@ todo:
 
 
 
-### 4.4 层次布局
+### 层次布局
 
 
-#### 4.4.1 算法描述
+#### 算法描述
 
 `相关概念`：
 
@@ -2860,7 +2937,7 @@ todo:
 
 
 
-#### 4.4.2 算法实现
+#### 算法实现
 
 `层次布局算法`(`无优化`)：
 
@@ -3042,7 +3119,7 @@ todo:
 
 
 
-#### 4.4.3 算法演示
+#### 算法演示
 
 
 以下示例展示树状`层次`布局算法：
@@ -3060,6 +3137,7 @@ todo:
 
         var s = fly.createShow('#test_50');
         // var g1 = getRandomGraph(20, 18, 8);
+        // var g1 = getLineGraph(20, 18, {nodeSize: 8});
         // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
         var g1 = networkGraph_grid_0521; 
@@ -3196,15 +3274,15 @@ todo:
 
 
 
-### 4.5 块布局
+### 块布局
 
 todo
 
 
-### 4.6 环形布局
+### 环形布局
 
 
-#### 4.6.1 算法描述
+#### 算法描述
 
 `环形布局算法`：
 
@@ -3228,7 +3306,7 @@ todo
 * `无回路`情况的tree，将根节点放置在`圆环中心`
 
 
-#### 4.6.2 算法实现
+#### 算法实现
 
 `环形布局`简版算法如下，`未做``均衡`算法，多棵`树`之间会产生`重叠`：
 
@@ -3737,7 +3815,7 @@ todo
 
 
 
-#### 4.6.3 算法演示
+#### 算法演示
 
 以下示例展示`环形`布局算法：
 
@@ -3756,6 +3834,7 @@ todo
 
         var s = fly.createShow('#test_60');
         var g1 = getRandomGraph(16, 20, 8);
+        // var g1 = getLineGraph(16, 20, {nodeSize: 8});
         // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
         // var g1 = networkGraph0520;
@@ -4064,7 +4143,7 @@ todo
 
 
 
-## 五、增量布局
+## 增量布局
 
 见`graph layout2`
 

@@ -2,10 +2,6 @@
 
 > A `QuadTree` is a data structure in which the coordinate space is broken up into `regions / nodes` that contain items. If `too many items` are added into a node, then that node is `divided into` `4 sub-nodes`. This can provide very `fast lookup` of items based on the coordinates and coordinates and dimensions.
 
-> 递归算法的一行不起眼的代码，可能包含极大的信息量。这是其难懂的地方，也是魅力所在。
-
-> 需要注意属性及其同名函数的区别
-
 
 
 ## 前言
@@ -52,15 +48,27 @@ octree，3D quadtree
 1. 节点总是添加到`叶子型`子树
 2. 除了最底层子树，四叉树的划分能确保每一个子树包含`至多`一个节点
 3. 每棵子树封装了整棵子树的`总质量(mass)`以及`重心(centerMass)`，极大方便了`超级节点(supernode)`的查找
+4. 以所有节点所在的最小矩形范围的较大边，作为`正方形`空间区域的边
+5. 子树`分裂`是一个`按需`进行的过程
 
 以下是一个`Barnes-Hut`四叉树：
  
  <img src="./img/quadtree-barnes-hut.png" width="400">
 
+节点`插入`生成`四叉树`的过程：
+
+ <img src="./img/quadtree-insert.png" height="400">
 
 
 
 ### 算法实现
+
+
+子树的`三个`阶段：
+
+1. `创建`阶段：此时添加新节点，使用`firstAdd`，只是将节点`暂存`在当前子树中
+2. 添加过`一次`节点：此时添加新节点使用`secondAdd`，将会进行`子树分裂`，先将`暂存`的节点添加到下级子树中，在将要添加的节点存入下级子树。
+3. 添加过`两次`及`两次以上`节点：使用`thirdAdd`，将节点添加到子节点中
 
 
 <div id="test_100" class="test">
@@ -68,9 +76,7 @@ octree，3D quadtree
 
     @[data-script="javascript editable"](function(){
 
-        var _divisionCallback = null
-            , _id = 1
-            ;
+        var _id = 1;
 
         function quadTree(topX, topY, size, maxLevel, options){
             var me = this;
@@ -181,8 +187,8 @@ octree，3D quadtree
         quadTree.prototype.assimilateNode = function(node){
             var me = this
                 ;
-            me.centerMassX = (me.mass * me.centerMassX + node.x) / (me.mass + 1);
-            me.centerMassY = (me.mass * me.centerMassY + node.y) / (me.mass + 1);
+            me.x = me.centerMassX = (me.mass * me.centerMassX + node.x) / (me.mass + 1);
+            me.y = me.centerMassY = (me.mass * me.centerMassY + node.y) / (me.mass + 1);
             me.mass++;
         };
 
@@ -277,7 +283,9 @@ octree，3D quadtree
 ### 算法验证
 
 
+以下验证的可视区展示了节点组成的盘面被`切割`的过程。
 
+并不是展示根据节点的插入，四叉树`生成`的过程。
 
 
 <div id="test_110" class="test">
@@ -290,7 +298,9 @@ octree，3D quadtree
         var s = fly.createShow('#test_110');
         var svg = d3.select('#test_110 svg')
             , sel
-            , graph = getRandomGraph(20, 0, 5)
+            , graph = getRandomGraph(200, 0, 5)
+            // , graph = getLineGraph(30, 0, {xMax: 1, yOffset: 0.1, nodeSize: 3})
+            // , graph = getLineGraph(30, 0, {yMax: 1, vertical: 1,  nodeSize: 3})
             , width = parseInt(d3.select('#test_110').style('width'))
             , height = 380
             , xOffset = (width - height) / 2
@@ -298,10 +308,12 @@ octree，3D quadtree
             , isFirstDivision = 1
             , textArr
             , tree
+            , maxQuadTreeLevel = 5
             , tmpMaxLevel
+            , showNodeLabels = 0
             , showNodeCoords = 0
             , showTreeMassCenter = 0
-            , showTreeMass = 1
+            , showTreeMass = 0
             ;
 
         s.show('building Barnes-Hut quadtree');
@@ -340,7 +352,7 @@ octree，3D quadtree
             sel.attr('x', function(d){return d.x + d.size;})
                 .attr('y', function(d){return d.y + 6;})
                 .text(function(d){
-                    return d.label
+                    return ( showNodeLabels ? d.label : '' )
                         + ( 
                             showNodeCoords 
                             ? (
@@ -374,9 +386,10 @@ octree，3D quadtree
 
 
 
+        // build tree
         tree = buildBHQuadTree(
             graph
-            , 4
+            , maxQuadTreeLevel
             , {
                 ondivision: function(topX, topY, size){
                     // s.append_show(topX, topY, size)
@@ -449,7 +462,12 @@ octree，3D quadtree
         }
 
         isFirstDivision = 1;
-        showDivisions(0);
+
+        // clear path to prevent display of old paths before display of new paths
+        svg.selectAll('path').remove();
+        setTimeout(function(){
+            showDivisions(0);
+        }, 1000);
 
 
         // traverse quadTree
@@ -548,4 +566,13 @@ quadtree-js: <https://github.com/timohausmann/quadtree-js/>
 3. 图片存储
 
     <img src="./img/image-quadtree.png" height="150">
+
+
+
+
+## 箴言附送
+
+> 递归算法的一行不起眼的代码，可能包含极大的`信息量`。这是其难懂的地方，也是魅力所在。
+
+> 需要注意`属性`及其`同名函数`的区别，`for`与`forEach`的区别。
 

@@ -5,7 +5,7 @@
 
 实时转码DEMO：
 
-http://google.github.io/traceur-compiler/demo/repl.html
+<http://google.github.io/traceur-compiler/demo/repl.html>
 
 
 

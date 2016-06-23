@@ -159,6 +159,8 @@ IE9以下，`hasEnumBug`
     !undefined
     !0
     !''
+    !NaN
+    !!Infinity
 
 
 ## 位运算符
