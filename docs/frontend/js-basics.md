@@ -28,28 +28,28 @@
 
         var s = fly.createShow('#test_10');
         var items = [
-            1
-            , 'Hello, World!'
-            , true 
-            , null
-            , undefined
-            , [ 1, 2, 3]
-            , Array
-            , { name: 'Michael' }
-            , new Object()
-            , function(){}
-            , new Number(1) 
-            , new String('Hello')
+            '1'
+            , '"Hello, World!"'
+            , 'true'
+            , 'null'
+            , 'undefined'
+            , '[ 1, 2, 3]'
+            , 'Array'
+            , '{ name: "Michael" }'
+            , 'new Object()'
+            , 'function(){}'
+            , 'new Number(1)'
+            , 'new String("Hello")'
+            , 'NaN'
+            , 'Infinity'
         ];
+        var str;
         s.show('typeofs: ');
         for(var i=0; i<items.length; i++){
+            str = 'typeof ' + items[i]; 
             s.append_show(
-                'typeof ' + (
-                    typeof items[i] == 'function' 
-                    ? items[i].toString() 
-                        : JSON.stringify( items[i] ) 
-                )
-                , typeof items[i]
+                str
+                , eval(str) 
             );
         }
 
@@ -61,6 +61,9 @@
 </div>
 
 
+
+
+
 ## 一般等式
 
     null == undefined
@@ -69,6 +72,9 @@
     false == ''
     true == 1
     true != 100
+    NaN != NaN
+
+`注意`：`NaN`不能做比较，需要判断一个数是否为NaN，使用`isNaN()`
 
 
 <div id="test_20" class="test">
@@ -85,6 +91,7 @@
                 , [ 'false', '""' ]
                 , [ '1', 'true' ]
                 , [ '100', 'true' ]
+                , [ 'NaN', 'NaN' ]
             ]
             , expr
             ;
@@ -130,6 +137,7 @@ IE9以下，`hasEnumBug`
                 , [ 'void 0', 'undefined' ]
                 , [ '5', '+5' ]
                 , [ '1', 'true' ]
+                , [ 'Infinity', 'Infinity' ]
             ]
             , expr
             ;

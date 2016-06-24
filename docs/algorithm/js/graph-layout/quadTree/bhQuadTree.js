@@ -10,6 +10,8 @@
         me.size = size;
         me.maxLevel = maxLevel;
         me.opt = options || {};
+        me.prefix = me.opt.readPrefix 
+            || me.opt.writePrefix || '';
 
         me.isLeaf = true;
         me.mass = 0;
@@ -20,11 +22,12 @@
 
     quadTree.prototype.addNode = function(node){
         var me = this
+            , prefix = me.prefix
             , addStatus
             ;
 
-        if(me.topX > node.x || node.x > me.topX + me.size
-            || me.topY > node.y || node.y > me.topY + me.size){
+        if(me.topX > node[prefix + 'x'] || node[prefix + 'x'] > me.topX + me.size
+            || me.topY > node[prefix + 'y'] || node[prefix + 'y'] > me.topY + me.size){
             return false;
         }
 
@@ -45,10 +48,11 @@
     // When first add, there is no division.
     quadTree.prototype.firstAdd = function(node){
         var me = this
+            , prefix = me.prefix
             ;
         me.mass = 1;
-        me.x = me.centerMassX = node.x;
-        me.y = me.centerMassY = node.y;
+        me[prefix + 'x'] = me.centerMassX = node[prefix + 'x'];
+        me[prefix + 'y'] = me.centerMassY = node[prefix + 'y'];
 
         // console.log('firstAdd: addStatus ' + me._addStatus + ', id: ' + me._id);
 
@@ -110,9 +114,12 @@
 
     quadTree.prototype.assimilateNode = function(node){
         var me = this
+            , prefix = me.prefix
             ;
-        me.x = me.centerMassX = (me.mass * me.centerMassX + node.x) / (me.mass + 1);
-        me.y = me.centerMassY = (me.mass * me.centerMassY + node.y) / (me.mass + 1);
+        me[prefix + 'x'] = me.centerMassX 
+            = (me.mass * me.centerMassX + node[prefix + 'x']) / (me.mass + 1);
+        me[prefix + 'y'] = me.centerMassY 
+            = (me.mass * me.centerMassY + node[prefix + 'y']) / (me.mass + 1);
         me.mass++;
     };
 
@@ -166,6 +173,8 @@
 
     function buildBHQuadTree(graph, maxLevel, options){
         var nodes = graph.nodes || [] 
+            , opt = options || {}
+            , prefix = opt.readPrefix || opt.writePrefix || ''
             , xMin = Infinity
             , yMin = Infinity
             , xMax = -Infinity
@@ -177,10 +186,10 @@
         _id = 1;
 
         nodes.forEach(function(node){
-            xMin = Math.min(xMin, node.x);
-            yMin = Math.min(yMin, node.y);
-            xMax = Math.max(xMax, node.x);
-            yMax = Math.max(yMax, node.y);
+            xMin = Math.min(xMin, node[prefix + 'x']);
+            yMin = Math.min(yMin, node[prefix + 'y']);
+            xMax = Math.max(xMax, node[prefix + 'x']);
+            yMax = Math.max(yMax, node[prefix + 'y']);
         });
 
         size = Math.max(yMax - yMin, xMax - xMin);
@@ -195,4 +204,4 @@
 
     window.buildBHQuadTree = buildBHQuadTree;;
 
-})();
+})(); 

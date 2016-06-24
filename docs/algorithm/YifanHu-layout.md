@@ -16,7 +16,7 @@
 * An adaptive cooling scheme：加快`收敛`速度
 * A general repulsize force model
 
-算法适用：无向图，直线边，力导向算法
+算法适用： `无向图`，`直线边`，`力导向算法`
 
 
 
@@ -26,13 +26,16 @@
 .test-graph {
     height: 400px;
 }
-.test-graph svg {
-    width: 100%;
+.test-graph div {
+    float: left;
     height: 100%;
+    width: 50%;
+    border: 1px dotted #666;
 }
 </style>
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <script src="http://258i.com/static/build/sigma/sigma.min.js"></script>
+<script src="http://258i.com/static/build/sigma/plugins/sigma.plugins.animate.min.js"></script>
 
 <script src="./js/graph-layout/utils.js"></script>
 <script src="./js/graph-layout/Grid/grid.js"></script>
@@ -41,6 +44,22 @@
 <script src="./js/graph-layout/sigma-graph.js"></script>
 <script src="./js/graph-layout/sigma-prototype.js"></script>
 
+<script src="./js/network.js"></script>
+<script src="./js/network-0520.js"></script>
+<script src="./js/networkGraph0520-allEdges.js"></script>
+<script src="./js/network-grid-0521.js"></script>
+<script src="./js/networkGraph-tree-0521.js"></script>
+<script src="./js/network-forceAtlas2-0510.js"></script>
+<script src="./js/network-2circle-0523.js"></script>
+<script src="./js/network-edges-between-the-same-level-nodes-0524.js"></script>
+<script src="./js/network-edges-between-the-same-level-nodes-2-0524.js"></script>
+<script src="./js/network-edges-between-the-same-level-nodes-3-0531.js"></script>
+<script src="./js/network-tree-0524.js"></script>
+<script src="./js/network-edges-between-levels-0526.js"></script>
+<script src="./js/network-many-children-0526.js"></script>
+<script src="./js/network-forest-0527.js"></script>
+<script src="./js/network-simpletree-0528.js"></script>
+<script src="./js/network-simple-0604-1.js"></script>
 
 
 
@@ -596,12 +615,56 @@ todo
 
 ### getDistance
 
-    @[data-script="javascript"]function getDistance(node1, node2){
+`getDistance()`：获取两个节点之间的平面距离。
+
+    @[data-script="javascript"]function getDistance(node1, node2, options){
+        var opt = options || {}
+            , prefix = opt.readPrefix || ''
+            , tip;
+
+        if(!node1
+            || !node2
+            || isNaN(node1[prefix + 'x']) 
+            || isNaN(node1[prefix + 'y'])
+            || isNaN(node2[prefix + 'x'])
+            || isNaN(node2[prefix + 'y'])
+            ){
+            tip = 'getDistance: nodes not exist or have no coordinates';
+            if('function' == typeof opt.debugShow){
+                opt.debugShow(tip, node1, node2);
+            }
+            else{
+                throw new Error(tip);
+            }
+        }
+
         return Math.sqrt(
-            Math.pow(node1.x - node2.x, 2)
-            + Math.pow(node1.y - node2.y, 2)
+            Math.pow(node1[prefix + 'x'] - node2[prefix + 'x'], 2)
+            + Math.pow(node1[prefix + 'y'] - node2[prefix + 'y'], 2)
         );
     }
+
+
+<div id="test_100" class="test">
+<div class="test-console"></div>
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_100');
+        var node1 = {x: 100, y: 0}
+            , node2 = {x: 70, y: -40}
+            ;
+
+        s.show(1, getDistance(node1, node2));
+        s.append_show(2, getDistance(node1, {}, {debugShow: s.append_show}));
+    })();
+
+</div>
+<div class="test-panel">
+</div>
+</div>
+
 
 
 
@@ -615,24 +678,40 @@ todo
         var opt = options || {}
             , relativeStrength = opt.relativeStrength
             , optimalDistance = opt.optimalDistance 
+            , prefix = opt.readPrefix || ''
             , force = {
-                dx: node2.x - node1.x
-                , dy: node2.y - node1.y
+                dx: node2[prefix + 'x'] - node1[prefix + 'x']
+                , dy: node2[prefix + 'y'] - node1[prefix + 'y']
             }
             , scale
+            , zeroForce = {dx:0, dy:0}
+            , tip
             ;
 
         if(optimalDistance !== +optimalDistance
             || relativeStrength !== +relativeStrength){
-            console.log('optimalDistance or relativeStrength error');
+            tip = 'computeElectricalForce: optimalDistance or relativeStrength error';
+            if('function' == typeof opt.debugShow){
+                opt.debugShow(tip);
+            }
+            else{
+                throw new Error(tip);
+            }
+            return zeroForce; 
         }
          
         scale = -relativeStrength * optimalDistance * optimalDistance
             / distance / distance;
 
-        if(NaN == scale || Infinity == scale){
+        if(isNaN(scale) || Infinity == scale){
+            tip = 'computeElectricalForce: NaN or Infinity scale';
+            if('function' == typeof opt.debugShow){
+                opt.debugShow(tip, 'scale: ' + scale);
+            }
+            else{
+                console.log(tip, 'scale: ' + scale);
+            }
             scale = -1;
-            console.log('NaN or Infinity');
         }
 
         force.dx *= scale;
@@ -643,43 +722,94 @@ todo
 
 
 
+<div id="test_110" class="test">
+<div class="test-console"></div>
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_110');
+        var node1 = {x: 100, y: 0}
+            , node2 = {x: 70, y: -40}
+            , distance = getDistance(node1, node2)
+            ;
+
+        s.show('start testing\n');
+        s.append_show(1, computeElectricalForce(node1, node2, distance, {debugShow: s.append_show}));
+        s.append_show(2, computeElectricalForce(node1, node2, distance
+            , {
+                debugShow: s.append_show
+                , optimalDistance: 100
+                , relativeStrength: 0.2
+            }
+        ));
+
+    })();
+
+</div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
 
 
 ### computeRepulsionForce
 
-`computeRepulsionForce(nodes, tree, options)`：计算节点间`斥力`，使用`Barnes-Hut`算法。
+
+`computeRepulsionForce(node, tree, options)`：计算节点间`斥力`，使用`Barnes-Hut`算法。
 
     @[data-script="javascript"]function computeRepulsionForce(
         node, quadTree, options) {
 
         var opt = options
-            , distance = getDistance(node, quadTree)
+            , zeroForce = {dx:0, dy:0, num:0}
+            , distance
             , tree = quadTree
-            , zeroForce = {dx:0, dy:0}
             , force
+            , tip
             ;
 
-        if(!opt){
-            throw new Error('computeRepulsionForce: options not specified!');
+        if(tree.mass <= 0){
+            return zeroForce;
+        }
+
+        distance = getDistance(node, tree, opt);
+
+        if(!opt || isNaN(opt.barnesHutTheta)){
+            tip = 'computeRepulsionForce: options error!';
+            if('function' == typeof opt.debugShow){
+                opt.debugShow(tip, opt);
+            }
+            else {
+                throw new Error(tip);
+            }
         }
 
         if(tree.isLeaf || tree.mass == 1){
             if(distance < 1e-8){
                 force = zeroForce;
             }
-            force = computeElectricalForce(node, tree, distance, opt);  
+            else {
+                force = computeElectricalForce(node, tree, distance, opt);  
+            }
+            force.num = 1;
         }
         else if(distance * opt.barnesHutTheta > tree.size){
             force = computeElectricalForce(node, tree, distance, opt); 
             force.dx *= tree.mass;
             force.dy *= tree.mass;
+            force.num = 1;
         }
         else {
             force = zeroForce;
+            force.num = 0;
             tree.children.forEach(function(child){
                 var f = computeRepulsionForce(node, child, options);
                 force.dx += f.dx;
                 force.dy += f.dy;
+                force.num += f.num;
             });
         }
 
@@ -687,6 +817,43 @@ todo
     }
 
 
+使用`Barnes-Hut`算法，`10000`个节点中，单个节点的斥力计算只需进行`40`次左右，大大节省计算时间。
+
+<div id="test_120" class="test">
+<div class="test-console"></div>
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_120');
+        var graph = getRandomGraph(10000, 0, 5);
+        var node = graph.nodes[0]; 
+
+        graph.nodes.forEach(function(node){
+            node.x *= 100;
+            node.y *= 100;
+        });
+
+        var tree = buildBHQuadTree(graph, 8);
+
+        s.show('start testing\n');
+        s.append_show(1, computeRepulsionForce(
+            node
+            , tree
+            , {
+                debugShow: s.append_show
+                , optimalDistance: 20
+                , relativeStrength: 0.2
+                , barnesHutTheta: 1.2
+            }
+        ));
+
+    })();
+
+</div>
+<div class="test-panel">
+</div>
+</div>
 
 
 
@@ -699,11 +866,12 @@ todo
 
         var opt = options || {}
             , optimalDistance = opt.optimalDistance
+            , prefix = opt.readPrefix || ''
             , force = {
-                dx: node2.x - node1.x
-                , dy: node2.y - node1.y
+                dx: node2[prefix + 'x'] - node1[prefix + 'x']
+                , dy: node2[prefix + 'y'] - node1[prefix + 'y']
             }
-            , distance = getDistance(node1, node2)
+            , distance = getDistance(node1, node2, opt)
             ;
 
         if(opt.optimalDistance == undefined){
@@ -717,6 +885,37 @@ todo
 
     
 
+<div id="test_130" class="test">
+<div class="test-console"></div>
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_130');
+        var node1 = {x: 100, y: 0}
+            , node2 = {x: 70, y: -40}
+            ;
+
+        s.show('start testing\n');
+        s.append_show(1, computeAttractionForce(
+            node1
+            , node2
+            , {
+                debugShow: s.append_show
+                , optimalDistance: 20
+            }
+        ));
+
+    })();
+
+</div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+
 
 ### layoutYifanHu
 
@@ -724,35 +923,64 @@ todo
 
     @[data-script="javascript"]sigma.prototype.layoutYifanHu
         = function(options){
-        
         var opt = options || {}
             , me = this
             , nodes = me.graph.nodes()
             , edges = me.graph.edges()
-
-            , opt.stepRatio = opt.stepRatio || 0.95
-            , opt.relativeStrength = opt.relativeStrength || 0.2
-            , opt.optimalDistance = opt.optimalDistance 
-                || getOptimalDistance()
-            , opt.initialStep = opt.initialStep 
-                || opt.optimalDistance / 5 
-            , opt.quadTreeMaxLevel = opt.quadTreeMaxLevel || 8
-            , opt.barnesHutTheta = opt.barnesHutTheta || 1.2
-            , opt.convergenceThreshold = opt.convergenceThreshold || 0.0001
-            , opt.writePrefix = 'yfh_'
-
-            , quadTree
-
-            , energyPrev = Infinity
-            , energy = 0
-            , step = opt.initialStep
-            , isConverged = 1
-            , progress = 0
             ;
+
+        sigma.utils.layoutYifanHu(nodes, edges, opt);
+        return me;
+    };
+
+    sigma.utils.layoutYifanHu
+        = function(nodes, edges, options){
+        
+        var opt = options || {}
+            , nodes = nodes || [] 
+            , edges = edges || [] 
+            , prefix
+            
+            , quadTree
+            , energyPrev = 0
+            , energy = 0
+            , step
+            , isConverged = 0
+            , progress = 0
+            , iterations
+            , energyChangeRatio
+            ;
+
+        // options
+        opt.stepRatio = opt.stepRatio || 0.95;
+        opt.relativeStrength = opt.relativeStrength || 0.2;
+        opt.optimalDistance = opt.optimalDistance 
+            || getOptimalDistance();
+        opt.initialStep = opt.initialStep 
+            || opt.optimalDistance / 5; 
+        opt.quadTreeMaxLevel = opt.quadTreeMaxLevel || 8;
+        opt.barnesHutTheta = opt.barnesHutTheta || 1.2;
+        opt.convergenceThreshold = opt.convergenceThreshold || 1e-4;
+        opt.maxIterations = opt.maxIterations || 2;
+
+        prefix = opt.readPrefix || opt.writePrefix || '';
+        step = opt.initialStep;
+        iterations = opt.maxIterations; 
+
+        debugShow('options', opt, '\n');
+
+        // prepare prefix access
+        nodes.forEach(function(node){
+            node[prefix + 'x'] = node.x;
+            node[prefix + 'y'] = node.y;
+        });
 
         do {
 
-            quadTree = buildBHQuadTree({nodes: nodes}, quadTreeMaxLevel);
+            quadTree = buildBHQuadTree({nodes: nodes}
+                , opt.quadTreeMaxLevel
+                , {readPrefix: prefix}
+            );
 
             nodes.forEach(function(node){
                 node.dx = node.dy = 0;
@@ -764,52 +992,78 @@ todo
                 node.dy += f.dy;
             });
 
+            // debugShow(1, nodes.map(function(node){
+            //     return node.dx + ',' + node.dy
+            // }), '\n');
+
             edges.forEach(function(edge){
-                var node1 = edge.source
-                    , node2 = edge.target
-                    , force
+                var n1 = sigma.utils.getNodeById(nodes, edge.source)
+                    , n2 = sigma.utils.getNodeById(nodes, edge.target)
+                    , f
                     ;
-                if(node1.id != node2.id){
-                    force = computeAttractionForce(node1, node2);
-                    node1.dx += force.dx;
-                    node1.dy += force.dy;
-                    node2.dx -= force.dx;
-                    node2.dx -= force.dy;
+
+                if(n1.id != n2.id){
+                    f = computeAttractionForce(n1, n2, opt);
+                    // debugShow('1.x', force);
+                    n1.dx += f.dx;
+                    n1.dy += f.dy;
+                    n2.dx -= f.dx;
+                    n2.dy -= f.dy;
                 }
             });
 
+            // debugShow(2, nodes.map(function(node){
+            //     return node.dx + ',' + node.dy
+            // }), '\n');
+
             // compute energy and move nodes according to force
             energyPrev = energy;
-            enery = 0;
+            energy = 0;
             nodes.forEach(function(node){
                 var e, scale;
 
                 e = node.dx * node.dx + node.dy * node.dy;
                 scale = Math.sqrt(e);
 
-                enery += e;
+                energy += e;
 
                 // normalized vector
                 node.dx /= scale; 
                 node.dy /= scale;
 
-                node[writePrefix + 'x'] += step * node.dx;
-                node[writePrefix + 'y'] += step * node.dy;
+                node[prefix + 'x'] += step * node.dx;
+                node[prefix + 'y'] += step * node.dy;
 
                 delete node.dx;
                 delete node.dy;
             });
 
+            // debugShow(3, nodes.map(function(node){
+            //     return '[' + node.x 
+            //         + ',' + node.y
+            //         + '] => [' + node[prefix + 'x'] 
+            //         + ',' + node[prefix + 'y'] 
+            //         + ']'
+            //         ;
+            // }), '\n');
+
             // update step -- adaptive cooling
             updateStep();
 
             // check if converged
-            if(Math.abs(energy - energyPrev) / energy 
-                < opt.convergenceThreshold){
+            energyChangeRatio = Math.abs(energy - energyPrev) / energy; 
+            debugShow('energyChangeRatio', energyChangeRatio, energy, energyPrev);
+            if(energyChangeRatio < opt.convergenceThreshold){
                 isConverged = 1;
+                debugShow('\n' + 4, 'converged!');
             }
 
-        } while (!isConverged);
+        } while (!isConverged && --iterations);
+
+        return {
+            isConverged: isConverged
+            , iterations: opt.maxIterations - iterations
+        };
 
         // optimalDistance = C^(1/3) * averageEdgeLength
         function getOptimalDistance(){
@@ -819,7 +1073,13 @@ todo
                 ;
 
             edges.forEach(function(edge){
-                edgeLength += getDistance(edge.source, edge.target);
+                edgeLength += getDistance(
+                    sigma.utils.getNodeById(nodes, edge.source)
+                    , sigma.utils.getNodeById(nodes, edge.target)
+                    , {
+                        readPrefix: prefix
+                    }
+                );
             });
             avgLength = edgeLength / len;
             return Math.pow(opt.relativeStrength, 1/3) * avgLength;
@@ -837,6 +1097,13 @@ todo
                 progress = 0;
                 step *= opt.stepRatio;
             }
+            debugShow('step', step);
+        }
+
+        function debugShow(){
+            if('function' == typeof opt.debugShow){
+                opt.debugShow.apply(window, arguments);
+            }
         }
     
     };
@@ -844,7 +1111,202 @@ todo
 
 
 
+<div id="test_150" class="test">
+<div class="test-console"></div>
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_150');
+        var graph = getRandomGraph(10, 10, 5)
+            , status
+            , prefix = 'yfh_'
+            ;
+
+        s.show('start testing\n');
+        status = sigma.utils.layoutYifanHu(
+            graph.nodes
+            , graph.edges
+            , {
+                optimalDistance: 20
+                , debugShow: s.append_show
+                , maxIterations: 5
+                , readPrefix: prefix 
+            }
+        );
+
+        s.append_show('finished'
+            , graph.nodes.map(function(node){
+                return '[' + node.x 
+                    + ',' + node.y
+                    + '] => [' + node[prefix + 'x'] 
+                    + ',' + node[prefix + 'y'] 
+                    + ']'
+                    ;
+            })
+        );
+        s.append_show('status', status);
+
+
+    })();
+
+</div>
+<div class="test-panel">
+</div>
+</div>
+
+
 ## 算法验证
+
+
+以下示例展示`YifanHu`布局算法：
+
+<div id="test_200" class="test">
+<div class="test-container">
+<div id="test_200_graph" class="test-graph">
+<div class="test-graph-left"></div>
+<div class="test-graph-right"></div>
+</div>
+<div class="test-console"></div>
+
+    @[data-script="javascript editable"]
+    (function(){
+
+        var s = fly.createShow('#test_200');
+        var maxIterations = 200;
+        var g1 = getRandomGraph(50, 60, 8);
+        // var g1 = getClusterGraph(100, {xMax: 200, yMax: 200, nodeSize: 8});
+        // var g1 = getLineGraph(20, 18, {nodeSize: 8});
+        // var g1 = networkGraph_FR;
+        // var g1 = networkGraph_ForceAtlas2;
+        // var g1 = networkGraph_grid_0521; 
+        // var g1 = networkGraph_tree_0521;
+        // var g1 = networkGraph_2circles_0523;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        // var g1 = networkGraph_tree_0524;
+        // var g1 = networkGraph_many_children_0526;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_3;
+        var g2 = {
+                nodes: g1.nodes.slice()
+                , edges: g1.edges.slice()
+            }
+            , g3 = {
+                nodes: g1.nodes.slice()
+                , edges: [] 
+            }
+            ;
+        var containerId = 'test_200_graph';
+        var rendererSettings = {
+                // captors settings
+                doubleClickEnabled: true
+                , mouseWheelEnabled: false
+
+                // rescale settings
+                , minEdgeSize: 0.5
+                , maxEdgeSize: 1
+                , minNodeSize: 1 
+                , maxNodeSize: 5
+
+                // renderer settings
+                , edgeHoverColor: fly.randomColor() 
+                , edgeHoverSizeRatio: 1
+                , edgeHoverExtremities: true
+            };
+        var sigmaSettings = {
+                // rescale settings 
+                sideMargin: 0.1 
+
+                // instance global settings
+                , enableEdgeHovering: true
+                , edgeHoverPrecision: 5
+                , autoRescale: 0
+            };
+
+        var sm1, sm2;
+
+        if((sm1 = isSigmaInstanceExisted('test_200_left'))
+            && (sm2 = isSigmaInstanceExisted('test_200_right'))){
+            sm1.kill();
+            sm2.kill();
+        };
+
+        sm1 = getUniqueSigmaInstance(
+                    'test_200_left'
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g1
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: $('#' + containerId + ' .test-graph-left')[0]
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
+
+        sm2 = getUniqueSigmaInstance(
+                    'test_200_right'
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g2
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: $('#' + containerId + ' .test-graph-right')[0]
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
+
+        sm1
+            .normalizeSophonNodes()
+            .alignCenter({rescaleToViewport: 1})
+            .refresh()
+            ;
+
+        sm2
+            .normalizeSophonNodes()
+            .alignCenter({rescaleToViewport:1})
+            .refresh() // note: must invoke `refresh()` to update coordinates
+
+            .layoutYifanHu({
+                optimalDistance: 100
+                , readPrefix: 'yfh_'
+                , maxIterations: maxIterations 
+                , relativeStrength: 0.2
+            })
+            .normalizeSophonNodes({
+                readPrefix: 'yfh_'
+            })
+            .alignCenter({
+                wholeView: 1
+                , readPrefix: 'yfh_'
+                , writePrefix: 'yfh_'
+            })
+            ;
+
+        setTimeout(function(){
+            sigma.plugins.animate(
+                sm2
+                , {
+                    x: 'yfh_x'
+                    , y: 'yfh_y'
+                }
+                , {
+                    duration: 1000
+                }
+            );
+
+        }, 500);
+
+    })();
+
+</div>
+<div class="test-panel"></div>
+</div>
 
 
 
