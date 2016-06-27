@@ -919,6 +919,10 @@ todo
 
 ### layoutYifanHu
 
+
+#### 扩展prototype
+
+
 扩展`sigma.prototype`，使其支持对当前graph进行`YifanHu`布局。
 
     @[data-script="javascript"]sigma.prototype.layoutYifanHu
@@ -933,7 +937,11 @@ todo
         return me;
     };
 
-    sigma.utils.layoutYifanHu
+
+
+#### utils实现
+
+    @[data-script="javascript"]sigma.utils.layoutYifanHu
         = function(nodes, edges, options){
         
         var opt = options || {}
@@ -949,6 +957,13 @@ todo
             , progress = 0
             , iterations
             , energyChangeRatio
+
+            , forest
+            , layoutBalanced = opt.layoutBalanced || 0
+            , spaceGrid = opt.spaceGrid || {
+                xSize: 50
+                , ySize: 50
+            }
             ;
 
         // options
@@ -1027,12 +1042,14 @@ todo
 
                 energy += e;
 
-                // normalized vector
-                node.dx /= scale; 
-                node.dy /= scale;
+                if(!node.fixed){
+                    // normalized vector
+                    node.dx /= scale; 
+                    node.dy /= scale;
 
-                node[prefix + 'x'] += step * node.dx;
-                node[prefix + 'y'] += step * node.dy;
+                    node[prefix + 'x'] += step * node.dx;
+                    node[prefix + 'y'] += step * node.dy;
+                }
 
                 delete node.dx;
                 delete node.dy;
@@ -1059,6 +1076,21 @@ todo
             }
 
         } while (!isConverged && --iterations);
+
+        if(layoutBalanced){
+            forest = sigma.utils.getLayoutForest(
+                nodes
+                , edges
+            );
+            sigma.utils.layoutTreesByGrid(
+                forest
+                , {
+                    optimalDistance: opt.optimalDistance
+                    , readPrefix: 'yfh_'
+                    , spaceGrid: spaceGrid 
+                }
+            );
+        }
 
         return {
             isConverged: isConverged
@@ -1173,7 +1205,9 @@ todo
     (function(){
 
         var s = fly.createShow('#test_200');
-        var maxIterations = 200;
+        var maxIterations = 50;
+        var fixedNodes = 0;
+        var layoutBalanced = 1;
         var g1 = getRandomGraph(50, 60, 8);
         // var g1 = getClusterGraph(100, {xMax: 200, yMax: 200, nodeSize: 8});
         // var g1 = getLineGraph(20, 18, {nodeSize: 8});
@@ -1187,6 +1221,14 @@ todo
         // var g1 = networkGraph_tree_0524;
         // var g1 = networkGraph_many_children_0526;
         // var g1 = networkGraph_edges_between_the_same_level_nodes_3;
+
+        fixedNodes && g1.nodes.forEach(function(node){
+            if(Math.random() < 0.1){
+                node.fixed = 1;
+                node.color = '#000';
+            }
+        });
+
         var g2 = {
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice()
@@ -1277,6 +1319,7 @@ todo
                 , readPrefix: 'yfh_'
                 , maxIterations: maxIterations 
                 , relativeStrength: 0.2
+                , layoutBalanced: layoutBalanced
             })
             .normalizeSophonNodes({
                 readPrefix: 'yfh_'

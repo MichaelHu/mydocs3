@@ -1923,6 +1923,152 @@
 
 
 
+
+
+#### layoutTreesByGrid
+
+对`布局森林`中的树进行`网格`布局，使之`平均`分布。 
+
+
+    @[data-script="javascript"]sigma.utils.layoutTreesByGrid
+        = function(forest, options){
+
+        var opt = options || {}
+            , spaceGrid = opt.spaceGrid || {xSize: 40, ySize: 40}
+            , grid = new Grid(spaceGrid.xSize, spaceGrid.ySize)
+            , unit = opt.optimalDistance || 100 
+            , prefix = opt.readPrefix || opt.writePrefix || ''
+            , debug = opt.debug || 0
+            ;
+
+
+        forest.forEach(function(tree){
+            _computeTreeRect(tree);
+        });
+
+        // sort by tree's area in decreasing order
+        forest.sort(function(a, b){
+            return b._tmp_rect.w * b._tmp_rect.h
+                - a._tmp_rect.w * a._tmp_rect.h
+                ;
+        });
+
+        forest.forEach(function(tree){
+            var spaceBlock = _normalizeTreeRect(tree, unit) 
+                ;
+
+            grid.placeBlock(tree.id, spaceBlock, debug);
+        });
+
+        forest.forEach(function(tree){
+            var spaceBlock = grid.getBlockRect(tree.id) 
+                , hasCircuit = tree._circuit ? 1 : 0
+                , dx = spaceBlock.gridPos.x * unit - spaceBlock.x
+                , dy = spaceBlock.gridPos.y * unit - spaceBlock.y
+                ;
+
+            debug && console.log(tree.id, spaceBlock);
+
+            // clear temporary attribures
+            if(tree._tmp_rect){
+                delete tree._tmp_rect;
+            }
+
+            // if there is a circuit
+            if(tree._circuit){
+                tree._circuit.forEach(function(node){
+                    __depthTravel(node);
+                });
+                delete tree._circuit;
+            }
+            else {
+                __depthTravel(tree);
+            }
+
+            function __depthTravel(node){
+                var children = node._wt_children
+                    ;
+
+                node[prefix + 'x'] += dx;
+                node[prefix + 'y'] += dy;
+
+                if(children.length > 0){
+                    children.forEach(function(child){
+                        __depthTravel(child);
+                    }); 
+                    delete node._wt_children;
+                }
+            }
+        });
+
+
+        function _computeTreeRect(tree){
+            var nodes = []
+                , circuit = tree._circuit
+                , rect
+                ; 
+
+            if(circuit){
+                circuit.forEach(function(node){
+                    __depthTravel(node);
+                });
+            }
+            else {
+                __depthTravel(tree);
+            }
+
+            rect = sigma.utils.getNodesRect(
+                nodes
+                , {
+                    readPrefix: prefix
+                    , ignoreNodeSize: 0
+                }
+            );
+            tree._tmp_rect = rect; 
+            tree._node_count = nodes.length;
+            nodes.length = 0;
+            return rect;
+
+            function __depthTravel(node){
+                var children = node._wt_children
+                    , len = children.length
+                    ;
+
+                nodes.push(node);
+                if(len > 0){
+                    children.forEach(function(child){
+                        __depthTravel(child); 
+                    });
+                }
+            }
+        }
+
+        function _normalizeTreeRect(tree, unit){
+            var rect = tree._tmp_rect
+                , spaceBlock = {}
+                , extendRatio = 1
+                ;
+
+            spaceBlock.x = rect.x;
+            spaceBlock.y = rect.y;
+            if(tree._node_count > 1){
+                extendRatio = 1.2;
+            }
+
+            // `extendRatio` is for reserved space for node-collision on boundaris
+            spaceBlock.w = Math.ceil(rect.w * extendRatio / unit);
+            spaceBlock.h = Math.ceil(rect.h * extendRatio / unit);
+
+            return spaceBlock;
+        }
+
+
+    };
+
+
+
+
+
 #### adjustSiblingsOrder()
 
 `adjustSiblingsOrder(parent, edges)`：`层次`布局中，`同层次`的`兄弟`节点之间如果存在边，则调整`有边`的兄弟节点`靠近`。
@@ -3138,16 +3284,16 @@ todo:
         var s = fly.createShow('#test_50');
         // var g1 = getRandomGraph(20, 18, 8);
         // var g1 = getLineGraph(20, 18, {nodeSize: 8});
+        var g1 = networkGraph_edges_between_the_same_level_nodes_3;
         // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
-        var g1 = networkGraph_grid_0521; 
-        var g1 = networkGraph_tree_0521;
-        var g1 = networkGraph_2circles_0523;
-        var g1 = networkGraph_edges_between_the_same_level_nodes;
-        var g1 = networkGraph_edges_between_the_same_level_nodes_2;
-        var g1 = networkGraph_tree_0524;
-        var g1 = networkGraph_many_children_0526;
-        var g1 = networkGraph_edges_between_the_same_level_nodes_3;
+        // var g1 = networkGraph_grid_0521; 
+        // var g1 = networkGraph_tree_0521;
+        // var g1 = networkGraph_2circles_0523;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        // var g1 = networkGraph_tree_0524;
+        // var g1 = networkGraph_many_children_0526;
         var g2 = {
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice()
@@ -3683,133 +3829,17 @@ todo
         }
 
 
-
-        var grid = new Grid(spaceGrid.xSize, spaceGrid.ySize)
-            , debug = 0
-            , id = 2
-            ;
-
-        function _computeTreeRect(tree){
-            var nodes = []
-                , circuit = tree._circuit
-                , rect
-                ; 
-
-            if(circuit){
-                circuit.forEach(function(node){
-                    __depthTravel(node);
-                });
+        sigma.utils.layoutTreesByGrid(
+            forest
+            , {
+                spaceGrid: spaceGrid
+                , optimalDistance: radiusStep
+                , readPrefix: 'circle_'
             }
-            else {
-                __depthTravel(tree);
-            }
-
-            rect = sigma.utils.getNodesRect(
-                nodes
-                , {
-                    readPrefix: 'circle_'
-                    , ignoreNodeSize: 0
-                }
-            );
-            nodes.length = 0;
-            tree._tmp_rect = rect; 
-            // debug && console.log(rect);
-            return rect;
-
-            function __depthTravel(node){
-                var children = node._wt_children
-                    , len = children.length
-                    ;
-                
-                nodes.push(node);
-                if(len > 0){
-                    children.forEach(function(child){
-                        __depthTravel(child); 
-                    });
-                }
-            }
-        }
-
-        function _normalizeTreeRect(tree, unit){
-            var rect = tree._tmp_rect
-                , spaceBlock = {}
-                ;
-
-            spaceBlock.x = rect.x;
-            spaceBlock.y = rect.y;
-            // `* 1.1` is reserved space for node-collision on boundaris
-            spaceBlock.w = Math.ceil(rect.w * 1.1 / unit);
-            spaceBlock.h = Math.ceil(rect.h * 1.1 / unit);
-            return spaceBlock;
-        }
-
-        forest.forEach(function(tree){
-            _computeTreeRect(tree);
-        });
-
-        forest.sort(function(a, b){
-            return b._tmp_rect.w * b._tmp_rect.h
-                - a._tmp_rect.w * a._tmp_rect.h
-                ;
-        });
-
-        forest.forEach(function(tree){
-            var spaceBlock = _normalizeTreeRect(tree, radiusStep) 
-                ;
-
-            grid.placeBlock(tree.id, spaceBlock, debug);
-        });
-
-        var output = grid.grid.map(
-                function(row){
-                    return row.join('  ');
-                }
-            ).join('\n');
-
-        debug && console.log(output);
-
-        forest.forEach(function(tree){
-            var spaceBlock = grid.getBlockRect(tree.id) 
-                , hasCircuit = tree._circuit ? 1 : 0
-                , dx = spaceBlock.gridPos.x * radiusStep - spaceBlock.x
-                , dy = spaceBlock.gridPos.y * radiusStep - spaceBlock.y
-                ;
-
-            debug && console.log(tree.id, spaceBlock);
-
-            // clear temporary attribures
-            if(tree._tmp_rect){
-                delete tree._tmp_rect;
-            }
-
-            // if there is a circuit
-            if(tree._circuit){
-                tree._circuit.forEach(function(node){
-                    depthTravel(node);
-                });
-                delete tree._circuit;
-            }
-            else {
-                depthTravel(tree);
-            }
-
-            function depthTravel(node){
-                var children = node._wt_children
-                    ;
-
-                node.circle_x += dx;
-                node.circle_y += dy;
-
-                if(children.length > 0){
-                    children.forEach(function(child){
-                        depthTravel(child);
-                    }); 
-                    delete node._wt_children;
-                }
-            }
-        });
+        );
 
         return this;
+
     };
 
 
@@ -3838,13 +3868,13 @@ todo
         // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
         // var g1 = networkGraph0520;
-        var g1 = networkGraph_grid_0521; 
-        var g1 = networkGraph_tree_0521;
-        var g1 = networkGraph_2circles_0523;
-        var g1 = networkGraph_edges_between_the_same_level_nodes;
-        var g1 = networkGraph_edges_between_the_same_level_nodes_2;
-        var g1 = networkGraph_tree_0524;
-        var g1 = networkGraph_many_children_0526;
+        // var g1 = networkGraph_grid_0521; 
+        // var g1 = networkGraph_tree_0521;
+        // var g1 = networkGraph_2circles_0523;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        // var g1 = networkGraph_tree_0524;
+        // var g1 = networkGraph_many_children_0526;
 
         var g2 = {
                 nodes: g1.nodes.slice()
@@ -4146,6 +4176,8 @@ todo
 ## 增量布局
 
 见`graph layout2`
+
+<a href="./graph-layout2.md.preview.html">graph layout2</a>
 
 
 

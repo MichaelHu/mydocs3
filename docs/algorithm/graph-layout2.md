@@ -1199,3 +1199,78 @@
 <div class="test-panel"></div>
 </div>
 
+
+
+
+
+## 布局方案比较
+
+
+### 层次布局
+
+`层次`布局适合树状结构的布局，`层次感`很清晰。
+
+ <img src="./img/hier_n100_e50.png">
+
+ <img src="./img/hier_tree.png">
+
+
+
+但以下情况效果不好：
+
+* `同层`孩子节点较多，但是总层次不多的情况，会出现`矮胖图`，两侧的子节点和父节点形成`超长边`；这种问题尚无较好解决办法，`块布局`可能解决方案，但它实现方案复杂，而且容易出现边和第三方节点交叉的问题。
+
+    <img src="./img/hier_tree_many_children.png">
+
+    <img src="./img/hier_cluster_n100.png">
+
+    <img src="./img/hier_n1000_e1000.png">
+
+    <img src="./img/hier_n1500_e1000.png">
+
+
+
+* `边数`大于`节点数`的图，展示也不清晰
+
+    <img src="./img/hier_n25_e50.png">
+
+* 同层非相邻孩子节点间存在边的情况，容易出现连线穿过`第三个`节点的情况。不过这种问题也可以优化，调整节点顺序或者上下位置微调。
+
+    <img src="./img/hier_edges_between_same_level.png">
+
+ 
+
+
+
+### 力导向布局
+
+`力导向`布局是比较`普适`的布局算法，能`均衡`边的长度，整体形成`簇`的布局。层次布局所面临的问题都能很好的解决。
+
+孩子节点数很多的情况：
+
+ <img src="./img/yfh_cluster_n100.png.png">
+
+节点和边都很多的情况：
+
+ <img src="./img/yfh_n1000_e1000.png">
+
+ <img src="./img/yfh_n1500_e1000.png">
+
+其他情况：
+
+ <img src="./img/yfh_n100_e50.png">
+
+ <img src="./img/yfh_n25_e50.png">
+
+ <img src="./img/yfh_tree.png">
+
+ <img src="./img/yfh_tree_many_children.png">
+
+`劣势`为计算量较大。
+
+也有一些情况效果不好：
+
+* `孤立节点`与其他簇或节点会不断远离，形成的整体效果空间上不均衡，如下所示。这种问题可以通过辅以grid空间均衡算法解决。
+
+* 受`前置布局`影响很大。特别是当前置布局为线性布局时，力导向布局表现就很差。这时可以通过修改前置布局来避免。 
+
