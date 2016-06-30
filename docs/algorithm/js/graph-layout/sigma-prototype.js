@@ -59,6 +59,7 @@ sigma.prototype.applyLayoutInstantly
         this.graph.nodes()
         , options
     );
+    return this;
 };
 sigma.prototype.incLayoutGrid = function(
     newNodes, selectedNodes, options) {

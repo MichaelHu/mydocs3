@@ -4,4 +4,5 @@ sigma.prototype.applyLayoutInstantly
         this.graph.nodes()
         , options
     );
+    return this;
 };

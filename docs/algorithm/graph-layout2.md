@@ -43,6 +43,7 @@
 <script src="./js/network-forest-0527.js"></script>
 <script src="./js/network-simpletree-0528.js"></script>
 <script src="./js/network-simple-0604-1.js"></script>
+<script src="./js/network-circle-0628.js"></script>
 
 ## 增量布局
 
@@ -261,16 +262,17 @@
 
         var s = fly.createShow('#test_10');
         var g1 = getRandomGraph(200, 200, 1);
-        var g1 = networkGraph_FR;
-        var g1 = networkGraph_ForceAtlas2;
-        var g1 = networkGraph0520_allEdges;
-        var g1 = networkGraph_grid_0521; 
-        var g1 = networkGraph_tree_0521;
-        var g1 = networkGraph_2circles_0523;
-        var g1 = networkGraph_edges_between_the_same_level_nodes;
-        var g1 = networkGraph_edges_between_the_same_level_nodes_2;
-        var g1 = networkGraph_many_children_0526;
-        var g1 = networkGraph_grid_0612; 
+        var g1 = networkGraph_circle_0628;
+        // var g1 = networkGraph_FR;
+        // var g1 = networkGraph_ForceAtlas2;
+        // var g1 = networkGraph0520_allEdges;
+        // var g1 = networkGraph_grid_0521; 
+        // var g1 = networkGraph_tree_0521;
+        // var g1 = networkGraph_2circles_0523;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        // var g1 = networkGraph_many_children_0526;
+        // var g1 = networkGraph_grid_0612; 
         var containerId = 'test_10_graph';
         var rendererSettings = {
                 // captors settings
@@ -870,6 +872,7 @@
             this.graph.nodes()
             , options
         );
+        return this;
     };
 
 
@@ -1203,6 +1206,134 @@
 
 
 
+
+## 节点尺寸非线性变化
+
+
+### 描述
+
+
+`边长`与`缩放比例(ratio)`成正比例变化，节点尺寸变化要快于边长变化，可能是二次方或三次方变化。
+
+* `ratio`: camera缩放比例，不同graph有不同的ratio范围，记为`[ratioMin, ratioMax]`
+* `expandRatio`: 节点size变化比率，在camera计算得到的size基础上进行调整时的比率，随着ratio的变化呈`二次方`变化，其变化区间为：`[1, expandRatioMax]`
+* `二次`变化函数：`f(t) = at^2 + b`
+* `线性`变化函数：`f(t) = kt + c`
+
+需要计算参数`a`, `b`以及`k`, `c`。如下所示：
+
+ <img src="./img/node-size-expand-ratio.png">
+
+
+### 实现
+
+`sigma.utils.nodeSizeExpandRatio()`实现了这种变化速率的匹配：
+
+    @[data-script="javascript"]sigma.utils.nodeSizeExpandRatio =
+        function(sigInst, ratio, options){
+        var opt = options || {} 
+            , ratioMax = sigInst.settings('zoomMax')
+            , ratioMin = sigInst.settings('zoomMin')
+            , sizeExpandRatioMax = opt.sizeExpandRatioMax || 2.5
+            , argA
+            , argB
+            , sizeExpandRatio
+            ;
+
+        if(!sigInst|| !ratioMax || !ratioMin || !ratio){
+            sizeExpandRatio = 1;
+        }
+        else if(opt.type == 'ease-in'){
+            argA = ( sizeExpandRatioMax - 1 ) 
+                / ( Math.pow(ratioMax - ratioMin + 1, 2) - 1 )
+                ;
+            argB = 1 - argA;
+            sizeExpandRatio
+                = argA * Math.pow( ratioMax - ratio + 1, 2 ) + argB;
+        }
+        else if(opt.type == 'linear'){
+            argA = (sizeExpandRatioMax - 1) / (ratioMax - ratioMin); 
+            argB = 1 - argA;
+            sizeExpandRatio = argA * ( ratioMax - ratio + 1 ) + argB;
+        }
+        else {
+            sizeExpandRatio = 1;
+        }
+        return sizeExpandRatio;
+    }
+
+
+
+
+### 验证
+
+
+<div id="test_60" class="test">
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_60');
+        var sigInst = {
+                settings: function(name){
+                    switch(name){
+                        case 'zoomMax':
+                            return 20;
+                        case 'zoomMin':
+                            return 0.125;
+                    }
+                }
+            }
+            , sizeExpandRatioMax = 3
+            , testItems = [
+                sigInst.settings('zoomMax')
+                , 19
+                , 18
+                , 15
+                , 10
+                , 5
+                , 2
+                , 1
+                , 0.5 
+                , 0.1
+                , sigInst.settings('zoomMin')
+            ]
+            ;
+        s.show('start testing...');
+        testItems.forEach(function(item){
+            (function(types){
+                types.forEach(function(type){
+                    s.append_show(
+                        'ratio ' + item
+                        , 'type ' + type
+                        , sigma.utils.nodeSizeExpandRatio(
+                            sigInst
+                            , item 
+                            , {
+                                sizeExpandRatioMax: sizeExpandRatioMax
+                                , type: type 
+                            }
+                        )
+                    );
+                });
+            })(['linear', 'quadratic']);
+        });
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+
+
+
+
+
 ## 布局方案比较
 
 
@@ -1238,7 +1369,10 @@
 
     <img src="./img/hier_edges_between_same_level.png">
 
- 
+
+* `网状`布局图显示不直观[`右侧`为布局结果]：
+
+    <img src="./img/hier_mesh.png">
 
 
 
@@ -1249,6 +1383,8 @@
 孩子节点数很多的情况：
 
  <img src="./img/yfh_cluster_n100.png.png">
+
+ <img src="./img/yfh-big-cluster-layout.png">
 
 节点和边都很多的情况：
 
@@ -1270,7 +1406,11 @@
 
 也有一些情况效果不好：
 
-* `孤立节点`与其他簇或节点会不断远离，形成的整体效果空间上不均衡，如下所示。这种问题可以通过辅以grid空间均衡算法解决。
+* `孤立节点`与其他簇或节点会`不断远离`，形成的整体效果空间上不均衡，如下所示。这种问题可以通过辅以`grid空间均衡`算法解决。
 
-* 受`前置布局`影响很大。特别是当前置布局为线性布局时，力导向布局表现就很差。这时可以通过修改前置布局来避免。 
+    <img src="./img/yfh_no_layoutBalanced.png">
+
+* 受`前置布局`影响很大。特别是当前置布局为`线性`布局时，力导向布局表现就很差。这时可以通过修改`前置`布局来避免。 
+    1. 比较理想的`前置`布局是`矩阵`布局
+    2. `环形`前置布局也不是理想前置布局，因为存在不少距离很远的边，需要较长`演化`时间来拉近
 

@@ -110,7 +110,11 @@
                 $li.css({"text-indent":"2em"})
             }
             
-            $li.append('<a href="#' + pre + i + '">'+ $(item).text() + "</a>");
+            $li.append(
+                '<a href="#' + pre + i 
+                + '" data-rel-id="' + ( pre + i ) + '">'
+                + $(item).text() + "</a>"
+            );
             $ul.append($li);
         });
         
@@ -122,6 +126,10 @@
                 if($target.closest('a').length){
                     e.preventDefault();
                     $link = $target.closest('a'); 
+                    if($link[0].protocol == 'file:'){
+                        $('#' + $link.data('rel-id'))[0].scrollIntoView();
+                        return;
+                    }
                     location.replace($link.attr('href'));
                 }
             });

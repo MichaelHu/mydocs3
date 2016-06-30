@@ -250,7 +250,18 @@ IE9以下，`hasEnumBug`
 > <http://www.w3.org/TR/cssom-view-1/>
 
 
-`window`扩展：
+### 相关概念
+
+* padding edge / padding area
+* border edge / border area
+* scrolling area
+* css pixels / device pixels
+* layout box: css layout box / svg layout box
+
+
+### window扩展
+
+ <img src="./img/cssom-window.png" height="400">
 
 1. [非CSSOM扩展] window.getComputedStyle(element)
 2. [viewport] window.innerWidth
@@ -270,27 +281,44 @@ IE9以下，`hasEnumBug`
 
 
 
-`element`扩展：
+### element扩展
 
-1. element.getClientRects()
-2. element.getBoundingClientRect()
+1. element.getClientRects()，返回`DOMRect`，包含`x`, `y`, `width`, `height`, `top`, `right`, `bottom`, `left`字段，与`clientArea`相关
+2. element.getBoundingClientRect()，与`clientArea`相关
 3. element.scrollIntoView()
 7. element.scrollTop
 8. element.scrollLeft
 9. [readonly] element.scrollWidth
-10. [readonly] element.scrollHeight
-11. [readonly] element.clientTop
+10. [readonly] element.scrollHeight，不包含border
+11. [readonly] element.clientTop，`border-top-width`加上border-top和top padding edge之间可能存在的`scroll bar`的height。<http://www.w3.org/TR/cssom-view-1/#dom-element-clienttop>
 12. [readonly] element.clientLeft
 13. [readonly] element.clientWidth
-14. [readonly] element.clientHeight
+14. [readonly] element.clientHeight，不包含border
 4. element.scroll()
 5. element.scrollTo()
 6. element.scrollBy()
 
 
+### HTMLElement扩展
+
+1. [readonly] offsetParent
+2. [readonly] offsetTop，与`offertParent`有关
+3. [readonly] offsetLeft
+4. [readonly] offsetWidth
+5. [readonly] offsetHeight， `border edge height`，包含border
+
 
 <div id="test_60" class="test" style="position:relative; border: 1px solid red;">
-<div class="test-console" style="border: 1px solid green;"></div>
+<div class="test-panel" style="
+    height: 100px; 
+    border: 1px solid green; 
+    background-color: #17becf;
+    text-align: center;
+    font-size: 80px;
+    line-height: 100px;
+    color: #fff;
+    ">.test-panel</div>
+<div class="test-console"></div>
 <div class="test-container">
 
     @[data-script="javascript editable"](function(){
@@ -298,13 +326,17 @@ IE9以下，`hasEnumBug`
         setTimeout(function(){
 
             var s = fly.createShow('#test_60')
-                , st = window.getComputedStyle($('#test_60 .test-console')[0])
+                , $element = $('#test_60 .test-panel')
+                , element = $element[0]
+                , st = window.getComputedStyle(element)
                 , list
                 , element
                 ;
-            s.show('getComputedStyle(): ');
+            s.show('getComputedStyle() with .test-panel: ');
             list = [
-                'width'
+                'display'
+                , 'box-sizing'
+                , 'width'
                 , 'height'
                 , 'padding-left'
                 , 'margin-left'
@@ -317,6 +349,16 @@ IE9以下，`hasEnumBug`
             list.forEach(function(item){
                 s.append_show('st["' + item + '"]', st[item]); 
             });
+
+
+            s.append_show('\n.test-panel getClientRects() & getBoundingClientRect(): ');
+            s.append_show(
+                objectParse(element.getClientRects())
+            );
+            s.append_show(
+                objectParse(element.getBoundingClientRect())
+            );
+
 
             list = [
                 'innerWidth'
@@ -348,20 +390,28 @@ IE9以下，`hasEnumBug`
                 , 'clientHeight'
             ];
 
-            s.append_show('\nelement extensions: ');
-            element = $('#test_60 .test-console')[0];
+            s.append_show('\n.test-panel element extensions: ');
+            list.forEach(function(item){
+                s.append_show('element.' + item, element[item]); 
+            });
+
+            list = [
+                'offsetTop'
+                , 'offsetLeft'
+                , 'offsetWidth'
+                , 'offsetHeight'
+            ];
+
+            s.append_show('\n.test-panel htmlelement extensions: ');
             list.forEach(function(item){
                 s.append_show('element.' + item, element[item]); 
             });
 
 
-            s.append_show('\ngetClientRects() & getBoundingClientRect(): ');
-            s.append_show(
-                objectParse($('#test_60 .test-console')[0].getClientRects())
-            );
-            s.append_show(
-                objectParse($('#test_60 .test-console')[0].getBoundingClientRect())
-            );
+            s.append_show('\n.test-panel jQuery offset() and position()');
+            s.append_show('offset()', $element.offset());
+            s.append_show('position()', $element.position());
+
 
             function objectParse(obj){
                 var ret = {};
@@ -380,8 +430,6 @@ IE9以下，`hasEnumBug`
 
     })();
 
-</div>
-<div class="test-panel">
 </div>
 </div>
 

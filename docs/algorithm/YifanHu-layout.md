@@ -60,6 +60,8 @@
 <script src="./js/network-forest-0527.js"></script>
 <script src="./js/network-simpletree-0528.js"></script>
 <script src="./js/network-simple-0604-1.js"></script>
+<script src="./js/network-circle-0628.js"></script>
+<script src="./js/network-mesh-0628.js"></script>
 
 
 
@@ -668,6 +670,55 @@ todo
 
 
 
+### isLinelikeLayout
+
+`isLinelikeLayout()`，判断布局是否类似`线型`布局。
+
+    @[data-script="javascript"]function isLinelikeLayout(nodes, options){
+        var nodes = nodes || []
+            , opt = options || {}
+            , rect = sigma.utils.getNodesRect(nodes)
+            , threshold = opt.threshold || 20
+            , debugShow = opt.debugShow
+            ;
+        
+        if(nodes.length <= 2){
+            return 0;
+        }
+        
+        if('function' == typeof debugShow){
+            debugShow('rect w,h', rect.w, rect.h);
+        }
+
+        if(rect.w / rect.h > threshold
+            || rect.h / rect.w > threshold){
+            return 1;
+        }
+        return 0;
+    }
+
+
+<div id="test_105" class="test">
+<div class="test-console"></div>
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_105');
+        var g1 = getLineGraph(20, 18, {nodeSize: 8});
+        var g2 = getRandomGraph(100, 0, 5);
+
+        s.show('testing isLinelikeLayout');
+        s.append_show(1, isLinelikeLayout(g1.nodes, {debugShow: s.append_show}));
+        s.append_show(2, isLinelikeLayout(g2.nodes, {debugShow: s.append_show}));
+    })();
+
+</div>
+<div class="test-panel">
+</div>
+</div>
+
+
 ### computeElectricalForce
 
 `computeElectricalForce()`，计算两个节点的`库仑`斥力。
@@ -932,6 +983,16 @@ todo
             , nodes = me.graph.nodes()
             , edges = me.graph.edges()
             ;
+
+        if(isLinelikeLayout(nodes, {
+                threshold: 10
+            })){
+            me.layoutGrid()
+                .applyLayoutInstantly({
+                    readPrefix: 'grid_'
+                    , clearOld: 1
+                });
+        }
 
         sigma.utils.layoutYifanHu(nodes, edges, opt);
         return me;
@@ -1209,6 +1270,8 @@ todo
         var fixedNodes = 0;
         var layoutBalanced = 1;
         var g1 = getRandomGraph(50, 60, 8);
+        var g1 = networkGraph_circle_0628;
+        var g1 = networkGraph_mesh_0628;
         // var g1 = getClusterGraph(100, {xMax: 200, yMax: 200, nodeSize: 8});
         // var g1 = getLineGraph(20, 18, {nodeSize: 8});
         // var g1 = networkGraph_FR;

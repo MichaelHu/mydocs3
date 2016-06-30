@@ -65,6 +65,8 @@
 <script src="./js/network-forest-0527.js"></script>
 <script src="./js/network-simpletree-0528.js"></script>
 <script src="./js/network-simple-0604-1.js"></script>
+<script src="./js/network-circle-0628.js"></script>
+<script src="./js/network-mesh-0628.js"></script>
 
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <style type="text/css">
@@ -615,14 +617,16 @@
         // var g1 = getLineGraph(80, 200, {nodeSize: 1});
         // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
-        // var g1 = networkGraph0520_allEdges;
-        var g1 = networkGraph_grid_0521; 
-        var g1 = networkGraph_tree_0521;
-        var g1 = networkGraph_2circles_0523;
-        var g1 = networkGraph_edges_between_the_same_level_nodes;
-        var g1 = networkGraph_edges_between_the_same_level_nodes_2;
-        var g1 = networkGraph_many_children_0526;
-        var g1 = networkGraph_simple_0604_1;
+        var g1 = networkGraph0520_allEdges;
+        // var g1 = networkGraph_circle_0628;
+        // var g1 = networkGraph_mesh_0628;
+        // var g1 = networkGraph_grid_0521; 
+        // var g1 = networkGraph_tree_0521;
+        // var g1 = networkGraph_2circles_0523;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        // var g1 = networkGraph_many_children_0526;
+        // var g1 = networkGraph_simple_0604_1;
         var g2 = {
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice() 
@@ -2951,16 +2955,16 @@ todo:
     (function(){
 
         var s = fly.createShow('#test_40');
-        // var g1 = getRandomGraph(49, 100, 1);
+        var g1 = getRandomGraph(49, 100, 1);
         // var g1 = getLineGraph(49, 100, {nodeSize: 1});
         // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
-        var g1 = networkGraph_grid_0521; 
-        var g1 = networkGraph_tree_0521;
-        var g1 = networkGraph_2circles_0523;
-        var g1 = networkGraph_edges_between_the_same_level_nodes;
-        var g1 = networkGraph_edges_between_the_same_level_nodes_2;
-        var g1 = networkGraph_many_children_0526;
+        // var g1 = networkGraph_grid_0521; 
+        // var g1 = networkGraph_tree_0521;
+        // var g1 = networkGraph_2circles_0523;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        // var g1 = networkGraph_many_children_0526;
         // var g1 = networkGraph_forest_0527;
         var g2 = {
                 nodes: g1.nodes.slice()
@@ -3285,6 +3289,8 @@ todo:
         // var g1 = getRandomGraph(20, 18, 8);
         // var g1 = getLineGraph(20, 18, {nodeSize: 8});
         var g1 = networkGraph_edges_between_the_same_level_nodes_3;
+        // var g1 = networkGraph_circle_0628;
+        // var g1 = networkGraph_mesh_0628;
         // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
         // var g1 = networkGraph_grid_0521; 
@@ -3864,6 +3870,8 @@ todo
 
         var s = fly.createShow('#test_60');
         var g1 = getRandomGraph(16, 20, 8);
+        // var g1 = networkGraph_circle_0628;
+        // var g1 = networkGraph_mesh_0628;
         // var g1 = getLineGraph(16, 20, {nodeSize: 8});
         // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;

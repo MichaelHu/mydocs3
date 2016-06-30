@@ -34,6 +34,8 @@
 <script src="./js/network-edges-between-levels-0526.js"></script>
 <script src="./js/network-many-children-0526.js"></script>
 <script src="./js/network-forest-0527.js"></script>
+<script src="./js/network-circle-0628.js"></script>
+<script src="./js/network-mesh-0628.js"></script>
 
 
 
