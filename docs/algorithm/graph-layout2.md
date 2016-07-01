@@ -857,11 +857,17 @@
             return;
         }
         nodes.forEach(function(node){
-            node[writePrefix + 'x'] = node[readPrefix + 'x'];
-            node[writePrefix + 'y'] = node[readPrefix + 'y'];
-            if(clearOld){
-                delete node[readPrefix + 'x'];
-                delete node[readPrefix + 'y'];
+            if(undefined !== node[readPrefix + 'x']){
+                node[writePrefix + 'x'] = node[readPrefix + 'x'];
+                node[writePrefix + 'y'] = node[readPrefix + 'y'];
+                if(clearOld){
+                    delete node[readPrefix + 'x'];
+                    delete node[readPrefix + 'y'];
+                }
+            }
+            else {
+                node[writePrefix + 'x'] = node.x;
+                node[writePrefix + 'y'] = node.y;
             }
         });
     };
@@ -1213,7 +1219,7 @@
 ### 描述
 
 
-`边长`与`缩放比例(ratio)`成正比例变化，节点尺寸变化要快于边长变化，可能是二次方或三次方变化。
+`边长`与`缩放比例(ratio)`成正比例变化，节点尺寸变化要快于边长变化，可能是`线性`或`二次方`变化。
 
 * `ratio`: camera缩放比例，不同graph有不同的ratio范围，记为`[ratioMin, ratioMax]`
 * `expandRatio`: 节点size变化比率，在camera计算得到的size基础上进行调整时的比率，随着ratio的变化呈`二次方`变化，其变化区间为：`[1, expandRatioMax]`
@@ -1222,7 +1228,7 @@
 
 需要计算参数`a`, `b`以及`k`, `c`。如下所示：
 
- <img src="./img/node-size-expand-ratio.png">
+ <img src="./img/node-size-expand-ratio.png" height="560">
 
 
 ### 实现
@@ -1316,7 +1322,7 @@
                         )
                     );
                 });
-            })(['linear', 'quadratic']);
+            })(['linear', 'ease-in']);
         });
 
     })();

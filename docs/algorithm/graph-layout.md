@@ -890,6 +890,48 @@
 
 
 
+#### getSubGraph
+
+`getSubGraph()`：根据指定`过滤`条件获取`子图`（subgraph)。
+
+    @[data-script="javascript"]sigma.classes.graph.addMethod(
+        'getSubGraph'
+        , function(options){
+        var opt = options || {}
+            , me = this
+            , filter = opt.filter
+            , nodes = me.nodesArray
+            , edges = me.edgesArray
+            , _node_ids
+            ;
+
+        if('function' == typeof filter){
+            nodes = [];
+            edges = [];
+            me.nodesArray.forEach(function(node){
+                if(filter(node)){
+                    nodes.push(node);
+                }
+            });
+            
+            _node_ids = nodes.map(function(node){return node.id;});
+            me.edgesArray.forEach(function(edge){
+                if(_node_ids.indexOf(edge.source) >= 0 
+                    && _node_ids.indexOf(edge.target) >= 0){
+                    edges.push(edge);
+                }
+            });
+        }
+
+        return {
+            nodes: nodes
+            , edges: edges
+        };
+    });
+
+
+
+
 
 #### getLayoutForest
 
@@ -933,16 +975,19 @@
         return forest;
     };
 
-    @[data-script="javascript"]sigma.classes.graph.addMethod(
+
+    sigma.classes.graph.addMethod(
         'getLayoutForest'
         , function(options){
-        var opt = options || {}
-            , me = this
-            , nodes = me.nodesArray
-            , edges = me.edgesArray
+        var me = this
+            , g = me.getSubGraph(options)
             ;
 
-        return sigma.utils.getLayoutForest(nodes, edges, opt); 
+        return sigma.utils.getLayoutForest(
+            g.nodes
+            , g.edges
+            , options
+        ); 
     });
 
 
@@ -1594,13 +1639,29 @@
     sigma.prototype.normalizeSophonNodes
         = function(options){
 
+        var opt = options || {}
+            , me = this
+            , filter = opt.filter
+            , g = me.graph.getSubGraph(opt)
+            , oldSubCenter
+            , oldRect
+            ;
+
+        if('function' == typeof filter && !opt.center){
+            oldRect = sigma.utils.getNodesRect(g.nodes);
+            oldSubCenter = {
+                x: oldRect.x + oldRect.w / 2
+                , y: oldRect.y + oldRect.h / 2
+            };
+            opt.center = oldSubCenter;
+        }
+
         sigma.utils.normalizeSophonNodes(
-            // note: `this.graph.nodesArray` will not work
-            this.graph.nodes()
-            , options
+            g.nodes
+            , opt
         );
 
-        return this;
+        return me;
     };
 
 
@@ -1669,42 +1730,12 @@
 
 
 
-#### resize
-
-`resize(ratio)`：按比例改变图形尺寸[`暂未验证`]。
-
-    @[data-script="javascript"]sigma.classes.graph.addMethod(
-        'resize'
-        , function(ratio){
-
-        var nodes = this.nodesArray
-            , edges = this.edgesArray
-            , me = this
-            , ratio = ratio || 1
-            , prefix = prefix || ''
-            , i = 0
-            ;
-
-        while(i<nodes.length){
-            nodes[i]['size'] *= ratio;
-            nodes[i]['x'] *= ratio;
-            nodes[i]['y'] *= ratio;
-            i++;
-        } 
-
-        return me;
-
-    });
-
-
-    
-
 
 
 #### Grid类
 
 
-`Grid工具类`：
+`Grid工具类`：均衡布局所使用的`空间管理`工具类。
 
 
     @[data-script="javascript editable"](function(){
@@ -2073,7 +2104,7 @@
 
 
 
-#### adjustSiblingsOrder()
+#### adjustSiblingsOrder
 
 `adjustSiblingsOrder(parent, edges)`：`层次`布局中，`同层次`的`兄弟`节点之间如果存在边，则调整`有边`的兄弟节点`靠近`。
 
@@ -2176,7 +2207,7 @@
 
 
 
-#### avoidSameLevelTravelThrough()
+#### avoidSameLevelTravelThrough
 
 `avoidSameLevelTravelThrough(nodesOfSameLevel, edges)`：层次布局中，属于`同一层级`的所有节点中，`非靠近`节点之间存在边相连，调整中间节点的`上下位置`，`避免`边`穿过`中间节点，造成不直观的效果。
 
@@ -2235,7 +2266,7 @@
 
 
 
-#### avoidChildrenTravelThrough()
+#### avoidChildrenTravelThrough
 
 `avoidChildrenTravelThrough(parent, edges)`：层次布局中，属于`同一父节点`的所有`兄弟`节点中，`非靠近`节点之间存在边相连，调整中间节点的`上下位置`，`避免`边`穿过`中间节点，造成不直观的效果。
 
@@ -2254,6 +2285,31 @@
             , edges
         );
     };
+
+
+
+#### prepareAnimation
+
+`prepareAnimation(options)`：完成`动画`开始执行前的`准备`工作，比如坐标的`标准化`等。
+
+    @[data-script="javascript"]sigma.prototype.prepareAnimation
+        = function(options){
+        var me = this
+            , opt = options || {}
+            , prefix = opt.readPrefix || ''
+            ;
+
+        me.graph.nodes().forEach(function(node){
+            if('undefined' == typeof node[prefix + 'x']){
+                node[prefix + 'x'] = node.x;
+                node[prefix + 'y'] = node.y;
+            }
+        });
+
+        return me;
+    };
+
+
 
 
 ### 常用方法验证 
@@ -2902,8 +2958,16 @@ todo:
     };
 
     sigma.prototype.layoutGrid = function(options){
-        sigma.utils.getGridLayout(this.graph.nodes(), options);
-        return this;
+        var me = this
+            , g = me.graph.getSubGraph(options)
+            ;
+
+        sigma.utils.getGridLayout(
+            g.nodes 
+            , options
+        );
+
+        return me;
     }
 
 
@@ -3083,7 +3147,8 @@ todo:
 
 `适用场景`：
 
-1. 边数`不大于`点数的图形。
+1. 边数`不大于`节点数的图形。
+2. `树状`图
 
 
 
@@ -3146,7 +3211,7 @@ todo:
             , treeOffsetX = 0
             , spaceGrid = opt.spaceGrid || {xSize: 40, ySize: 40}
             , unit = opt.unit || 1
-            , edges = me.graph.edges()
+            , edges = me.graph.getSubGraph(options).edges
             ;
 
         sigma.utils.computeLeaves(forest);
@@ -3286,6 +3351,7 @@ todo:
     (function(){
 
         var s = fly.createShow('#test_50');
+        var partialLayout = 0;
         // var g1 = getRandomGraph(20, 18, 8);
         // var g1 = getLineGraph(20, 18, {nodeSize: 8});
         var g1 = networkGraph_edges_between_the_same_level_nodes_3;
@@ -3300,6 +3366,20 @@ todo:
         // var g1 = networkGraph_edges_between_the_same_level_nodes_2;
         // var g1 = networkGraph_tree_0524;
         // var g1 = networkGraph_many_children_0526;
+
+        if(partialLayout){
+            g1.nodes.forEach(function(node){
+                node.color = node.oldColor || node.color;
+                delete node.oldColor;
+                delete node.selected;
+                if(Math.random() > 0.5){
+                    node.selected = 1;
+                    node.oldColor = node.color;
+                    node.color = '#1f77b4';
+                }
+            });
+        }
+
         var g2 = {
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice()
@@ -3390,16 +3470,32 @@ todo:
                 , adjustSiblingsOrder: 1
                 , avoidSameLevelTravelThrough: 1
                 , avoidSameLevelTravelThroughDelta: 0.2
+                , filter: partialLayout
+                    ? function(node){return node.selected;}
+                    : null
             })
             .normalizeSophonNodes({
                 readPrefix: 'hier_'
+                , filter: partialLayout
+                    ? function(node){return node.selected;}
+                    : null
             })
+            ;
+
+        if(!partialLayout){
+            sm2
             .alignCenter({
                 wholeView: 1
                 , readPrefix: 'hier_'
                 , writePrefix: 'hier_'
             })
             ;
+        }
+
+        sm2
+            .prepareAnimation({
+                readPrefix: 'hier_'
+            });
 
         setTimeout(function(){
             sigma.plugins.animate(

@@ -10,11 +10,17 @@ sigma.utils.applyLayoutInstantly
         return;
     }
     nodes.forEach(function(node){
-        node[writePrefix + 'x'] = node[readPrefix + 'x'];
-        node[writePrefix + 'y'] = node[readPrefix + 'y'];
-        if(clearOld){
-            delete node[readPrefix + 'x'];
-            delete node[readPrefix + 'y'];
+        if(undefined !== node[readPrefix + 'x']){
+            node[writePrefix + 'x'] = node[readPrefix + 'x'];
+            node[writePrefix + 'y'] = node[readPrefix + 'y'];
+            if(clearOld){
+                delete node[readPrefix + 'x'];
+                delete node[readPrefix + 'y'];
+            }
+        }
+        else {
+            node[writePrefix + 'x'] = node.x;
+            node[writePrefix + 'y'] = node.y;
         }
     });
 };

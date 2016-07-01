@@ -523,9 +523,17 @@ sigma.prototype.layoutCluster
     return this;
 };  
 sigma.prototype.layoutGrid = function(options){
-    sigma.utils.getGridLayout(this.graph.nodes(), options);
-    return this;
-} 
+    var me = this
+        , g = me.graph.getSubGraph(options)
+        ;
+
+    sigma.utils.getGridLayout(
+        g.nodes 
+        , options
+    );
+
+    return me;
+}  
 sigma.prototype.layoutHierarchy2
     = function(options){
 
@@ -657,12 +665,43 @@ sigma.prototype.layoutHierarchy2
 sigma.prototype.normalizeSophonNodes
     = function(options){
 
+    var opt = options || {}
+        , me = this
+        , filter = opt.filter
+        , g = me.graph.getSubGraph(opt)
+        , oldSubCenter
+        , oldRect
+        ;
+
+    if('function' == typeof filter && !opt.center){
+        oldRect = sigma.utils.getNodesRect(g.nodes);
+        oldSubCenter = {
+            x: oldRect.x + oldRect.w / 2
+            , y: oldRect.y + oldRect.h / 2
+        };
+        opt.center = oldSubCenter;
+    }
+
     sigma.utils.normalizeSophonNodes(
-        // note: `this.graph.nodesArray` will not work
-        this.graph.nodes()
-        , options
+        g.nodes
+        , opt
     );
 
-    return this;
-};     
+    return me;
+}; 
+sigma.prototype.prepareAnimation
+    = function(options){
+    var me = this
+        , opt = options || {}
+        , prefix = opt.readPrefix || ''
+        ;
 
+    me.graph.nodes().forEach(function(node){
+        if('undefined' == typeof node[prefix + 'x']){
+            node[prefix + 'x'] = node.x;
+            node[prefix + 'y'] = node.y;
+        }
+    });
+
+    return me;
+};   

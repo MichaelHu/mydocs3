@@ -980,14 +980,15 @@ todo
         = function(options){
         var opt = options || {}
             , me = this
-            , nodes = me.graph.nodes()
-            , edges = me.graph.edges()
+            , subGraph = me.graph.getSubGraph(opt)
+            , nodes = subGraph.nodes
+            , edges = subGraph.edges
             ;
 
         if(isLinelikeLayout(nodes, {
                 threshold: 10
             })){
-            me.layoutGrid()
+            me.layoutGrid(opt)
                 .applyLayoutInstantly({
                     readPrefix: 'grid_'
                     , clearOld: 1
@@ -1267,6 +1268,7 @@ todo
 
         var s = fly.createShow('#test_200');
         var maxIterations = 50;
+        var partialLayout = 0;
         var fixedNodes = 0;
         var layoutBalanced = 1;
         var g1 = getRandomGraph(50, 60, 8);
@@ -1289,6 +1291,19 @@ todo
             if(Math.random() < 0.1){
                 node.fixed = 1;
                 node.color = '#000';
+            }
+        });
+
+        partialLayout && g1.nodes.forEach(function(node){
+            if(Math.random() < 0.5){
+                node.color = node.oldColor || node.color;
+                delete node.oldColor;
+                delete node.selected;
+                if(Math.random() > 0.5){
+                    node.selected = 1;
+                    node.oldColor = node.color;
+                    node.color = '#1f77b4';
+                }
             }
         });
 
@@ -1383,16 +1398,33 @@ todo
                 , maxIterations: maxIterations 
                 , relativeStrength: 0.2
                 , layoutBalanced: layoutBalanced
+                , filter: partialLayout
+                    ? function(node){return node.selected;}
+                    : null
             })
             .normalizeSophonNodes({
                 readPrefix: 'yfh_'
+                , filter: partialLayout
+                    ? function(node){return node.selected;}
+                    : null
             })
+            ;
+
+
+        if(!partialLayout){
+            sm2
             .alignCenter({
                 wholeView: 1
                 , readPrefix: 'yfh_'
                 , writePrefix: 'yfh_'
             })
             ;
+        }
+
+        sm2
+            .prepareAnimation({
+                readPrefix: 'yfh_'
+            });
 
         setTimeout(function(){
             sigma.plugins.animate(
