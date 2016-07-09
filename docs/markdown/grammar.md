@@ -12,6 +12,8 @@
 
 `GITHUB`：<https://github.com/MichaelHu/markdown-slides>
 
+`在线markdown编辑器`：<http://mahua.jser.me>
+
 
 ## Todos
 
@@ -23,6 +25,7 @@
         jsx不能使用`<!-- ...  -->`进行注释
 
     jsx不能使用`<!-- ... -->`进行注释
+
 4. `icon`支持，比如`[x]`, `[v]`
 5. `table`支持
 6. `插件支持`

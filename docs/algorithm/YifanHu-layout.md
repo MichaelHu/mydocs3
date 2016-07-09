@@ -1033,6 +1033,8 @@ todo
         opt.relativeStrength = opt.relativeStrength || 0.2;
         opt.optimalDistance = opt.optimalDistance 
             || getOptimalDistance();
+        opt.layoutBalancedSpace = opt.layoutBalancedSpace
+            || opt.optimalDistance;
         opt.initialStep = opt.initialStep 
             || opt.optimalDistance / 5; 
         opt.quadTreeMaxLevel = opt.quadTreeMaxLevel || 8;
@@ -1147,7 +1149,7 @@ todo
             sigma.utils.layoutTreesByGrid(
                 forest
                 , {
-                    optimalDistance: opt.optimalDistance
+                    optimalDistance: opt.layoutBalancedSpace
                     , readPrefix: 'yfh_'
                     , spaceGrid: spaceGrid 
                 }

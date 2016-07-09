@@ -672,6 +672,122 @@ shimming
 
 
 
+## APIs
+
+<http://webpack.github.io/docs/api-in-modules.html>
+
+使用webpack编译的代码，支持的`方法`和`变量`。
+
+
+### Basic
+
+#### require
+
+    require(dependency: String)
+
+同步依赖，不会向服务器发请求。`编译器`会保证依赖的`同步性`。CJS风格。
+
+#### define，带factory
+
+同步调用，不会向服务器发请求。AMD风格。
+
+
+#### module.exports
+
+CJS风格。
+
+#### exports
+
+CJS风格。
+
+#### define，带value
+
+AMD风格。
+
+
+
+
+
+
+### Advanced
+
+#### require.cache
+
+多次require，只会执行一次factory，以及只有一个export，所以必然会有cache机制。
+
+以下等式：
+
+    var d1 = require("dependency");
+    require("dependency") === d1
+    delete require.cache[require.resolve("dependency")];
+    require("dependency") !== d1
+
+    // in file.js
+    require.cache[module.id] === module
+    require("./file.js") === module.exports
+    delete require.cache[module.id];
+    require.cache[module.id] === undefined
+    require("./file.js") !== module.exports // in theory; in praxis this causes a stack overflow
+    require.cache[module.id] !== module
+
+
+
+#### require.context
+
+#### require.ensure
+
+    require.ensure(dependencies: String[], callback: function([require]), [chunkName: String])
+
+`按需(on demand)`下载额外依赖。
+
+    // in file.js
+    var a = require("a");
+    require.ensure(["b"], function(require) {
+        var c = require("c");
+    });
+    require.ensure(["d"], function() {
+        var e = require("e");
+    }, "my chunk");
+    require.ensure([], function() {
+        var f = require("f");
+    }, "my chunk");
+    /* This results in:
+        * entry chunk
+            - file.js
+            - a
+        * anonymous chunk
+            - b
+            - c
+        * "my chunk"
+            - d
+            - e
+            - f
+    */
+
+
+#### require
+
+    require(dependencies: String[], [callback: function(...)])
+
+与`require.ensure`类似。区别在于`依赖模块`会作为回调函数的`参数`传递进去，同时`不支持`chunk名指定。
+
+    // in file.js
+    var a = require("a");
+    require(["b"], function(b) {
+      var c = require("c");
+    });
+    /* This results in:
+        * entry chunk
+            - file.js
+            - a
+        * anonymous chunk
+            - b
+            - c
+    */
+
+
+
+
 
 
 

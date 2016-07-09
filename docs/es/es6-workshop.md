@@ -1,8 +1,9 @@
-# es6
+# es6 workshop
 
 
+ <img src="./img/Ecma_RVB-003.jpg" height="60">
 
-## 一、初识es2015
+## 初识es2015
 
 6.0版： <http://www.ecma-international.org/ecma-262/6.0/>
 
@@ -29,7 +30,7 @@ textarea {
 
 
 
-## 二、cbScriptBlock回调
+## cbScriptBlock回调
 
 以下代码针对`compile-es2015`代码块提供编辑后的处理逻辑，将es2015代码块进行编译输出。
 
@@ -61,7 +62,7 @@ textarea {
 
 
 
-## 三、let & const 命令
+## let & const 命令
 
 
 <div id="test_10" class="test">
@@ -70,6 +71,8 @@ textarea {
     @[data-script="compile-es2015 editable"](function(){
         let a = 5;
         const b = 6;
+
+        const d = Symbol(123);
     })();
 
 </div>
@@ -80,10 +83,10 @@ textarea {
 
 
 
-## 四、Destructuring（解构）
+## Destructuring（解构）
 
 
-### 4.1 数组解构赋值
+### 数组解构赋值
 
 对象解构赋值：变量必须与属性同名，才能取到正确的值
 
@@ -124,7 +127,7 @@ textarea {
 
 
 
-### 4.2 字符串解构赋值：
+### 字符串解构赋值：
 
 <div id="test_40" class="test">
 <div class="test-container">
@@ -148,11 +151,9 @@ textarea {
 
 
 
-### 4.3 数字和布尔值的解构
+### 数字和布尔值的解构
 
 解构过程中，如果等号右边是数值和布尔值，则会先转为对象
-
-#### abcsd
 
 <div id="test_50" class="test">
 <div class="test-container">
@@ -174,7 +175,7 @@ textarea {
 
 
 
-### 4.4 函数参数的解构赋值：
+### 函数参数的解构赋值：
 
 <div id="test_60" class="test">
 <div class="test-container">
@@ -204,9 +205,9 @@ textarea {
 
 
 
-## 五、解构的用途
+## 解构的用途
 
-### 5.1 交换变量的值：
+### 交换变量的值：
 
 <div id="test_70" class="test">
 <div class="test-container">
@@ -223,7 +224,7 @@ textarea {
 
 
 
-### 5.2 从函数返回多个值：
+### 从函数返回多个值：
 
 <div id="test_80" class="test">
 <div class="test-container">
@@ -251,7 +252,7 @@ textarea {
 
 
 
-### 5.3 提取JSON数据：
+### 提取JSON数据：
 
 <div id="test_90" class="test">
 <div class="test-container">
@@ -277,7 +278,7 @@ textarea {
 
 
 
-### 5.4 函数参数默认值：
+### 函数参数默认值：
 
 <div id="test_100" class="test">
 <div class="test-container">
@@ -303,7 +304,7 @@ textarea {
 </div>
 
 
-### 5.5 输入模块的指定方法：
+### 输入模块的指定方法：
 
 <div id="test_110" class="test">
 <div class="test-container">
@@ -321,13 +322,13 @@ textarea {
 
 
 
-## 六、扩展运算符&rest运算符
+## 扩展运算符&rest运算符
 
 
 格式：`...`
 
 
-### 6.1 扩展运算符
+### 扩展运算符
 
 `用于数组`：
 
@@ -387,7 +388,7 @@ note: es6貌似不支持。
 
 
 
-### 6.2 rest运算符
+### rest运算符
 
 <div id="test_130" class="test">
 <div class="test-container">
@@ -422,7 +423,7 @@ note: es6貌似不支持。
 </div>
 
 
-### 6.3 rest与解构配合使用
+### rest与解构配合使用
 
 
 <div id="test_140" class="test">
@@ -444,7 +445,7 @@ note: es6貌似不支持。
 
 
 
-## 七、import & export
+## import & export
 
 必须出现在模块顶级作用域中。比如它们是不能出现在闭包中的。
 
@@ -464,9 +465,11 @@ note: es6貌似不支持。
 </div>
 
 
-## 八、箭头操作符
+## 箭头操作符
 
 格式：`=>`，=与>`不能分开`，比如`= >`是不可以的。
+
+结合律为： `右结合`。
 
 常用于`简化函数的编写`。
 
@@ -488,6 +491,53 @@ note: es6貌似不支持。
         let max = (x, y) => {
             return x > y ? x : y;
         };
+
+        // 返回值为一个新的函数
+        let minCreator = (type) => (v1, v2) => {
+            console.log(type, v1, v2);
+        };
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+## 类支持
+
+`super`关键字： <http://www.ecma-international.org/ecma-262/6.0/#sec-super-keyword>
+
+`构造函数`、`继承`等类机制。
+
+<div id="test_170" class="test">
+<div class="test-container">
+
+    @[data-script="compile-es2015 editable"](function(){
+        class Person {
+            constructor(name){
+                this.name = name;
+            }
+            
+            sayHello(msg){
+                console.log('Hi, I\'m ' + this.name);
+            }
+        }
+
+        class Student extends Person {
+            constructor(name, cls){
+                super(name);
+                this.cls = cls;
+            }
+
+            sayHello(msg){
+                super.sayHello(msg);
+                console.log(this.cls);
+            }
+        }
     })();
 
 </div>

@@ -1,6 +1,6 @@
 # VIM 备忘
 
-2014-11-05 hudamin - 转载请注明出处
+2016-07-07, 2014-11-05 hudamin - 转载请注明出处
 
 > 向编辑神器VIM致敬 
 
@@ -10,9 +10,18 @@
 2. `normal`模式下，`单引号'`用于访问mark，`双引号"`用于设置下一delete，yank或者put操作使用的寄存器
 3. `normal`以及`command-line`模式下，`@`用于访问寄存器
 4. 带`g前缀`的命令原来功能这么强大，比如：`g0, g^, g$, gm, gp, gP, gJ, ge, gE, 
-    ga, g8, g CTRL-G, gk, gj`，
+    ga, g8, g CTRL-G, gk, gj, gq`，
     你知道几个？会用几个？
 5. `insert`模式下，`CTRL-N`能用于输入补全提示
+
+
+
+## 四种运行模式
+
+* Normal Mode
+* Visual Mode
+* Insert Mode
+* Command-line Mode
     
 
 
@@ -203,17 +212,22 @@
 
 ## Folding
 
+`foldmethod`，`folemarker`，`foldlevel`等选项。
+
     :{range}fold
     zf{motion}
 
+    # Normal mode
     zd
     zD
 
+    # open and close
     zo
     zO
     zc
     zC
     
+    # foldlevel
     zm
     zM
     zr
@@ -222,6 +236,10 @@
     zn
     zN
     zi
+
+    # Navigation
+    zj
+    zk
 
 ## Visual Mode
 
@@ -254,6 +272,30 @@
     :fix[del]
     :opt[ions]
 
+
+### formatoptions
+
+简写为`fo`，自动换行，支持中文自动换行。可以使用`gq`启动自动格式化。
+
+    # default
+    :set fo=tcq
+
+    # wrap Multi-Byte text line
+    :set fo+=mM tw=60 wrap
+    {Visual}gq
+    gq{motion}
+
+    # format current line
+    gqq
+    gqgq
+
+
+### 多行合并
+
+    {Visual}J
+    J
+    {Visual}gJ
+    gJ
 
 
 
@@ -398,7 +440,7 @@
 
 ## Bar
 
-用来分隔命令，不是管道，如果需要用字面量，使用`"\|"`
+用来`分隔`命令，`不是管道`，如果需要用字面量，使用`"\|"`
 
     :let lines = getline(1, '$') | for i in lines | echo "> " . i | endfor 
 

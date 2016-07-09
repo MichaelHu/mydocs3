@@ -4,13 +4,10 @@
 > <img src="./img/react_logo.svg" width="60"> A JAVASCRIPT LIBRARY FOR BUILDING USER INTERFACES
 
 
-Reactjs: <http://facebook.github.io/react/docs/getting-started.html>
-
-Github: <https://github.com/facebook/react>
-
-Flux: <https://facebook.github.io/flux/docs/overview.html>
-
-Introduce: <http://www.ruanyifeng.com/blog/2015/03/react.html>
+* Reactjs: <http://facebook.github.io/react/docs/getting-started.html>
+* Github: <https://github.com/facebook/react>
+* Flux: <https://facebook.github.io/flux/docs/overview.html>
+* Introduce: <http://www.ruanyifeng.com/blog/2015/03/react.html>
 
 
 
@@ -35,27 +32,26 @@ Introduce: <http://www.ruanyifeng.com/blog/2015/03/react.html>
 }
 </style>
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
-<script src="http://258i.com/static/bower_components/react/react.js"></script>
-<script src="http://258i.com/static/bower_components/react/react-dom.js"></script>
+<script src="http://258i.com/static/bower_components/react/react.min.js"></script>
+<script src="http://258i.com/static/bower_components/react/react-dom.min.js"></script>
+<script src="http://258i.com/static/build/react-router/ReactRouter.min.js"></script>
 <script src="http://258i.com/static/build/babel/babel.min.js"></script>
 
 
-## 一、初识
+## 初识
 
 
-### 1.1 三大特点
+### 三大特点
 
-1. Just the UI
-    MVC - V
+1. Just the UI：`MVC`中的`V层`
+2. Virtual DOM：高`性能`，更`简单`的编程模型
+3. Data Flow：`单向`数据流
 
-2. Virtual DOM
-
-    高性能，更简单的编程模型
-
-3. Data Flow
 
 
 ### top-level APIs
+
+重要的几个`API`：
 
 * React.createClass()
 * React.createElement()
@@ -64,7 +60,7 @@ Introduce: <http://www.ruanyifeng.com/blog/2015/03/react.html>
 
 
 
-## 二、cbScriptBlock回调
+## cbScriptBlock回调
 
 以下代码针对`compile-react`代码块提供编辑后的处理逻辑，将`react`代码块进行编译输出。
 
@@ -101,7 +97,7 @@ Introduce: <http://www.ruanyifeng.com/blog/2015/03/react.html>
     }
 
 
-## 三、简单例子
+## 简单例子
 
 > 参考：<http://facebook.github.io/react/>
 
@@ -160,12 +156,15 @@ Introduce: <http://www.ruanyifeng.com/blog/2015/03/react.html>
 jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有一些特殊的地方。
 
 1. `内联`样式的写法，使用`驼峰`键值的对象，就像设置`element.style.x`一样 
-1. `if-else`不要在`属性`部分使用，因为key-value的value部分无法使用if-else语句。可用`三元操作符`代替。或者将if-else放在jsx代码块之外；或者定义一个闭包函数直接执行。
-1. `false`作为`属性`部分和`内容`部分的区别：属性部分，输出字符串`"false"`；`内容`部分，输出为`空` 
+1. `if-else`不要在`属性`部分使用，因为key-value的`value`部分无法使用`if-else`语句。可用`三元操作符`代替。或者将if-else放在jsx代码块之外；或者定义一个闭包函数直接执行。
+1. `false`作为`属性`部分和`内容`部分的区别：`属性`部分，输出字符串`"false"`；`内容`部分，输出为`空` 
 1. 组件的`render()`只能返回一个节点，而不能是多个节点；如果有多个节点，必须要将这些节点包裹在一个父级节点内
 1. jsx不能使用`<!-- ... -->`进行注释
 1. `this.props.children`的类型。如果存在多个孩子节点，则表现为Array类型；如果仅有一个孩子节点，则表现为仅有的孩子节点本身。
 
+2. `this.props.children`在组件的`render()`方法中使用，用于将孩子节点渲染出来。
+
+        
 
 
 #### 演示一
@@ -188,7 +187,7 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
         // about `style`
         var divStyle = {
             color: 'red'
-            , height: 30 // rendered as 'height:10px'
+            , height: 30 // rendered as 'height:30px'
             , backgroundImage: 'url(...)'
             // Vendor prefixes other than `ms` should begin with a capital letter.
             , WebkitTransition: 'all'
@@ -420,11 +419,12 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
 ### 实现Todo应用
 
 `关键思想`：
-1. 组件的嵌套
+1. 组件的`嵌套`
 2. 组件属性的引用： 
 
         this.props.xxx
         this.props.items.map(function(item){})
+
 
 <div id="test_30" class="test">
 <div class="test-container">
@@ -539,16 +539,155 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
 </div>
 
 
-## 四、组件（Components）
 
-TODO:
+## react-router 
 
-* 实例API
-* 生命周期API，render必选，其他可选
+查看这里<a href="./react-router.md.preview.html">react-router</a>
+
+
+
+
+
+## 组件APIs
+
+<https://facebook.github.io/react/docs/component-specs.html>
+
+组件定义过程，需要提供一个类描述对象，由对象提供一些接口方法和属性，包含以下内容：
+
+
+### render()
+
+`必需提供`render()方法的定义。
+
+1. 该方法需要是纯粹的，多次调用能返回一致的结果；
+    不使用`setTimeout`，不与浏览器`交互`（真要交互，可以在`componentMount()`中进行）
+2. 如果不渲染任何内容，可以返回`null`或者`false`
+
+
+### getInitialState()
+
+组件装载前被调用一次。
+
+
+### getDefaultProps()
+
+组件实例创建前被调用一次。
+
+
+### propTypes
+
+通过设置该对象，以允许对传给组件的props进行验证。
+
+
+### mixins
+
+是一个`数组`，提供一种行为共享的方式。
+
+
+### statics
+
+是一个`对象`，允许你定义组件类的静态方法。
+
+
+### displayName
+
+主要用于`debug`时的显示。
+
+
+
+
+
+### 生命周期方法
+
+#### componentWillMount()
+
+`Mounting`阶段。
+
+调用`一次`，client和server都会调用，在`初始`渲染即将发生时调用。可以在里面调用`setState()`。
+
+
+#### componentDidMount()
+
+`Mounting`阶段。
+
+调用`一次`，只在client端调用，调用时机为`初始`渲染刚刚完成时。这个时候，你已经可以操作DOM元素了。
+
+另一个重要的点时，`子组件`的componentDidMount()总是在`父组件`的componentDidMount()`前`调用。
+
+此处可以放心进行`setTimeout()`, `setInterval()`, `AJAX请求`等。
+
+
+
+#### componentWillReceiveProps()
+
+`Updating`阶段。
+
+    componentWillReceiveProps( nextProps )
+
+当组件接收到新的属性（但旧属性`尚未改变`）时被调用。注：在初始渲染时不调用。
+
+该方法提供一个时机用于`更新state`，旧属性可以通过`this.props`获得，新属性通过`nextProps`传入，所以可以
+计算好新state，并通过`this.setState()`设置新状态。
+需要注意的是，这里面调用`this.setState()`不会单独触发一次`this.render()`。
+
+容易发生误解的地方是，会误认为`this.props`已经发生改变。
+
+
+
+#### shouldComponentUpdate()
+
+`Updating`阶段。
+
+    shouldComponentUpdate( nextProps, nextState )
+
+当组件接收到新的属性（但旧属性尚未改变）时被调用。注：在`初始渲染`或使用`forceUpdate`时不调用。
+
+该方法提供一个时机，通过`return false;`来阻止重新渲染，这样，在下次状态发生改变前，后续的`componentWillUpdate()`和`componentDidUpdate()`都不会调用。
+
+`默认`情况下，该方法总是返回true，一般只在需要进行性能优化的时候才会重写该方法。
+
+
+
+#### componentWillUpdate()
+
+`Updating`阶段。
+
+    componentWillUpdate( nextProps, nextState )
+
+当组件接收到新的属性且属性已经发生改变时被调用。注：在初始渲染时不调用。
+提供时机为渲染做最后准备。
+
+不能在此处调用`this.setState()`，如果需要，在 componentWillReceiveProps() 中调用。
+
+
+#### componentDidUpdate()
+
+`Updating`阶段。
+
+    componentDidUpdate( prevProps, prevState )
+
+当组件的变化已经更新到DOM上以后调用。注：在初始渲染时不调用。
+
+提供时机对DOM进行操作。
+
+
+
+#### componentWillUnmount()
+
+`Unmounting`阶段。
+
+    componentWillUnmount()
+
+当组件将要从DOM中清除时调用。提供时机用于必要的清理工作，比如清理计时器，清理DOM对象等。
+
+
+
+
 
 
 
 ## Thinking in React
+
 
 > 伟大的思想能变成巨大的财富。 —— 塞内加
 

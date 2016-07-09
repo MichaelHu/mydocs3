@@ -98,6 +98,75 @@
 
 
 
+## applyMiddleware Demo 
+
+<div id="test_20" class="test">
+<div class="test-container">
+
+    @[data-script="compile-react editable"](function(){
+
+        let s = fly.createShow('#test_20')
+            ;
+
+        // reducer
+        function counter(state = 0, action){
+            switch(action.type){
+                case 'INCREMENT':
+                    return state + 1;
+                case 'DECREMENT':
+                    return state - 1;
+                default:
+                    return state;
+            }
+        }
+
+        // middleware
+        function logger(store){
+            return function(next){
+                return function(action){
+                    s.append_show('will dispatch', action);
+                    var returnValue = next(action);
+                    s.append_show('state after dispatch', store.getState());
+                    return returnValue;
+                }
+            }
+        }
+
+        // Create a Redux store holding the state of your app.
+        // Its API is { subscribe, dispatch, getState }.
+        let store = Redux.createStore(
+            counter
+            , 10
+            , Redux.applyMiddleware(logger)
+        );
+
+        store.subscribe(() =>
+            s.append_show(store.getState())
+        );
+
+        s.show('start to reducing ... \n');
+        store.dispatch({ type: 'INCREMENT'});
+        store.dispatch({ type: 'INCREMENT'});
+        store.dispatch({ type: 'DECREMENT'});
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+
+
+## redux-thunk
+
+
+
+
+
 ## React-Redux
 
 * github: <https://github.com/reactjs/react-redux>

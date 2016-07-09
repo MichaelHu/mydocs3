@@ -61,6 +61,9 @@ cnpm支持除`publish`之外的所有命令。
 
 
 
+
+
+
 ## 包注册与发布
 
 ### 包托管地址
@@ -644,4 +647,22 @@ npm获取配置信息，来自`六个来源，优先级如下，由高到低`：
 * preferGlobal，如果希望安装成global的，那么当被安装成local的时候，给出warning 
 * private
 * publishConfig
+
+
+
+
+
+
+
+
+## npmcdn
+
+> `npmcdn` is a fast, global content-delivery network for stuff that is published to npm. 
+
+ <https://npmcdn.com/>
+
+路径格式为：
+
+    https://npmcdn.com/package@version/file
+
 
