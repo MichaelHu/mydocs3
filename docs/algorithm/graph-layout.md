@@ -3144,6 +3144,7 @@ todo:
 2. 避免`同层`其他边`穿过`节点`中心`
 3. 两个`上层`节点同时与一个`下层`节点`有边`，通过调整让有边的兄弟节点`靠近`
 4. `大量`同层`叶子型`节点，形成矩阵
+5. 支持`横向`布局
 
 `适用场景`：
 
@@ -3199,7 +3200,7 @@ todo:
 
 
 
-`层次布局算法`(`使用均衡优化`、`优化策略1`、`优化策略2`)：
+`层次布局算法`(`使用均衡优化`、`优化策略1`、`优化策略2`、`优化策略5`)：
 
 
     @[data-script="javascript"]sigma.prototype.layoutHierarchy2
@@ -3212,6 +3213,7 @@ todo:
             , spaceGrid = opt.spaceGrid || {xSize: 40, ySize: 40}
             , unit = opt.unit || 1
             , edges = me.graph.getSubGraph(options).edges
+            , layoutHorizontal = opt.layoutHorizontal || 0
             ;
 
         sigma.utils.computeLeaves(forest);
@@ -3235,8 +3237,14 @@ todo:
                         , edges
                     );
                     nodesOfSameLevel[i].forEach(function(node){
-                        node.hier_y += 
-                            ( node._wt_dy || 0 ) * ( delta || 0.2 ) * unit;
+                        if(layoutHorizontal){
+                            node.hier_x += 
+                                ( node._wt_dy || 0 ) * ( delta || 0.2 ) * unit;
+                        }
+                        else {
+                            node.hier_y += 
+                                ( node._wt_dy || 0 ) * ( delta || 0.2 ) * unit;
+                        }
                         delete node._wt_dy;
                     });
                 }
@@ -3264,8 +3272,14 @@ todo:
                     maxLevel = level;
                 }
 
-                node.hier_x = parentX + unit * leaves / 2;
-                node.hier_y = unit * ( level - 1 ); 
+                if(layoutHorizontal){
+                    node.hier_y = parentX + unit * leaves / 2;
+                    node.hier_x = unit * ( level - 1 ); 
+                }
+                else {
+                    node.hier_x = parentX + unit * leaves / 2;
+                    node.hier_y = unit * ( level - 1 ); 
+                }
 
                 if(children.length > 0){
                     children.forEach(function(child){
@@ -3292,6 +3306,17 @@ todo:
                     , tree._hier_offsetx
                 )
                 ;
+
+            if(layoutHorizontal){
+                var tmp = spaceBlock.w;
+
+                spaceBlock.w = spaceBlock.h;
+                spaceBlock.h = tmp;
+
+                tmp = spaceBlock.y;
+                spaceBlock.y = spaceBlock.x;
+                spaceBlock.x = tmp;
+            }
 
             grid.placeBlock(tree.id, spaceBlock, debug);
         });
@@ -3352,6 +3377,7 @@ todo:
 
         var s = fly.createShow('#test_50');
         var partialLayout = 0;
+        var layoutHorizontal = 0;
         // var g1 = getRandomGraph(20, 18, 8);
         // var g1 = getLineGraph(20, 18, {nodeSize: 8});
         var g1 = networkGraph_edges_between_the_same_level_nodes_3;
@@ -3470,6 +3496,7 @@ todo:
                 , adjustSiblingsOrder: 1
                 , avoidSameLevelTravelThrough: 1
                 , avoidSameLevelTravelThroughDelta: 0.2
+                , layoutHorizontal: layoutHorizontal
                 , filter: partialLayout
                     ? function(node){return node.selected;}
                     : null
