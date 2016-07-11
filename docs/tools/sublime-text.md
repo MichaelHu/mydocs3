@@ -1,7 +1,9 @@
-# Sublime Memo
+# Sublime
 
 
-Sublime3安装Package Control
+## 安装Package Control
+
+`Sublime3`安装Package Control
 
 `Ctrl+\``调出命令行，在命令行中输入以下代码，并回车。安装好以后，重启。
 
@@ -13,9 +15,12 @@ Sublime3安装Package Control
 
 查看下菜单栏，如果存在Preference -> Package Settings，则表明已经安装成功。
 
-安装GIT和SVN
 
-1. Ctrl+Command+P
+
+
+## 安装GIT和SVN
+
+1. `Ctrl+Command+P`
 2. 输入`install`，回车
 3. 输入`git`，选中列表中GIT插件，回车，进入安装
 

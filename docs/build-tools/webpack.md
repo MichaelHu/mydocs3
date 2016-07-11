@@ -123,6 +123,8 @@ html文件自动生成，或者按模板生成。
 ## 命令行使用
 
     webpack ./entry.js bundle.js
+    # 打包umd包
+    webpack --output-library-target umd index.js projzh.js
 
 
 
