@@ -2,6 +2,8 @@
 
 <http://leafletjs.com>
 
+创始人是Mapbox的`Vladimir Agafonkin`
+
 * 移动端友好
 * 轻量，gzip压缩以后30+k
 
@@ -16,6 +18,59 @@
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <script src="http://258i.com/static/build/leaflet-1.0.0rc1/leaflet.js"></script>
 <script src="file:///Users/hudamin/Desktop/baidu_demo/js/all.js"></script>
+
+
+
+## Features
+
+
+### 浏览器支持
+
+Desktop: Chrome, Firefox, Safari 5+, Opera 12+, `IE7+`
+
+Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
+
+
+
+### 支持的Layer
+
+* Tile Layers, WMS
+* Markers, Popups
+* Vector layers: polylines, polygons, circles, rectangles
+* Image overlays
+* GeoJSON
+
+
+
+### 支持的交互
+
+* Drag panning with inertia
+* Scroll wheel zoom
+* Pinch-zoom on mobile
+* Double click zoom
+* Zoom to area (shift-drag)
+* Keyboard navigation
+* Events: click, mouseover, etc.
+* Marker dragging
+
+
+
+### 支持的地图控件
+
+* Zoom
+* Scale
+* Layer switcher
+* Attribution
+
+
+
+
+### 自定义
+
+* popup和controls，都支持CSS3样式控制
+* 基于`图片`和`HTML`的标注
+* 自定义的地图投射(projection)
+* 强大的`OOP`机制
 
 
 
@@ -57,6 +112,7 @@
             })()
         };
 
+        // Coordinate Reference System
         L.CRS.baidu = L.extend({}, L.CRS, {
             code: 'baidu',
             projection: L.Projection.BaiduMercator,
