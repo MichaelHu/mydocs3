@@ -2,13 +2,13 @@
 
 > Redux is a predictable state container for JavaScript apps.
 
-* 可预测的`状态`容器，针对js `SPA`的构建。
-* 一种设计思想的`彻底、坚定`的实现者
-* 大量使用`ES6`的新特性。
-* 推荐使用`webpack`作为打包工具。
-
 <img src="./img/redux-logo.png" height="60"> 
 <http://redux.js.org/index.html>
+
+* 可预测的`状态容器`，非常适用于js `SPA`的构建
+* 一种设计思想的`彻底、坚定`的实现者
+* 大量使用`ES6`的新特性
+* 推荐使用`webpack`作为打包工具
 
 
 ## 安装
@@ -392,7 +392,9 @@ Redux提供了一个`combineReducers`的方法，以上步骤可以写成：
 
     createStore(reducer, [initialState], [enhancer])
 
-创建保存整个APP状态树的存储。只有一个。返回Store对象。
+创建保存整个APP状态树的存储。只有一个。返回`Store`对象。
+
+enhancer可以是一个函数对象，称为`Store增强器`。可选参数。Redux内建支持的增强器是`applyMiddleware()`
 
 
 

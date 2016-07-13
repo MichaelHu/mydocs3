@@ -1603,6 +1603,28 @@
 
 
 
+<div id="test_34" class="test">
+<div class="test-container">
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_34');
+        var g1 = getRandomGraph(1, 5, 8);
+        var g2 = getRandomGraph(10, 5, 8);
+        var g3 = createRawGraphData(1, 5);
+        s.show(1, sigma.utils.getNodesRect(g1.nodes));
+        s.append_show(2, sigma.utils.getNodesRect(g2.nodes));
+        s.append_show(3, sigma.utils.getNodesRect(g3.nodes));
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
 #### normailizeSophonNodes 
 
 `normalizeSophonNodes()`：标准化节点。

@@ -4,6 +4,13 @@
 <http://www.thinkgis.cn/user/lzxue/topics?page=2>
 
 
+<style type="text/css">
+@import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
+</style>
+<script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
+
+
+
 ## 相关名词
 
 * `lat` latitude 纬度，胖(fat)纬度
@@ -123,6 +130,53 @@ WebGIS的数据大致可以分为三种，一种是地图、影像数据，一�
 * `20度W`和`160度E`是同一经线。
 
 
+
+<div id="test_50" class="test">
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_50');
+        var points = [
+                // 东升科技园B6
+                {
+                    lat: { degree: 40 , minute: 2 , second: 44 }
+                    , lng: { degree: 116 , minute: 20 , second: 59 }
+                }
+                , {
+                    lat: { degree: 39 , minute: 59 , second: 51 }
+                    , lng: { degree: 116 , minute: 18 , second: 16 }
+                }
+            ]
+            ;
+
+        function transform(val){
+            return ( 
+                    val.degree
+                    + val.minute / 60
+                    + val.second / 3600
+                ).toFixed(10) - 0;
+                ;
+        }
+
+        s.show('show [lat, lng]s: \n');
+
+        points.forEach(function(p){
+            s.append_show(
+                [
+                    transform(p.lat)
+                    , transform(p.lng)
+                ]
+            );
+        });
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
 
 
 

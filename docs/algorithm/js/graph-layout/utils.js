@@ -193,3 +193,49 @@ function getLineGraph(
 
     return graph;
 }
+
+function createRawGraphData(
+    nodeCount
+    , edgeCount
+    , existedNodes
+    ){
+
+    var graph = {nodes: [], edges: []}
+        , nodeIds = []
+        , len1, len2
+        , idSeed = 100000
+        , existedNodes = existedNodes || []
+        , _nodes = []
+        ;
+
+    for(var i=0; i<nodeCount; i++){
+        var id = 'n' + idSeed++;
+        nodeIds.push(id);
+        graph.nodes.push({
+            id: id 
+            , label: id
+            , x: null
+            , y: null
+            , size: 10
+            // , color: fly.randomColor()
+            // , color: '#ff7f0e' 
+            , color: '#74c476' 
+        });
+    }
+
+    _nodes = _nodes.concat(graph.nodes, existedNodes); 
+    len1 = graph.nodes.length;
+    len2 = _nodes.length;
+    for(i=0; i<edgeCount; i++){
+        id = 'e' + idSeed++;
+        graph.edges.push({
+            id: id 
+            , source: graph.nodes[len1 * Math.random() | 0].id
+            , target: _nodes[len2 * Math.random() | 0].id
+            , color: '#cedb9c' 
+            , hoverColor: '#c00'
+        });
+    }
+
+    return graph;
+} 

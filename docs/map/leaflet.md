@@ -130,13 +130,16 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
             },
 
             initialize: function (type, options) {
-                var desc = L.TileLayer.Baidu.desc;
                 type = type || 'Normal.Map';
-                var parts = type.split('.');
-                var mapName = parts[0],
-                        mapType = parts[1];
-                var url = desc[mapName][mapType];
                 options = options || {};
+
+                var desc = L.TileLayer.Baidu.desc
+                    , parts = type.split('.')
+                    , mapName = parts[0]
+                    , mapType = parts[1]
+                    , url = desc[mapName][mapType]
+                    ;
+
                 options.subdomains = desc.subdomains;
                 options.attribution = L.TileLayer.Baidu.attribution;
                 L.TileLayer.prototype.initialize.call(this, url, options);
@@ -192,7 +195,10 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
         var s = fly.createShow('#test_50');
 
         // -----DEFINE- wgs84--
-        var point = [40.0455321506, 116.3452903556].reverse();
+        var point = [40.0455321506, 116.3452903556].reverse(); // 西小口地铁站
+        var point = [40.0455555555, 116.3497222222].reverse(); // 东升科技园B-6
+        var point = [39.9975,116.3044444444].reverse(); // 地铁四号线圆明园站附近 
+        var point = [23.5,116.3044444444].reverse(); // 
         var zoom = 13;
         var center = window.datum.bd09.fromWGS84(point).reverse();
         var myMap = L.map(
@@ -219,6 +225,11 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
 </div>
 </div>
 
+
+## 瓦片白线问题
+
+    scale = 1.002
+
 可能的`临时`解决方案：
 
     $.each(
@@ -227,3 +238,4 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
             $(item).css('transform', $(item).css('transform') + ' scale(1.002)'); 
         }
     )
+

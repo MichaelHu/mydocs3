@@ -465,13 +465,15 @@ note: es6貌似不支持。
 </div>
 
 
+
 ## 箭头操作符
 
-格式：`=>`，=与>`不能分开`，比如`= >`是不可以的。
+格式：`=>`，=与>`不能分开`，比如`= >`是不可以的。结合律为： `右结合`。
 
-结合律为： `右结合`。
+参考：<http://es6.ruanyifeng.com/#docs/function>
 
-常用于`简化函数的编写`。
+
+### 简化函数编写 
 
 <div id="test_160" class="test">
 <div class="test-container">
@@ -505,6 +507,33 @@ note: es6貌似不支持。
 </div>
 </div>
 
+
+### this关键字处理
+
+1. `!!特殊之处`：不同于常规的`this`关键字的运行时绑定，箭头函数体内的this指针(与`嵌套层次`无关)，
+    是由`定义时`所在上下文决定
+2. 由于此this非常规函数的`this`，所以箭头函数使用有以下限制：
+    * 不可以作为`构造`函数
+    * 不能使用`arguments`对象，如果要用，可以用`Rest`参数代替
+    * 不可以作为Generator函数，无法使用`yield`命令
+
+<div id="test_165" class="test">
+<div class="test-container">
+
+    @[data-script="compile-es2015 editable"](function(){
+
+        setTimeout(() => {
+            this.aa = 1;
+            return () => this.bb = 2;
+        }, 0);
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
 
 
 ## 类支持

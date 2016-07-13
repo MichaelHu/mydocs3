@@ -615,6 +615,45 @@ todo
 ## js实现
 
 
+### 前置布局
+
+实际实现过程中，需要做一些判断，比如`前置布局`的判断，目的是解决布局算法的`适用性`等问题。
+
+前置布局`主要`存在`两类`布局，使得力导向布局出现不理想的效果：
+
+1. `直线布局`或者`类线性`布局（使用`isLinelikeLayout()`判断），这类前置布局使用
+    力导向布局时，引力与斥力都在同一直线上，无法将节点打散，很难获得理想布局
+2. 存在`完全重叠`的节点的布局（使用`hasWhollyOverlayedNodes()`判断），由于力导向布局
+    对于重合节点无效，所以这类前置布局也是需要排除的布局
+
+对于这类前置布局，需要提前判断，并在开始YifanHu布局前，先做一次`矩阵`布局。
+
+
+### 单节点问题 
+
+当参与布局的节点集合只有`一个`节点的时候，计算会出现`异常`问题，主要表现在以下代码中
+
+    ...
+    scale = Math.sqrt(e);
+    energy += e;
+    if(!node.fixed){
+        // normalized vector
+        node.dx /= scale; 
+        node.dy /= scale;
+    ...
+
+此时`scale`是0，标准化时作为`分母`，导致后续计算出现异常。
+
+所以，对于单节点图，直接`跳过`YifanHu布局。
+
+
+### 零修正
+
+`注`：力导向布局对坐标非常敏感，对于x或y属性为`null`或者`undefined`的情况，`不做0修正`。原因很简单，举个例子，如果所有节点的x和y属性都为null，那么即使做了0修正，仍然得不到理想布局。
+
+所以，在进行YifanHu布局前，需要`保证`x, y属性是`合法`的值。
+
+
 ### getDistance
 
 `getDistance()`：获取两个节点之间的平面距离。
@@ -677,7 +716,7 @@ todo
     @[data-script="javascript"]function isLinelikeLayout(nodes, options){
         var nodes = nodes || []
             , opt = options || {}
-            , rect = sigma.utils.getNodesRect(nodes)
+            , rect = sigma.utils.getNodesRect(nodes, opt)
             , threshold = opt.threshold || 20
             , debugShow = opt.debugShow
             ;
@@ -718,6 +757,99 @@ todo
 </div>
 </div>
 
+
+
+
+### hasWhollyOverlayedNodes
+
+`hasWhollyOverlayedNodes()`，判断是否存在`完全重叠`的节点。
+
+    @[data-script="javascript"]function hasWhollyOverlayedNodes(nodes, options) {
+        var opt = options || {}
+            , nodes = nodes || []
+            , prefix = opt.readPrefix || ''
+            , len = nodes.length
+            , i, j, n1, n2
+            ;
+
+        for(i=0; i<len; i++){
+            n1 = nodes[i];
+            for(j=i+1; j<len; j++){
+                n2 = nodes[j]; 
+                if(n1[prefix + 'x'] == n2[prefix + 'x']
+                    && n1[prefix + 'y'] == n2[prefix + 'y']){
+                    return true;
+                }
+            }
+        } 
+        return false;
+    }
+
+<div id="test_107" class="test">
+<div class="test-console"></div>
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_107');
+        var g1 = getLineGraph(20, 18, {nodeSize: 8});
+        var g2 = getRandomGraph(100, 0, 5);
+        var g3 = createRawGraphData(20, 18);
+
+        s.show('testing hasWhollyOverlayedNodes');
+        s.append_show(1, hasWhollyOverlayedNodes(g1.nodes, {debugShow: s.append_show}));
+        s.append_show(2, hasWhollyOverlayedNodes(g2.nodes, {debugShow: s.append_show}));
+        s.append_show(3, hasWhollyOverlayedNodes(g3.nodes, {debugShow: s.append_show}));
+    })();
+
+</div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+### hasInvalidValues
+
+`hasInvalidValues()`，判断是否存在`不合法`属性值。
+
+    @[data-script="javascript"]function hasInvalidValues(nodes, options) {
+        var opt = options || {}
+            , nodes = nodes || []
+            , prefix = opt.readPrefix || ''
+            , len = nodes.length
+            , i, n1
+            ;
+
+        for(i=0; i<len; i++){
+            n1 = nodes[i];
+            if(n1[prefix + 'x'] !== +n1[prefix + 'x']
+                || n1[prefix + 'y'] !== +n1[prefix + 'y']){
+                return true;
+            }
+        } 
+        return false;
+    }
+
+<div id="test_108" class="test">
+<div class="test-console"></div>
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_108');
+        var g1 = createRawGraphData(20, 18);
+        var g2 = getRandomGraph(100, 0, 5);
+
+        s.show('testing hasWhollyOverlayedNodes');
+        s.append_show(1, hasInvalidValues(g1.nodes, {debugShow: s.append_show}));
+        s.append_show(2, hasInvalidValues(g2.nodes, {debugShow: s.append_show}));
+    })();
+
+</div>
+<div class="test-panel">
+</div>
+</div>
 
 ### computeElectricalForce
 
@@ -983,12 +1115,17 @@ todo
             , subGraph = me.graph.getSubGraph(opt)
             , nodes = subGraph.nodes
             , edges = subGraph.edges
+            , newOpt = Object.assign({}, opt, {readPrefix: ''})
             ;
 
         if(isLinelikeLayout(nodes, {
                 threshold: 10
-            })){
-            me.layoutGrid(opt)
+            })
+            || hasWhollyOverlayedNodes(nodes)
+            || hasInvalidValues(nodes)
+            ){
+            // note: `opt.readPrefix` must be ''
+            me.layoutGrid(newOpt)
                 .applyLayoutInstantly({
                     readPrefix: 'grid_'
                     , clearOld: 1
@@ -1053,6 +1190,13 @@ todo
             node[prefix + 'x'] = node.x;
             node[prefix + 'y'] = node.y;
         });
+
+        if(nodes.length <= 1){
+            return {
+                isConverged: 1
+                , iterations: 0
+            };
+        }
 
         do {
 
@@ -1276,6 +1420,7 @@ todo
         var g1 = getRandomGraph(50, 60, 8);
         var g1 = networkGraph_circle_0628;
         var g1 = networkGraph_mesh_0628;
+        // var g1 = createRawGraphData(30, 50);
         // var g1 = getClusterGraph(100, {xMax: 200, yMax: 200, nodeSize: 8});
         // var g1 = getLineGraph(20, 18, {nodeSize: 8});
         // var g1 = networkGraph_FR;
