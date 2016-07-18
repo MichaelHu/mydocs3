@@ -123,9 +123,6 @@ html文件自动生成，或者按模板生成。
 ## 命令行使用
 
     webpack ./entry.js bundle.js
-    # 打包umd包
-    webpack --output-library-target umd index.js projzh.js
-
 
 
 ### loader相关命令行参数 
@@ -151,6 +148,11 @@ html文件自动生成，或者按模板生成。
 ### 伺服模式
 
     webpack --progress --colors --watch ./entry.js bundle.js
+
+
+### 输出umd package
+
+    webpack --output-library-target umd index.js projzh.js
 
 
 

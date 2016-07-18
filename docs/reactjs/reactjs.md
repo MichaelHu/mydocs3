@@ -97,6 +97,82 @@
     }
 
 
+
+## 属性
+
+* `驼峰`方式引用，和`js API`兼容
+
+### 常用属性
+
+#### DOM属性
+
+
+#### 事件属性
+
+onClick
+
+
+
+
+
+### 特殊属性
+
+DOM: className, htmlFor
+
+非DOM: key, ref, dangerouslySetInnerHTML
+
+
+#### ref属性
+
+可以是`字符串`，也可以是`回调函数`（实例作为参数传入）。
+
+
+<div id="test_ref" class="test">
+<div class="test-container">
+<div id="test_ref_cont"></div>
+
+    @[data-script="compile-es2015"](function(){
+
+        var s = fly.createShow('#test_ref');
+        var MyComponent = React.createClass({
+          handleClick: function() {
+            // Explicitly focus the text input using the raw DOM API.
+            if (this.myTextInput !== null) {
+              this.myTextInput.focus();
+            }
+          },
+          render: function() {
+            // The ref attribute is a callback that saves a reference to the
+            // component to this.myTextInput when the component is mounted.
+            return (
+              <div>
+                <input type="text" ref={(ref) => this.myTextInput = ref} />
+                <input
+                  type="button"
+                  value="Focus the text input"
+                  onClick={this.handleClick}
+                />
+              </div>
+            );
+          }
+        });
+
+        ReactDOM.render(
+          <MyComponent />,
+          document.getElementById('test_ref_cont')
+        );
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+
 ## 简单例子
 
 > 参考：<http://facebook.github.io/react/>
@@ -416,6 +492,13 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
 
 
 
+### 无状态组件
+
+简单、高性能的方式，针对组件只作为props的`纯粹`函数的情况。这种情形下，可以用函数代替Component类。
+
+
+
+
 ### 实现Todo应用
 
 `关键思想`：
@@ -557,11 +640,13 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
 
 ### render()
 
-`必需提供`render()方法的定义。
+`必需提供`render()方法的定义。返回`虚拟`DOM元素。
 
-1. 该方法需要是纯粹的，多次调用能返回一致的结果；
+1. 该方法需要是`纯粹`的，多次调用能返回一致的结果；
     不使用`setTimeout`，不与浏览器`交互`（真要交互，可以在`componentMount()`中进行）
 2. 如果不渲染任何内容，可以返回`null`或者`false`
+
+需要注意`render()`方法与`ReactDOM.render()`的区别，后者返回的是Component的一个实例。 
 
 
 ### getInitialState()

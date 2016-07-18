@@ -1,11 +1,11 @@
-# Git服务器搭建
+# git server 
 
-> HTTP访问，支持pull和push的GIT服务器
+> HTTP访问，支持`pull`和`push`的GIT服务器
 
 ## Apache Server
 
 
-### 1. httpd.conf配置
+###  httpd.conf配置
 
 
 1. 配置Alias，使得`/git_repost/`可以通过网络访问：
@@ -43,7 +43,7 @@
 
 
 
-### 2. 建立git仓库
+### 建立git仓库
 
     cd /home/xiaoju/fe/git_repos
     mkdir test
@@ -57,7 +57,7 @@
 
 
 
-### 3. 使用
+### 使用
 
 在本地机器： 
 

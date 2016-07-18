@@ -1,8 +1,10 @@
 # sass
 
-> css扩展语言
+> Syntactically Awesome StyleSheets, 语法上很牛逼的样式表。css扩展语言
 
-<http://sass-lang.com>
+1. <http://sass-lang.com>
+2. docs: <http://sass-lang.com/documentation/file.SASS_REFERENCE.html>
+
 
 ## Features
 
@@ -22,6 +24,15 @@
 
 gem - build on Ruby
 
+独立运行，需要使用Ruby环境。但是在webpack、fis、gulp等构件工具下，有很成熟的node插件可用。 
 
+
+## node相关
+
+node-sass
+
+
+
+## 
 
 

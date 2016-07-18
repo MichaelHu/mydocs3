@@ -27,7 +27,7 @@
 
 * `webgis` 使用Internet技术的gis
 
-* `tms` Tile Map Service，切片地图服务
+* `tms` Tiled Map Service，切片地图服务
     
     tms瓦片标准：<img src="./img/tms.png" height="400">
 
@@ -205,3 +205,8 @@ GeoJSON对象可以表示`几何(geometry)`、`特征(feature)`或者`特征集�
 GeoJSON支持的几何图形类型有：`Point`, `LineString`, `Polygon`, `MultiPoint`, `MultiLineString`以及`MultiPolygon`
 
 
+
+
+## 地图颜色酿造师
+
+<http://colorbrewer2.org>

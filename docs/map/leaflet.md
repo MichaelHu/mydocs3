@@ -1,6 +1,8 @@
 # leaflet
 
-<http://leafletjs.com>
+* <http://leafletjs.com>
+* github: <https://github.com/Leaflet/Leaflet>
+* 1.0 docs: <http://leafletjs.com/reference-1.0.0.html>
 
 创始人是Mapbox的`Vladimir Agafonkin`
 
@@ -17,7 +19,8 @@
 
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <script src="http://258i.com/static/build/leaflet-1.0.0rc1/leaflet.js"></script>
-<script src="file:///Users/hudamin/Desktop/baidu_demo/js/all.js"></script>
+<script src="http://258i.com/static/build/projzh/projzh.js"></script>
+<script src="./js/leaflet-image.js"></script>
 
 
 
@@ -75,6 +78,8 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
 
 
 ## 使用百度地图
+
+### 扩展开发
 
     @[data-script="javascript"](function(){
 
@@ -146,10 +151,14 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
             },
 
             getTileUrl: function (coords) {
-                var offset = Math.pow(2, coords.z - 1),
-                        x = coords.x - offset,
-                        y = offset - coords.y - 1,
-                        baiduCoords = L.point(x, y);
+                if(void 0 == coords.z){
+                    coords.z = this._map.getZoom();
+                }
+                var offset = Math.pow(2, coords.z - 1)
+                    , x = coords.x - offset
+                    , y = offset - coords.y - 1
+                    , baiduCoords = L.point(x, y)
+                    ;
                 baiduCoords.z = coords.z;
                 return L.TileLayer.prototype.getTileUrl.call(this, baiduCoords);
             }
@@ -160,9 +169,13 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
             Normal: {
                 Map: 'http://online{s}.map.bdimg.com/tile/?qt=tile&x={x}&y={y}&z={z}&styles=pl'
             },
+            // Satellite: {
+            //     Map: 'http://shangetu{s}.map.bdimg.com/it/u=x={x};y={y};z={z};v=009;type=sate&fm=46',
+            //     Road: 'http://online{s}.map.bdimg.com/tile/?qt=tile&x={x}&y={y}&z={z}&styles=sl'
+            // },
             Satellite: {
-                Map: 'http://shangetu{s}.map.bdimg.com/it/u=x={x};y={y};z={z};v=009;type=sate&fm=46',
-                Road: 'http://online{s}.map.bdimg.com/tile/?qt=tile&x={x}&y={y}&z={z}&styles=sl'
+                Map: 'http://shangetu0.map.bdimg.com/it/u=x={x};y={y};z={z};v=009;type=sate&fm=46',
+                Road: 'http://online0.map.bdimg.com/tile/?qt=tile&x={x}&y={y}&z={z}&styles=sl'
             },
             subdomains: '0123456789'
         };
@@ -186,6 +199,8 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
 
 
 
+### 用例
+
 <div id="test_50" class="test">
 <div class="test-container">
 <div id="test_50_map" style="height:300px; margin-bottom: 20px;"></div>
@@ -198,7 +213,7 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
         var point = [40.0455321506, 116.3452903556].reverse(); // 西小口地铁站
         var point = [40.0455555555, 116.3497222222].reverse(); // 东升科技园B-6
         var point = [39.9975,116.3044444444].reverse(); // 地铁四号线圆明园站附近 
-        var point = [23.5,116.3044444444].reverse(); // 
+        var point = [23.5,116.3044444444].reverse(); // 北回归线上与圆明园同经度的地方
         var zoom = 13;
         var center = window.datum.bd09.fromWGS84(point).reverse();
         var myMap = L.map(
@@ -226,6 +241,79 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
 </div>
 
 
+
+
+## Layers
+
+包含两种类型的层：`base layers`, `overlays`
+
+* `base layers`: 基础层，比如瓦片层。多个基础层之间`互斥`存在。
+* `overlays`: 覆盖层。
+
+
+
+## toImage
+
+* github: <https://github.com/mapbox/leaflet-image>
+
+
+<div id="test_to_image" class="test">
+<div class="test-container">
+<div id="test_to_image_map" style="height:300px; margin-bottom: 20px;"></div>
+<img class="snapshot" height="300">
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_to_image');
+        var $img = $('#test_to_image img.snapshot');
+
+        // -----DEFINE- wgs84--
+        var point = [40.0455321506, 116.3452903556].reverse(); // 西小口地铁站
+        var point = [40.0455555555, 116.3497222222].reverse(); // 东升科技园B-6
+        var point = [39.9975,116.3044444444].reverse(); // 地铁四号线圆明园站附近 
+        var point = [23.5,116.3044444444].reverse(); // 北回归线上与圆明园同经度的地方
+        var zoom = 13;
+        var center = window.datum.bd09.fromWGS84(point).reverse();
+        var myMap = L.map(
+                'test_to_image_map'
+                , {
+                    maxZoom: 18
+                    , minZoom: 5
+                    , fullscreenControl: true
+                    , crs: L.CRS.baidu
+                }
+            )
+            .setView(center, zoom)
+            ;
+
+        L.tileLayer.baidu('Satellite.Map').addTo(myMap);
+        L.tileLayer.baidu('Satellite.Road').addTo(myMap);
+        // L.tileLayer.baidu('Normal.Map').addTo(myMap);
+        setTimeout(function(){
+            s.show('to image ...');
+            leafletImage(myMap, function(err, canvas){
+                var dimensions = myMap.getSize();
+                s.append_show(err);
+                s.append_show(
+                    dimensions
+                );
+                $img.attr('src', canvas.toDataURL());
+            });
+        }, 5000);
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+
+
+
 ## 瓦片白线问题
 
     scale = 1.002
@@ -238,4 +326,149 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
             $(item).css('transform', $(item).css('transform') + ' scale(1.002)'); 
         }
     )
+
+
+## L.Icon与L.icon 
+
+
+## L.LatLng与L.latLng
+
+先纬度后经度
+
+
+## L.Util与L.DomUtil
+
+
+## 使用WMS和TMS
+
+wms比较专业的GIS
+
+tms针对web做了优化
+0.7: `tms: true` 与 1.0: `-y`
+
+
+
+## GeoJSON Layer
+
+
+
+### options
+
+Point默认绘制成marker，不同于Polyline和Polygon。
+使用`pointToLayer`
+
+`style`字段，可以是样式对象，也可以是函数
+
+feature添加之前：`onEachFeature()`
+
+过滤器：`filter`
+
+    L.geoJson(myLines, {
+        style: myStyle
+        , pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, geojsonMarkerOptions);
+        }
+        , onEachFeature: onEachFeature
+        , filter: myFilter
+    }).addTo(map);
+
+
+
+## 特征检测
+
+L.Browser
+
+    L.Browser.ie
+    L.Browser.opera
+
+
+## 自适应居中
+
+    function zoomToFeature(e) {
+        map.fitBounds(e.target.getBounds());
+    }
+
+
+## 控件L.control
+
+
+### 自定义控件
+
+`onAdd`方法
+
+    var legend = L.control({position: 'bottomright'});
+
+    legend.onAdd = function(map){
+        var div = L.DomUtil.create('div', 'info legend')
+            , grades = [0, 10, 20, 50, 100, 200, 500, 1000]
+            , labels = []
+            ;
+
+        for(var i=0; i<grades.length; i++){
+            div.innerHTML +=
+                '<i style="background:' + getColor(grades[i] + 1) + '"></i> '
+                + grades[i] + (
+                    grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+'
+                )
+                ;
+        }
+        return div;
+    };
+
+    legend.addTo(map);
+
+    
+
+### 层切换控件
+
+    var baseMaps = {
+            Grayscale: grayscale
+            , Streets: streets
+        }
+        , overlayMaps = {
+            Cities: cities
+        }
+        ;
+
+    L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+
+
+## Map Panes
+
+将layers形成一个组，统一设置`z-index`属性，以下layer由低到高：
+
+* TileLayers and GridLayers
+* Paths, like lines, polylines, circles, or GeoJSON layers.
+* Marker shadows
+* Marker icons
+* Popups
+
+`1.0`引入了`自定义pane`，以下代码展示自定义pane的使用：
+
+    var map = L.map('map');
+    map.createPane('labels');
+    map.getPane('labels').style.zIndex = 650;
+    map.getPane('labels').style.pointerEvents = 'none';
+
+    var positron = L.tileLayer(
+            'http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png'
+            , {
+                attribution: '©OpenStreetMap, ©CartoDB'
+            }
+        ).addTo(map);
+    var geojson = L.geoJson(GeoJsonData, geoJsonOptions).addTo(map);
+
+    geojson.eachLayer(function(layer){
+        layer.bindPopup(layer.feature.properties.name);
+    });
+
+    map.fitBounds(geojson.getBounds());
+
+
+
+
+
+
+
 

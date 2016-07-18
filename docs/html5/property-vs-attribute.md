@@ -1,0 +1,3 @@
+# property vs attribute
+
+todo

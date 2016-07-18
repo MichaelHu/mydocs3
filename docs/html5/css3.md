@@ -381,3 +381,41 @@
     <link rel="stylesheet" media="not print and (max-width: 1200px)" href="print.css" type="text/css" />
     <link rel="stylesheet" media="only screen and (max-device-width:240px)" href="android240.css" type="text/css" />
 
+
+
+## pointer-events
+
+<https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events>
+
+> The CSS property pointer-events allows authors to control under what circumstances (if any) a particular graphic element can become the target of mouse events. 
+
+    /* Keyword values */
+    pointer-events: auto;
+    pointer-events: none;
+    pointer-events: visiblePainted;
+    pointer-events: visibleFill;
+    pointer-events: visibleStroke;
+    pointer-events: visible;
+    pointer-events: painted;
+    pointer-events: fill;
+    pointer-events: stroke;
+    pointer-events: all;
+
+    /* Global values */
+    pointer-events: inherit;
+    pointer-events: initial;
+    pointer-events: unset;
+
+* `visible`前缀的属性值, `visible`, `painted`, `fill`, `stroke`, `all`只用于`SVG`。
+* `auto`对于非SVG元素来说，相当于该属性未设置一样；对于SVG元素而言，相当于设置了`visiblePainted`。
+* `none`不响应任何鼠标事件。但若其`子孙元素`设置了响应鼠标事件，则其也`不会阻止`子孙元素对鼠标事件的响应。
+
+`JS`设置方式：
+
+    elements.style.pointerEvents = 'none';
+
+
+
+
+
+> 不要把一知半解当作你的认知成就。 —— iRice

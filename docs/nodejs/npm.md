@@ -1,4 +1,4 @@
-# npm备忘
+# npm
 
 > @[style="color:green;font-size:18px"]Node Packaged Modules. 
 > <http://www.npmjs.org>
