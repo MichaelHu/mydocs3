@@ -1,13 +1,13 @@
 # leaflet
 
-* <http://leafletjs.com>
+* 官网: <http://leafletjs.com>
 * github: <https://github.com/Leaflet/Leaflet>
 * 1.0 docs: <http://leafletjs.com/reference-1.0.0.html>
 
 创始人是Mapbox的`Vladimir Agafonkin`
 
 * 移动端友好
-* 轻量，gzip压缩以后30+k
+* 轻量，gzip压缩以后`30+k`
 
 
 <style type="text/css">
@@ -169,13 +169,9 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
             Normal: {
                 Map: 'http://online{s}.map.bdimg.com/tile/?qt=tile&x={x}&y={y}&z={z}&styles=pl'
             },
-            // Satellite: {
-            //     Map: 'http://shangetu{s}.map.bdimg.com/it/u=x={x};y={y};z={z};v=009;type=sate&fm=46',
-            //     Road: 'http://online{s}.map.bdimg.com/tile/?qt=tile&x={x}&y={y}&z={z}&styles=sl'
-            // },
             Satellite: {
-                Map: 'http://shangetu0.map.bdimg.com/it/u=x={x};y={y};z={z};v=009;type=sate&fm=46',
-                Road: 'http://online0.map.bdimg.com/tile/?qt=tile&x={x}&y={y}&z={z}&styles=sl'
+                Map: 'http://shangetu{s}.map.bdimg.com/it/u=x={x};y={y};z={z};v=009;type=sate&fm=46',
+                Road: 'http://online{s}.map.bdimg.com/tile/?qt=tile&x={x}&y={y}&z={z}&styles=sl'
             },
             subdomains: '0123456789'
         };
@@ -252,20 +248,73 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
 
 
 
-## toImage
+## Image Snapshot
+
+### leaflet-image插件
 
 * github: <https://github.com/mapbox/leaflet-image>
+* my fork: <https://github.com/MichaelHu/leaflet-image>
 
+
+### 像素坐标的两个API
+
+* `map.getPixelBounds()`，当前可视区域bounds的像素平面坐标，随map的移动而变。
+    Returns the bounds of the current map view in projected pixel coordinates (sometimes useful in layer and overlay implementations).
+* `map.getPixelOrigin()`，当前map显示中心点时的左上角像素平面坐标，不随map的移动而变。
+    Returns the projected pixel coordinates of the top left point of the map layer (useful in custom layer and overlay implementations).
+
+
+
+### 修复的问题
+
+1. Baidu地图瓦片层所提供的`getTileUrl()`，在生成图片时出现`z`未定义，以下是修复后的实现： 
+
+        getTileUrl: function (coords) {
+            if(void 0 == coords.z){
+                coords.z = this._map.getZoom();
+            }
+            var offset = Math.pow(2, coords.z - 1)
+                , x = coords.x - offset
+                , y = offset - coords.y - 1
+                , baiduCoords = L.point(x, y)
+                ;
+            baiduCoords.z = coords.z;
+            return L.TileLayer.prototype.getTileUrl.call(this, baiduCoords);
+        }
+
+2. 获取瓦片层时，未进行缩放操作时可正常获取截图；但是进行`缩放`后，截图存在`偏移`。原因为：
+
+        ...
+        // `layer._getTilePos()` internally uses `layer._level.origin`,
+        // but `map.getPixelOrigin()` is not always equal to 
+        // `layer._level.origin` when map is being zoomed.
+        // by <https://github.com/MichaelHu>
+        var tilePos = originalTilePoint
+                .scaleBy(new L.Point(tileSize, tileSize))
+                .subtract(bounds.min)
+                ;
+        ...
+
+
+
+### 使用例子
 
 <div id="test_to_image" class="test">
 <div class="test-container">
 <div id="test_to_image_map" style="height:300px; margin-bottom: 20px;"></div>
-<img class="snapshot" height="300">
+<div class="test-panel">
+<a class="btn-to-image" style="color:#31a354;">&ndash;&gt;&nbsp;Click to create image output</a>
+</div>
+<div class="test-console"></div>
+<img class="snapshot" style="display:none; height:300px; margin-bottom: 20px;">
 
-    @[data-script="javascript"](function(){
+    @[data-script="javascript editable"](function(){
 
-        var s = fly.createShow('#test_to_image');
-        var $img = $('#test_to_image img.snapshot');
+        var wrapperId = 'test_to_image';
+        var $wrapper = $('#' + wrapperId);
+        var instance = $wrapper.data('map');
+        var s = fly.createShow('#' + wrapperId);
+        var $img = $wrapper.find('img.snapshot');
 
         // -----DEFINE- wgs84--
         var point = [40.0455321506, 116.3452903556].reverse(); // 西小口地铁站
@@ -274,6 +323,11 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
         var point = [23.5,116.3044444444].reverse(); // 北回归线上与圆明园同经度的地方
         var zoom = 13;
         var center = window.datum.bd09.fromWGS84(point).reverse();
+        if(instance){
+            instance.remove();
+            $img.hide();
+            $wrapper.data('map', null);
+        }
         var myMap = L.map(
                 'test_to_image_map'
                 , {
@@ -286,26 +340,48 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
             .setView(center, zoom)
             ;
 
+        $wrapper.data('map', myMap);
+
         L.tileLayer.baidu('Satellite.Map').addTo(myMap);
         L.tileLayer.baidu('Satellite.Road').addTo(myMap);
         // L.tileLayer.baidu('Normal.Map').addTo(myMap);
-        setTimeout(function(){
+        L.marker(center, {
+            icon: new L.Icon.Default()
+        }).addTo(myMap);
+
+        myMap.on('moveend zoomend', function(e){
+            showMapInfo();
+        });
+
+        function showMapInfo(){
+            var bounds = myMap.getPixelBounds()
+                , origin = myMap.getPixelOrigin()
+                , zoom = myMap.getZoom()
+                ;
+            s.show('zoom', zoom);
+            s.append_show('pixel bounds', bounds);
+            s.append_show('pixel origin', origin);
+        }
+
+        $wrapper.find('a.btn-to-image').on('click', function(){
             s.show('to image ...');
+            $img.hide();
             leafletImage(myMap, function(err, canvas){
                 var dimensions = myMap.getSize();
                 s.append_show(err);
                 s.append_show(
                     dimensions
                 );
-                $img.attr('src', canvas.toDataURL());
+                $img.attr('src', canvas.toDataURL())
+                    .show()
+                    ;
             });
-        }, 5000);
+        });
+
+        showMapInfo();
 
     })();
 
-</div>
-<div class="test-console"></div>
-<div class="test-panel">
 </div>
 </div>
 

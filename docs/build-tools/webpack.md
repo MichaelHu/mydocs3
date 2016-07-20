@@ -150,10 +150,45 @@ html文件自动生成，或者按模板生成。
     webpack --progress --colors --watch ./entry.js bundle.js
 
 
-### 输出umd package
+
+
+
+
+### Library输出
+
+共有`6种`库输出方式，分别为：`var`, `this`, `commonjs`, `commonjs2`, `amd`, `umd`
+
+<https://webpack.github.io/docs/configuration.html#output-library>
+    
+#### var方式
+
+    webpack --output-library leafletImage --output-library-target var index.js leaflet-image.js
+
+输出为：
+
+    var leafletImage = xxx;
+
+
+#### cmd package
+
+    webpack --output-library-target cmd index.js projzh.js
+
+输出为：
+
+    define(...);
+
+
+#### umd package
 
     webpack --output-library-target umd index.js projzh.js
 
+#### this package
+
+    webpack --output-library-target this index.js projzh.js
+
+输出为：
+
+    this["Library"] = xxx;
 
 
 

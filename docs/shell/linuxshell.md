@@ -496,3 +496,23 @@ sed有`perl` style的扩展正则功能，vim只有`magic`方式的初级正则�
 
 注意：`awk`的正则`不是``magic`方式。
 
+
+
+
+### 移动canvas.md文件引用的图片
+
+    hudamin@local graphics $ awk '/<img src="([^"]+)"/{print $2}' canvas.md | awk -F'"' '{print $2}'
+    ./img/img_arc.gif
+    ./img/img_quadraticcurve.gif
+    ./img/img_beziercurve.gif
+    ./img/arcto_radius-100.png
+    ./img/arcto_radius-50.png
+    ./img/arcto_radius-150.png
+    ./img/canvas_scale.png
+    ./img/canvas_rotate.png
+    ./img/canvas_transform.png
+    ./img/canvas-gco.png
+
+    hudamin@local graphics $ LIST=`awk '/<img src="([^"]+)"/{print $2}' canvas.md | awk -F'"' '{print $2}'` 
+    hudamin@local graphics $ for i in $LIST; do mv ../h5games/$i img; done
+
