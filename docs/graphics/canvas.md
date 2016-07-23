@@ -13,6 +13,7 @@
 .test canvas {
     width: 100%;
     height: 300px;
+    border: 1px dashed #bbb;
 }
 </style>
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
@@ -104,17 +105,28 @@ APIs:
 
 ### building paths
 
+构建路径。
+
+#### beginPath
+
+`context.beginPath()`
+清空当前路径的`子路径列表`(subpath list)，使得`当前路径`(context's current path)重新从0条子路径开始。
+
 #### moveTo
 
 `context.moveTo(x, y)`
+新启一条子路径，子路径以`x, y`为起点。
 
 #### closePath
 
 `context.closePath()`
+关闭当前`子路径`，新启一条子路径，新的子路径的`起点`与当前关闭的子路径的起点`一致`。
+closePath()并`不会清空`当前路径的子路径列表。
 
 #### lineTo
 
 `context.lineTo(x, y)`
+添加一个新点至当前子路径，新点于上一点用直线相连。
 
 #### quadraticCurveTo
 
@@ -127,29 +139,99 @@ APIs:
 #### arcTo
 
 `context.arcTo(x1, y1, x2, y2, radius)`
+添加一条弧线至当前子路径。
+
+子路径的最后一个点`x0, y0`（记为A）开始，
+控制点1为`x1, y1`（记为B）， 控制点2为`x2, y2`（记为C）。绘制一条半径为`radius`的圆弧，
+该圆弧与AB和BC`相切`。第一个切点用直线与A相连。第二个切点若与C不重合，也不会自动相连。
+
+`A`必须存在，若不存在，则不绘制。
 
 
 <div id="test_arcTo" class="test">
 <div class="test-container">
 <canvas></canvas>
 
-    @[data-script="javascript"](function(){
+    @[data-script="javascript editable"](function(){
 
         var wrapperId = 'test_arcTo'
             , sharpWrapperId = '#' + wrapperId
             ;
+
         var s = fly.createShow(sharpWrapperId);
         var $wrapper = $(sharpWrapperId);
         var canvas = $wrapper.find('canvas')[0]
             , ctx = canvas.getContext('2d')
             ;
 
-        s.show(1);
-        s.append_show(2);
-        ctx.moveTo(10, 10);
-        ctx.lineTo(100, 100);
-        ctx.arcTo(120, 120, 200, 100, 50);
-        ctx.stroke();
+        function adaptDevice(canvas, cssSize){
+            var ratio = window.devicePixelRatio
+                , ctx = canvas.getContext('2d')
+                ;
+            canvas.width = cssSize.w * ratio;
+            canvas.height = cssSize.h * ratio;
+            ctx.scale(ratio, ratio);
+        }
+
+        function point(ctx, center, options){
+            var opt = options || {}
+                , r = opt.radius || 3
+                ;
+
+            ctx.beginPath();
+            ctx.rect(center.x - r, center.y - r, 2 * r + 1, 2 * r + 1);
+
+            ctx.save();
+            ctx.fillStyle = opt.fillStyle || '#ff7f0e';
+            ctx.fill();
+            ctx.strokeStyle = opt.strokeStyle || '#e377c2';
+            ctx.stroke()
+            ctx.restore();
+        }
+        function line(ctx, from, to, options){
+            var opt = options || {};
+
+            ctx.beginPath();
+            ctx.moveTo(from.x, from.y);
+            ctx.lineTo(to.x, to.y);
+
+            ctx.save();
+            ctx.strokeStyle = opt.strokeStyle || '#000';
+            ctx.strokeWidth = opt.strokeWidth || 1;
+            ctx.stroke();
+            ctx.restore();
+        }
+        function arcTo(ctx, from, cp1, cp2, radius, options){
+            var opt = options || {};
+
+            if(from){
+                ctx.beginPath();
+                ctx.moveTo(from.x, from.y);
+            }
+            ctx.arcTo(cp1.x, cp1.y, cp2.x, cp2.y, radius);
+
+            ctx.save();
+            ctx.strokeStyle = opt.strokeStyle || '#000';
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        adaptDevice(canvas, {w: $wrapper.find('.test-container').width(), h: 300});
+
+        line(ctx, {x:10, y:10}, {x:80, y:80});
+        line(ctx, {x:80, y:80}, {x:180, y:180}, {strokeStyle:'#aaa', strokeWidth:0.1});
+        line(ctx, {x:100, y:150}, {x:200, y:150}, {strokeStyle:'#aaa', strokeWidth:0.1});
+        line(ctx, {x:200, y:150}, {x:330, y:150}, {strokeStyle:'#aaa', strokeWidth:0.1});
+        line(ctx, {x:280, y:100}, {x:280, y:280}, {strokeStyle:'#aaa', strokeWidth:0.1});
+
+        arcTo(ctx, {x:80, y:80}, {x:150, y:150}, {x:200, y:150}, 100, {strokeStyle:'#1f77b4'});
+        arcTo(ctx, {x:200, y:150}, {x:280, y:150}, {x:280, y:210}, 80, {strokeStyle:'#ff0'});
+
+        point(ctx, {x:80, y:80}, {fillStyle: '#0f0', strokeStyle: '#0f0'});
+        point(ctx, {x:150, y:150}, {fillStyle: '#00f', strokeStyle: '#00f'});
+        point(ctx, {x:200, y:150});
+        point(ctx, {x:280, y:150}, {fillStyle: '#00f', strokeStyle: '#00f'});
+        point(ctx, {x:280, y:210}, {fillStyle: '#00f', strokeStyle: '#00f'});
 
     })();
 

@@ -1,6 +1,8 @@
-# VIM 备忘
+# vim
 
-2016-07-07, 2014-11-05 hudamin - 转载请注明出处
+2016-07-23, 2016-07-07, 2014-11-05 hudamin - 转载请注明出处
+
+<http://www.vim.org/>
 
 > 向编辑神器VIM致敬 
 
@@ -12,7 +14,11 @@
 4. 带`g前缀`的命令原来功能这么强大，比如：`g0, g^, g$, gm, gp, gP, gJ, ge, gE, 
     ga, g8, g CTRL-G, gk, gj, gq`，
     你知道几个？会用几个？
-5. `insert`模式下，`CTRL-N`能用于输入补全提示
+5. `insert`模式下，`CTRL-N`或者`CTRL-P`能用于输入`补全`提示
+6. `:help`在线帮助，很对不同查询对象使用不同语法，比如查询`options`，则将option用`单引号`包起来。
+7. `normal`模式，`CTRL-L`刷新屏幕
+
+
 
 
 
@@ -22,12 +28,13 @@
 * Visual Mode
 * Insert Mode
 * Command-line Mode
+
     
 
 
 ## Help
 
-记住不同模式的help前缀，`:helpgrep`全文查找功能很赞。
+记住不同模式的help前缀，`:helpgrep`全文查找功能很`赞`。
 
     :help
 
@@ -59,6 +66,9 @@
 
     " option
     :help 'x'
+
+    " keyboard
+    :help <C-
 
 
 
@@ -164,11 +174,9 @@
 
 
 
-## External Commands
 
-    :sh[ell]
-    :!{command}
-    K
+
+
 
 ## Syntax Highlighting 
 
@@ -177,6 +185,7 @@
     :syntax clear
     :highlight clear
     :filetype on
+
 
 ### 设置颜色主题
 
@@ -208,6 +217,30 @@
     zellner
 
 `default`类型的注释为蓝色，比较难以看清楚，`desert`主题个人比较喜欢。
+
+
+
+
+## Searching
+
+
+### 增量查询
+
+输入的同时就进行查找定位，而不是按回车后进行查找。可以迅速预览查询结果。
+
+    :set incsearch
+    :set noincsearch
+
+
+### 查询高亮
+
+    :set hlsearch
+    :nohlsearch
+
+注意关闭方法不是`:set nohlsearch`
+
+
+
 
 
 ## Folding
@@ -302,6 +335,58 @@
 ## Maps
 
     :map <F8> <Esc>:g/^#/<CR>
+
+
+
+
+## Abbreviate
+
+`缩写`，`!`表示在`insert`和`command`模式下都可用。
+
+    :ab[breviate] #a /***********************  
+
+    :! list all abbreviations
+    :ab[breviate]
+    ! #b /*********************** 
+
+    :! list abbreviations that start with {lhs}
+    :ab[breviate] {lhs}
+
+    :ab <buffer> FF for( i = 0; i < ; i++ )
+
+    :una[bbreviate]
+
+
+### 特征说明
+
+1. 映射`目标`部分可以含有`空白`。
+2. 简写可以只针对特定buffer，使用`<buffer>`选项
+
+        :ab <buffer> FF for( i = 0; i < ; i++ )
+
+    删除也需要使用`<buffer>`选项。
+
+        :una <buffer> FF
+
+3. 仅限于某种模式的简写，同map一样，支持`:cab[breviate]`, `:iab[breviate]`
+4. 简写后面输入`空格`或者`Tab`，会进行替换。如果要`阻止`替换，可以再输入空格或者Tab前输入`CTRL-V` 
+        
+
+
+
+
+### 应用：buf list查找
+
+`.vimrc`中添加abbreviation
+
+    :cab #s redi! > /tmp/files \| sil ls \| redi END \| !cat /tmp/files \| grep -E 
+
+在命令行中
+
+    :#s
+
+命令替换以后，输入查询`正则`即可查询。
+
 
 
 
@@ -432,6 +517,8 @@
 
 ## Quickfix 
 
+idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文件，使用vim`逐个`跳至对应错误进行修改，而无需记住所有的错误信息。
+
     :cw
 
 
@@ -538,6 +625,9 @@
 
     :args *.c
     :argdo set ff=unix | update
+
+类似的还有`:bufdo`和`:windo`。
+
 
 
     
@@ -786,6 +876,141 @@
     :browse {command}
     CTRL-Break
     :mode N 
+
+
+
+### 打开shell命令行
+
+`子进程`方式打开shell命令行。
+
+    :sh[ell]
+    $ ls
+    $ ...
+    $ exit
+
+可以通过`exit`回到vim。
+
+
+
+
+### 行注释
+
+command line模式的行注释。
+
+    :#!{anything}
+
+所以在vim的command line模式下，`#`是特殊字符，需要`转义`。例如：
+
+    :%!awk '/^\#/'
+
+过滤出所有以`#`开头的行，这里的`\#`
+
+
+
+
+### 执行normal命令 
+
+扩展command line，允许此种模式下执行normal mode的命令。
+
+    :norm dd
+
+就像在normal mode下输入`dd`删除当前光标所在行一样。
+
+    :exe "normal \<c-w>\<c-w>"
+
+
+
+
+### 静默执行
+
+    :sil[ent] {commands}
+
+
+
+### 执行外部命令 
+
+当前buffer的内容可以通过range选择，`pipe`到外部命令，外部命令的输出结果会`替换`当前
+buffer中通过range`选中的`内容。
+
+    :[range]!{command}
+
+比如：
+
+    :%!xxd
+    :1,100!grep -E '^\#'
+
+1. 当前buffer内容用外部`xxd命令`转换后并`替换`
+2. 当前buffer第1到100行内容，用外部命令`grep`过滤出以`#`开头的行，并`替换`
+
+
+
+### 命令行print
+
+可快速将当前`buffer`的内容导入到`命令行`中。
+
+    :print
+    :pr
+    :p
+    :P
+    :list
+    :l
+    :number
+    :nu
+    :#
+
+以上命令支持前导`[range]`
+
+
+
+### 命令行重定向
+
+    :redi[r] > file
+    :redi[r] >> file
+    :redi[r]! > file
+    :redi[r]! >> file
+    :redi @a
+    :redi => var
+    :redi END
+
+`例1`，将`buffer list`输出到当前文档中:
+
+    :redi @a | sil ls | redi END | norm "ap
+
+
+`例2`，将`buffer list`输出到临时`文件`中，再进行文本`查询`:
+
+    :redi! > /tmp/files | sil ls | redi END | !cat /tmp/files | grep abc
+
+
+
+
+### 关键词外部命令查找
+
+    K
+
+使用外部命令（由`keywordprg` option定义）查找当前光标处关键词。
+
+    :set keywordprg
+    keywordprg=man -s
+
+
+
+
+
+## bufdo 与 windo
+
+对所有buffer和windows执行命令。
+
+    :bufdo set fenc= | update
+    :windo set nolist nofoldcolumn | normal zn
+
+1. 重置所有buffer的`fenc`并更新。结果就是所有buffer将使用`encoding`的编码（编码转换成功的话）。
+2. 所有窗口设置`nolist`和`nofoldcolumn`，并关闭折叠`zn`。   
+
+
+
+
+
     
 
 ## 常见问题
@@ -798,4 +1023,12 @@
 
         :nmap <Left>
         :nmap <Up>
+
+
+2. 使用过程中，会出现`neo`自动提示时好时坏，原因很有可能是开启了`paste`模式，使用这个试试：
+
+        :set nopaste
+
+
+
 

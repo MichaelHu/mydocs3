@@ -516,3 +516,17 @@ sed有`perl` style的扩展正则功能，vim只有`magic`方式的初级正则�
     hudamin@local graphics $ LIST=`awk '/<img src="([^"]+)"/{print $2}' canvas.md | awk -F'"' '{print $2}'` 
     hudamin@local graphics $ for i in $LIST; do mv ../h5games/$i img; done
 
+
+
+### 查看tcp连接状态 
+
+    netstat -n | awk '/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}'
+
+output：
+
+    SYN_SENT 9
+    ESTABLISHED 7
+    TIME_WAIT 3
+    CLOSE_WAIT 2
+
+

@@ -611,12 +611,12 @@ todo ...
     mzeval()                evaluate |MzScheme| expression
 
 
-1. getpid()
+1. `getpid()`
 
         :echo getpid()
         874
 
-2. has({feature})
+2. `has({feature})`
 
     the result is a Number, which is 1 if the feature {feature} is supported, zero otherwise.
     
@@ -655,7 +655,7 @@ todo ...
         :if has("multi_byte_encoding")
         ...
 
-3. mode([expr])
+3. `mode([expr])`
 
         :echo mode() 
         n
@@ -682,7 +682,7 @@ todo ...
         !       Shell or external command is executing
 
 
-4. exists()
+4. `exists()`
 
     the result is a Number, which is non-zero if {expr} is defined, zero otherwise.
 
@@ -733,9 +733,15 @@ todo ...
         
 
 
-5. taglist({expr}) 
+5. `taglist({expr})`
 
-6. tagfiles()
+6. `tagfiles()`
+
+7. `getreg()`
+
+        :redi @a | sil ls | redi END | echo getreg('a')
+
+    `静默`执行列出当前buffers，并将列表输入`寄存器a`，最终`输出`寄存器a的内容。
 
         
 
