@@ -1,6 +1,13 @@
 # git
 
 
+2016-07-28,
+2016-03,
+2015,
+2014,
+2013,
+2012
+
 
 > 参考图文教程： <http://pcottle.github.io/learnGitBranching/?demo>
 
@@ -170,14 +177,14 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
 
 ### git remote add
 
-添加远程origin仓库的URL：
+添加`远程`origin`仓库`的`URL`：
 
     git remote add origin https://github.com/MichaelHu/fast-slides.git
 
 
 ### git remote rm
 
-删除：
+`删除`远程仓库`引用`：
 
     git remote rm origin
 
@@ -218,8 +225,118 @@ Push URL需要`身份验证`。
 
 
 
+## git branch
+
+### 分支列表
+
+    # 列出本地分支
+    git branch
+
+    # 列出远程分支
+    git branch -r
+
+    # 本地&远程都列出
+    git branch -a
+
+
+### 创建分支
+
+    # 创建和当前分支一样的新分支
+    git branch <branchname>
+
+    # 创建和当前分支一样的新分支，新分支track当前分支
+    git branch --track <branchname> 
+    # 同上
+    git branch --set-upstream <branchname> 
+
+`<branchname>`所指分支是`新建`分支，当前不存在。
+
+设置track后的`git status`:
+
+    hudamin@local SophonWeb $ git status
+    On branch ddd
+    Your branch is up-to-date with 'map'.
+    nothing to commit, working directory clean
+    hudamin@local SophonWeb $ git status -sb
+    ## ddd...map
+
+
+### 更改分支upstream
+
+    git branch -u <upstream> <branchname> 
+    git branch --set-upstream-to <upstream> <branchname> 
+    git branch --unset-upstream <branchname> 
+
+`<branchname>`所指分支是`已存在`分支。
+
+设置track后的`git status`:
+
+    hudamin@local SophonWeb $ git checkout map
+    Switched to branch 'map'
+    Your branch is up-to-date with 'origin/master'.
+    hudamin@local SophonWeb $ git status -sb
+    ## map...origin/master
+
+
+### 删除分支
+
+    # 删除本地分支（不能是当前分支）
+    git branch -d <branchname>
+    # 同上，但支持强行删除
+    git branch -D <branchname>
+
+    # 删除远程分支
+    git branch -rd <branchname>
+    # 同上，但支持强行删除
+    git branch -rD <branchname>
+
+注：远程分支的删除属于`伪删除`，它的作用在于删除以后，通过`git branch -r`不再列出。
+`真删除`远程分支，需要使用`git push <repo> :<branchname>`。
+
+
+### 重命名分支
+
+    git branch -m <oldbranch> <newbranch>
+    git branch -M <oldbranch> <newbranch>
+
+
+
+
+
+## git merge
+
+    $ git branch
+      map
+    * map-snapshot
+    $ git checkout map
+    $ git merge map-snapshot
+    Merge made by the 'recursive' strategy.
+     src/components/graphHistory/index.js | 8 ++++++++
+      1 file changed, 8 insertions(+)
+
+`recursive` strategy
+
+
+
 ## git stash
 
+### stash列表
+
+    git stash list
+
+### 创建stash
+
+    git stash 
+    git stash save <message>
+
+### 应用stash
+
+    git stash pop
+    git stash apply
+
+### 删除stash
+
+    git stash drop <stashname>
 
 
 

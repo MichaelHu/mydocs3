@@ -101,15 +101,36 @@
 
 ## function
 
+### 定义
+
     function foo(param1, param2) {
         ...
     }
 
+
+### 调用
+
+    foo(a);
     foo(a, b);
+    foo(a, b, c);
+    foo(
+        a
+        , {
+            key1: 'value1'
+            , key2: 'value2'
+        }
+        , c
+    );
+
+
+### 匿名函数
 
     $el.on('click', function() {
         ...
     });
+
+
+### 闭包
 
     (function(params) {
         ...
@@ -152,11 +173,18 @@
 
 ## ternary expression 
 
+### 单行
+
     expr ? a : b
+
+
+### 多行
 
     expr
     ? a
     : b
+
+### 复杂
     
     ( expr )
     ? ( a )

@@ -910,7 +910,7 @@ command line模式的行注释。
 
 ### 执行normal命令 
 
-扩展command line，允许此种模式下执行normal mode的命令。
+扩展`command line`，允许此种模式下执行`normal mode`的命令。
 
     :norm dd
 
@@ -918,6 +918,7 @@ command line模式的行注释。
 
     :exe "normal \<c-w>\<c-w>"
 
+`:norm`后直接输入`命令`，而不同于`:exe`，输入的是命令`字符串`
 
 
 

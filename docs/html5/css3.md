@@ -1,4 +1,4 @@
-# CSS3 Memo
+# css3 
 
 
 
@@ -6,6 +6,58 @@
 
 
 <img src="./img/font-size.jpg">
+
+
+
+
+## flexible box layout
+
+* Level 1: <http://www.w3.org/TR/css-flexbox-1/>
+
+> `弹性`布局
+
+1. `css2.1`定义了`4种`布局模式: `block`, `inline`, `table`, `positioned`
+2. `css3`新引入了一种布局: `flex`
+
+
+### 例子
+
+    #deals {
+      display: flex;        /* Flex layout so items have equal height  */
+      flex-flow: row wrap;  /* Allow items to wrap into multiple lines */
+    }
+    .sale-item {
+      display: flex;        /* Lay out each item using flex layout */
+      flex-flow: column;    /* Lay out item’s contents vertically  */
+    }
+    .sale-item > img {
+      order: -1;            /* Shift image before other content (in visual order) */
+      align-self: center;   /* Center the image cross-wise (horizontally)         */
+    }
+    .sale-item > button {
+      margin-top: auto;     /* Auto top margin pushes button to bottom */
+    }
+
+    <section id="deals">
+      <section class="sale-item">
+        <h1>Computer Starter Kit</h1>
+        <p>This is the best computer money can buy, if you don’t have much money.
+        <ul>
+          <li>Computer
+          <li>Monitor
+          <li>Keyboard
+          <li>Mouse
+        </ul>
+        <img src="images/computer.jpg"
+             alt="You get: a white computer with matching peripherals.">
+        <button>BUY NOW</button>
+      </section>
+      <section class="sale-item">
+        …
+      </section>
+      …
+    </section>
+
 
 
 

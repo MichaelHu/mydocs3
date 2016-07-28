@@ -767,6 +767,86 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
 
 
 
+#### 生命周期时序
+
+`复合`组件生命周期方法调用`时序`：
+
+
+    /**
+     * ------------------ The Life-Cycle of a Composite Component ------------------
+     *
+     * - constructor: Initialization of state. The instance is now retained.
+     *   - componentWillMount
+     *   - render
+     *   - [children's constructors]
+     *     - [children's componentWillMount and render]
+     *     - [children's componentDidMount]
+     *     - componentDidMount
+     *
+     *       Update Phases:
+     *       - componentWillReceiveProps (only called if parent updated)
+     *       - shouldComponentUpdate
+     *         - componentWillUpdate
+     *           - render
+     *           - [children's constructors or receive props phases]
+     *         - componentDidUpdate
+     *
+     *     - componentWillUnmount
+     *     - [children's componentWillUnmount]
+     *   - [children destroyed]
+     * - (destroyed): The instance is now blank, released by React and ready for GC.
+     *
+     * -----------------------------------------------------------------------------
+     */
+
+
+
+
+
+
+## Event System
+
+SyntheticEvent
+
+合成事件。事件池，事件对象是复用的。
+
+nativeEvent获得原生事件对象。
+
+
+### 支持的事件
+
+* Clipboard Events
+
+    事件： `onCopy onCut onPaste`
+
+    属性：
+
+        DOMDataTransfer
+        clipboardData
+
+* Composition Events
+* Keyboard Events
+
+    事件： `onKeyDown onKeyPress onKeyUp`
+
+    属性：
+
+        boolean altKey
+        number charCode
+        boolean ctrlKey
+        boolean getModifierState(key)
+        string key
+        number keyCode
+        string locale
+        number location
+        boolean metaKey
+        boolean repeat
+        boolean shiftKey
+        number which 
+    
+
+
+
 
 
 
