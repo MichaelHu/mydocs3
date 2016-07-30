@@ -103,16 +103,16 @@
 
 ### 定义
 
-    function foo(param1, param2) {
+    function foo( param1, param2 ) {
         ...
     }
 
 
 ### 调用
 
-    foo(a);
-    foo(a, b);
-    foo(a, b, c);
+    foo( a );
+    foo( a, b );
+    foo( a, b, c );
     foo(
         a
         , {
@@ -125,16 +125,22 @@
 
 ### 匿名函数
 
-    $el.on('click', function() {
+    $el.on( 'click', function() {
         ...
-    });
+    } );
 
 
 ### 闭包
 
-    (function(params) {
+    ( function() {
         ...
-    })(p);
+    } )();
+
+    ( function( params ) {
+        ...
+    } )( p );
+
+
 
 
 
@@ -163,12 +169,24 @@
 
 ## array
 
+### array literals
+
     var arr = [ 1, 2, 3 ];
     var arr1 = [ new A(), new B() ];
     var arr2 = [
             { type: 1, key1: 'value1' }
             , { type: 1, key1: 'value1' }
         ];
+
+
+### array reference
+
+    var a = arr[ 1 ]
+        , b = arr1[ 0 ]
+        , c = arr2[ 100 % 20 ]
+        ;
+
+
 
 
 ## ternary expression 

@@ -48,6 +48,7 @@
 <script src="./js/graph-layout/utils.js"></script>
 <script src="./js/graph-layout/sigma-utils.js"></script>
 <script src="./js/graph-layout/sigma-prototype.js"></script>
+<script src="./js/sigma-extend/enable-drag.js"></script>
 
 <script src="./js/network.js"></script>
 <script src="./js/network-0520.js"></script>
@@ -67,6 +68,7 @@
 <script src="./js/network-simple-0604-1.js"></script>
 <script src="./js/network-circle-0628.js"></script>
 <script src="./js/network-mesh-0628.js"></script>
+<script src="./js/network-person-event-event-person-0729.js"></script>
 
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <style type="text/css">
@@ -3052,6 +3054,7 @@ todo:
         // var g1 = networkGraph_edges_between_the_same_level_nodes_2;
         // var g1 = networkGraph_many_children_0526;
         // var g1 = networkGraph_forest_0527;
+        var g1 = networkGraph_person_event_event_person_0729;;
         var g2 = {
                 nodes: g1.nodes.slice()
                 , edges: g1.edges.slice() 
@@ -3414,6 +3417,7 @@ todo:
         // var g1 = networkGraph_edges_between_the_same_level_nodes_2;
         // var g1 = networkGraph_tree_0524;
         // var g1 = networkGraph_many_children_0526;
+        // var g1 = networkGraph_person_event_event_person_0729;;
 
         if(partialLayout){
             g1.nodes.forEach(function(node){
@@ -3501,6 +3505,8 @@ todo:
                         ]
                     }
                 ); 
+
+        sigmaEnableNodeDrag(sm2);
 
         sm1
             .normalizeSophonNodes()

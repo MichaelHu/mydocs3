@@ -11,6 +11,9 @@
 * 推荐使用`webpack`作为打包工具
 
 
+
+
+
 ## 安装
 
 使用`npm`包管理器，如果不想用，可以从<https://npmcdn.com/redux/>直接下载代码文件。
@@ -23,6 +26,9 @@
     
 
 
+
+
+
 ## 三条原则(The Gist)
 
 1. 整个应用`只有`一棵状态树
@@ -31,7 +37,11 @@
 
 
 
+
+
 ## Actions
+
+> Action需要从`全局`视角来看待
 
 `Actions`：是信息载体，Store的唯一消息来源，通过`store.dispatch()`来发送。它表示某个事件的发生。
 Action是一个纯JS对象，`必须`有`type`字段，该字段通常被定义为字符串常量，app的规模较大的情况下，需要将常量放到单独的模块维护，以下从模块中引入常量：
@@ -217,10 +227,14 @@ Redux提供了一个`combineReducers`的方法，以上步骤可以写成：
 
 
 
+
+
+
 ## Store
 
 目前为止，`Actions`表示发生了什么事情，`Reducers`根据发生的事情更新状态。
 那么`Store`就是将Actions与Reducers联合起来的`桥梁`。
+
 
 `Store`有以下的职责：
 
@@ -271,6 +285,9 @@ Redux提供了一个`combineReducers`的方法，以上步骤可以写成：
 
 
 
+
+
+
 ## Data Flow
 
 > `Strict Unidirectional Data Flow`，严格的`单向`数据流
@@ -282,6 +299,8 @@ Redux提供了一个`combineReducers`的方法，以上步骤可以写成：
 5. store保存新的状态树，这时`监听器`将被执行，监听器可能会调用`store.getState()`获取当前状态，UI也可能更新以匹配新的状态，如果绑定了`React`的`组件`，那么可能会有调用：`component.setState(newState)`
 
 <img src="./img/redux-data-flow.png" width="600">
+
+
 
 
 
@@ -300,6 +319,10 @@ Redux提供了一个`combineReducers`的方法，以上步骤可以写成：
 1. `components`: `表现型`组件，`目的`是处理`长成啥样`（标签、样式等），对Redux`无感知`，从props获取数据；`手工`编写
 
 2. `containers`: `容器型`组件，目的是处理`如何运转`（数据获取、状态更新），对Redux`有感知`，订阅Redux的状态并通过props传给components；Redux`自动`生成
+
+
+
+
 
 
 

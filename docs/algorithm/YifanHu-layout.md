@@ -62,6 +62,7 @@
 <script src="./js/network-simple-0604-1.js"></script>
 <script src="./js/network-circle-0628.js"></script>
 <script src="./js/network-mesh-0628.js"></script>
+<script src="./js/network-person-event-event-person-0729.js"></script>
 
 
 
@@ -88,7 +89,7 @@
 ### 力导向算法的变种
 
 1. `Fruchterman and Reigold`算法：邻接节点间的弹簧系统，互相拉近；库仑斥力同时存在于不同节点之间，使它们互相远离。
-2. `Kamada and Kawai`算法：所有节点间都有弹簧弹力，弹力于节点间的距离成比例。 
+2. `Kamada and Kawai`算法：所有节点间都有弹簧弹力，弹力与节点间的距离成比例。 
 
 
 ### 传统算法的局限
@@ -1433,6 +1434,7 @@ todo
         // var g1 = networkGraph_tree_0524;
         // var g1 = networkGraph_many_children_0526;
         // var g1 = networkGraph_edges_between_the_same_level_nodes_3;
+        // var g1 = networkGraph_person_event_event_person_0729;;
 
         fixedNodes && g1.nodes.forEach(function(node){
             if(Math.random() < 0.1){

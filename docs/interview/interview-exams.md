@@ -1,21 +1,93 @@
-# 面试题
+# interview exams
 
 
-> 面试要严谨，对结果的客观性负责
+2016-07-29,
+2015
 
 
-## 1 js编程
+> 面试要严谨，对结果的`客观性`负责
 
-1. 实现trim函数
+
+
+
+<style type="text/css">
+@import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
+</style>
+<script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
+
+
+
+
+
+## js
+
+### 实现trim函数
+
+`要求`：
+1. 编写trim函数: `function trim( s ) { ... }`
+2. 返回值类型为`string`。
+3. 有一定的错误处理功能。
+
+`分析`：
+1. 有缜密思考的，表明编写代码有较强的健壮性，质量可以保证。比如对非字符串的判断
+2. 使用正则方式还是只会使用基于索引查找再做字符串方法调用 
+
+
+`简单例子`：
+
+<div id="test_js_trim" class="test">
+<div class="test-container">
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_js_trim');
 
         function trim ( s ) {
-            if ( !isString(s) ) return '';
-            return s.replace(/^\s*|\s*$/g, '');
+            if ( 'string' == typeof s
+                || s instanceof String ) {
+                return s.replace(/^\s*|\s*$/g, '');
+            }
+            return '';
         }
 
-2. 正则表达式：`/\b/`与`/[\b]/`的区别
 
-        单词边界 & 退格符
+        var testCases = [
+            ' abc '
+            , new String('    def     ')
+            , {a:1, b:2}
+        ];
+        s.show('Start testing ...');
+        for ( var i = 0; i < testCases.length; i++ ) {
+            s.append_show(
+                testCases[i]
+                , trim(testCases[i])
+            );
+        }
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+
+
+
+## 正则表达式
+
+1. `/\b/`与`/[\b]/`的区别: `单词边界` & `退格符`
+2. 正则表达式的修饰符：`g` & `i`
+3. 贪婪匹配与非贪婪匹配，默认是哪种模式？
+4. 反向引用 
+
+
+
+## js类与继承
+
 
 
 2. 用js实现类的定义、继承、包含类属性、实例属性、类方法、实例方法、公共属性、私有属性
