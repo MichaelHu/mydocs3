@@ -69,6 +69,9 @@
 <script src="./js/network-circle-0628.js"></script>
 <script src="./js/network-mesh-0628.js"></script>
 <script src="./js/network-person-event-event-person-0729.js"></script>
+<script src="./js/network-person-event-event-person-160801.js"></script>
+<script src="./js/network-triangle-0801.js"></script>
+<script src="./js/network-triangle-0801-2.js"></script>
 
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <style type="text/css">
@@ -819,11 +822,14 @@
             , edges = edges || []
             , queue = []
             , parentAndSiblingNodes = excludes || {}
-            , node = root || nodes[0]
+            , root = root || nodes[0]
+            , node = root
             , children
+            , maxLevel = 0
             ;
 
         node._wt_level = 1;
+        maxLevel = Math.max( node._wt_level, maxLevel );
         queue.push(node);
         parentAndSiblingNodes[node.id] = 1;
 
@@ -837,6 +843,7 @@
                 cbs['onNode'](node);
             }
         }
+        root._wt_maxlevel = maxLevel;
 
         function getChildren(node){
             var id = node.id
@@ -857,6 +864,7 @@
                         parentAndSiblingNodes[childId] = 1;
                         child = sigma.utils.getNodeById(nodes, childId);
                         child._wt_level = node._wt_level + 1;
+                        maxLevel = Math.max( child._wt_level, maxLevel );
                         children.push(child);
                     }
                 }
@@ -957,6 +965,9 @@
                 , {
                     onNode: function(node){
                         nodesVisited[node.id] = true;
+                        if ( 'function' == typeof opt.childrenSort ) {
+                            node._wt_children.sort( opt.childrenSort );
+                        }
                     }
                 } 
                 , excludes
@@ -2455,7 +2466,13 @@
                     , {
                         onNode: function(node){
                             s.append_show(
-                                'visit', node.id
+                                'visit'
+                                , node.id 
+                                    + ( 
+                                        node._wt_maxlevel 
+                                        ? ' ( tree root: ' + node._wt_maxlevel + ' levels )' 
+                                        : '' 
+                                    ) 
                                 , 'level: ' + node._wt_level
                                 , 'leaves: ' + node._wt_leaves
                                 , 'children: ' 
@@ -3170,6 +3187,7 @@ todo:
 3. 两个`上层`节点同时与一个`下层`节点`有边`，通过调整让有边的兄弟节点`靠近`
 4. `大量`同层`叶子型`节点，形成矩阵
 5. 支持`横向`布局
+6. `层高`与同层`邻接`节点`距离`可独立`配置`，特别对于同层孩子节点较多的情况，加大层高效果更明显
 
 `适用场景`：
 
@@ -3225,7 +3243,7 @@ todo:
 
 
 
-`层次布局算法`(`使用均衡优化`、`优化策略1`、`优化策略2`、`优化策略5`)：
+`层次布局算法`(`使用均衡优化`、`优化策略1`、`优化策略2`、`优化策略5`、`优化策略6`)：
 
 
     @[data-script="javascript"]sigma.prototype.layoutHierarchy2
@@ -3236,12 +3254,30 @@ todo:
             , forest = me.graph.getLayoutForest(opt)
             , treeOffsetX = 0
             , spaceGrid = opt.spaceGrid || {xSize: 40, ySize: 40}
-            , unit = opt.unit || 1
+
+            // compatible with old versions
+            , unit = opt.unit || opt.xUnit || opt.yUnit || 1
+
+            , xUnit = opt.xUnit || unit
+            , yUnit = opt.yUnit || unit
+            , gridUnit = Math.min( xUnit, yUnit )
             , edges = me.graph.getSubGraph(options).edges
             , layoutHorizontal = opt.layoutHorizontal || 0
             ;
 
         sigma.utils.computeLeaves(forest);
+
+        // if `heightLimit`, computes yUnit again
+        if ( opt.heightLimit 
+            && 1 == forest.length 
+            && forest[ 0 ]._wt_maxlevel
+            ) {
+            /**
+             * yUnit = opt.heightLimit / ( forest[ 0 ]._wt_maxlevel - 1 );
+             * modified for edge collapsing
+             */
+            yUnit = opt.heightLimit / forest[ 0 ]._wt_maxlevel;
+        }
 
         forest.forEach(function(tree){
 
@@ -3251,7 +3287,7 @@ todo:
                 , delta = opt.avoidSameLevelTravelThroughDelta || 0.2
                 ;
 
-            depthTravel(tree, treeOffsetX * unit);
+            depthTravel(tree, treeOffsetX * xUnit);
             tree._wt_maxlevel = maxLevel;
             tree._hier_offsetx = treeOffsetX;
             treeOffsetX += tree._wt_leaves;
@@ -3264,11 +3300,11 @@ todo:
                     nodesOfSameLevel[i].forEach(function(node){
                         if(layoutHorizontal){
                             node.hier_x += 
-                                ( node._wt_dy || 0 ) * ( delta || 0.2 ) * unit;
+                                ( node._wt_dy || 0 ) * ( delta || 0.2 ) * yUnit;
                         }
                         else {
                             node.hier_y += 
-                                ( node._wt_dy || 0 ) * ( delta || 0.2 ) * unit;
+                                ( node._wt_dy || 0 ) * ( delta || 0.2 ) * yUnit;
                         }
                         delete node._wt_dy;
                     });
@@ -3298,85 +3334,32 @@ todo:
                 }
 
                 if(layoutHorizontal){
-                    node.hier_y = parentX + unit * leaves / 2;
-                    node.hier_x = unit * ( level - 1 ); 
+                    node.hier_y = parentX + xUnit * leaves / 2;
+                    node.hier_x = yUnit * ( level - 1 ); 
                 }
                 else {
-                    node.hier_x = parentX + unit * leaves / 2;
-                    node.hier_y = unit * ( level - 1 ); 
+                    node.hier_x = parentX + xUnit * leaves / 2;
+                    node.hier_y = yUnit * ( level - 1 ); 
                 }
 
                 if(children.length > 0){
                     children.forEach(function(child){
                         depthTravel(child, parentX + currentX);
-                        currentX += unit * child._wt_leaves;
+                        currentX += xUnit * child._wt_leaves;
                     }); 
                 }
             }
 
         });
 
-        var grid = new Grid(spaceGrid.xSize, spaceGrid.ySize)
-            , debug = 0
-            ;
-
-        forest.sort(function(a, b){
-            return Math.max(b._wt_leaves, b._wt_maxlevel)
-                - Math.max(a._wt_leaves, a._wt_maxlevel);
-        });
-
-        forest.forEach(function(tree){
-            var spaceBlock = sigma.utils.computeHierarchyTreeRect(
-                    tree
-                    , tree._hier_offsetx
-                )
-                ;
-
-            if(layoutHorizontal){
-                var tmp = spaceBlock.w;
-
-                spaceBlock.w = spaceBlock.h;
-                spaceBlock.h = tmp;
-
-                tmp = spaceBlock.y;
-                spaceBlock.y = spaceBlock.x;
-                spaceBlock.x = tmp;
-            }
-
-            grid.placeBlock(tree.id, spaceBlock, debug);
-        });
-
-        var output = grid.grid.map(
-                function(row){
-                    return row.join('  ');
-                }
-            ).join('\n');
-
-        debug && console.log(output);
-
-        forest.forEach(function(tree){
-            var spaceBlock = grid.getBlockRect(tree.id)
-                , dx = ( spaceBlock.gridPos.x - spaceBlock.x ) * unit
-                , dy = ( spaceBlock.gridPos.y - spaceBlock.y ) * unit
-                ;
-
-            _depthTravel(tree);
-
-            function _depthTravel(node){
-                var children = node._wt_children
-                    ;
-
-                node.hier_x += dx;
-                node.hier_y += dy;
-
-                if(children.length > 0){
-                    children.forEach(function(child){
-                        _depthTravel(child);
-                    });
-                    delete node._wt_children;
-                }
-            }
-        });
+        sigma.utils.layoutTreesByGrid( 
+            forest
+            , {
+                spaceGrid: spaceGrid
+                , optimalDistance: gridUnit
+                , readPrefix: 'hier_'
+            } 
+        ); 
 
         return this;
     };
@@ -3418,6 +3401,9 @@ todo:
         // var g1 = networkGraph_tree_0524;
         // var g1 = networkGraph_many_children_0526;
         // var g1 = networkGraph_person_event_event_person_0729;;
+        // var g1 = networkGraph_person_event_event_person_0801;;
+        // var g1 = networkGraph_triangle_0801;;
+        // var g1 = networkGraph_triangle_0801_2;;
 
         if(partialLayout){
             g1.nodes.forEach(function(node){
@@ -3520,7 +3506,10 @@ todo:
             .refresh() // note: must invoke `refresh()` to update coordinates
 
             .layoutHierarchy2({
-                unit: 50
+                xUnit: 50
+                , yUnit: 100
+                // , heightLimit: 2000
+                // unit: 50
                 , adjustSiblingsOrder: 1
                 , avoidSameLevelTravelThrough: 1
                 , avoidSameLevelTravelThroughDelta: 0.2

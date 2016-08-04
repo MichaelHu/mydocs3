@@ -63,6 +63,9 @@
 <script src="./js/network-circle-0628.js"></script>
 <script src="./js/network-mesh-0628.js"></script>
 <script src="./js/network-person-event-event-person-0729.js"></script>
+<script src="./js/network-person-event-event-person-160801.js"></script>
+<script src="./js/network-triangle-0801.js"></script>
+<script src="./js/network-triangle-0801-2.js"></script>
 
 
 
@@ -1435,6 +1438,9 @@ todo
         // var g1 = networkGraph_many_children_0526;
         // var g1 = networkGraph_edges_between_the_same_level_nodes_3;
         // var g1 = networkGraph_person_event_event_person_0729;;
+        // var g1 = networkGraph_person_event_event_person_0801;;
+        // var g1 = networkGraph_triangle_0801;;
+        // var g1 = networkGraph_triangle_0801_2;;
 
         fixedNodes && g1.nodes.forEach(function(node){
             if(Math.random() < 0.1){

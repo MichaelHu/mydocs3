@@ -47,15 +47,16 @@ sigma.classes.graph.addMethod(
 sigma.classes.graph.addMethod(
     'getLayoutForest'
     , function(options){
-    var opt = options || {}
-        , me = this
-        , nodes = me.nodesArray
-        , edges = me.edgesArray
+    var me = this
+        , g = me.getSubGraph(options)
         ;
 
-    return sigma.utils.getLayoutForest(nodes, edges, opt); 
-});    
-
+    return sigma.utils.getLayoutForest(
+        g.nodes
+        , g.edges
+        , options
+    ); 
+});
 sigma.classes.graph.addMethod(
     'getMaxDegreeNode'
     , function(){

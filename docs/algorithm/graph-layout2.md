@@ -28,9 +28,11 @@
 
 <script src="./js/graph-layout/utils.js"></script>
 <script src="./js/graph-layout/Grid/grid.js"></script>
+<script src="./js/graph-layout/quadTree/bhQuadTree.js"></script>
 <script src="./js/graph-layout/sigma-utils.js"></script>
 <script src="./js/graph-layout/sigma-graph.js"></script>
 <script src="./js/graph-layout/sigma-prototype.js"></script>
+<script src="./js/sigma-extend/enable-drag.js"></script>
 
 <script src="./js/network.js"></script>
 <script src="./js/network-0520.js"></script>
@@ -1573,7 +1575,7 @@
                             }
                             , {
                                 duration: 500
-                            }
+                        }
                         );
                     }, 500);
                 }
@@ -1589,6 +1591,939 @@
 
 
 
+
+
+## 边展开布局
+
+
+### 工具方法
+
+#### rotateGraph()
+
+对图进行`逆时针`旋转操作。
+
+ <img src="./img/rotate-graph.png" height="400">
+
+    @[data-script="javascript"]sigma.utils.rotateGraph = function( nodes, options ) {
+        var nodes = nodes || [] 
+            , opt = options || []
+            , radian = opt.radian || 0
+            , center = opt.center
+            , readPrefix = opt.readPrefix || ''
+            , writePrefix = opt.writePrefix || ''
+            , rect
+            , x0, y0, x1, y1
+            ;
+
+        if ( !center ) {
+            rect = sigma.utils.getNodesRect( nodes, opt );
+            center = {
+                x: rect.x + rect.w / 2
+                , y: rect.y + rect.h / 2
+            };
+        }
+
+        x0 = center.x;
+        y0 = center.y;
+        nodes.forEach( function( node ) {
+            x1 = node[ readPrefix + 'x' ]; 
+            y1 = node[ readPrefix + 'y' ];
+            node[ writePrefix + 'x' ] = x0 
+                + ( x1 - x0 ) * Math.cos( radian ) 
+                + ( y1 - y0 ) * Math.sin( radian )
+                ;
+            node[ writePrefix + 'y' ] = y0 
+                + ( y1 - y0 ) * Math.cos( radian ) 
+                - ( x1 - x0 ) * Math.sin( radian )
+                ;
+        } );
+
+        return nodes;
+    };
+
+
+    sigma.prototype.rotateGraph = function( options ) {
+        var me = this
+            , opt = options || {}
+            , subGraph = me.graph.getSubGraph( opt )  
+            , nodes = subGraph.nodes
+            ;
+
+        nodes = sigma.utils.rotateGraph( nodes, opt );
+        return me;
+    };
+
+
+
+`验证：`
+
+<div id="test_rotate_graph" class="test">
+<div class="test-container">
+<div id="test_rotate_graph_graph" class="test-graph">
+<div class="test-graph-left"></div>
+<div class="test-graph-right"></div>
+</div>
+<div class="test-console"></div>
+
+    @[data-script="javascript editable"]
+    (function(){
+
+        var s = fly.createShow('#test_rotate_graph');
+        var g1 = getRandomGraph(2, 1, 8);
+        var g1 = getLineGraph(20, 18, {nodeSize: 8});
+        // var g1 = getClusterGraph(20, {xMax: 200, yMax: 200, nodeSize: 10});
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_3;
+        // var g1 = networkGraph_FR;
+        // var g1 = networkGraph_ForceAtlas2;
+        // var g1 = networkGraph0520_allEdges;
+        // var g1 = networkGraph_grid_0521; 
+        // var g1 = networkGraph_tree_0521;
+        // var g1 = networkGraph_2circles_0523;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        // var g1 = networkGraph_many_children_0526;
+
+        var g2 = {
+                nodes: g1.nodes.slice()
+                , edges: g1.edges.slice()
+            }
+            ;
+        var containerId = 'test_rotate_graph_graph';
+        var rendererSettings = {
+                // captors settings
+                doubleClickEnabled: true
+                , mouseWheelEnabled: false
+
+                // rescale settings
+                , minEdgeSize: 0.5
+                , maxEdgeSize: 1
+                , minNodeSize: 1 
+                , maxNodeSize: 5
+
+                // renderer settings
+                , edgeHoverColor: fly.randomColor() 
+                , edgeHoverSizeRatio: 1
+                , edgeHoverExtremities: true
+            };
+        var sigmaSettings = {
+                // rescale settings 
+                sideMargin: 0.1 
+
+                // instance global settings
+                , enableEdgeHovering: true
+                , edgeHoverPrecision: 5
+                , autoRescale: 0
+            };
+
+        var sm1, sm2;
+
+        if((sm1 = isSigmaInstanceExisted('test_rotate_graph_left'))
+            && (sm2 = isSigmaInstanceExisted('test_rotate_graph_right'))){
+            sm1.kill();
+            sm2.kill();
+        };
+
+        sm1 = getUniqueSigmaInstance(
+                    'test_rotate_graph_left'
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g1
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: $('#' + containerId + ' .test-graph-left')[0]
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
+
+        sm2 = getUniqueSigmaInstance(
+                    'test_rotate_graph_right'
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g2
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: $('#' + containerId + ' .test-graph-right')[0]
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
+
+        sm1
+            .normalizeSophonNodes()
+            .alignCenter({rescaleToViewport: 1})
+            .refresh()
+            ;
+
+        sm2
+            .normalizeSophonNodes()
+            .alignCenter({rescaleToViewport:1})
+            .refresh() // note: must invoke `refresh()` to update coordinates
+            .rotateGraph( {
+                radian: Math.PI / 4
+                , writePrefix: 'rotate_'
+            } )
+            ;
+
+        setTimeout(function(){
+            sigma.plugins.animate(
+                sm2
+                , {
+                    x: 'rotate_x'
+                    , y: 'rotate_y'
+                }
+                , {
+                    duration: 1000
+                }
+            );
+
+        }, 500);
+
+    })();
+
+</div>
+<div class="test-panel"></div>
+</div>
+
+
+
+#### getABEdgeInfo()
+
+`getABEdgeInfo(node1, node2)`：给定端点，获得`满足边展开`算法定义的边AB及其相关信息。
+
+    @[data-script="javascript"]sigma.utils.getABEdgeInfo
+        = function( node1, node2, options ) {
+
+        if ( !node1 || !node2 ) {
+            throw new Error('sigma.utils.getABEdgeInfo: node1 or node2 not specified');
+        }
+
+        var opt = options || {}
+            , prefix = opt.readPrefix || ''
+            , x1 = node1[ prefix + 'x' ]
+            , y1 = node1[ prefix + 'y' ]
+            , x2 = node2[ prefix + 'x' ]
+            , y2 = node2[ prefix + 'y' ]
+            , dx, dy
+            , A, B
+            , cos, theta
+            ;
+
+        if ( x1 < x2 ) {
+            A = node1;
+            B = node2;
+        }
+        else if ( x1 == x2 ) {
+            if ( y1 < y2 ) {
+                A = node1;
+                B = node2;
+            }
+            else if ( y1 == y2 ) {
+                throw new Error('sigma.utils.getABEdgeInfo: the same coordinates');
+            }
+            else {
+                A = node2;
+                B = node1;
+            }
+        }
+        else {
+            A = node2;
+            B = node1;
+        }
+
+        dx = B[ prefix + 'x' ] - A[ prefix + 'x' ];
+        dy = B[ prefix + 'y' ] - A[ prefix + 'y' ];
+        cos = dy / Math.sqrt(
+                Math.pow( dx, 2 ) + Math.pow( dy, 2 )
+            );
+        theta = Math.acos( cos );
+
+        return {
+            A: A
+            , B: B
+            , theta: theta
+        };
+    };
+
+
+
+<div id="test_getABEdgeInfo" class="test">
+<div class="test-container">
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_getABEdgeInfo');
+        var items = [
+                [   { x: 10, y: 10}, { x: 10,  y: 100 } ]
+                , [ { x: 10, y: 10}, { x: 50,  y: 50  } ]
+                , [ { x: 10, y: 10}, { x: 100, y: 10  } ]
+                , [ { x: 10, y: 10}, { x: 30,  y: -50 } ]
+                , [ { x: 10, y: 10}, { x: -30, y: -50 } ]
+            ];
+
+        s.show('Start testing ...');
+        items.forEach( function( item ) {
+            s.append_show( 
+                item[ 0 ]
+                , item[ 1 ]
+                , sigma.utils.getABEdgeInfo( item[ 0 ], item[ 1 ] ) 
+            );
+        } );
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+
+边展开算法分两种情况，单展开一条边，以及同时展开多条边。
+
+
+### 单边展开算法
+
+#### 算法描述
+
+边`AB`，`起点`为节点A，`终点`为节点B。
+`展开`边AB，在节点A和B中间布局一个`网络图`，同时保持A、B的`位置`不变。
+
+记展开的新节点集合为`M`，单边展开，是一棵树，所以可以使用层次布局。
+
+1. 定义`边AB`：起点A和终点B的坐标分别为(x1, y1), (x2, y2)，需满足以下条件：
+
+        x1 < x2
+        || x1 == x2 && y1 < y2
+
+    定义边AB的`偏角θ`，当AB为一条`竖直线`时，`θ = 0`。满足`0 ≤ θ < π`。
+
+2. 定义`子图G`：`节点集`为`A ∪ M ∪ B`，`边集`由仅包含节点集的节点的边组成。
+    对子图G进行`高度受限`、root为A的层次布局，获得临时布局L。
+
+3. 对临时布局L，排除节点A和B后剩余的节点集，也即`M`，先进行以`直线`AB`中点`为中心的`标准化`操作
+    ，再进行以直线AB`中点`为中心，角度为θ的旋转操作。
+
+
+
+#### 算法实现
+
+    @[data-script="javascript"]sigma.prototype.collapseEdge
+        = function( node1, node2, options ) {
+        var me = this 
+            , opt = options || {}
+            , extend = sigma.utils.extend
+            , readPrefix = opt.readPrefix || ''
+            , eInfo = sigma.utils.getABEdgeInfo( node1, node2 )
+            , filter1 = function( node ) {
+                return node.id == node1.id
+                    || node.id == node2.id
+                    || node.newAdded
+                    ;
+            }
+            , filter2 = function( node ) {
+                return node.newAdded;
+            }
+            , subGraph = me.graph.getSubGraph( { filter: filter2 } )
+            , rect = sigma.utils.getNodesRect( [ node1, node2 ], opt )
+            , distance = Math.sqrt(
+                Math.pow( eInfo.A[ readPrefix + 'x' ] - eInfo.B[ readPrefix + 'x' ], 2 )
+                + Math.pow( eInfo.A[ readPrefix + 'y' ] - eInfo.B[ readPrefix + 'y' ], 2 )
+            )
+            , ABCenter = {
+                x: rect.x + rect.w / 2
+                , y: rect.y + rect.h / 2
+            }
+            ;
+
+        subGraph.nodes.forEach( function( node ) {
+            node.x = ABCenter.x;
+            node.y = ABCenter.y;
+        } );
+
+        me
+            .layoutHierarchy2( sigma.utils.extend(
+                {
+                    root: eInfo.A
+                    , filter: filter1
+                } 
+                , opt
+                , { 
+                    xUnit: 50 
+                    , heightLimit: distance
+                }
+            ) )
+            .normalizeSophonNodes( {
+                readPrefix: 'hier_'
+                , filter: filter2
+                , center: ABCenter
+            } )  
+            .rotateGraph( {
+                readPrefix: 'hier_'
+                , writePrefix: 'hier_'
+                , filter: filter2
+                , center: ABCenter
+                , radian: eInfo.theta
+            } )
+            ;
+
+        delete node1.hier_x;
+        delete node1.hier_y;
+        delete node2.hier_x;
+        delete node2.hier_y;
+
+        return me;
+    };
+
+
+
+
+#### 算法验证
+
+`insertSubGraph()`：两个节点间插入指定数目的路径，模拟边展开的效果。
+
+    @[data-script="javascript editable"]function insertSubGraph( 
+        graph, fromNode, toNode, options ) {
+
+        var opt = options || {}
+            , nodeColor = opt.nodeColor || '#e377c2'
+            , nodeSize = opt.nodeSize || 8
+            , edgeColor = opt.edgeColor || '#ccc'
+            , edgeHoverColor = opt.edgeHoverColor || '#f00'
+            , nodes = graph.nodes
+            , edges = graph.edges
+            ;
+
+        function _createNode( type ) {
+            return {
+                id: 'n_' + new Date().getTime() + ( 1000 * Math.random() )
+                , type: type
+                , x: null
+                , y: null
+                , newAdded: true
+                , color: nodeColor
+                , size: nodeSize
+            };
+        }
+
+        function _createEdge( fromNode, toNode ) {
+            return {
+                id: 'e_' + new Date().getTime() + ( 1000 * Math.random() )
+                , source: fromNode.id
+                , target: toNode.id
+                , color: edgeColor
+                , hoverColor: edgeHoverColor
+            };
+        }
+
+        function _insertOne() {
+            var n = _createNode( 'typeA' );
+            nodes.push( n );
+            edges.push( _createEdge( fromNode, n ) );
+            edges.push( _createEdge( n, toNode ) );
+        }
+
+        function _insertTwo() {
+            var n1 = _createNode( 'typeB' ), n2 = _createNode( 'typeB' );
+            nodes.push( n1 );
+            nodes.push( n2 );
+            edges.push( _createEdge( fromNode, n1 ) );
+            edges.push( _createEdge( n1, n2 ) );
+            edges.push( _createEdge( n2, toNode ) );
+        }
+
+        function _insertThree() {
+            var n1 = _createNode( 'typeC' )
+                , n2 = _createNode( 'typeC' )
+                , n3 = _createNode( 'typeC' )
+                ;
+            nodes.push( n1 );
+            nodes.push( n2 );
+            nodes.push( n3 );
+            edges.push( _createEdge( fromNode, n1 ) );
+            edges.push( _createEdge( n1, n2 ) );
+            edges.push( _createEdge( n2, n3 ) );
+            edges.push( _createEdge( n3, toNode ) );
+        }
+
+        var count = opt.count || 10;
+        while ( count-- > 0 ) {
+            var r = Math.random();
+            if ( r > 0.6 ) {
+                _insertOne();
+            }
+            else if ( r > 0.3 ) {
+                _insertTwo();
+            }
+            else {
+                _insertThree();
+            }
+        }
+
+
+
+        // delete original edge
+        for ( var i = edges.length - 1; i >= 0; i-- ) {
+            var edge = edges[ i ];
+            if ( edge.source == fromNode.id && edge.target == toNode.id
+                || edge.target == fromNode.id && edge.source == toNode.id ) {
+                edges.splice( i, 1 );
+            }
+        }
+
+        return {
+            nodes: nodes
+            , edges: edges
+        };
+    }
+
+
+<div id="test_edge_collapse" class="test">
+<div class="test-container">
+<div id="test_edge_collapse_graph" class="test-graph">
+<div class="test-graph-left"></div>
+<div class="test-graph-right"></div>
+</div>
+<div class="test-console"></div>
+
+    @[data-script="javascript editable"]
+    (function(){
+
+        var s = fly.createShow('#test_edge_collapse');
+        var g1 = getRandomGraph(4, 4, 8);
+        var g2 = {
+                nodes: g1.nodes.slice()
+                , edges: g1.edges.slice()
+            }
+            ;
+        var containerId = 'test_edge_collapse_graph';
+        var rendererSettings = {
+                // captors settings
+                doubleClickEnabled: true
+                , mouseWheelEnabled: false
+
+                // rescale settings
+                , minEdgeSize: 0.5
+                , maxEdgeSize: 1
+                , minNodeSize: 1 
+                , maxNodeSize: 5
+
+                // renderer settings
+                , edgeHoverColor: fly.randomColor() 
+                , edgeHoverSizeRatio: 1
+                , edgeHoverExtremities: true
+            };
+        var sigmaSettings = {
+                // rescale settings 
+                sideMargin: 0.1 
+
+                // instance global settings
+                , enableEdgeHovering: true
+                , edgeHoverPrecision: 5
+                , autoRescale: 0
+            };
+
+        var sm1, sm2;
+
+        if((sm1 = isSigmaInstanceExisted('test_edge_collapse_left'))
+            && (sm2 = isSigmaInstanceExisted('test_edge_collapse_right'))){
+            sm1.kill();
+            sm2.kill();
+        };
+
+        sm1 = getUniqueSigmaInstance(
+                    'test_edge_collapse_left'
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g1
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: $('#' + containerId + ' .test-graph-left')[0]
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
+
+        g2 = insertSubGraph( g2, g2.nodes[0], g2.nodes[1], { count: 20 } );
+        sm2 = getUniqueSigmaInstance(
+                    'test_edge_collapse_right'
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g2
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: $('#' + containerId + ' .test-graph-right')[0]
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
+
+        sigmaEnableNodeDrag(sm2);
+
+        sm1
+            .normalizeSophonNodes()
+            .alignCenter({rescaleToViewport: 1})
+            .refresh()
+            ;
+
+        sm2
+            .normalizeSophonNodes()
+            .alignCenter({rescaleToViewport:1})
+            .collapseEdge(
+                sigma.utils.getNodeById( sm2.graph.nodes(),  g2.nodes[ 0 ].id )
+                , sigma.utils.getNodeById( sm2.graph.nodes(), g2.nodes[ 1 ].id )
+                , {
+                    xUnit: 20
+                    , childrenSort: function( childA, childB ) {
+                        if ( !childA.type || !childB.type ) {
+                            return 0;
+                        }
+                        return childA.type.localeCompare( childB.type );
+                    }
+                }
+            )
+            .refresh() // note: must invoke `refresh()` to update coordinates
+            .prepareAnimation( {
+                readPrefix: 'hier_'
+            } )
+            ;
+
+        setTimeout(function(){
+            sigma.plugins.animate(
+                sm2
+                , {
+                    x: 'hier_x'
+                    , y: 'hier_y'
+                }
+                , {
+                    duration: 1000
+                }
+            );
+
+        }, 500);
+
+    })();
+
+</div>
+<div class="test-panel"></div>
+</div>
+
+
+
+### 多边展开算法
+
+多边展开，可能是`复杂`布局，使用`力导向`布局来排布节点。
+
+
+#### 算法描述
+
+记需展开的边集合为`E`，边集合E相关的节点集为`N`，展开后新增节点集合为`M`。
+
+1. 定义`子图G`：节点集为`N ∪ M`，边集由仅包含节点集的节点的边组成。 
+2. 对子图G进行`节点集N固定`的`YifanHu`布局。
+
+
+#### 算法实现
+
+    @[data-script="javascript"]sigma.prototype.multiEdgeCollapse
+        = function( originalNodes, options ) {
+        var me = this 
+            , opt = options || {}
+            , extend = sigma.utils.extend
+            , nodeIndexes = originalNodes.map( function( node ) {
+                return node.id;
+            } )
+            , readPrefix = opt.readPrefix || ''
+            , filter1 = function( node ) {
+                return nodeIndexes[ node.id ] 
+                    || node.newAdded
+                    ;
+            }
+            , filter2 = function( node ) {
+                return node.newAdded;
+            }
+            , subGraph = me.graph.getSubGraph( { filter: filter2 } )
+            , rect = sigma.utils.getNodesRect( originalNodes)
+            , ABCenter = {
+                x: rect.x + rect.w / 2
+                , y: rect.y + rect.h / 2
+            }
+            ;
+
+        subGraph.nodes.forEach( function( node ) {
+            // avoid duplicated coordinates
+            node.x = ABCenter.x + 0.5 * Math.random();
+            node.y = ABCenter.y + 0.5 * Math.random();
+            // node.x = ABCenter.x;
+            // node.y = ABCenter.y;
+        } );
+
+        originalNodes.forEach( function( node ) {
+            node.fixed = true;
+        } );
+
+        me.layoutYifanHu( {
+            optimalDistance: opt.optimalDistance || 100
+            , readPrefix: opt.readPrefix || 'yfh_'
+            , maxIterations: opt.maxIterations || 50
+            , relativeStrength: opt.relativeStrength || 0.2
+            , filter: opt.filter || filter1
+        } );
+
+        originalNodes.forEach( function( node ) {
+            delete node.fixed;
+        } );
+
+        return me;
+    };
+
+
+
+#### 算法验证
+
+`getFullConnectedGraph()`：获得全连通图，节点两两连通。
+
+    @[data-script="javascript"]function getFullConnectedGraph( numOfNodes, fixSize ) {
+        var g = { nodes: [], edges: [] }
+            , n = 0
+            , e = 0
+            ;
+
+        function _createNode( x, y ) {
+            g.nodes.push( {
+                id: 'n' + n
+                , label: '' + n
+                , x: x
+                , y: y
+                , size: fixSize || 8
+                , color: '#637939'
+            } );
+            n++;
+        }
+
+        function _createEdge( fromNode, toNode ) {
+            g.edges.push( {
+                id: 'e' + e
+                , source: fromNode.id
+                , target: toNode.id
+                , size: 1
+                , color: '#ccc'
+            } );
+            e++;
+        }
+
+        var radian, radius = 100;
+        for ( var i = 0; i < numOfNodes; i++ ) {
+            radian = i * 2 * Math.PI / numOfNodes; 
+            _createNode( radius * Math.cos( radian ), radius * Math.sin( radian ) );
+        }
+
+        for ( var i = 0; i < numOfNodes; i++ ) {
+            for ( var j = i + 1; j < numOfNodes; j++ ) {
+                _createEdge( g.nodes[ i ], g.nodes[ j ] );
+            }
+        }
+
+        return g;
+    }
+
+
+`insertSubGraph2()`：在`多个`节点间插入子图，使这些节点`两两`连通。
+
+    @[data-script="javascript"]function insertSubGraph2( graph, numOfNodes, options ) {
+        var opt = options || {}
+            , nodeColor = opt.nodeColor || '#e377c2'
+            , nodeSize = opt.nodeSize || 8
+            , edgeColor = opt.edgeColor || '#ccc'
+            , edgeHoverColor = opt.edgeHoverColor || '#f00'
+            , nodes = graph.nodes
+            , edges = graph.edges
+            , newNodes = []
+            ;
+
+        function _createNode( type ) {
+            return {
+                id: 'n_' + new Date().getTime() + ( 1000 * Math.random() )
+                , type: type
+                , x: null
+                , y: null
+                , newAdded: true
+                , color: nodeColor
+                , size: nodeSize
+            };
+        }
+
+        function _createEdge( fromNode, toNode ) {
+            return {
+                id: 'e_' + new Date().getTime() + ( 1000 * Math.random() )
+                , source: fromNode.id
+                , target: toNode.id
+                , color: edgeColor
+                , hoverColor: edgeHoverColor
+            };
+        }
+
+        for ( var i = 0; i < numOfNodes; i++ ) {
+            newNodes.push( _createNode( 1 ) );
+        }
+
+        edges.length = 0;
+        for ( var i = 0; i < numOfNodes; i++ ) {
+            for ( var j = i + 1; j < numOfNodes; j++ ) {
+                edges.push( _createEdge( newNodes[ i ], newNodes[ j ] ) ); 
+            }
+        }
+
+        for ( var i = 0; i < nodes.length; i++ ) {
+            var j = Math.random() * numOfNodes | 0;
+            edges.push( _createEdge( nodes[ i ], newNodes[ j ] ) );
+        }
+
+        graph.nodes = graph.nodes.concat( newNodes );
+
+        return graph;
+    }
+
+
+
+<div id="test_multiedge_collapse" class="test">
+<div class="test-container">
+<div id="test_multiedge_collapse_graph" class="test-graph">
+<div class="test-graph-left"></div>
+<div class="test-graph-right"></div>
+</div>
+<div class="test-console"></div>
+
+    @[data-script="javascript editable"]
+    (function(){
+
+        var s = fly.createShow('#test_multiedge_collapse');
+        var g1 = getFullConnectedGraph( 5 );
+        var g2 = {
+                nodes: g1.nodes.slice()
+                , edges: g1.edges.slice()
+            }
+            ;
+        var originalNodes = g1.nodes.slice();
+        var containerId = 'test_multiedge_collapse_graph';
+        var rendererSettings = {
+                // captors settings
+                doubleClickEnabled: true
+                , mouseWheelEnabled: false
+
+                // rescale settings
+                , minEdgeSize: 0.5
+                , maxEdgeSize: 1
+                , minNodeSize: 1 
+                , maxNodeSize: 5
+
+                // renderer settings
+                , edgeHoverColor: fly.randomColor() 
+                , edgeHoverSizeRatio: 1
+                , edgeHoverExtremities: true
+            };
+        var sigmaSettings = {
+                // rescale settings 
+                sideMargin: 0.1 
+
+                // instance global settings
+                , enableEdgeHovering: true
+                , edgeHoverPrecision: 5
+                , autoRescale: 0
+            };
+
+        var sm1, sm2;
+
+        if((sm1 = isSigmaInstanceExisted('test_multiedge_collapse_left'))
+            && (sm2 = isSigmaInstanceExisted('test_multiedge_collapse_right'))){
+            sm1.kill();
+            sm2.kill();
+        };
+
+        sm1 = getUniqueSigmaInstance(
+                    'test_multiedge_collapse_left'
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g1
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: $('#' + containerId + ' .test-graph-left')[0]
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
+
+        g2 = insertSubGraph2( g2, 3);
+        sm2 = getUniqueSigmaInstance(
+                    'test_multiedge_collapse_right'
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g2
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: $('#' + containerId + ' .test-graph-right')[0]
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
+
+        sigmaEnableNodeDrag(sm2);
+
+        sm1
+            .normalizeSophonNodes()
+            .alignCenter({rescaleToViewport: 1})
+            .refresh()
+            ;
+
+        sm2
+            .normalizeSophonNodes()
+            .alignCenter({rescaleToViewport:1})
+            .multiEdgeCollapse(
+                originalNodes
+                , {
+                    optimalDistance: 100
+                    , maxIterations: 50
+                }
+            )
+            .refresh() // note: must invoke `refresh()` to update coordinates
+            .prepareAnimation( {
+                readPrefix: 'yfh_'
+            } )
+            ;
+
+        setTimeout(function(){
+            sigma.plugins.animate(
+                sm2
+                , {
+                    x: 'yfh_x'
+                    , y: 'yfh_y'
+                }
+                , {
+                    duration: 1000
+                }
+            );
+
+        }, 500);
+
+    })();
+
+</div>
+<div class="test-panel"></div>
+</div>
 
 
 ## 复合布局

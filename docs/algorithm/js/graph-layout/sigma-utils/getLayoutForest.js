@@ -16,6 +16,9 @@ sigma.utils.getLayoutForest
             , {
                 onNode: function(node){
                     nodesVisited[node.id] = true;
+                    if ( 'function' == typeof opt.childrenSort ) {
+                        node._wt_children.sort( opt.childrenSort );
+                    }
                 }
             } 
             , excludes
@@ -35,4 +38,3 @@ sigma.utils.getLayoutForest
 
     return forest;
 };
-

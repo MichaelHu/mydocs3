@@ -9,11 +9,14 @@ sigma.utils.widthTravel
         , edges = edges || []
         , queue = []
         , parentAndSiblingNodes = excludes || {}
-        , node = root || nodes[0]
+        , root = root || nodes[0]
+        , node = root
         , children
+        , maxLevel = 0
         ;
 
     node._wt_level = 1;
+    maxLevel = Math.max( node._wt_level, maxLevel );
     queue.push(node);
     parentAndSiblingNodes[node.id] = 1;
 
@@ -27,6 +30,7 @@ sigma.utils.widthTravel
             cbs['onNode'](node);
         }
     }
+    root._wt_maxlevel = maxLevel;
 
     function getChildren(node){
         var id = node.id
@@ -47,6 +51,7 @@ sigma.utils.widthTravel
                     parentAndSiblingNodes[childId] = 1;
                     child = sigma.utils.getNodeById(nodes, childId);
                     child._wt_level = node._wt_level + 1;
+                    maxLevel = Math.max( child._wt_level, maxLevel );
                     children.push(child);
                 }
             }
@@ -55,4 +60,3 @@ sigma.utils.widthTravel
     }
 
 };
-
