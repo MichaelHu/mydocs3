@@ -1,6 +1,7 @@
 # interview exams
 
 
+2016-08-06,
 2016-07-29,
 2015
 
@@ -17,9 +18,8 @@
 
 
 
+## 考察代码能力
 
-
-## js
 
 ### 实现trim函数
 
@@ -31,7 +31,7 @@
 `分析`：
 1. 有缜密思考的，表明编写代码有较强的健壮性，质量可以保证。比如对非字符串的判断
 2. 使用正则方式还是只会使用基于索引查找再做字符串方法调用 
-
+3. 知道对`&ensp;`, `&emsp;`以及`全角空格`也能过滤，分别是`&#8194;`, `&#8195;`和`&#12288;`
 
 `简单例子`：
 
@@ -55,12 +55,14 @@
             ' abc '
             , new String('    def     ')
             , {a:1, b:2}
+            , ' + '
+            , '　+　'
         ];
         s.show('Start testing ...');
         for ( var i = 0; i < testCases.length; i++ ) {
             s.append_show(
                 testCases[i]
-                , trim(testCases[i])
+                , '_' + trim(testCases[i]) + '_'
             );
         }
 
@@ -76,8 +78,10 @@
 
 
 
+## 考察基础知识
 
-## 正则表达式
+
+### 正则表达式
 
 1. `/\b/`与`/[\b]/`的区别: `单词边界` & `退格符`
 2. 正则表达式的修饰符：`g` & `i`
@@ -86,13 +90,98 @@
 
 
 
-## js类与继承
+### 数组操作
 
+1. 数组操作`splice`，a = [1, 2, 3]，通过调用splice方法，a = [1, 1.5, 2, 3] 
+
+        a.splice(1, 0, 1.5);
+
+2. sort
+
+3. slice, concat
+
+
+
+### 类型判断
+
+#### isXXX
+
+实现`isString`, `isDate`, `isArray`, `isFunction`, `isNumber`的通用方式
+        
+    function isXXX(s) { return Object.prototype.toString.call(s) === '[object XXX]'; }
+
+分析：
+
+1. `isString`，需要区别字面量和通过new String创建的两种变量的判断都要满足。
+    会使用通用方式，表明有一定代码积累；但是需要会使用`typeof`结合`instanceof`的方式，
+    如果不知道，表明基础还是有一定问题。
+
+2. 让应试者编写`工厂`方案，需要知道`闭包`的使用方式。可以使用非闭包方案来让应试者发现问题。
+
+
+<div id="test_isXXX" class="test">
+<div class="test-container">
+
+    @[data-script="javascript"](function(){
+
+        function isXXX() {
+            var types = [ 'String', 'Date', 'Array', 'Function', 'Number' ]
+                , obj = {}
+                ;
+
+            for ( var i = 0; i < types.length; i++ ) {
+                ( function () {
+                    var type = types[ i ];
+                    obj[ 'is' + type ] = function( inst ) {
+                        return Object.prototype.toString.call( inst )
+                            === '[object ' + type + ']'; 
+                    }; 
+                } )();
+            }
+
+            return obj;
+        }
+
+        var T = isXXX();
+
+        var s = fly.createShow('#test_isXXX');
+        var items = [
+                new String( 'abc' )
+                , new Date()
+                , new Array()
+                , function() {}
+                , 12345
+                , 'Hello, World!'
+            ];
+        s.show('start testing ...');
+        for ( var i = 0; i < items.length; i++ ) {
+            s.append_show(
+                T.isString( items[ i ] )
+                , T.isDate( items[ i ] )
+                , T.isArray( items[ i ] )
+                , T.isFunction( items[ i ] )
+                , T.isNumber( items[ i ] )
+            );
+        }
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+
+
+### js类与继承
 
 
 2. 用js实现类的定义、继承、包含类属性、实例属性、类方法、实例方法、公共属性、私有属性
 
-3. 用js定义一个Person类，包含属性name和age，方法sayHello，输出name和age；再定义一个子类Student，包含属性grade，方法sayHello，除了输出父类相关属性外，再输出grade。
+3. 用js定义一个`Person`类，包含属性name和age，方法sayHello，输出name和age；再定义一个子类Student，包含属性grade，方法sayHello，除了输出父类相关属性外，再输出grade。
     
         function Person(name, age) {
             this.name = name;
@@ -126,16 +215,10 @@
     参考：<a href="../frontend/class_extend.md.html">js类扩展方式</a>
 
 
-5. 数组操作splice，a = [1, 2, 3]，通过调用splice方法，a = [1, 1.5, 2, 3] 
-
-        a.splice(1, 0, 1.5);
-
-
-6. 实现isString, isDate, isArray, isString, isFunction的通用方式
-        
-        function isXXX(s) { return Object.prototype.toString.call(s) === '[object XXX]'; }
-
 7. `typeof x`有几种结果：number, string, boolean, function, object, undefined 
+
+    知道es6中增加了`symbol`类型，可以加分。
+
 8. typeof null == 'object'
 9. typeof undefined == 'object'
 

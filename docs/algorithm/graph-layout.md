@@ -2346,6 +2346,45 @@
 
 
 
+#### initializeLayout
+
+`initializeLayout(options)`: 初始化布局，执行一些`清理`工作。
+
+    @[data-script="javascript"]sigma.prototype.initializeLayout
+        = function( options ) {
+        var me = this
+            , opt = options || {}
+            , tmpFields = [
+                '_wt_children'
+                , '_wt_leaves'
+                , '_wt_maxlevel'
+                , '_wt_level'
+                , '_wt_dy'
+
+                , 'hier_x'
+                , 'hier_y'
+                , 'yfh_x'
+                , 'yfh_y'
+                , 'circle_x'
+                , 'circle_y'
+                , 'grid_x'
+                , 'grid_y'
+            ]
+            ;
+
+        me.graph.nodes().forEach( function( node ) {
+            tmpFields.forEach ( function( field ) {
+                delete node[ field ];
+            } );
+        } );
+
+        return me;
+    };
+
+
+
+
+
 
 ### 常用方法验证 
 
@@ -3003,6 +3042,7 @@ todo:
             , g = me.graph.getSubGraph(options)
             ;
 
+        me.initializeLayout();
         sigma.utils.getGridLayout(
             g.nodes 
             , options
@@ -3202,9 +3242,11 @@ todo:
 
     @[data-script="javascript"]sigma.prototype.layoutHierarchy
         = function(options){
+        var me = this;
+        me.initializeLayout();
 
         var opt = options || {} 
-            , forest = this.graph.getLayoutForest(opt)
+            , forest = me.graph.getLayoutForest(opt)
             , treeOffsetX = 0
             , unit = opt.unit || 1
             ;
@@ -3248,9 +3290,10 @@ todo:
 
     @[data-script="javascript"]sigma.prototype.layoutHierarchy2
         = function(options){
+        var me = this;
+        me.initializeLayout();
 
         var opt = options || {} 
-            , me = this
             , forest = me.graph.getLayoutForest(opt)
             , treeOffsetX = 0
             , spaceGrid = opt.spaceGrid || {xSize: 40, ySize: 40}

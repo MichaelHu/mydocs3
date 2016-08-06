@@ -170,9 +170,11 @@
 
     @[data-script="javascript"]sigma.prototype.layoutCircle
         = function(options){
+        var me = this;
+        me.initializeLayout();
 
         var opt = options || {}
-            , forest = this.graph.getCircleForest(opt)
+            , forest = me.graph.getCircleForest(opt)
             , treeOffsetX = 0
             , PI = Math.PI
             , radius = opt.radius || 1 
@@ -339,6 +341,8 @@
 
     @[data-script="javascript"]sigma.prototype.layoutCircle2
         = function(options){
+        var me = this;
+        me.initializeLayout();
 
         var opt = options || {}
             , forest = this.graph.getCircleForest(opt)
@@ -999,6 +1003,8 @@
         var me = this
             , nodes = me.graph.nodes()
             ;
+
+        me.initializeLayout();
 
         sigma.utils.incLayoutGrid(
             nodes
@@ -1793,7 +1799,8 @@
 
 #### getABEdgeInfo()
 
-`getABEdgeInfo(node1, node2)`：给定端点，获得`满足边展开`算法定义的边AB及其相关信息。
+`getABEdgeInfo(node1, node2)`：给定端点，获得`满足边展开`算法定义的边AB及其相关信息，其中
+关于`AB edge`的定义可参考下方单边展开`算法描述`部分。
 
     @[data-script="javascript"]sigma.utils.getABEdgeInfo
         = function( node1, node2, options ) {
@@ -1890,6 +1897,10 @@
 
 ### 单边展开算法
 
+单边展开，保持端点不动，新节点按层次布局排布在端点中间。
+
+ <img src="./img/edge-collapse.png" height="300">
+
 #### 算法描述
 
 边`AB`，`起点`为节点A，`终点`为节点B。
@@ -1904,6 +1915,8 @@
 
     定义边AB的`偏角θ`，当AB为一条`竖直线`时，`θ = 0`。满足`0 ≤ θ < π`。
 
+    <img src="./img/AB-edge.png" height="460">
+
 2. 定义`子图G`：`节点集`为`A ∪ M ∪ B`，`边集`由仅包含节点集的节点的边组成。
     对子图G进行`高度受限`、root为A的层次布局，获得临时布局L。
 
@@ -1916,8 +1929,10 @@
 
     @[data-script="javascript"]sigma.prototype.collapseEdge
         = function( node1, node2, options ) {
-        var me = this 
-            , opt = options || {}
+        var me = this;
+        me.initializeLayout();
+
+        var opt = options || {}
             , extend = sigma.utils.extend
             , readPrefix = opt.readPrefix || ''
             , eInfo = sigma.utils.getABEdgeInfo( node1, node2 )
@@ -1973,10 +1988,12 @@
             } )
             ;
 
-        delete node1.hier_x;
-        delete node1.hier_y;
-        delete node2.hier_x;
-        delete node2.hier_y;
+        me.graph.nodes().forEach( function( node ) {
+            if ( node.id == node1.id || node.id == node2.id ) { 
+                delete node.hier_x;
+                delete node.hier_y;
+            }
+        } );
 
         return me;
     };
@@ -2062,7 +2079,7 @@
                 _insertTwo();
             }
             else {
-                _insertThree();
+                // _insertThree();
             }
         }
 
@@ -2224,6 +2241,8 @@
 
 多边展开，可能是`复杂`布局，使用`力导向`布局来排布节点。
 
+ <img src="./img/multi-edge-collapse.png" height="300">
+
 
 #### 算法描述
 
@@ -2235,17 +2254,19 @@
 
 #### 算法实现
 
-    @[data-script="javascript"]sigma.prototype.multiEdgeCollapse
+    @[data-script="javascript"]sigma.prototype.collapseMultiEdges
         = function( originalNodes, options ) {
-        var me = this 
-            , opt = options || {}
+        var me = this;
+        me.initializeLayout();
+
+        var opt = options || {}
             , extend = sigma.utils.extend
             , nodeIndexes = originalNodes.map( function( node ) {
                 return node.id;
             } )
             , readPrefix = opt.readPrefix || ''
             , filter1 = function( node ) {
-                return nodeIndexes[ node.id ] 
+                return nodeIndexes.indexOf( node.id ) >= 0 
                     || node.newAdded
                     ;
             }
@@ -2262,14 +2283,14 @@
 
         subGraph.nodes.forEach( function( node ) {
             // avoid duplicated coordinates
-            node.x = ABCenter.x + 0.5 * Math.random();
-            node.y = ABCenter.y + 0.5 * Math.random();
-            // node.x = ABCenter.x;
-            // node.y = ABCenter.y;
+            node.x = ABCenter.x + 0.1 * Math.random();
+            node.y = ABCenter.y + 0.1 * Math.random();
         } );
 
-        originalNodes.forEach( function( node ) {
-            node.fixed = true;
+        me.graph.nodes().forEach( function( node ) {
+            if ( nodeIndexes.indexOf ( node.id ) >= 0 ) {
+                node.fixed = true;
+            }
         } );
 
         me.layoutYifanHu( {
@@ -2280,8 +2301,10 @@
             , filter: opt.filter || filter1
         } );
 
-        originalNodes.forEach( function( node ) {
-            delete node.fixed;
+        me.graph.nodes().forEach( function( node ) {
+            if ( nodeIndexes.indexOf ( node.id ) >= 0 ) {
+                delete node.fixed;
+            }
         } );
 
         return me;
@@ -2492,7 +2515,7 @@
         sm2
             .normalizeSophonNodes()
             .alignCenter({rescaleToViewport:1})
-            .multiEdgeCollapse(
+            .collapseMultiEdges(
                 originalNodes
                 , {
                     optimalDistance: 100
@@ -2604,9 +2627,10 @@
 
     @[data-script="javascript"]sigma.prototype.layoutCluster
         = function(options){
+        var me = this;
+        me.initializeLayout();
 
         var opt = options || {} 
-            , me = this
             , distanceCoefficient = opt.distanceCoefficient || 1.5 
             , forest = me.graph.getLayoutForest(opt)
             , edges = me.graph.edges()

@@ -1114,8 +1114,10 @@ todo
 
     @[data-script="javascript"]sigma.prototype.layoutYifanHu
         = function(options){
+        var me = this;
+        me.initializeLayout();
+
         var opt = options || {}
-            , me = this
             , subGraph = me.graph.getSubGraph(opt)
             , nodes = subGraph.nodes
             , edges = subGraph.edges
