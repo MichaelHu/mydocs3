@@ -8,7 +8,9 @@
 * <http://webpack.github.io/docs/>
 * <http://webpack.github.io/docs/tutorials/getting-started/>
 
+
 相关阅读： Browserify : <http://browserify.org>
+相关介绍文档： <https://segmentfault.com/a/1190000006178770>
 
 ## 印象
 
@@ -826,8 +828,90 @@ AMD风格。
 
 
 
+## webpack性能优化
+
+* <https://github.com/webpack/webpack/issues/1574#issuecomment-157520561>
+* 如何十倍提高你的webpack构建效率: <http://blog.csdn.net/u011413061/article/details/51872412>
 
 
+查看性能数据：
+
+    webpack --profile --json > perf.json
+
+<http://webpack.github.io/analyse/>，上传perf.json文件进行分析。
+
+
+### modulesDirectories
+
+通过指定模块路径，减少模块查找路径。
+
+    resolve: {
+      root: path.resolve('.'),
+      modulesDirectories: ['node_modules']
+    }
+
+
+
+### happypack
+
+<https://github.com/amireh/happypack>，启用`多线程`加速webpack构建速度。
+
+1. 多线程设置，根据CPU核数设置，不是越多越好
+2. 图片url-loader暂有问题，先不使用
+
+
+
+### 性能数据
+
+`优化前`：
+
+    122700ms build modules      
+    197ms seal
+    204ms optimize
+    4105ms build modules        
+    80ms hashing
+    270ms create chunk assets
+    69888ms additional chunk assets
+    1ms optimize chunk assets 
+    639ms optimize assets
+    178ms emit
+    Hash: 9878fe416d03317f4579
+    Version: webpack 1.13.1
+    Time: 198294ms
+
+
+`指定modulesDirectories`：
+
+    103380ms build modules      
+    181ms seal
+    200ms optimize
+    3549ms build modules        
+    45ms hashing
+    194ms create chunk assets
+    70044ms additional chunk assets
+    1ms optimize chunk assets 
+    811ms optimize assets
+    181ms emit
+    Hash: 9878fe416d03317f4579
+    Version: webpack 1.13.1
+    Time: 178615ms
+
+
+`happypack`加速，3 thread
+
+    23935ms build modules       
+    96ms seal
+    108ms optimize
+    2372ms build modules        
+    34ms hashing
+    79ms create chunk assets
+    54243ms additional chunk assets
+    0ms optimize chunk assets 
+    461ms optimize assets
+    142ms emit
+    Hash: 9878fe416d03317f4579
+    Version: webpack 1.13.1
+    Time: 81617ms
 
 
 ## 开发服务器
@@ -835,6 +919,7 @@ AMD风格。
     npm install -g webpack-dev-server
 
     webpack-dev-server --progress --colors
+
 
 
 

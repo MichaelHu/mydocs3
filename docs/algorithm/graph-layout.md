@@ -19,6 +19,7 @@
 3. VERVIEW OF ALGORITHMS FOR GRAPH DRAWING; Pajntar B.; <http://ailab.ijs.si/dunja/SiKDD2006/Papers/Pajntar.pdf>
 4. <http://cs.brown.edu/~rt/gdhandbook/>
 5. <http://www.ogdf.net/doku.php>
+6. 有向无环图的自动布局算法: <http://blog.csdn.net/xoyojank/article/details/8249719>
 
 
 ### 评价标准
@@ -910,6 +911,7 @@
         var opt = options || {}
             , me = this
             , filter = opt.filter
+            , edgeFilter = opt.edgeFilter
             , nodes = me.nodesArray
             , edges = me.edgesArray
             , _node_ids
@@ -931,6 +933,14 @@
                     edges.push(edge);
                 }
             });
+        }
+
+        if('function' == typeof edgeFilter){
+            for(var i=edges.length-1; i>=0; i--){
+                if(!edgeFilter(edges[i])){
+                    edges.splice(i, 1);
+                }
+            }
         }
 
         return {
@@ -2066,7 +2076,7 @@
                     children.forEach(function(child){
                         __depthTravel(child);
                     }); 
-                    delete node._wt_children;
+                    // delete node._wt_children;
                 }
             }
         });
@@ -3611,9 +3621,9 @@ todo:
 
 ### 环形布局
 
-见`graph layout2`
+见`graph layout3`
 
-<a href="./graph-layout2.md.preview.html">graph layout2</a>
+<a href="./graph-layout3.md.preview.html">graph layout 3</a>
 
 
 
@@ -3622,7 +3632,7 @@ todo:
 
 见`graph layout2`
 
-<a href="./graph-layout2.md.preview.html">graph layout2</a>
+<a href="./graph-layout2.md.preview.html">graph layout 2</a>
 
 
 

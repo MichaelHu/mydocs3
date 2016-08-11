@@ -530,3 +530,11 @@ output：
     CLOSE_WAIT 2
 
 
+
+### 查看日志
+
+    ssh work@172.16.12.28 \
+        "tail -f /Users/work/Documents/code/SophonDispatchServerApi/nohup.out \
+            | grep -i exception -B 10 -A 50 -n"  \
+        | tee /Users/hudamin/tmp/log/$$.log
+    
