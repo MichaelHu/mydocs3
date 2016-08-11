@@ -52,6 +52,11 @@
 <script src="./js/network-simpletree-0528.js"></script>
 <script src="./js/network-simple-0604-1.js"></script>
 <script src="./js/network-circle-0628.js"></script>
+<script src="./js/network-mesh-0628.js"></script>
+<script src="./js/network-person-event-event-person-0729.js"></script>
+<script src="./js/network-person-event-event-person-160801.js"></script>
+<script src="./js/network-triangle-0801.js"></script>
+<script src="./js/network-triangle-0801-2.js"></script>
 
 
 
@@ -65,7 +70,6 @@
 
     @[data-script="javascript editable"]function createRawGraphData(
         nodeCount
-        , edgeCount
         , existedNodes
         ){
 
@@ -83,6 +87,7 @@
             graph.nodes.push({
                 id: id 
                 , label: id
+                , newAdded: true
                 , x: null
                 , y: null
                 , size: 10
@@ -95,11 +100,11 @@
         _nodes = _nodes.concat(graph.nodes, existedNodes); 
         len1 = graph.nodes.length;
         len2 = _nodes.length;
-        for(i=0; i<edgeCount; i++){
+        for(i=0; i<len1; i++){
             id = 'e' + idSeed++;
             graph.edges.push({
                 id: id 
-                , source: graph.nodes[len1 * Math.random() | 0].id
+                , source: graph.nodes[ i ].id
                 , target: _nodes[len2 * Math.random() | 0].id
                 , color: '#cedb9c' 
                 , hoverColor: '#c00'
@@ -274,8 +279,8 @@
     @[data-script="javascript editable"](function(){
 
         var s = fly.createShow('#test_10');
-        var g1 = getRandomGraph(200, 200, 1);
-        var g1 = networkGraph_circle_0628;
+        // var g1 = getRandomGraph(200, 200, 1);
+        // var g1 = networkGraph_circle_0628;
         // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
         // var g1 = networkGraph0520_allEdges;
@@ -283,7 +288,7 @@
         // var g1 = networkGraph_tree_0521;
         // var g1 = networkGraph_2circles_0523;
         // var g1 = networkGraph_edges_between_the_same_level_nodes;
-        // var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        var g1 = networkGraph_edges_between_the_same_level_nodes_2;
         // var g1 = networkGraph_many_children_0526;
         // var g1 = networkGraph_grid_0612; 
         var containerId = 'test_10_graph';
@@ -343,7 +348,6 @@
         setTimeout(function(){
             var newData = createRawGraphData(
                     18
-                    , 15
                     , sm.graph.nodes()
                 )
                 , newNodes = newData.nodes
@@ -838,6 +842,23 @@
 <div class="test-panel">
 </div>
 </div>
+
+
+
+
+### 增量力导向布局
+
+#### 算法描述
+
+`incLayoutYifanHu()`：YifanHu增量布局，需提供参数：
+* `nodes`：原有节点数组
+* `newNodes`：新增节点数组。新节点需要确保。。。
+* `selectedNodes`：...
+* `options`：...
+
+todo
+
+
 
 
 
@@ -1812,6 +1833,243 @@
 </div>
 <div class="test-panel"></div>
 </div>
+
+
+
+
+
+## 就近布局
+
+`layoutNearby()`：将`选中`节点排布到相邻节点`附近`，而`保持`非选中节点位置`不变`。
+
+<img src="./img/YifanHu-case1-160811.png" height="">
+<img src="./img/layoutNearby-case1-160811.png" height="">
+
+使用案例1，用于解`复杂多核`图。
+
+<img src="./img/incLayout-case1-160811.png" height="">
+<img src="./img/layoutNearby-case2-160811.png" height="">
+
+使用案例2，多个核`环形`布局，其余节点`就近`布局。这实际上提供了`复合布局`的思路，可以`扩展`出多种类型的布局。
+[todo]
+
+
+### 算法描述
+
+1. 定义：`选中`节点集为`E`，`未选中`节点集为`N`
+2. 若E为`空集`，`goto 5`
+3. 若N为空集，相当于`全选`，则对全图进行`YifanHu`布局，`goto 5`
+4. 若E和N均为`非空集`，则执行N固定的`YifanHu`布局，`goto 5`
+5. 完成布局
+
+使用的`YifanHu`布局，`不开启均衡`选项。
+
+
+### 算法实现
+
+    @[data-script="javascript"]sigma.prototype.layoutNearby
+        = function( options ) {
+        var me = this
+            , opt = options || {}
+            , selectedFilter = opt.filter || function( node ) {
+                return node.selected;
+            }
+            , nonselectedFilter = function( node ) { 
+                return !selectedFilter( node ); 
+            }
+            , selectedGraph = me.graph.getSubGraph( { filter: selectedFilter } )
+            , nonselectedGraph = me.graph.getSubGraph( { filter: nonselectedFilter } )
+            ;
+
+        if ( selectedGraph.nodes.length == 0 ) {
+            return me;
+        }
+
+        me.initializeLayout();
+        nonselectedGraph.nodes.forEach( function( node ) {
+            node.fixed = true;
+        } );
+
+        return me.layoutYifanHu( {
+            skipInitialization: 1
+            , optimalDistance: opt.optimalDistance || 500
+            , readPrefix: opt.readPrefix || 'yfh_'
+            , maxIterations: opt.maxIterations || 50
+            , relativeStrength: 0.2
+            , layoutBalanced: opt.layoutBalanced || 0
+            , layoutBalancedSpace: opt.layoutBalancedSpace || 300
+            , spaceGrid: opt.spaceGrid || { xSize: 50, ySize: 50 }  
+        } );
+    };
+
+
+### 算法验证
+
+<div id="test_nearbylayout" class="test">
+<div class="test-container">
+<div id="test_nearbylayout_graph" class="test-graph">
+</div>
+<div class="test-console"></div>
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_nearbylayout');
+        var g1 = getRandomGraph(200, 200, 1);
+        // var g1 = networkGraph_circle_0628;
+        // var g1 = networkGraph_FR;
+        // var g1 = networkGraph_ForceAtlas2;
+        // var g1 = networkGraph0520_allEdges;
+        // var g1 = networkGraph_grid_0521; 
+        // var g1 = networkGraph_tree_0521;
+        // var g1 = networkGraph_2circles_0523;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        // var g1 = networkGraph_many_children_0526;
+        // var g1 = networkGraph_grid_0612; 
+        // var g1 = networkGraph_mesh_0628;
+        // var g1 = networkGraph_person_event_event_person_0729;;
+        // var g1 = networkGraph_person_event_event_person_0801;;
+        var g1 = networkGraph_triangle_0801;;
+        // var g1 = networkGraph_triangle_0801_2;;
+        var containerId = 'test_nearbylayout_graph';
+        var rendererSettings = {
+                // captors settings
+                doubleClickEnabled: true
+                , mouseWheelEnabled: false
+
+                // rescale settings
+                , minEdgeSize: 0.5
+                , maxEdgeSize: 1
+                , minNodeSize: 1 
+                , maxNodeSize: 5
+
+                // renderer settings
+                , edgeHoverColor: fly.randomColor() 
+                , edgeHoverSizeRatio: 1
+                , edgeHoverExtremities: true
+                , drawLabels: false
+            };
+        var sigmaSettings = {
+                // rescale settings 
+                sideMargin: 10 
+
+                // instance global settings
+                , enableEdgeHovering: true
+                , edgeHoverPrecision: 5
+            };
+
+        var sm;
+
+        g1.nodes.forEach(function(node){
+            node.color = '#aaa';
+        });
+
+        if((sm = isSigmaInstanceExisted(containerId))){
+            sm.kill();
+        };
+
+        sm = getUniqueSigmaInstance(
+                    containerId
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g1
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: containerId
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
+
+        sm.refresh();
+
+        setTimeout(function(){
+            var newData = createRawGraphData(
+                    10
+                    , sm.graph.nodes()
+                )
+                , newNodes = newData.nodes
+                , newEdges = newData.edges
+                ; 
+
+            function getRandomSelectedNodes(){
+                var _nodes = sm.graph.nodes()
+                    , len = _nodes.length
+                    , retNodes = []
+                    ;
+
+                _nodes.forEach(function(_node){
+                    if(Math.random() > 0.8){
+                        _node.color = '#e6550d';
+                        retNodes.push(_node);
+                    }
+                });
+                return retNodes;
+            }
+
+            sm.incLayoutGrid(
+                newNodes
+                , getRandomSelectedNodes()
+                , {
+                    space: 10
+                }
+            )
+            ;
+
+            newNodes.forEach(function(node){
+                sm.graph.addNode(node);
+            });
+
+            newEdges.forEach(function(edge){
+                sm.graph.addEdge(edge);
+            });
+
+            sm.refresh();
+
+            setTimeout(function(){
+                sigma.plugins.animate(
+                    sm
+                    , {
+                        x: 'grid_x'
+                        , y: 'grid_y'
+                    }
+                    , {
+                        duration: 500
+                        , onComplete: function(){
+                            sm.layoutNearby( {
+                                optimalDistance: 10
+                                , layoutBalancedSpace: 10
+                                , spaceGrid: { xSize: 40, ySize: 40 }
+                                , filter: function( node ) {
+                                    return node.newAdded;
+                                }
+                            } );
+                            sigma.plugins.animate(
+                                sm
+                                , {
+                                    x: 'yfh_x'
+                                    , y: 'yfh_y'
+                                }
+                                , {
+                                    duration: 500
+                                }
+                            );
+                        }
+                    }
+                );
+            }, 1000);
+
+        }, 1000);
+
+    })();
+
+</div>
+<div class="test-panel">
+</div>
+</div>
+
 
 
 ## 复合布局

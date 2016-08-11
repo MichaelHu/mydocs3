@@ -1114,11 +1114,15 @@ todo
 
     @[data-script="javascript"]sigma.prototype.layoutYifanHu
         = function(options){
-        var me = this;
-        me.initializeLayout();
+        var me = this
+            , opt = options || {}
+            ;
 
-        var opt = options || {}
-            , subGraph = me.graph.getSubGraph(opt)
+        if ( !opt.skipInitialization ) {
+            me.initializeLayout();
+        }
+
+        var subGraph = me.graph.getSubGraph(opt)
             , nodes = subGraph.nodes
             , edges = subGraph.edges
             , newOpt = Object.assign({}, opt, {readPrefix: ''})
