@@ -745,11 +745,18 @@ function hasInvalidValues(nodes, options) {
     return false;
 } 
 
+
 sigma.prototype.layoutYifanHu
     = function(options){
-    var opt = options || {}
-        , me = this
-        , subGraph = me.graph.getSubGraph(opt)
+    var me = this
+        , opt = options || {}
+        ;
+
+    if ( !opt.skipInitialization ) {
+        me.initializeLayout();
+    }
+
+    var subGraph = me.graph.getSubGraph(opt)
         , nodes = subGraph.nodes
         , edges = subGraph.edges
         , newOpt = Object.assign({}, opt, {readPrefix: ''})
@@ -771,7 +778,7 @@ sigma.prototype.layoutYifanHu
 
     sigma.utils.layoutYifanHu(nodes, edges, opt);
     return me;
-};  
+}; 
 
 
 

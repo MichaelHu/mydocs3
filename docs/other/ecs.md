@@ -179,4 +179,9 @@
     yum install nodejs
     node -v
 
+移除nodejs:
+
+    yum erase nodejs
+
+
 

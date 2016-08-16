@@ -6,6 +6,31 @@
 hudamin 2014
 
 
+
+## .bashrc和.bash_profile
+
+* `.bashrc`与`session`相关，每新建一个session都会执行，`su`命令切换，也会执行
+* `.bash_profile`与`登录`相关，用户登录后会执行一次.bash_profile
+
+
+
+## 版本号
+
+### 内核版本号
+
+    uname -a
+    cat /proc/version
+
+### 系统版本 
+
+    # 普适
+    lsb_release -a
+    cat /etc/issue
+    # 适用于redhat
+    cat /etc/redhat-release
+
+
+
 ## IO重定向
 
 * 1 - stdout

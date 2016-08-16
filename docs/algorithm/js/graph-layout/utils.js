@@ -196,7 +196,6 @@ function getLineGraph(
 
 function createRawGraphData(
     nodeCount
-    , edgeCount
     , existedNodes
     ){
 
@@ -214,6 +213,7 @@ function createRawGraphData(
         graph.nodes.push({
             id: id 
             , label: id
+            , newAdded: true
             , x: null
             , y: null
             , size: 10
@@ -226,11 +226,11 @@ function createRawGraphData(
     _nodes = _nodes.concat(graph.nodes, existedNodes); 
     len1 = graph.nodes.length;
     len2 = _nodes.length;
-    for(i=0; i<edgeCount; i++){
+    for(i=0; i<len1; i++){
         id = 'e' + idSeed++;
         graph.edges.push({
             id: id 
-            , source: graph.nodes[len1 * Math.random() | 0].id
+            , source: graph.nodes[ i ].id
             , target: _nodes[len2 * Math.random() | 0].id
             , color: '#cedb9c' 
             , hoverColor: '#c00'
@@ -238,4 +238,4 @@ function createRawGraphData(
     }
 
     return graph;
-} 
+}
