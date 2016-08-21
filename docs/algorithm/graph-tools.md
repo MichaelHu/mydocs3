@@ -19,23 +19,8 @@
 <script src="http://258i.com/static/bower_components/react/react-dom.min.js"></script>
 <script src="http://258i.com/static/build/sigma/sigma.min.js"></script>
 
-<script src="./js/network.js"></script>
-<script src="./js/network-0520.js"></script>
-<script src="./js/networkGraph0520-allEdges.js"></script>
-<script src="./js/network-grid-0521.js"></script>
-<script src="./js/network-grid-0612.js"></script>
-<script src="./js/networkGraph-tree-0521.js"></script>
-<script src="./js/network-forceAtlas2-0510.js"></script>
-<script src="./js/network-2circle-0523.js"></script>
-<script src="./js/network-edges-between-the-same-level-nodes-0524.js"></script>
-<script src="./js/network-edges-between-the-same-level-nodes-2-0524.js"></script>
-<script src="./js/network-edges-between-the-same-level-nodes-3-0531.js"></script>
-<script src="./js/network-tree-0524.js"></script>
-<script src="./js/network-edges-between-levels-0526.js"></script>
-<script src="./js/network-many-children-0526.js"></script>
-<script src="./js/network-forest-0527.js"></script>
-<script src="./js/network-circle-0628.js"></script>
-<script src="./js/network-mesh-0628.js"></script>
+<script src="./js/graph-data/all.js"></script>
+
 
 
 

@@ -315,6 +315,57 @@ hudamin 2014
 
 
 
+## zip
+
+打包目录：
+
+    zip -r dir.zip dir
+
+加密打包目录：
+
+    zip -r --encrypt dir.zip dir
+
+解压缩：
+
+    unzip dir.zip
+
+
+
+
+## openssl加密解密
+
+    # des3加密
+    openssl des3 -e -in readme.md -out readme.md.des3
+
+    # des3解密 
+    openssl des3 -d -in readme.md.des3 -out readme.md
+
+    # 与tar配合
+    tar zcvf - readme.md | openssl des3 -e > readme.tar.gz.des3
+    cat readme.tar.gz.des3 | openssl des3 -d | tar xvf -
+
+
+
+## tee 与 dd
+
+两者都具有将标准输入拷贝至标准输出的功能，但有一些区别。
+
+    hudamin@local hz1608 $ cat hello.md | tee
+    hello, world!
+    hudamin@local hz1608 $ cat hello.md | dd
+    hello, world!
+    0+1 records in
+    0+1 records out
+    14 bytes transferred in 0.000042 secs (331753 bytes/sec)
+
+`dd`功能更加强大，支持的option较多，比如`if=file` ，`of=file`
+
+    hudamin@local hz1608 $ dd if=hello.md
+    hello, world!
+    0+1 records in
+    0+1 records out
+    14 bytes transferred in 0.000043 secs (326224 bytes/sec)
+
 
 
 ## 网络命令
@@ -377,7 +428,9 @@ hudamin 2014
 
 
 
-### grep
+
+
+## grep
 
 
 文件查找
@@ -400,7 +453,7 @@ hudamin 2014
 
 
 
-### mail
+## mail
 
 发送邮件，同`mailx`
 
@@ -413,7 +466,7 @@ hudamin 2014
     EOF
 
 
-### lsbom
+## lsbom
 
 for `MAC`
 
@@ -431,7 +484,7 @@ for `MAC`
 
 
 
-### 清空文件
+## 清空文件
 
 
 几种快速清空文件内容的方法：
@@ -444,6 +497,51 @@ for `MAC`
     $ cat /dev/null > filename
 
 
+
+
+## sed
+
+> 需要弄清楚`hold space`和`pattern space`的概念。尚未弄明白（todo）
+
+
+`流编辑`工具。举个例子，以下为从path中获取`filename`：
+
+    $ echo http://258i.com/docs/markdown_res/js/scrollspy.js | sed -e 's/^.*\/\([^\/]*\)$/\1/g'
+    scrollspy.js
+
+`处理过程`为获取一行，去掉换行符，放入模式空间，处理完以后再将换行符添加回去，放到标准输出中。
+
+    sed -e 's/\n/a/g' file
+
+所以以上命令不能将文件的换行符改成其他字符。
+
+
+
+用`表意标记`将不可见字符输出到标准输出：
+
+    sed -e 'l'
+
+
+`合并`行：
+
+    $ cat b | sed -e 'N;N;N;s/\n/|/g'
+    a|b|c|d
+    e|f|hello|G
+
+为匹配行后面`添加`一个`换行符`：
+
+    $ cat a | sed -e 'G'
+    a
+
+    b
+
+
+
+
+
+## awk
+
+todo
 
 
 

@@ -5,12 +5,12 @@
 > 信赖和善于利用经时间证明的智慧
 
 
-<script src="file:///Users/hudamin/projects/git/mystatic/build/sigma/sigma.min.js"></script>
-<script src="file:///Users/hudamin/projects/git/mystatic/build/sigma/plugins/sigma.plugins.animate.min.js"></script>
-<script src="file:///Users/hudamin/projects/git/mystatic/build/sigma/plugins/sigma.layout.noverlap.min.js"></script>
-<script src="file:///Users/hudamin/projects/git/mystatic/build/sigma/plugins/sigma.layout.forceAtlas2.min.js"></script>
-<script src="file:///Users/hudamin/projects/git/mystatic/bower_components/vivagraphjs/dist/vivagraph.min.js"></script>
-<script src="file:///Users/hudamin/projects/git/mystatic/bower_components/lodash/dist/lodash.min.js"></script>
+<script src="http://258i.com/static/build/sigma/sigma.min.js"></script>
+<script src="http://258i.com/static/build/sigma/plugins/sigma.plugins.animate.min.js"></script>
+<script src="http://258i.com/static/build/sigma/plugins/sigma.layout.noverlap.min.js"></script>
+<script src="http://258i.com/static/build/sigma/plugins/sigma.layout.forceAtlas2.min.js"></script>
+<script src="http://258i.com/static/bower_components/vivagraphjs/dist/vivagraph.min.js"></script>
+<script src="http://258i.com/static/bower_components/lodash/dist/lodash.min.js"></script>
 
 <script src="./js/graph-layout/utils.js"></script>
 <script src="./js/graph-layout/sigma-utils.js"></script>
@@ -21,9 +21,9 @@
 
 <script src="./js/graph-data/all.js"></script>
 
-<script src="file:///Users/hudamin/projects/git/mystatic/bower_components/snippets/js/mp/fly.js"></script>
+<script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <style type="text/css">
-@import "file:///Users/hudamin/projects/git/mystatic/bower_components/snippets/css/mp/style.css";
+@import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
 .test-graph {
     height: 400px;
 }
@@ -564,8 +564,6 @@
 4. `祖先`节点、当前`本地`节点都不属于当前节点的外部节点集合
 
 
-
-
 #### lenodes结构说明
 
 该数据结构用于`同层`节点位置调整时的重要判断信息。包含以下字段：
@@ -573,29 +571,21 @@
     {
         // 本地节点，包含以当前节点为根的子树的所有节点，以及当前节点本身
         local: { ... }
-
         // 外部节点，与本地节点相连的除本地节点、祖先节点外的节点
         , external: { ... }
-
         // 当前节点的直接兄弟节点
         , di_brothers: [ ... ]
-
         // 当前节点的间接兄弟节点
         , indi_brothers: [ ... ]
-
         // 当前节点的直接堂兄弟节点
         , di_ex_brothers: [ ... ]
-
         // 当前节点的间接堂兄弟节点
         , indi_ex_brothers: [ ... ]
-
         // 其他外部节点，是外部节点的子集，不包括前四种节点，同时不包含兄弟和堂兄弟节点的子孙节点
         , other_ex_nodes: [ ... ]
     }
 
  <img src="./img/hier-LE-nodes.png" height="400">
-
-
 
 
 #### 代码实现
@@ -970,433 +960,6 @@
 
 
 
-### adjustSiblingsOrder2
-
-`adjustSiblingsOrder2()`：调整兄弟节点间的排布顺序。综合考虑`di_brothers`, `indi_brothers`, `di_ex_brothers`, `indi_ex_brothers`, `other_ex_nodes`，得出一个`较优`排布方案。
-
-
-#### 算法描述
-
-
-
-
-#### 代码实现
-
-    @[data-script="javascript"]sigma.utils.adjustSiblingsOrder2
-        = function( parentNode, options ) {
-        if ( !parentNode ) {
-            throw new Error('sigma.utils.adjustSiblingsOrder2: no parentNode');
-        }
-
-        var opt = options || {}
-            , siblings = parentNode._wt_children
-            , siblingGroups
-            , newSiblings = []
-            ;
-
-        siblingGroups = _getGroups( siblings );
-        siblingGroups.sort( function( a, b ) {
-            return a.weight - b.weight;
-        } );
-        _layoutGroups( siblingGroups );
-        parentNode._wt_children = newSiblings;
-        return { 
-            siblingGroups: siblingGroups 
-            , newSiblings: newSiblings
-        };
-
-        function _layoutGroups( groups ) {
-            groups.forEach( function( group ) {
-                var root = group.root
-                    , visitedNodes = {}
-                    , groupNodes = []
-                    ;
-
-                _travel( root );
-                if ( group.direction == 'rtl' ) {
-                    groupNodes.reverse();
-                }
-                newSiblings = newSiblings.concat( groupNodes );
-
-                function _travel( node ) {
-                    var leNodes = node._wt_lenodes 
-                        , children = leNodes.di_brothers.concat( leNodes.indi_brothers )
-                        ;
-
-                    // drop out visited nodes
-                    for ( var i = children.length - 1; i >= 0; i-- ) {
-                        if ( visitedNodes[ children[ i ].id ] ) {
-                            children.splice( i, 1 );
-                        }
-                    }
-
-                    visitedNodes[ node.id ] = 1;
-                    groupNodes.push( node );
-                    children.forEach( function( child ) {
-                        _travel( child );
-                    } );
-                }
-            } );
-        }
-
-        // divide into groups or trees
-        function _getGroups( siblings ) {
-            var groups = []
-                , group
-                , visitedNodes = {} 
-                , info
-                ;
-
-            while ( ( node = _hasMore() ) ) {
-                info = _depthTravel( node );
-                group = _getRoot( info );
-                if ( !group.root ) {
-                    group = { root: node, direction: 'ltr', weight: 4 };
-                }
-                groups.push( group );
-            }
-            return groups;
-
-            function _getRoot( info ) {
-                var root
-                    , direction = 'ltr'
-                    , weight = 4
-                    ;
-
-                if ( ( root = info.hasLeftDiExBrother[ 0 ] ) ) {
-                    weight = 1;
-                }
-                else if ( ( root = info.hasRightDiExBrother[ 0 ] ) ) {
-                    direction = 'rtl';
-                    weight = 10;
-                }
-                else if ( ( root = info.hasLeftInDiExBrother[ 0 ] ) ) {
-                    weight = 2;
-                }
-                else if ( ( root = info.hasRightInDiExBrother[ 0 ] ) ) {
-                    direction = 'rtl';
-                    weight = 9;
-                }
-                else if ( ( root = info.hasLeftOtherExNode[ 0 ] ) ) {
-                    weight = 3;
-                }
-                else if ( ( root = info.hasRightOtherExNode[ 0 ] ) ) {
-                    direction = 'rtl';
-                    weight = 8;
-                }
-                else if ( ( root = info.leafOrSingle[ 0 ] ) ) {}
-                else {
-                    root = null;
-                }
-
-                return {
-                    root: root
-                    , direction: direction
-                    , weight: weight 
-                };
-            }
-
-            function _depthTravel( node ) {
-                var leNodes = node._wt_lenodes 
-                    , children = leNodes.di_brothers.concat( leNodes.indi_brothers )
-                    , di_ex_brothers = leNodes.di_ex_brothers
-                    , indi_ex_brothers = leNodes.indi_ex_brothers
-                    , other_ex_nodes = leNodes.other_ex_nodes
-                    , exNode
-                    , info = {
-                        leafOrSingle: []
-                        , hasLeftDiExBrother: []
-                        , hasLeftInDiExBrother: []
-                        , hasRightDiExBrother: []
-                        , hasRightInDiExBrother: []
-                        , hasLeftOtherExNode: []
-                        , hasRightOtherExNode: []
-                    }
-                    ;
-
-                if ( children.length <= 1 ) {
-                    info.leafOrSingle.push( node );
-                }
-
-                for ( var i = 0; i < di_ex_brothers.length; i++ ) {
-                    exNode = di_ex_brothers[ i ];
-                    if ( typeof exNode.hier_x != 'undefined' ) {
-                        info.hasLeftDiExBrother.push( node );
-                        break;
-                    }
-                    else {
-                        info.hasRightDiExBrother.push( node );
-                        break;
-                    }
-                }
-
-                for ( var i = 0; i < indi_ex_brothers.length; i++ ) {
-                    exNode = indi_ex_brothers[ i ];
-                    if ( typeof exNode.hier_x != 'undefined' ) {
-                        info.hasLeftInDiExBrother.push( node );
-                        break;
-                    }
-                    else {
-                        info.hasRightInDiExBrother.push( node );
-                        break;
-                    }
-                }
-
-                for ( var i = 0; i < other_ex_nodes.length; i++ ) {
-                    exNode = other_ex_nodes[ i ];
-                    if ( typeof exNode.hier_x != 'undefined' ) {
-                        info.hasLeftOtherExNode.push( node );
-                        break;
-                    }
-                    else {
-                        info.hasRightOtherExNode.push( node );
-                        break;
-                    }
-                }
-
-                // drop out visited nodes
-                for ( var i = children.length - 1; i >= 0; i-- ) {
-                    if ( visitedNodes[ children[ i ].id ] ) {
-                        children.splice( i, 1 );
-                    }
-                }
-
-                visitedNodes[ node.id ] = 1;
-                children.forEach( function( child ) {
-                    var _info = _depthTravel( child );
-                    for ( var i in info ) {
-                        info[ i ] = info[ i ].concat( _info[ i ] );
-                    }
-                } );
-
-                return info;
-            }
-
-            function _hasMore() {
-                for ( var i = 0; i < siblings.length; i++ ) {
-                    if ( !visitedNodes[ siblings[ i ].id ] ) {
-                        return siblings[ i ];
-                    }
-                }
-                return null;
-            }
-        }
-
-    };
-
-
-
-#### 验证
-
-<div id="test_adjustSiblingsOrder2" class="test">
-<div class="test-container">
-<div id="test_adjustSiblingsOrder2_graph" class="test-graph">
-</div>
-<div class="test-console"></div>
-
-    @[data-script="javascript editable"]
-    (function(){
-
-        var s = fly.createShow('#test_adjustSiblingsOrder2');
-        var g1 = getRandomGraph(10, 10, 10);
-        var g1 = networkGraph_complex_hier_160817; 
-        // var g1 = networkGraph_complex_hier_160816;
-        var g1 = networkGraph_complex_hier_160820; 
-        var containerId = 'test_adjustSiblingsOrder2_graph';
-        var rendererSettings = {
-                // captors settings
-                doubleClickEnabled: true
-                , mouseWheelEnabled: false
-
-                // rescale settings
-                , minEdgeSize: 0.5
-                , maxEdgeSize: 1
-                , minNodeSize: 1 
-                , maxNodeSize: 5
-
-                // renderer settings
-                , edgeHoverColor: fly.randomColor() 
-                , edgeHoverSizeRatio: 1
-                , edgeHoverExtremities: true
-            };
-        var sigmaSettings = {
-                // rescale settings 
-                sideMargin: 5 
-
-                // instance global settings
-                , enableEdgeHovering: true
-                , edgeHoverPrecision: 5
-                , autoRescale: 0
-            };
-
-        var sm1;
-
-        if((sm1 = isSigmaInstanceExisted('test_adjustSiblingsOrder2'))){
-            sm1.kill();
-        };
-
-        sm1 = getUniqueSigmaInstance(
-                    'test_adjustSiblingsOrder2'
-                    , {
-                        settings: sigmaSettings 
-                        , graph: g1
-                        , renderers: [
-                            {
-                                type: 'canvas' 
-                                , container: $('#' + containerId)[0]
-                                , settings: rendererSettings
-                            }
-                        ]
-                    }
-                ); 
-
-        sm1
-            .alignCenter({rescaleToViewport: 1})
-            .refresh()
-            ;
-
-        sigmaEnableNodeDrag( sm1 );
-
-        var forest = sm1.graph.getLayoutForest()
-            ;
-
-        s.show('show nodes: ');
-        var id = 1;
-        forest.forEach(function(tree){
-
-            var nodes = sigma.utils.getNodesFromTree( tree )
-                , nodeIds = nodes.map( function( node ) {
-                    return node.id;
-                } )
-                , subGraph = sm1.graph.getSubGraph({
-                    filter: function( node ) {
-                        return nodeIds.indexOf( node.id ) >= 0;
-                    }
-                })
-                , nodesOfSameLevel = {}
-                , nodesOfLevel2 
-                , nodesOfLevel3
-                , node_2_1
-                , children_2_1
-                , node_2_3
-                , children_2_3
-                , newOrder
-                , siblingGroups
-                , newSiblings
-                ;
-
-            _sameLevelNodes( tree );
-            nodesOfLevel2 = nodesOfSameLevel[ 2 ];
-            nodesOfLevel3 = nodesOfSameLevel[ 3 ];
-            node_2_1 = nodesOfLevel2[ 0 ];
-            children_2_1 = node_2_1._wt_children;
-            node_2_3 = nodesOfLevel2[ 1 ];
-            children_2_3 = node_2_3._wt_children;
-            
-            s.append_show(
-                'nodesOfLevel2'
-                , nodesOfLevel2 && nodesOfLevel2.map( function( node ) {
-                    return node.id;
-                } )
-            );
-            s.append_show(
-                'nodesOfLevel3'
-                , nodesOfLevel3 && nodesOfLevel3.map( function( node ) {
-                    return node.id;
-                } )
-            );
-            s.append_show(
-                'children_2_1'
-                , children_2_1 && children_2_1.map( function( node ) {
-                    return node.id;
-                } )
-            );
-            s.append_show(
-                'children_2_3'
-                , children_2_3 && children_2_3.map( function( node ) {
-                    return node.id;
-                } )
-            );
-
-            s.append_show('\nadjusting sibling order:');
-
-            sigma.utils.computeLocalAndExternalNodes( subGraph, tree );
-
-            // mock
-            children_2_1.forEach( function ( child ) {
-                child.hier_x = 1;
-            } );
-            newOrder = sigma.utils.adjustSiblingsOrder2( 
-                node_2_1
-                , subGraph
-            );
-            siblingGroups = newOrder.siblingGroups;
-            newSiblings = newOrder.newSiblings;
-            s.append_show(
-                'siblingGroups of children_2_1'
-                , siblingGroups.map( function( group ) {
-                    return group.root.id 
-                        + ' - ' + group.direction 
-                        + ' - ' + group.weight
-                        ;
-                } )
-            );
-            s.append_show(
-                'new order of children_2_1'
-                , newSiblings.map( function( node ) {
-                    return node.id;
-                } )
-            );
-
-
-            newOrder = sigma.utils.adjustSiblingsOrder2( 
-                node_2_3
-                , subGraph
-            );
-            siblingGroups = newOrder.siblingGroups;
-            newSiblings = newOrder.newSiblings;
-            s.append_show(
-                'siblingGroups of children_2_3'
-                , siblingGroups.map( function( group ) {
-                    return group.root.id 
-                        + ' - ' + group.direction 
-                        + ' - ' + group.weight
-                        ;
-                } )
-            );
-            s.append_show(
-                'new order of children_2_3'
-                , newSiblings.map( function( node ) {
-                    return node.id;
-                } )
-            );
-
-
-            function _sameLevelNodes( node ) {
-                var _nodes
-                    , _level = node._wt_level
-                    , _children = node._wt_children
-                    ;
-
-                _nodes = nodesOfSameLevel[ _level ] = nodesOfSameLevel[ _level ] || []; 
-                _nodes.push( node );
-                if ( _children ) {
-                    _children.forEach( function( child ) {
-                        _sameLevelNodes( child );
-                    } );
-                }
-            }
-        });
-
-    })();
-
-</div>
-<div class="test-panel"></div>
-</div>
-
-
-
-
 ## 算法实现
 
 `层次布局算法`(`无优化`)：
@@ -1491,9 +1054,6 @@
                 , delta = opt.avoidSameLevelTravelThroughDelta || 0.2
                 ;
 
-            if(opt.perfectAdjustSiblingsOrder){
-                computeLENodes(tree);
-            }
             depthTravel(tree, treeOffsetX * xUnit);
             tree._wt_maxlevel = maxLevel;
             tree._hier_offsetx = treeOffsetX;
@@ -1518,35 +1078,17 @@
                 }
             }
 
-            function computeLENodes(tree){
-                var nodes = sigma.utils.getNodesFromTree( tree )
-                    , nodeIds = nodes.map( function( node ) {
-                        return node.id;
-                    } )
-                    , subGraph = me.graph.getSubGraph({
-                        filter: function( node ) {
-                            return nodeIds.indexOf( node.id ) >= 0;
-                        }
-                    })
-                    ;
-                sigma.utils.computeLocalAndExternalNodes( subGraph, tree );
-            }
-
             function depthTravel(node, parentX){
-                // note: should be called before getting `node._wt_children` 
-                if(opt.perfectAdjustSiblingsOrder){
-                    sigma.utils.adjustSiblingsOrder2(node);
-                }
-                else if(opt.adjustSiblingsOrder){
-                    sigma.utils.adjustSiblingsOrder(node, edges);
-                }
-
                 var children = node._wt_children
                     , leaves = node._wt_leaves
                     , level = node._wt_level
                     , parentX = parentX || 0
                     , currentX = 0
                     ;
+
+                if(opt.adjustSiblingsOrder){
+                    sigma.utils.adjustSiblingsOrder(node, edges);
+                }
 
                 if(avoidSameLevelTravelThrough){
                     ( nodesOfSameLevel[level] 
@@ -1611,7 +1153,6 @@
         var s = fly.createShow('#test_50');
         var partialLayout = 0;
         var layoutHorizontal = 0;
-        var perfectAdjustSiblingsOrder = 0;
         // var g1 = getRandomGraph(20, 18, 8);
         // var g1 = getLineGraph(20, 18, {nodeSize: 8});
         // var g1 = networkGraph_edges_between_the_same_level_nodes_3;
@@ -1633,7 +1174,6 @@
         // var g1 = networkGraph_triangle_0801_2;
         var g1 = networkGraph_complex_hier_160816; 
         var g1 = networkGraph_complex_hier_160817; 
-        var g1 = networkGraph_complex_hier_160820; 
 
         if(partialLayout){
             g1.nodes.forEach(function(node){
@@ -1741,7 +1281,6 @@
                 // , heightLimit: 2000
                 // unit: 50
                 , adjustSiblingsOrder: 1
-                , perfectAdjustSiblingsOrder: perfectAdjustSiblingsOrder
                 , avoidSameLevelTravelThrough: 1
                 , avoidSameLevelTravelThroughDelta: 0.2
                 , layoutHorizontal: layoutHorizontal
