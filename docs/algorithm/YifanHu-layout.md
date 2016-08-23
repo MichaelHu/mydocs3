@@ -44,28 +44,7 @@
 <script src="./js/graph-layout/sigma-graph.js"></script>
 <script src="./js/graph-layout/sigma-prototype.js"></script>
 
-<script src="./js/network.js"></script>
-<script src="./js/network-0520.js"></script>
-<script src="./js/networkGraph0520-allEdges.js"></script>
-<script src="./js/network-grid-0521.js"></script>
-<script src="./js/networkGraph-tree-0521.js"></script>
-<script src="./js/network-forceAtlas2-0510.js"></script>
-<script src="./js/network-2circle-0523.js"></script>
-<script src="./js/network-edges-between-the-same-level-nodes-0524.js"></script>
-<script src="./js/network-edges-between-the-same-level-nodes-2-0524.js"></script>
-<script src="./js/network-edges-between-the-same-level-nodes-3-0531.js"></script>
-<script src="./js/network-tree-0524.js"></script>
-<script src="./js/network-edges-between-levels-0526.js"></script>
-<script src="./js/network-many-children-0526.js"></script>
-<script src="./js/network-forest-0527.js"></script>
-<script src="./js/network-simpletree-0528.js"></script>
-<script src="./js/network-simple-0604-1.js"></script>
-<script src="./js/network-circle-0628.js"></script>
-<script src="./js/network-mesh-0628.js"></script>
-<script src="./js/network-person-event-event-person-0729.js"></script>
-<script src="./js/network-person-event-event-person-160801.js"></script>
-<script src="./js/network-triangle-0801.js"></script>
-<script src="./js/network-triangle-0801-2.js"></script>
+<script src="./js/graph-data/all.js"></script>
 
 
 
@@ -1128,18 +1107,20 @@ todo
             , newOpt = Object.assign({}, opt, {readPrefix: ''})
             ;
 
-        if(isLinelikeLayout(nodes, {
-                threshold: 10
-            })
-            || hasWhollyOverlayedNodes(nodes)
-            || hasInvalidValues(nodes)
-            ){
-            // note: `opt.readPrefix` must be ''
-            me.layoutGrid(newOpt)
-                .applyLayoutInstantly({
-                    readPrefix: 'grid_'
-                    , clearOld: 1
-                });
+        if(!opt.skipPreLayoutCheck) {
+            if(isLinelikeLayout(nodes, {
+                    threshold: 10
+                })
+                || hasWhollyOverlayedNodes(nodes)
+                || hasInvalidValues(nodes)
+                ){
+                // note: `opt.readPrefix` must be ''
+                me.layoutGrid(newOpt)
+                    .applyLayoutInstantly({
+                        readPrefix: 'grid_'
+                        , clearOld: 1
+                    });
+            }
         }
 
         sigma.utils.layoutYifanHu(nodes, edges, opt);

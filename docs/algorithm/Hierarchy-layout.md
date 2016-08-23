@@ -64,6 +64,8 @@
 4. `大量`同层`叶子型`节点，形成矩阵
 5. 支持`横向`布局
 6. `层高`与同层`邻接`节点`距离`可独立`配置`，特别对于同层孩子节点较多的情况，加大层高效果更明显
+7. 综合考虑与`兄弟`节点关系、与`堂兄弟`节点关系以及其他`外部`节点关系，使得有关联的节点相互靠近，获得较优排布。已`包含3`的优化
+8. 直接兄弟、间接兄弟、直接堂兄弟、间接堂兄弟按`子树大小`排序，能解决兄弟排序算法的bad case（虽不一定是普遍最优，但能有效解决目前发现的问题）。
 
 `适用场景`：
 
@@ -597,6 +599,17 @@
 
 
 
+#### 兄弟&堂兄弟算法
+
+`特征`：
+
+1. `di_brothers`和`indi_brothers`可能有`交集`，也即节点B既是A的直接兄弟，同时还是间接兄弟 
+2. `di_ex_brothers`和`indi_ex_brothers`也可能有`交集`，也即节点B既是A的直接堂兄弟，同时还是间接堂兄弟
+
+`算法`：todo
+
+
+
 
 #### 代码实现
 
@@ -783,6 +796,7 @@
                     }
                 } 
                 
+                // one external node produce one brother, that's enough.
                 if ( flag ) {
                     continue;
                 }
@@ -827,6 +841,16 @@
                     nodes.push( node );
                 }
             }
+            if( opt.sortBySubTreeSize ) {
+                nodes.sort( function( a, b ) {
+                    // siblings those have a shorter and smaller subtree
+                    // are close to each other
+                    return ( 
+                        a._wt_height + a._wt_leaves
+                            - b._wt_height - b._wt_leaves
+                    );
+                } );
+            }
             return nodes;
         }
 
@@ -848,9 +872,15 @@
     (function(){
 
         var s = fly.createShow('#test_getLocalAndExternalNodes');
-        var g1 = getRandomGraph(10, 10, 10);
-        var g1 = networkGraph_complex_hier_160817; 
+        var optSortBySubTreeSize = 0;
+        // var g1 = getRandomGraph(10, 10, 10);
+        // var g1 = networkGraph_complex_hier_160817; 
+        var g1 = networkGraph_complex_hier_160823; 
         // var g1 = networkGraph_complex_hier_160816;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_3;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        // var g1 = networkGraph_triangle_0801_2;
         var containerId = 'test_getLocalAndExternalNodes_graph';
         var rendererSettings = {
                 // captors settings
@@ -909,6 +939,10 @@
         var forest = sm1.graph.getLayoutForest()
             ;
 
+        if ( optSortBySubTreeSize ) {
+            sigma.utils.computeHeight( forest );
+        }
+
         s.show('show nodes\' `_wt_lenodes`: ');
         var id = 1;
         forest.forEach(function(tree){
@@ -923,7 +957,11 @@
                     }
                 })
                 ;
-            sigma.utils.computeLocalAndExternalNodes( subGraph, tree );
+            sigma.utils.computeLocalAndExternalNodes( 
+                subGraph
+                , tree
+                , { sortBySubTreeSize: optSortBySubTreeSize } 
+            );
             s.append_show(
                 'tree ' + id++
             );
@@ -969,14 +1007,81 @@
 
 
 
+### clearLocalAndExternalNodes
+
+`clearLocalAndExternalNodes( tree )`：清理`_wt_lenodes`数据结构，避免循环引用，无法对节点数据进行序列化等操作。
+
+    @[data-script="javascript"]sigma.utils.clearLocalAndExternalNodes
+        = function( tree ) {
+        if ( !tree ) {
+            return;
+        }
+
+        _depthTravel( tree );
+
+        function _depthTravel( tree ) {
+            var children = tree._wt_children;
+
+            delete tree._wt_lenodes;
+            children.forEach( function( child ) {
+                _depthTravel( child );
+            } );
+        }
+    };
+
+
 
 ### adjustSiblingsOrder2
 
-`adjustSiblingsOrder2()`：调整兄弟节点间的排布顺序。综合考虑`di_brothers`, `indi_brothers`, `di_ex_brothers`, `indi_ex_brothers`, `other_ex_nodes`，得出一个`较优`排布方案。
+`adjustSiblingsOrder2()`：调整`兄弟`节点间的排布顺序。综合考虑`di_brothers`, `indi_brothers`, `di_ex_brothers`, `indi_ex_brothers`, `other_ex_nodes`，得出一个`较优`排布方案。
+
+
+#### 效果图
+
+以下是一些`good case`，能将关联的节点靠近排布。
+
+ <img src="./img/hier-optimize-160822.png" height="300">
+
+ <img src="./img/hier-optimize-160822-1.png" height="300">
+
+也存在一些`bad case`，如下图所示，主要是对间接兄弟节点一视同仁，没有做细化分析，反而导致更多的边交叉：
+
+ <img src="./img/hier-badcase-160822.png" height="300">
+
+这个bad case可以通过对兄弟节点进行按`子树大小排序`来解决，对应`sortBySubTreeSize`选项。再次优化后的效果如下：
+
+ <img src="./img/hier-optimize-160823.png" height="300"> 
 
 
 #### 算法描述
 
+ <img src="./img/hier-adjust-siblings.png" height="500">
+
+`前置说明`：
+
+1. 算法依赖前文`computeLocalAndExternalNodes()`方法所获得的数据结构
+2. 该算法用于调整`兄弟`节点间的先后顺序，以较优的排布，保持与`兄弟`节点、`堂兄弟`节点、`堂子孙`节点之间的空间关系
+3. 综合考虑`直接兄弟`关系、`间接兄弟`关系、`直接堂兄弟`关系、`间接堂兄弟`关系，以及与`其他外部`节点关系。
+    在`排布`节点时，`优先级`排序为：`直接`兄弟关系 `>` `间接`兄弟关系；堂兄弟关系以及外部节点关系决定`靠左`还是`靠右`。
+4. 兄弟节点也看成多棵树，使用树的相关算法获得排布序列。树的相关理论贯穿其中
+
+
+`算法步骤`：
+
+1. 根据`children = di_brothers + indi_brothers`，对同层兄弟节点进行`深度`遍历，获得`森林`。
+    遍历过程中，收集上图所示的每棵树的统计信息：`los`, `ldeb`, `lideb`, `rideb`, `loen`, `roen`
+2. 针对`森林`的每一棵tree的统计信息，获得合适的根节点，方法为：
+
+    * 有`左直接`堂兄弟，则以第一个拥有左直接堂兄弟的节点为根，排布方向为`ltr`，排序权重为`1`
+    * 有`右直接`堂兄弟，则以第一个拥有右直接堂兄弟的节点为根，排布方向为`rtl`，排序权重为`10`
+    * 有`左间接`堂兄弟，则以第一个拥有左间接堂兄弟的节点为根，排布方向为`ltr`，排序权重为`2`
+    * 有`右间接`堂兄弟，则以第一个拥有右间接堂兄弟的节点为根，排布方向为`rtl`，排序权重为`9`
+    * 有`左外部`节点，则以第一个拥有左外部节点的节点为根，排布方向为`ltr`，排序权重为`3`
+    * 有`右外部`节点，则以第一个拥有右外部节点的节点为根，排布方向为`rtl`，排序权重为`8`
+    * `无外连`节点（无直接堂兄弟、间接堂兄弟和其他外部节点），选树中一度节点或者零度节点为根，排布方向为`ltr`，排序权重为`4`
+
+3. 针对`森林`的每一棵tree，根据排序`权重`从小到大`排序`
+4. 根据排序后的顺序，对每一棵树进行`前序深度`遍历，得到遍历序列，若当前树的排布方向为`rtl`，则将遍历序列进行`逆序`。然后将每棵树的最终遍历序列顺次从左到右添加到最终序列中
 
 
 
@@ -1018,11 +1123,21 @@
                 }
                 newSiblings = newSiblings.concat( groupNodes );
 
+                // pre-order depth travel
                 function _travel( node ) {
+                    // must check first if node has been visited
+                    if ( visitedNodes[ node.id ] ) {
+                        return;
+                    }
+                    visitedNodes[ node.id ] = 1;
+                    groupNodes.push( node );
+
                     var leNodes = node._wt_lenodes 
+                        // may have duplicated items in `children` array
                         , children = leNodes.di_brothers.concat( leNodes.indi_brothers )
                         ;
 
+                    _uniq( children );
                     // drop out visited nodes
                     for ( var i = children.length - 1; i >= 0; i-- ) {
                         if ( visitedNodes[ children[ i ].id ] ) {
@@ -1030,8 +1145,6 @@
                         }
                     }
 
-                    visitedNodes[ node.id ] = 1;
-                    groupNodes.push( node );
                     children.forEach( function( child ) {
                         _travel( child );
                     } );
@@ -1044,6 +1157,7 @@
             var groups = []
                 , group
                 , visitedNodes = {} 
+                , node
                 , info
                 ;
 
@@ -1098,6 +1212,7 @@
 
             function _depthTravel( node ) {
                 var leNodes = node._wt_lenodes 
+                    // may have duplicated items in `children` array
                     , children = leNodes.di_brothers.concat( leNodes.indi_brothers )
                     , di_ex_brothers = leNodes.di_ex_brothers
                     , indi_ex_brothers = leNodes.indi_ex_brothers
@@ -1113,7 +1228,8 @@
                         , hasRightOtherExNode: []
                     }
                     ;
-
+                
+                _uniq( children );
                 if ( children.length <= 1 ) {
                     info.leafOrSingle.push( node );
                 }
@@ -1182,6 +1298,29 @@
             }
         }
 
+        function _uniq( nodesArray ) {
+            var _visitedNodes = {}
+                , _duplicatedIndexes = []
+                , _node
+                , _index
+                ;
+
+            for ( var i = 0; i < nodesArray.length; i++ ) {
+                _node = nodesArray[ i ];
+                if ( _visitedNodes[ _node.id ] ) {
+                    _duplicatedIndexes.push( i ); 
+                }
+                _visitedNodes[ _node.id ] = 1;
+            }
+
+            for ( i = _duplicatedIndexes.length - 1; i >= 0; i-- ) {
+                _index = _duplicatedIndexes[ i ];
+                nodesArray.splice( _index, 1 );
+            }
+
+            return nodesArray;
+        }
+
     };
 
 
@@ -1202,6 +1341,12 @@
         var g1 = networkGraph_complex_hier_160817; 
         // var g1 = networkGraph_complex_hier_160816;
         var g1 = networkGraph_complex_hier_160820; 
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_3;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        // var g1 = networkGraph_person_event_event_person_0729;
+        // var g1 = networkGraph_person_event_event_person_0801;
+        var g1 = networkGraph_triangle_0801_2;
         var containerId = 'test_adjustSiblingsOrder2_graph';
         var rendererSettings = {
                 // captors settings
@@ -1274,103 +1419,64 @@
                     }
                 })
                 , nodesOfSameLevel = {}
-                , nodesOfLevel2 
-                , nodesOfLevel3
-                , node_2_1
-                , children_2_1
-                , node_2_3
-                , children_2_3
-                , newOrder
-                , siblingGroups
-                , newSiblings
                 ;
 
             _sameLevelNodes( tree );
-            nodesOfLevel2 = nodesOfSameLevel[ 2 ];
-            nodesOfLevel3 = nodesOfSameLevel[ 3 ];
-            node_2_1 = nodesOfLevel2[ 0 ];
-            children_2_1 = node_2_1._wt_children;
-            node_2_3 = nodesOfLevel2[ 1 ];
-            children_2_3 = node_2_3._wt_children;
-            
-            s.append_show(
-                'nodesOfLevel2'
-                , nodesOfLevel2 && nodesOfLevel2.map( function( node ) {
-                    return node.id;
-                } )
-            );
-            s.append_show(
-                'nodesOfLevel3'
-                , nodesOfLevel3 && nodesOfLevel3.map( function( node ) {
-                    return node.id;
-                } )
-            );
-            s.append_show(
-                'children_2_1'
-                , children_2_1 && children_2_1.map( function( node ) {
-                    return node.id;
-                } )
-            );
-            s.append_show(
-                'children_2_3'
-                , children_2_3 && children_2_3.map( function( node ) {
-                    return node.id;
-                } )
-            );
+            s.append_show( '\nnodes of level: ' );
+            for ( var i in nodesOfSameLevel ) {
+                s.append_show(
+                    'level ' + i
+                    , nodesOfSameLevel[ i ].map( function( node ) {
+                        return node.id;
+                    } )
+                );
+            }
+
 
             s.append_show('\nadjusting sibling order:');
 
             sigma.utils.computeLocalAndExternalNodes( subGraph, tree );
+            _depthTravel( tree );
 
-            // mock
-            children_2_1.forEach( function ( child ) {
-                child.hier_x = 1;
-            } );
-            newOrder = sigma.utils.adjustSiblingsOrder2( 
-                node_2_1
-                , subGraph
-            );
-            siblingGroups = newOrder.siblingGroups;
-            newSiblings = newOrder.newSiblings;
-            s.append_show(
-                'siblingGroups of children_2_1'
-                , siblingGroups.map( function( group ) {
-                    return group.root.id 
-                        + ' - ' + group.direction 
-                        + ' - ' + group.weight
-                        ;
-                } )
-            );
-            s.append_show(
-                'new order of children_2_1'
-                , newSiblings.map( function( node ) {
-                    return node.id;
-                } )
-            );
+            function _depthTravel( node ) {
+                var children = node._wt_children
+                    , info = sigma.utils.adjustSiblingsOrder2( node )
+                    ;
 
+                s.append_show(
+                    'old _wt_children of ' + node.id
+                    , children.map( function( child ) {
+                        return child.id;
+                    } )
+                );
 
-            newOrder = sigma.utils.adjustSiblingsOrder2( 
-                node_2_3
-                , subGraph
-            );
-            siblingGroups = newOrder.siblingGroups;
-            newSiblings = newOrder.newSiblings;
-            s.append_show(
-                'siblingGroups of children_2_3'
-                , siblingGroups.map( function( group ) {
-                    return group.root.id 
-                        + ' - ' + group.direction 
-                        + ' - ' + group.weight
-                        ;
-                } )
-            );
-            s.append_show(
-                'new order of children_2_3'
-                , newSiblings.map( function( node ) {
-                    return node.id;
-                } )
-            );
+                // mock
+                node.hier_x = 1;
 
+                s.append_show(
+                    'group info'
+                    , info.siblingGroups.map( function( group ) {
+                        return [
+                            group.root.id
+                            , group.direction
+                            , group.weight
+                        ].join(' - ');
+                    } ) 
+                );
+
+                children = node._wt_children;
+                s.append_show(
+                    'new _wt_children of ' + node.id
+                    , children.map( function( child ) {
+                        return child.id;
+                    } )
+                    , '\n'
+                );
+
+                children.forEach( function( child ) {
+                    _depthTravel( child );
+                } );
+            }
 
             function _sameLevelNodes( node ) {
                 var _nodes
@@ -1446,7 +1552,7 @@
 
 
 
-`层次布局算法`(`使用均衡优化`、`优化策略1`、`优化策略2`、`优化策略5`、`优化策略6`)：
+`层次布局算法`(`使用均衡优化`、`优化策略1`、`优化策略2`、`优化策略5`、`优化策略6`、`优化策略3`、`优化策略7`、`优化策略8`)：
 
 
     @[data-script="javascript"]sigma.prototype.layoutHierarchy2
@@ -1470,6 +1576,7 @@
             ;
 
         sigma.utils.computeLeaves(forest);
+        sigma.utils.computeHeight(forest);
 
         // if `heightLimit`, computes yUnit again
         if ( opt.heightLimit 
@@ -1529,7 +1636,13 @@
                         }
                     })
                     ;
-                sigma.utils.computeLocalAndExternalNodes( subGraph, tree );
+                sigma.utils.computeLocalAndExternalNodes( 
+                    subGraph
+                    , tree 
+                    , {
+                        sortBySubTreeSize: !opt.noSortBySubTreeSize
+                    }
+                );
             }
 
             function depthTravel(node, parentX){
@@ -1611,10 +1724,11 @@
         var s = fly.createShow('#test_50');
         var partialLayout = 0;
         var layoutHorizontal = 0;
-        var perfectAdjustSiblingsOrder = 0;
+        var perfectAdjustSiblingsOrder = 1;
+        var noSortBySubTreeSize = 1;
         // var g1 = getRandomGraph(20, 18, 8);
         // var g1 = getLineGraph(20, 18, {nodeSize: 8});
-        // var g1 = networkGraph_edges_between_the_same_level_nodes_3;
+        var g1 = networkGraph_edges_between_the_same_level_nodes_3;
         // var g1 = networkGraph_circle_0628;
         // var g1 = networkGraph_mesh_0628;
         // var g1 = networkGraph_FR;
@@ -1630,10 +1744,11 @@
         // var g1 = networkGraph_person_event_event_person_0729;
         // var g1 = networkGraph_person_event_event_person_0801;
         // var g1 = networkGraph_triangle_0801;
-        // var g1 = networkGraph_triangle_0801_2;
-        var g1 = networkGraph_complex_hier_160816; 
-        var g1 = networkGraph_complex_hier_160817; 
-        var g1 = networkGraph_complex_hier_160820; 
+        var g1 = networkGraph_triangle_0801_2;
+        // var g1 = networkGraph_complex_hier_160816; 
+        // var g1 = networkGraph_complex_hier_160817; 
+        // var g1 = networkGraph_complex_hier_160820; 
+        // var g1 = networkGraph_complex_hier_160823; 
 
         if(partialLayout){
             g1.nodes.forEach(function(node){
@@ -1742,6 +1857,7 @@
                 // unit: 50
                 , adjustSiblingsOrder: 1
                 , perfectAdjustSiblingsOrder: perfectAdjustSiblingsOrder
+                , noSortBySubTreeSize: noSortBySubTreeSize
                 , avoidSameLevelTravelThrough: 1
                 , avoidSameLevelTravelThroughDelta: 0.2
                 , layoutHorizontal: layoutHorizontal

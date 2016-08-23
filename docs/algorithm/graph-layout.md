@@ -39,12 +39,12 @@
 
 
 
-<script src="http://258i.com/static/build/sigma/sigma.min.js"></script>
-<script src="http://258i.com/static/build/sigma/plugins/sigma.plugins.animate.min.js"></script>
-<script src="http://258i.com/static/build/sigma/plugins/sigma.layout.noverlap.min.js"></script>
-<script src="http://258i.com/static/build/sigma/plugins/sigma.layout.forceAtlas2.min.js"></script>
-<script src="http://258i.com/static/bower_components/vivagraphjs/dist/vivagraph.min.js"></script>
-<script src="http://258i.com/static/bower_components/lodash/dist/lodash.min.js"></script>
+<script src="file:///Users/hudamin/projects/git/mystatic/build/sigma/sigma.min.js"></script>
+<script src="file:///Users/hudamin/projects/git/mystatic/build/sigma/plugins/sigma.plugins.animate.min.js"></script>
+<script src="file:///Users/hudamin/projects/git/mystatic/build/sigma/plugins/sigma.layout.noverlap.min.js"></script>
+<script src="file:///Users/hudamin/projects/git/mystatic/build/sigma/plugins/sigma.layout.forceAtlas2.min.js"></script>
+<script src="file:///Users/hudamin/projects/git/mystatic/bower_components/vivagraphjs/dist/vivagraph.min.js"></script>
+<script src="file:///Users/hudamin/projects/git/mystatic/bower_components/lodash/dist/lodash.min.js"></script>
 
 <script src="./js/graph-layout/utils.js"></script>
 <script src="./js/graph-layout/sigma-utils.js"></script>
@@ -53,9 +53,9 @@
 
 <script src="./js/graph-data/all.js"></script>
 
-<script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
+<script src="file:///Users/hudamin/projects/git/mystatic/bower_components/snippets/js/mp/fly.js"></script>
 <style type="text/css">
-@import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
+@import "file:///Users/hudamin/projects/git/mystatic/bower_components/snippets/css/mp/style.css";
 .test-graph {
     height: 400px;
 }
@@ -571,7 +571,7 @@
 
 #### computeLeaves
 
-`computeLeaves()`：计算布局森林每个节点包含的叶子节点数。
+`computeLeaves()`：计算布局`森林`每个节点包含的`叶子`节点数。
 
     @[data-script="javascript editable"]sigma.utils.computeLeaves
         = function(forest){
@@ -613,6 +613,140 @@
         });
 
     }
+
+
+
+
+#### computeHeight
+
+`computeHeight()`：计算布局`森林`中每个节点为根的`子树`的`高度`。
+
+    @[data-script="javascript"]sigma.utils.computeHeight 
+        = function( forest, options ) {
+        var opt = options || {};
+
+        forest.forEach( function( tree ) {
+            _depthTravel( tree );
+        } );
+
+        function _depthTravel( node ) {
+            var subTreeHeight = 0
+                , children = node._wt_children
+                ;
+
+            children.forEach( function( child ) {
+                subTreeHeight = Math.max( subTreeHeight, _depthTravel( child ) );
+            } );
+
+            node._wt_height = subTreeHeight + 1;
+            if ( 'function' == typeof opt.onNode ) {
+                opt.onNode( node );
+            }
+
+            return node._wt_height;
+        }
+
+    };
+
+
+<div id="test_computeHeight" class="test">
+<div class="test-container">
+<div id="test_computeHeight_graph" class="test-graph">
+</div>
+<div class="test-console"></div>
+
+    @[data-script="javascript editable"]
+    (function(){
+
+        var s = fly.createShow('#test_computeHeight');
+        // var g1 = getRandomGraph(10, 10, 10);
+        // var g1 = networkGraph_complex_hier_160817; 
+        // var g1 = networkGraph_complex_hier_160816;
+        var g1 = networkGraph_complex_hier_160820; 
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_3;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        // var g1 = networkGraph_person_event_event_person_0729;
+        // var g1 = networkGraph_person_event_event_person_0801;
+        // var g1 = networkGraph_triangle_0801_2;
+        var containerId = 'test_computeHeight_graph';
+        var rendererSettings = {
+                // captors settings
+                doubleClickEnabled: true
+                , mouseWheelEnabled: false
+
+                // rescale settings
+                , minEdgeSize: 0.5
+                , maxEdgeSize: 1
+                , minNodeSize: 1 
+                , maxNodeSize: 5
+
+                // renderer settings
+                , edgeHoverColor: fly.randomColor() 
+                , edgeHoverSizeRatio: 1
+                , edgeHoverExtremities: true
+            };
+        var sigmaSettings = {
+                // rescale settings 
+                sideMargin: 5 
+
+                // instance global settings
+                , enableEdgeHovering: true
+                , edgeHoverPrecision: 5
+                , autoRescale: 0
+            };
+
+        var sm1;
+
+        if((sm1 = isSigmaInstanceExisted('test_computeHeight'))){
+            sm1.kill();
+        };
+
+        sm1 = getUniqueSigmaInstance(
+                    'test_computeHeight'
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g1
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: $('#' + containerId)[0]
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
+
+        sm1
+            .alignCenter({rescaleToViewport: 1})
+            .refresh()
+            ;
+
+        sigmaEnableNodeDrag( sm1 );
+
+        var forest = sm1.graph.getLayoutForest()
+            ;
+
+        s.show('show nodes\' height: \n');
+        sigma.utils.computeHeight(
+            forest
+            , {
+                onNode: function( node ) {
+                    s.append_show( node.id + ': ' + node._wt_height ); 
+                }
+            } 
+        );
+
+    })();
+
+</div>
+<div class="test-panel"></div>
+</div>
+
+
+
+
+
 
 
 
