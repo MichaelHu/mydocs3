@@ -850,7 +850,6 @@ todo
                 , dy: node2[prefix + 'y'] - node1[prefix + 'y']
             }
             , scale
-            , zeroForce = {dx:0, dy:0}
             , tip
             ;
 
@@ -863,7 +862,7 @@ todo
             else{
                 throw new Error(tip);
             }
-            return zeroForce; 
+            return zeroForce(); 
         }
          
         scale = -relativeStrength * optimalDistance * optimalDistance
@@ -921,6 +920,24 @@ todo
 
 
 
+### zeroForce
+
+`zeroForce()`，返回`零力向量`。
+
+    @[data-script="javascript"]function zeroForce() {
+        var force = { dx: 0, dy: 0 };
+
+        // !!NOTE: trigger `copy-on-write`
+        // , especially on windows chrome 50+
+        force.num = 0;
+
+        return force;
+    }
+
+
+
+
+
 ### computeRepulsionForce
 
 
@@ -930,7 +947,6 @@ todo
         node, quadTree, options) {
 
         var opt = options
-            , zeroForce = {dx:0, dy:0, num:0}
             , distance
             , tree = quadTree
             , force
@@ -938,7 +954,7 @@ todo
             ;
 
         if(tree.mass <= 0){
-            return zeroForce;
+            return zeroForce();
         }
 
         distance = getDistance(node, tree, opt);
@@ -955,7 +971,7 @@ todo
 
         if(tree.isLeaf || tree.mass == 1){
             if(distance < 1e-8){
-                force = zeroForce;
+                force = zeroForce();
             }
             else {
                 force = computeElectricalForce(node, tree, distance, opt);  
@@ -969,7 +985,7 @@ todo
             force.num = 1;
         }
         else {
-            force = zeroForce;
+            force = zeroForce();
             force.num = 0;
             tree.children.forEach(function(child){
                 var f = computeRepulsionForce(node, child, options);
@@ -1408,9 +1424,9 @@ todo
         var partialLayout = 0;
         var fixedNodes = 0;
         var layoutBalanced = 1;
-        var g1 = getRandomGraph(50, 60, 8);
-        var g1 = networkGraph_circle_0628;
-        var g1 = networkGraph_mesh_0628;
+        var g1 = getRandomGraph(5, 6, 8);
+        // var g1 = networkGraph_circle_0628;
+        // var g1 = networkGraph_mesh_0628;
         // var g1 = createRawGraphData(30, 50);
         // var g1 = getClusterGraph(100, {xMax: 200, yMax: 200, nodeSize: 8});
         // var g1 = getLineGraph(20, 18, {nodeSize: 8});

@@ -1,8 +1,9 @@
 sigma.prototype.layoutHierarchy2
     = function(options){
+    var me = this;
+    me.initializeLayout();
 
     var opt = options || {} 
-        , me = this
         , forest = me.graph.getLayoutForest(opt)
         , treeOffsetX = 0
         , spaceGrid = opt.spaceGrid || {xSize: 40, ySize: 40}
@@ -18,6 +19,7 @@ sigma.prototype.layoutHierarchy2
         ;
 
     sigma.utils.computeLeaves(forest);
+    sigma.utils.computeHeight(forest);
 
     // if `heightLimit`, computes yUnit again
     if ( opt.heightLimit 
@@ -39,6 +41,9 @@ sigma.prototype.layoutHierarchy2
             , delta = opt.avoidSameLevelTravelThroughDelta || 0.2
             ;
 
+        if(opt.perfectAdjustSiblingsOrder){
+            computeLENodes(tree);
+        }
         depthTravel(tree, treeOffsetX * xUnit);
         tree._wt_maxlevel = maxLevel;
         tree._hier_offsetx = treeOffsetX;
@@ -63,17 +68,41 @@ sigma.prototype.layoutHierarchy2
             }
         }
 
+        function computeLENodes(tree){
+            var nodes = sigma.utils.getNodesFromTree( tree )
+                , nodeIds = nodes.map( function( node ) {
+                    return node.id;
+                } )
+                , subGraph = me.graph.getSubGraph({
+                    filter: function( node ) {
+                        return nodeIds.indexOf( node.id ) >= 0;
+                    }
+                })
+                ;
+            sigma.utils.computeLocalAndExternalNodes( 
+                subGraph
+                , tree 
+                , {
+                    sortBySubTreeSize: !opt.noSortBySubTreeSize
+                }
+            );
+        }
+
         function depthTravel(node, parentX){
+            // note: should be called before getting `node._wt_children` 
+            if(opt.perfectAdjustSiblingsOrder){
+                sigma.utils.adjustSiblingsOrder2(node);
+            }
+            else if(opt.adjustSiblingsOrder){
+                sigma.utils.adjustSiblingsOrder(node, edges);
+            }
+
             var children = node._wt_children
                 , leaves = node._wt_leaves
                 , level = node._wt_level
                 , parentX = parentX || 0
                 , currentX = 0
                 ;
-
-            if(opt.adjustSiblingsOrder){
-                sigma.utils.adjustSiblingsOrder(node, edges);
-            }
 
             if(avoidSameLevelTravelThrough){
                 ( nodesOfSameLevel[level] 
@@ -114,4 +143,4 @@ sigma.prototype.layoutHierarchy2
     ); 
 
     return this;
-};  
+};

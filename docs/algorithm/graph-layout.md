@@ -39,12 +39,12 @@
 
 
 
-<script src="file:///Users/hudamin/projects/git/mystatic/build/sigma/sigma.min.js"></script>
-<script src="file:///Users/hudamin/projects/git/mystatic/build/sigma/plugins/sigma.plugins.animate.min.js"></script>
-<script src="file:///Users/hudamin/projects/git/mystatic/build/sigma/plugins/sigma.layout.noverlap.min.js"></script>
-<script src="file:///Users/hudamin/projects/git/mystatic/build/sigma/plugins/sigma.layout.forceAtlas2.min.js"></script>
-<script src="file:///Users/hudamin/projects/git/mystatic/bower_components/vivagraphjs/dist/vivagraph.min.js"></script>
-<script src="file:///Users/hudamin/projects/git/mystatic/bower_components/lodash/dist/lodash.min.js"></script>
+<script src="http://258i.com/static/build/sigma/sigma.min.js"></script>
+<script src="http://258i.com/static/build/sigma/plugins/sigma.plugins.animate.min.js"></script>
+<script src="http://258i.com/static/build/sigma/plugins/sigma.layout.noverlap.min.js"></script>
+<script src="http://258i.com/static/build/sigma/plugins/sigma.layout.forceAtlas2.min.js"></script>
+<script src="http://258i.com/static/bower_components/vivagraphjs/dist/vivagraph.min.js"></script>
+<script src="http://258i.com/static/bower_components/lodash/dist/lodash.min.js"></script>
 
 <script src="./js/graph-layout/utils.js"></script>
 <script src="./js/graph-layout/sigma-utils.js"></script>
@@ -53,9 +53,9 @@
 
 <script src="./js/graph-data/all.js"></script>
 
-<script src="file:///Users/hudamin/projects/git/mystatic/bower_components/snippets/js/mp/fly.js"></script>
+<script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <style type="text/css">
-@import "file:///Users/hudamin/projects/git/mystatic/bower_components/snippets/css/mp/style.css";
+@import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
 .test-graph {
     height: 400px;
 }
@@ -1426,6 +1426,12 @@
             height = renderer.height;
             width = renderer.width;
 
+            if(opt.wholeViewWhenNeed && !opt.wholeView){
+                if(rect.w > width || rect.h > height){
+                    opt.wholeView = 1;
+                }
+            }
+
             // wholeview mode by setting an appropriate camera ratio
             if(opt.wholeView){
                 ratio = Math.max(rect.w / width, rect.h / height) * 1.3;
@@ -1871,6 +1877,7 @@
                 '_wt_children'
                 , '_wt_leaves'
                 , '_wt_maxlevel'
+                , '_wt_height'
                 , '_wt_level'
                 , '_wt_dy'
 

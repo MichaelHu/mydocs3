@@ -6,6 +6,7 @@ sigma.prototype.initializeLayout
             '_wt_children'
             , '_wt_leaves'
             , '_wt_maxlevel'
+            , '_wt_height'
             , '_wt_level'
             , '_wt_dy'
 

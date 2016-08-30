@@ -1027,7 +1027,6 @@ todo
                 }
                 , {
                     duration: 1000
-                }
             );
 
         }, 500);
@@ -1174,7 +1173,7 @@ todo
 1. 节点`归类`，使满足相同类型，或时间接近的节点靠近。使用`childrenSort` option。
     这需要节点提供足够的信息用于归类。
 
-2. 新子图若`包含B`，同时`AB`间也存在边，则可能出现以下布局效果：
+2. 新子图若`包含B`，同时`AB`间也存在边，则可能出现以下布局效果，同层节点相互边较多，会启动`avoidSameLevelTravelThrough`调整，显得更乱：
 
     <img src="./img/bad-case-edgecollapse.png" height="300">
 
@@ -1223,6 +1222,7 @@ todo
                 {
                     root: eInfo.A
                     , filter: filter1
+                    , perfectAdjustSiblingsOrder: 1 
                 } 
                 , opt
                 , { 
@@ -1374,6 +1374,7 @@ todo
     (function(){
 
         var s = fly.createShow('#test_edge_collapse');
+        var countOfNodesToBeInserted = 10;
         var g1 = getRandomGraph(2, 4, 8);
         var g2 = {
                 nodes: g1.nodes.slice()
@@ -1430,7 +1431,7 @@ todo
                     }
                 ); 
 
-        g2 = insertSubGraph( g2, g2.nodes[0], g2.nodes[1], { count: 10 } );
+        g2 = insertSubGraph( g2, g2.nodes[0], g2.nodes[1], { count: countOfNodesToBeInserted } );
         sm2 = getUniqueSigmaInstance(
                     'test_edge_collapse_right'
                     , {
@@ -1473,10 +1474,12 @@ todo
                     , avoidSameLevelTravelThroughDelta: 0.2
                 }
             )
-            .refresh() // note: must invoke `refresh()` to update coordinates
+            // some nodes may have no `hier_x` and `hier_y`
             .prepareAnimation( {
                 readPrefix: 'hier_'
             } )
+            .alignCenter( {wholeViewWhenNeed: 1, readPrefix: 'hier_'} )
+            .refresh() // note: must invoke `refresh()` to update coordinates
             ;
 
         setTimeout(function(){

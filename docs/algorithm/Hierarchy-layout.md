@@ -5,12 +5,12 @@
 > 信赖和善于利用经时间证明的智慧
 
 
-<script src="file:///Users/hudamin/projects/git/mystatic/build/sigma/sigma.min.js"></script>
-<script src="file:///Users/hudamin/projects/git/mystatic/build/sigma/plugins/sigma.plugins.animate.min.js"></script>
-<script src="file:///Users/hudamin/projects/git/mystatic/build/sigma/plugins/sigma.layout.noverlap.min.js"></script>
-<script src="file:///Users/hudamin/projects/git/mystatic/build/sigma/plugins/sigma.layout.forceAtlas2.min.js"></script>
-<script src="file:///Users/hudamin/projects/git/mystatic/bower_components/vivagraphjs/dist/vivagraph.min.js"></script>
-<script src="file:///Users/hudamin/projects/git/mystatic/bower_components/lodash/dist/lodash.min.js"></script>
+<script src="http://258i.com/static/build/sigma/sigma.min.js"></script>
+<script src="http://258i.com/static/build/sigma/plugins/sigma.plugins.animate.min.js"></script>
+<script src="http://258i.com/static/build/sigma/plugins/sigma.layout.noverlap.min.js"></script>
+<script src="http://258i.com/static/build/sigma/plugins/sigma.layout.forceAtlas2.min.js"></script>
+<script src="http://258i.com/static/bower_components/vivagraphjs/dist/vivagraph.min.js"></script>
+<script src="http://258i.com/static/bower_components/lodash/dist/lodash.min.js"></script>
 
 <script src="./js/graph-layout/utils.js"></script>
 <script src="./js/graph-layout/sigma-utils.js"></script>
@@ -21,9 +21,9 @@
 
 <script src="./js/graph-data/all.js"></script>
 
-<script src="file:///Users/hudamin/projects/git/mystatic/bower_components/snippets/js/mp/fly.js"></script>
+<script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <style type="text/css">
-@import "file:///Users/hudamin/projects/git/mystatic/bower_components/snippets/css/mp/style.css";
+@import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
 .test-graph {
     height: 400px;
 }
@@ -930,6 +930,7 @@
                 ); 
 
         sm1
+            .normalizeSophonNodes()
             .alignCenter({rescaleToViewport: 1})
             .refresh()
             ;
@@ -1396,6 +1397,7 @@
                 ); 
 
         sm1
+            .normalizeSophonNodes()
             .alignCenter({rescaleToViewport: 1})
             .refresh()
             ;

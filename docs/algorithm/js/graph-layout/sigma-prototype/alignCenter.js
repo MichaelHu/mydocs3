@@ -20,6 +20,12 @@ sigma.prototype.alignCenter = function(options){
         height = renderer.height;
         width = renderer.width;
 
+        if(opt.wholeViewWhenNeed && !opt.wholeView){
+            if(rect.w > width || rect.h > height){
+                opt.wholeView = 1;
+            }
+        }
+
         // wholeview mode by setting an appropriate camera ratio
         if(opt.wholeView){
             ratio = Math.max(rect.w / width, rect.h / height) * 1.3;
@@ -52,4 +58,3 @@ sigma.prototype.alignCenter = function(options){
 
     return me;
 } 
-
