@@ -120,6 +120,14 @@
         
         var $navbar = $("<div></div>").attr("id", "navbar-auto")
             .append($ul)
+            .append(
+                [
+                '<div class="navi">'
+                , '<div class="arrow up"></div>'
+                , '<div class="arrow down"></div>'
+                , '</div>'         
+                ].join('')
+            )
             .on('click', function(e){
                 var $target = $(e.target),
                     $link;
@@ -134,6 +142,67 @@
                 }
             });
         
+
+        var activeScrolling = 0
+            , deltaY = 0
+            , timer
+            ;
+
+        $navbar.find('.arrow')
+            .on('mouseover', function(e){
+                if(activeScrolling){
+                    return;
+                }
+
+                activeScrolling = 1;
+                $(this).addClass('active');
+                if($(this).hasClass('up')){
+                    deltaY = -100;
+                } 
+                else {
+                    deltaY = 100;
+                }
+                scrolling();
+            })
+            .on('click', function(e){
+                var cont = $navbar[0];
+
+                activeScrolling = 0;
+                deltaY = 0;
+                e.preventDefault();
+                e.stopPropagation();
+
+                if(timer) {
+                    clearTimeout( timer );
+                }
+
+                if($(this).hasClass('up')){
+                    cont.scrollTop = 0;
+                } 
+                else {
+                    cont.scrollTop = cont.scrollHeight - cont.offsetHeight;
+                }
+            })
+            .on('mouseout', function(e){
+                $(this).removeClass('active');
+                activeScrolling = 0;
+                deltaY = 0;
+                if(timer){
+                    clearTimeout( timer );
+                }
+            })
+            ;
+
+        function scrolling() {
+            _scrolling();
+        } 
+
+        function _scrolling() {
+            $navbar[ 0 ].scrollTop += deltaY; 
+            if( activeScrolling ) {
+                timer = setTimeout( _scrolling, 200 );
+            }
+        }
         $('body')
             .prepend($navbar)
             .scrollspy({ target: '#navbar-auto' })
