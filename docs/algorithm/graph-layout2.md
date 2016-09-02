@@ -661,6 +661,7 @@
 
 
 
+#### 算法验证
 
 <div id="test_30" class="test">
 <div class="test-container">
@@ -1027,6 +1028,7 @@ todo
                 }
                 , {
                     duration: 1000
+                }
             );
 
         }, 500);

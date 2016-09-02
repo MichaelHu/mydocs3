@@ -309,10 +309,11 @@
 
 
 
-## 固定布局
+
+## 常用方法及验证
 
 
-### 新增常用方法
+### 常用方法
 
 
 #### sortByNodesDegree
@@ -1473,7 +1474,7 @@
 #### Grid类
 
 
-`Grid工具类`：均衡布局所使用的`空间管理`工具类。
+`Grid工具类`：均衡布局所使用的`空间管理`工具类。详细信息和实现可查看<a href="./layout-grid.md.preview.html">layout-grid</a>
 
 
     @[data-script="javascript editable"](function(){
@@ -1889,6 +1890,8 @@
                 , 'circle_y'
                 , 'grid_x'
                 , 'grid_y'
+                , 'resize_x'
+                , 'resize_y'
 
                 , 'fixed'
             ]
@@ -1902,6 +1905,193 @@
 
         return me;
     };
+
+
+
+
+
+
+
+#### resizeOccupiedSpace
+
+
+`resizeOccupiedSpace( nodes, ratio )`：调整图的空间占用大小。
+
+    @[data-script="javascript"]sigma.utils.resizeOccupiedSpace 
+        = function( nodes, ratio, options ) {
+        var opt = options || {}
+            , nodes = nodes || []
+            , ratio = ratio || 1
+            , center = opt.center
+            , readPrefix = opt.readPrefix || ''
+            , writePrefix = opt.writePrefix || ''
+            , rect
+            ;
+
+        if ( nodes.length < 2 || ratio == 1 ) {
+            return;
+        }
+
+        if ( !center ) {
+            rect = sigma.utils.getNodesRect( nodes, opt );
+            center = {
+                x: rect.x + rect.w / 2
+                , y: rect.y + rect.h / 2
+            };
+        }
+
+        nodes.forEach( function( node ) {
+            node[ writePrefix + 'x' ] = ratio * node[ readPrefix + 'x' ]
+                + ( 1 - ratio ) * center.x;
+            node[ writePrefix + 'y' ] = ratio * node[ readPrefix + 'y' ]
+                + ( 1 - ratio ) * center.y;
+        } );
+    };
+
+    sigma.prototype.resizeOccupiedSpace = function( ratio, options ) {
+        var me = this
+            , g = me.graph.getSubGraph( options )
+            ;
+
+        sigma.utils.resizeOccupiedSpace( g.nodes, ratio, options );
+        return me;
+    };
+
+
+
+<div id="test_resizeOccupiedSpace" class="test">
+<div class="test-container">
+<div id="test_resizeOccupiedSpace_graph" class="test-graph">
+</div>
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_resizeOccupiedSpace');
+        var ratio = 20;
+        var center = { x: 1.5, y: 1.5 };
+        var center = null;
+        var g1 = getRandomGraph( 15, 10, 8 ); 
+        // var g1 = getLineGraph( 15, 10, {nodeSize: 8});
+        var containerId = 'test_resizeOccupiedSpace_graph';
+        var rendererSettings = {
+                // captors settings
+                doubleClickEnabled: true
+                , mouseWheelEnabled: false
+
+                // rescale settings
+                , minEdgeSize: 0.5
+                , maxEdgeSize: 1
+                , minNodeSize: 1 
+                , maxNodeSize: 5
+
+                // renderer settings
+                , edgeHoverColor: fly.randomColor() 
+                , edgeHoverSizeRatio: 1
+                , edgeHoverExtremities: true
+                , drawLabels: false
+            };
+        var sigmaSettings = {
+                // rescale settings 
+                sideMargin: 10 
+
+                // instance global settings
+                , enableEdgeHovering: true
+                , edgeHoverPrecision: 5
+            };
+
+        var rect;
+        var sm;
+
+        g1.nodes.forEach(function(node){
+            if ( Math.random() < 0.3 ) {
+                node.color = '#aaa';
+            }
+            else {
+                node.selected = true;
+            }
+        });
+
+        if((sm = isSigmaInstanceExisted(containerId))){
+            sm.kill();
+        };
+
+        sm = getUniqueSigmaInstance(
+                    containerId
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g1
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: containerId
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
+
+        sm.refresh()
+            ;
+
+        s.show( 'before resize: ' );
+
+        rect = sigma.utils.getNodesRect( sm.graph.nodes() );
+        s.append_show( 'rect', transformRect( rect ) );
+        s.append_show( sm.graph.nodes().map( function( node ){
+            return node.x.toPrecision( 3 ) + '_' 
+                + node.y.toPrecision( 3 )
+                ;
+        } ) );
+
+        sm.resizeOccupiedSpace( 
+                ratio
+                , { 
+                    writePrefix: 'resize_' 
+                    , filter: function( node ) { return node.selected; }
+                    , center: center
+                } 
+            )
+            .prepareAnimation( { readPrefix: 'resize_' } )
+            ;
+
+        setTimeout( function() {
+            sigma.plugins.animate(
+                sm
+                , {
+                    x: 'resize_x'
+                    , y: 'resize_y'
+                }
+                , {
+                    duration: 1000
+                    , onComplete: function() {
+                        s.append_show( 'after resize: ' )
+                        rect = sigma.utils.getNodesRect( sm.graph.nodes() );
+                        s.append_show( 'rect', transformRect( rect ) );
+                        s.append_show( sm.graph.nodes().map( function( node ){
+                            return node.x.toPrecision( 3 ) + '_' 
+                                + node.y.toPrecision( 3 )
+                                ;
+                        } ) );
+                    }
+                }
+            );
+        }, 500 );
+
+        function transformRect( rect ) {
+            for ( var i in rect ) {
+                rect[ i ] = rect[ i ].toPrecision( 3 );
+            }
+            return rect;
+        }
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
 
 
 
@@ -2336,6 +2526,12 @@
 </div>
 
 
+
+
+
+
+
+## 固定布局
 
 
 ### 矩阵布局

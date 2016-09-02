@@ -14,6 +14,12 @@ hudamin 2014
 
 
 
+## for循环
+
+    for (( a=9; a>=1; a-- )); do git stash drop stash@{$a}; done
+
+
+
 ## 版本号
 
 ### 内核版本号
