@@ -1,7 +1,7 @@
 # OpenSSL介绍
 
 
-## 一、使用openssl命令生成SSL证书的步骤
+## 使用openssl命令生成SSL证书的步骤
 
     #!/bin/bash
     
@@ -26,12 +26,12 @@
     openssl pkcs12 -export -inkey ssl.key -in ssl.crt -out ssl.pfx
 
 
-## 二、最终生成如下文件
+## 最终生成如下文件
 
     ssl.key ssl.csr ssl.crt ssl.pfx
 
 
-## 三、nginx配置
+## nginx配置
 
 
 

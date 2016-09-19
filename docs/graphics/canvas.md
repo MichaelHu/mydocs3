@@ -398,7 +398,6 @@ closePath()并`不会清空`当前路径的子路径列表。
 
 
 
-
 ## 有用的属性
 
 `devicePixelRatio`：<http://www.html5rocks.com/en/tutorials/canvas/hidpi/>
@@ -499,6 +498,8 @@ a window extension by `CSSOM`:
         var canvas = $('#test_10 canvas').get(0);
         canvas.width = 200;
         canvas.height = 200;
+        canvas.style.width = 200 + 'px';
+        canvas.style.height = 200 + 'px';
 
         var image = new Image();
         image.src = './img/arcto_radius-100.png';
@@ -904,6 +905,12 @@ x0,y0为渐变起始点，x1,y1为渐变结束点。
 3. 剪切图像，并在画布上定位被剪切的部分
 
         context.drawImage(img,sx,sy,swidth,sheight,x,y,width,height);
+
+
+
+## 紧贴直线的文本
+
+todo
 
 
 
