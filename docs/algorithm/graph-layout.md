@@ -340,6 +340,9 @@
     });
 
 
+
+
+
 #### getNodeById
 
 `getNodeById()`：根据`节点id`获取节点`对象`。
@@ -364,7 +367,7 @@
 
 `广度`遍历过程可以形成`树形`结构。如下图所示：
 
-@[style="text-align:center"]<img src="./img/graph-width-travel.png" width="560">
+@[style="text-align:center"]<img src="./img/graph-width-travel.png" width="900">
 
     @[data-script="javascript"]sigma.utils.widthTravel
         = function(nodes, edges, root, callbacks, excludes) {
@@ -458,6 +461,15 @@
 #### getSubGraph
 
 `getSubGraph()`：根据指定`过滤`条件获取`子图`（subgraph)。
+
+> @param {object} [options]
+
+    {
+        filter: function( node ) { ... }
+        , edgeFilter: function( edge ) { ... }
+    }
+
+以下为代码实现：
 
     @[data-script="javascript"]sigma.classes.graph.addMethod(
         'getSubGraph'
@@ -935,10 +947,11 @@
         }
 
         function isNodeInPath(node){
-            return path.map(function(_node){return _node.id;})
+            return ( 
+                path.map(function(_node){return _node.id;})
                 .indexOf(node.id)
                 != -1
-                ;
+            );
         }
 
         function getChildren(node){
@@ -1110,6 +1123,17 @@
 
 `getCircleForest()`：获得`环形`布局`森林`。
 
+> @param {object} [options]
+
+    {
+        root: null
+        , makeMaxDegreeNodeRoot: 0 
+        , useComplicatedLoop: 0
+    }
+
+
+以下是代码实现：
+
     @[data-script="javascript"]sigma.utils.getCircleForest
         = function(nodes, edges, options){
 
@@ -1128,7 +1152,14 @@
         edges = edges || [];
 
         do {
-            circuits = sigma.utils.getCircuits(nodes, edges, tree);
+            if ( opt.useComplicatedLoop ) {
+                circuits = sigma.utils.getComplicatedLoops( nodes, edges, { root: tree } )
+                            .complicated;
+            }
+            else {
+                circuits = sigma.utils.getCircuits(nodes, edges, tree);
+            }
+
             excludes = {};
 
             if(circuits.length > 0){
@@ -1894,6 +1925,7 @@
                 , 'resize_y'
 
                 , 'fixed'
+                , '_tmp_children'
             ]
             ;
 

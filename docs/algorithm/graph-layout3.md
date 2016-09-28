@@ -38,15 +38,15 @@
 
 
 
-## 固定布局-续
+## 环形布局
+
+> 固定布局-续
 
 
-### 环形布局
+### 算法描述
 
 
-#### 算法描述
-
-`环形布局算法`：
+#### 环形布局算法
 
 从`中心点`root开始，对图进行`环形`布局。
 
@@ -62,13 +62,487 @@
 * `angleStep`，在圆环上排布节点时的角度增量，该值对于不同层次的圆环不能一致，一般与半径成反比
 
 
-`优化`：
+
+#### 优化策略
 
 * `root`选取，以`最大度数`节点作为获取遍历森林时的起点，可以一定程度上避免`边交叉`以及`树状`布局
 * `无回路`情况的tree，将根节点放置在`圆环中心`
+* 使用连通图的`最大复杂回路`取代从root开始的回路
 
 
-#### 算法实现
+
+#### 应用场景
+
+* 适用于边数大于节点数，存在回路的图
+* 对于层次较多的纯树形布局，效果不好
+
+
+
+
+
+
+### 依赖方法
+
+其他依赖方法可以从<a href="./graph-layout.md.preview.html">graph-layout</a>获取。主要包括：
+`getCircleForest()`, `getCircuits()`等。
+
+
+#### getGraphFromTree
+
+`getGraphFromTree( tree, allEdges )`: 从`树`结构中获取`图`信息，包含nodes和edges。
+
+    @[data-script="javascript"]sigma.utils.getGraphFromTree
+        = function( tree, allEdges ) {
+        var nodes = []
+            , nodesHash = {}
+            , edges = []
+            ;
+
+        allEdges = allEdges || [];
+        depthTravel( tree );
+        allEdges.forEach( function( edge ) {
+            if ( nodesHash[ edge.source ]
+                || nodesHash[ edge.target ] ) {
+                edges.push( edge );
+            }
+        } );
+        return {
+            nodes: nodes
+            , edges: edges
+        };
+
+        function depthTravel( node ) {
+            nodes.push( node );
+            nodesHash[ node.id ] = 1;
+            if ( node._wt_children ) {
+                node._wt_children.forEach( function( child ) {
+                    depthTravel( child );
+                });
+            }
+        }
+    }; 
+
+
+
+<div id="test_getcomplicatedloops" class="test">
+<div class="test-container">
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_getcomplicatedloops');
+        var g = networkGraph_complicated_loops_0928;
+        var forest = sigma.utils.getLayoutForest( g.nodes, g.edges );
+        var newGraph;
+
+        if ( forest.length == 1 ) {
+            newGraph = sigma.utils.getGraphFromTree( forest[ 0 ], g.edges );
+            s.show( 
+                'old graph: [ ' + g.nodes.length + ', ' + g.edges.length + ' ] ' 
+                , 'new graph: [ ' + newGraph.nodes.length + ', ' + newGraph.edges.length + ' ] ' 
+            );
+        }
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+#### getMaxComplicatedLoop
+
+`getMaxComplicatedLoop( nodes, edges, options )`: 获取连通图的`最大`复杂回路。
+`复杂回路`的介绍见下方`getComplicatedLoops()`。
+
+    @[data-script="javascript"]sigma.utils.getMaxComplicatedLoop
+        = function( nodes, edges, options ) {
+        var opt = options || {}
+            , loops = sigma.utils.getComplicatedLoops(
+                nodes, edges, opt
+            )
+            , maxLoops = null
+            ;
+
+        loops = loops.complicated;
+        if ( loops.length ) {
+            loops.sort( function( loopA, loopB) {
+                return loopB.length - loopA.length;
+            } );
+            maxLoops = loops[ 0 ];
+        }
+
+        return maxLoops;
+    };
+
+
+
+
+#### getComplicatedLoops
+
+`getComplicatedLoops( nodes, edges, options )`: 获取连通图的所有`复杂回路`。
+
+复杂回路定义，`todo`。
+
+简单说，`复杂回路`就是回路中`点`可以`重复`，`边不`能`重复`。
+
+> @param {object} [options]
+
+    { 
+        getSimpleLoop: 0
+    }
+
+
+以下为代码实现：
+
+    @[data-script="javascript"]sigma.utils.getComplicatedLoops
+        = function ( nodes, edges, options ) {
+        var opt = options || {}
+            , visitedNodes = {}
+            , path = []
+            , complicatedLoops = []
+            , subPathIfAny
+            , root
+
+            // only for simple loops
+            , ancestors = [] 
+            , simpleLoops = []
+            , getSimpleLoop = opt.getSimpleLoop
+            ;
+
+        if ( nodes.length ) {
+            root = opt.root || nodes[ 0 ];
+
+            if ( root ) {
+                _depthTravel( root );
+            }
+
+            if ( path.length > 1 ) {
+                subPathIfAny = _pathPopTill( root );
+                if ( subPathIfAny.length ) {
+                    complicatedLoops.push( subPathIfAny );
+                }
+            }
+        }
+
+        return {
+            complicated: complicatedLoops
+            , simple: simpleLoops
+        };
+
+        function _depthTravel( node, parent ) {
+            var _children = _getChildren( node, parent )
+                , _nodeId = node.id
+                ;
+
+            path.push( node );
+
+            visitedNodes[ _nodeId ] = 1
+            node._loops = [];
+
+            // for simple loops
+            if ( getSimpleLoop ) {
+                ancestors.push( node );
+            }
+
+            _children.forEach( function( _child ) {
+                var _childId = _child.id
+                    , _loop
+                    , _simpleLoop  // for simple loop
+                    , _loops
+                    , _inSameLoop = 0
+                    , _subPath
+                    ;
+
+                if ( visitedNodes[ _childId ] ) {
+                    // loop nodes sequence must begin from node which is visited earlier.
+                    if ( 
+                        path.indexOf( _child ) < path.indexOf( node )
+                        ) {
+                        _loop = _pathGetLoop( _child, node ); 
+                        node._loops.push( _loop );
+
+                        // for simple loop
+                        if ( getSimpleLoop ) {
+                            _simpleLoop = _pathGetLoop( _child, node, ancestors );
+                            simpleLoops.push( _simpleLoop );
+                        }
+                    }
+                }
+                else {
+                    _depthTravel( _child, node );
+
+                    _loops = _child._loops;
+                    _loops.forEach( function( loop ) {
+                        for ( var i = 0; i < loop.length; i++ ) {
+                            if ( loop[ i ].id == _nodeId ) {
+                                node._loops.push( loop );
+                                _inSameLoop = 1;
+                                break;
+                            }
+                        }
+                    } );
+
+                    if ( !_inSameLoop ) {
+                        _subPath = _pathPopTill( _child );
+                        if ( _subPath.length > 1 ) {
+                            complicatedLoops.push( _subPath );
+                        }
+                    }
+                }
+            } );
+
+            if ( getSimpleLoop ) {
+                ancestors.pop();
+            }
+
+            // console.log( 'loops length of ' + node.id + ': ' + node._loops.length );
+        }
+
+        function _pathGetLoop( from, to, ancestors/* extend for simple loop */ ) {
+            var _path = ancestors || path 
+                , i = _path.length - 1
+                , loop = []
+                , toNodeFound = 0
+                , node
+                ;
+
+            if ( i < 0 ) {
+                // assertion
+                throw new Error( '_pathGetLoop: _path empty' );
+            }
+
+            // if ( _path[ i ].id != to.id ) {
+            //     throw new Error( '_pathGetLoop: the last element is not matched!' );
+            // } 
+
+            while ( i >= 0 ) {
+                node = _path[ i ];
+                if ( !toNodeFound ) {
+                    if ( node.id == to.id ) {
+                        toNodeFound = 1;
+                        loop.push( node );
+                    }
+                }
+                else {
+                    loop.push( node );
+                    if ( node.id == from.id ) {
+                        break;
+                    }
+                }
+                i--;
+            }
+
+            if ( !toNodeFound ) {
+                throw new Error( '_pathGetLoop: _path doesn\'t contain `to` node!' );
+            }
+
+            if ( i < 0 ) {
+                console.log( visitedNodes, _path, from, to );
+                throw new Error( '_pathGetLoop: _path doesn\'t contain `from` node!' );
+            }
+
+            return loop.reverse();
+        }
+
+        function _pathPopTill( node ) {
+            var len = path.length
+                , i = len - 1
+                ;
+
+            if ( i < 0 ) {
+                throw new Error( '_pathPopTill: path empty!' );
+            }
+
+            while ( i >= 0 ) {
+                if ( path[ i ].id == node.id ) {
+                    break;
+                }
+                i--;
+            }
+
+            if ( i < 0 ) {
+                throw new Error( '_pathPopTill: path doesn\'t contain node!' );
+            }
+
+            return path.splice( i, len - i ); 
+        }
+
+        function _getChildren( node, parent ) {
+            var id = node.id
+                , children = []
+                , childId
+                , parentId = parent && parent.id
+                , child
+                ;
+
+            if ( node._tmp_children ) {
+                return node._tmp_children;
+            }
+
+            edges.forEach( function( edge ) {
+                if ( edge.source == id
+                    || edge.target == id
+                ) {
+                    childId = edge.source;
+                    if ( childId == id ) {
+                        childId = edge.target;
+                    }
+
+                    if ( childId != parentId ) {
+                        child = sigma.utils.getNodeById( nodes, childId );
+                        // maybe duplicated edges
+                        if ( children.indexOf( child ) < 0 ) {
+                            children.push( child );
+                        }
+                    } 
+                }
+            } );
+
+            return ( node._tmp_children = children );
+        }
+
+    };
+
+
+<div id="test_getComplicatedLoops" class="test">
+<div class="test-container">
+<div id="test_getComplicatedLoops_graph" class="test-graph">
+</div>
+<div class="test-console"></div>
+
+    @[data-script="javascript editable"]
+    (function(){
+
+        var s = fly.createShow('#test_getComplicatedLoops');
+        // var g1 = getRandomGraph(10, 10, 10);
+        // var g1 = networkGraph_complex_hier_160817; 
+        // var g1 = networkGraph_complex_hier_160816;
+        var g1 = networkGraph_complex_hier_160820; 
+        var g1 = networkGraph_complicated_loops_0928;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_3;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        // var g1 = networkGraph_person_event_event_person_0729;
+        // var g1 = networkGraph_person_event_event_person_0801;
+        // var g1 = networkGraph_triangle_0801_2;
+        var containerId = 'test_getComplicatedLoops_graph';
+        var rendererSettings = {
+                // captors settings
+                doubleClickEnabled: true
+                , mouseWheelEnabled: false
+
+                // rescale settings
+                , minEdgeSize: 0.5
+                , maxEdgeSize: 1
+                , minNodeSize: 1 
+                , maxNodeSize: 5
+
+                // renderer settings
+                , edgeHoverColor: fly.randomColor() 
+                , edgeHoverSizeRatio: 1
+                , edgeHoverExtremities: true
+            };
+        var sigmaSettings = {
+                // rescale settings 
+                sideMargin: 5 
+
+                // instance global settings
+                , enableEdgeHovering: true
+                , edgeHoverPrecision: 5
+                , autoRescale: 0
+            };
+
+        var sm1;
+
+        if((sm1 = isSigmaInstanceExisted('test_getComplicatedLoops'))){
+            sm1.kill();
+        };
+
+        sm1 = getUniqueSigmaInstance(
+                    'test_getComplicatedLoops'
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g1
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: $('#' + containerId)[0]
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
+
+        sm1
+            .normalizeSophonNodes()
+            .alignCenter({rescaleToViewport: 1})
+            .refresh()
+            ;
+
+        sigmaEnableNodeDrag( sm1 );
+
+        var forest = sm1.graph.getLayoutForest()
+            , loops
+            , maxLoop
+            ;
+
+        s.show( 'get complicated loops:' );
+        if ( forest.length ) {
+            loops = sigma.utils.getComplicatedLoops( g1.nodes, g1.edges );
+            s.append_show( 'original node count: ' + g1.nodes.length );
+            s.append_show( '\ncomplicated loops: ' );
+            s.append_show( loops.complicated.map( function( loop ) {
+                return { 
+                    size: loop.length
+                    , loop: loop.map( function( node ) { return node.id; } )
+                }
+            } ) ); 
+
+            s.append_show( 
+                '\nsimple loops ( empty by default, non-empty only if `option.getSimpleLoop` is on): ' 
+            );
+            s.append_show( loops.simple.map( function( loop ) {
+                return { 
+                    size: loop.length
+                    , loop: loop.map( function( node ) { return node.id; } )
+                }
+            } ) ); 
+
+            s.append_show( 
+                '\nmax complicated loop:' 
+            );
+            maxLoop = sigma.utils.getMaxComplicatedLoop( g1.nodes, g1.edges );
+
+            if ( maxLoop ) {
+                s.append_show( {
+                    size: maxLoop.length
+                    , loop: maxLoop.map( function( node ) { 
+                        return node.id; 
+                    }) 
+                } ); 
+            }
+            else {
+                s.append_show( { size: 0, loop: [] } );
+            }
+        }
+
+    })();
+
+</div>
+<div class="test-panel"></div>
+</div>
+
+
+
+
+
+### 算法实现
+
+
+#### 简版实现
 
 `环形布局`简版算法如下，`未做``均衡`算法，多棵`树`之间会产生`重叠`：
 
@@ -148,6 +622,10 @@
 
         return this;
     });
+
+
+
+#### 均衡化版本（试验）
 
 
 使用`均衡布局`优化的`环形布局`算法如下：
@@ -314,11 +792,22 @@
 
 
 
-使用`均衡布局`、`自适应半径`优化的`环形布局`算法：
 
-* options.nodeSize，与`node.size`不完全等同，可以认为nodeSize是你希望给一个节点的空间占用，而不是节点本身的尺寸
-* options.radiusStep
-* options.initialAngleRange
+#### 充分优化版本
+
+
+使用`均衡布局`、`自适应半径`、`复杂回路中心`优化的`环形布局`算法：
+
+> @param {object} [options]
+
+    {
+        // 与node.size不完全等同，可以认为nodeSize是你希望
+        // 给一个节点的空间占用，而不是节点本身的尺寸
+        nodeSize: 30
+        , radiusStep: 100
+        , initialAngleRange: Math.PI / 3 
+        , useComplicatedLoop: 1
+    }
 
 
 算法实现如下：
@@ -465,7 +954,7 @@
 
 
 
-#### 算法演示
+### 算法演示
 
 以下示例展示`环形`布局算法：
 
@@ -483,10 +972,10 @@
     (function(){
 
         var s = fly.createShow('#test_5');
-        var g1 = getRandomGraph(16, 20, 8);
+        var g1 = getRandomGraph(15, 30, 8);
         // var g1 = networkGraph_circle_0628;
         // var g1 = networkGraph_mesh_0628;
-        // var g1 = getLineGraph(16, 20, {nodeSize: 8});
+        // var g1 = getLineGraph(14, 30, {nodeSize: 8});
         // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
         // var g1 = networkGraph0520;
@@ -731,6 +1220,7 @@
             .layoutCircle2({
                 makeRootCenter: 1
                 , makeMaxDegreeNodeRoot: 1
+                , useComplicatedLoop: 1
                 // 设置该值来影响布局，不一定等同于node.size
                 , nodeSize: 30
                 , radiusStep: 180
