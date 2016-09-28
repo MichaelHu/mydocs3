@@ -1058,7 +1058,14 @@ sigma.utils.getCircleForest
     edges = edges || [];
 
     do {
-        circuits = sigma.utils.getCircuits(nodes, edges, tree);
+        if ( opt.useComplicatedLoop ) {
+            circuits = sigma.utils.getComplicatedLoops( nodes, edges, { root: tree } )
+                        .complicated;
+        }
+        else {
+            circuits = sigma.utils.getCircuits(nodes, edges, tree);
+        }
+
         excludes = {};
 
         if(circuits.length > 0){

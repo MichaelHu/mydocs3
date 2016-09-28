@@ -1,6 +1,7 @@
 # interview exams
 
 
+2016-09-21,
 2016-08-06,
 2016-07-29,
 2015
@@ -74,6 +75,41 @@
 </div>
 </div>
 
+
+
+
+### 代码纠错能力
+
+1. 纠错1
+
+        function IsPC() { 
+            var userAgentInfo = navigator.userAgent; 
+            var Agents = new Array(
+                    "Android", "iPhone", "SymbianOS"
+                    , "Windows Phone", "iPad", "iPod", "iOS"
+                ); 
+            var flag = true; 
+            for (var v = 0; v < Agents.length; v++) { 
+                if ( userAgentInfo.indexOf(Agents[v]) > 0 ) { 
+                    flag = false; 
+                    break; 
+                } 
+            } 
+            return flag; 
+        }
+
+2. 纠错2
+
+        function max( a, b ) {
+            if ( a > b ) {
+                return 
+                    a;
+            }
+            else {
+                return 
+                    b;
+            }
+        }
 
 
 
@@ -292,6 +328,15 @@
 1. 垂直居中 
 2. 二列布局
 3. flex-box
+
+
+
+## 基础算法
+
+1. 图的遍历
+2. 树的遍历
+
+
 
 
 

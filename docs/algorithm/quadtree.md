@@ -67,7 +67,7 @@ octree，3D quadtree
 子树的`三个`阶段：
 
 1. `创建`阶段：此时添加新节点，使用`firstAdd`，只是将节点`暂存`在当前子树中
-2. 添加过`一次`节点：此时添加新节点使用`secondAdd`，将会进行`子树分裂`，先将`暂存`的节点添加到下级子树中，在将要添加的节点存入下级子树。
+2. 添加过`一次`节点：此时添加新节点使用`secondAdd`，将会进行`子树分裂`，先将`暂存`的节点添加到下级子树中，再将要添加的节点存入下级子树。
 3. 添加过`两次`及`两次以上`节点：使用`thirdAdd`，将节点添加到子节点中
 
 
@@ -549,6 +549,19 @@ octree，3D quadtree
 <div class="test-panel">
 </div>
 </div>
+
+
+
+
+
+## Sigmajs quadTree
+
+* <https://github.com/jacomyal/sigma.js/blob/master/src/classes/sigma.classes.quad.js>
+* <https://github.com/jacomyal/sigma.js/blob/master/src/classes/sigma.classes.edgequad.js>
+* <https://github.com/jacomyal/sigma.js/blob/master/src/sigma.core.js#L479>
+
+
+todo
 
 
 

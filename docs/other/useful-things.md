@@ -3,11 +3,31 @@
 > 记下，以备后续查看
 
 
+## 2016-09-23
+
+### 掘金－技术社区
+
+掘金网：高质量的技术社区。<http://gold.xitu.io>
+
+还有掘金app，技术头条还不错。
+
+
+
+## 2016-09-21
+
+### 银弹
+
+`银弹`( `Silver Bullet` )。在欧洲民间传说及19世纪以来哥特小说风潮的影响下，银弹往往被描绘成具有驱魔功效的武器，是针对狼人等超自然怪物的特效武器。后来也被比喻为具有极端有效性的解决办法，作为杀手锏、最强杀招、王牌等的代称。
+
+`没有银弹`:
+《没有银弹》是Fred Brooks在1987年所发表的一篇关于软件工程的经典论文。该论述中强调真正的银弹并不存在，而所谓的没有银弹则是指没有任何一项技术或方法可以能让软件工程的生产力在十年内提高十倍。
+
+
 
 
 ## 16-04-21
 
-JS位操作符
+### JS位操作符
 
 小数取整的方法，以下皆可：
 
@@ -21,7 +41,11 @@ JS位操作符
 
 ## 16-04-14
 
-月影前端分享：《我们是前端攻城师》 <http://matrix.h5jun.com/slide/show?id=96>
+### 月影前端分享
+
+《我们是前端攻城师》 <http://matrix.h5jun.com/slide/show?id=96>
+
+
 
 
 ## 16-03-24
@@ -32,6 +56,8 @@ JS位操作符
     lsb_release -a
     # way 2
     cat /proc/version
+
+
 
 
 ## 16-03-22
@@ -59,18 +85,22 @@ or if you are running Ruby you can use
 
 ## 15-11-1
 
+### 日期格式
+
     Date.parse('2015/10/31 0:00')
     Date.parse('2015/10/31 0:00 GMT+0800')
     Date.parse('2015/10/31 00:00:00 GMT+0800')
     Date.parse('Oct 31 2015 00:00:00 GMT+0800')
 
 1. `2015/10/31 24:00`是不合法的，应该是`2015/11/1 0:00`
-2. 兼容性好的写法是使用`/`分隔，iOS系统不支持`-`分隔符
+2. 兼容性好的写法是使用`/`分隔，MacOS以及iOS系统不支持`-`分隔符
 3. 兼容性最好的写法应该是`Oct 31 2015 00:00:00 GMT+0800`
 
 
 
 ## 15-10-27
+
+### VirtualBox升级
 
 升级至Mac OX El Capitan，10.11.1以后，发现原来的Virtual Box 4.3装载的Windows 7系统，无法识别USB设备。
 解决方案是，升级至Virtual Box 5.x版本，并且安装相应的Additions。并在Windows虚拟机打开后，安装相应配套的Gust Addition
@@ -79,12 +109,15 @@ or if you are running Ruby you can use
 
 ## 15-10-23
 
-SweetAlert: http://t4t5.github.io/sweetalert/
-友好的弹窗组件库。
+### SweetAlert
+
+<http://t4t5.github.io/sweetalert/>: 友好的弹窗组件库。
 
 
 
 ## 15-08-28
+
+### 诡异的JS
 
 一段令人摸不着头脑的JS代码：
 
@@ -101,6 +134,8 @@ SweetAlert: http://t4t5.github.io/sweetalert/
     undefined
     console.log([] []); 
     Error
+
+
 
 
 ## 15-08-27

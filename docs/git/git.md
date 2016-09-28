@@ -49,10 +49,16 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
 
 常用命令：
 
-    git checkout -b abc
+    git checkout -f <new_branch> [<start_point>]
+    git checkout -b <new_branch> [<start_point>]
+    git checkout -B <new_branch> [<start_point>]
     git checkout master^
     git checkout master^^
 
+例子：
+
+    # 即使map存在，也强行reset
+    git checkout -B map 41e86dec9d37b74e12b234fa5b95c35943f52932
 
 
 ## git diff

@@ -4,7 +4,7 @@
 > 致力于在网页中绘制`网状图形`，提供交互接口。图形技术支持Canvas、WebGL和SVG。
 
 
-## 一、初识
+## 初识
 
 <http://sigmajs.org>
 
@@ -14,23 +14,23 @@
 
 
 
-<script src="http://258i.com/static/build/sigma/sigma.js"></script>
-<script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <style type="text/css">
 @import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
 </style>
+<script src="http://258i.com/static/build/sigma/sigma.js"></script>
+<script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
+<script src="../algorithm/js/graph-layout/utils.js"></script>
 
 
 
 
 
 
-## 二、快速启动
+## 快速启动
 
 以下代码提供`sigma`实例的生成器，根据`实例ID`在上下文中只保持一个实例，即使`多次调用`也是如此。
 
-    @[data-script="javascript"]
-    function getUniqueSigmaInstance(instId, config){
+    @[data-script="javascript"]function getUniqueSigmaInstance(instId, config, isSearch){
 
         var instances = (
                 arguments.callee.__instances
@@ -39,6 +39,10 @@
             ;
 
         if(!instances[instId]) {
+            if(isSearch){
+                return false;
+            }
+
             if(!config) {
                 instances[instId] = new sigma();
             }
@@ -51,8 +55,19 @@
                 );
             }
         }
+        else {
+            if(isSearch == 2) {
+                var ret = instances[instId];
+                delete instances[instId];
+                return ret;
+            }
+        }
 
         return instances[instId];
+    }
+
+    function isSigmaInstanceExisted(instId){
+        return getUniqueSigmaInstance(instId, null, 2);
     }
 
     function getRandomGraph(numOfNodes, numOfEdges, isFixSize){
@@ -160,7 +175,7 @@
 
 
 
-## 三、从例子开始
+## 从例子开始
 
 两个节点一条边。
 
@@ -234,7 +249,7 @@
 
 
 
-## 四、Renderers
+## Renderers
 
 
 目前支持Canvas、WebGL、SVG。
@@ -242,7 +257,7 @@
 canvas绘制，`5`个`layer`：node、edge、labels、捕获鼠标事件层以及显示hover对象层。
 
 
-### 4.1 自定义renderer插件
+### 自定义renderer插件
 
 自定义节点渲染插件，比如`sigma.canvas.nodes.squares：`
 
@@ -264,7 +279,7 @@ canvas绘制，`5`个`layer`：node、edge、labels、捕获鼠标事件层以�
     };
 
 
-### 4.2 sigma实例的创建
+### sigma实例的创建
 
 不带任何参数，只创建graph，不绑定renderer：
 
@@ -279,7 +294,7 @@ canvas绘制，`5`个`layer`：node、edge、labels、捕获鼠标事件层以�
 
 
 
-## 五、Settings
+## Settings
 
 非常类似javascript的`prototype chain`。
 
@@ -364,7 +379,7 @@ canvas绘制，`5`个`layer`：node、edge、labels、捕获鼠标事件层以�
 
 
 
-## 六、事件绑定
+## 事件绑定
 
 
 
@@ -503,14 +518,20 @@ canvas绘制，`5`个`layer`：node、edge、labels、捕获鼠标事件层以�
 
 
 
-## 七、Cameras
+## Cameras
+
+### 坐标空间
 
 
 可以看作往`screen`投射图形的`摄像机`，决定`视角`、`比例`、`投射中心`等投射参数。需要考虑以下坐标空间：
 
-* `graph`坐标空间
-* `camera`坐标空间
+* `graph`坐标空间：对应画布`viewport`，与camera的`rendererX`属性对应
+* `camera`坐标空间：对应画布整体，与camera的`camX`属性对应
 * `screen`坐标空间，`renderer`的`width`与`height`属性，表示的就是`screen`坐标的尺寸
+
+坐标空间`示意图`如下所示：
+
+ <img src="./img/sigma-graph-coords.png" width="600">
 
 1. 可以认为在`ratio`为`1`的情况下，三者的`比例`是`1:1:1`，关系为：
 
@@ -537,7 +558,137 @@ canvas绘制，`5`个`layer`：node、edge、labels、捕获鼠标事件层以�
         });
 
 
-坐标系窥视：在下方代码编辑区中的`cam1.goTo(...)`中填入`合适`的`(x, y)`坐标，使得四个彩色球的图形在画布`居中`显示。
+
+### 坐标系理解
+
+坐标系转换常用方法：
+
+    camera.cameraPosition( x, y )
+    camera.graphPosition( x, y )
+
+
+<div id="test_coords" class="test">
+<div class="test-container">
+<div id="test_coords_graph" class="test-graph"></div>
+<div class="test-console"></div>
+
+    @[data-script="javascript editable"]
+    (function(){
+
+        var s = fly.createShow('#test_coords');
+        var g = getRandomGraph(3, 15, true);
+        var g = {
+            nodes: [
+                {id: 'n0', x: 25, y: -18, size: 5, label: '(25, -18)', color: '#f33'}
+                , {id: 'n1', x: -30, y: 15, size: 5, label: '(-30, 15)', color: '#f33'}
+                , {id: 'n2', x: 40, y: 25, size: 5, label: '(40, 25)', color: '#f33'}
+            ]
+            , edges: [
+            ]
+        };
+        var rendererSettings = {
+                // captors settings
+                doubleClickEnabled: true
+                , mouseWheelEnabled: false
+
+                // rescale settings
+                , minEdgeSize: 0.5
+                , maxEdgeSize: 1
+                , minNodeSize: 1 
+                , maxNodeSize: 5
+
+                // renderer settings
+                , edgeHoverColor: fly.randomColor() 
+                , edgeHoverSizeRatio: 1
+                , edgeHoverExtremities: true
+                , drawLabels: true
+            };
+        var sigmaSettings = {
+                // rescale settings 
+                sideMargin: 10 
+
+                // instance global settings
+                , enableEdgeHovering: true
+                , edgeHoverPrecision: 5
+
+                , autoRescale: 0
+            };
+        var containerId = 'test_coords_graph';
+        var sm, cam, renderer;
+
+        if((sm = isSigmaInstanceExisted('test_coords'))){
+            sm.kill();
+        };
+
+        sm = getUniqueSigmaInstance(
+                'test_coords'
+                , {
+                    settings: sigmaSettings
+                    , graph: g
+                    , renderers: [
+                        {
+                            type: 'canvas'
+                            , container: $('#' + containerId)[0]
+                            , settings: rendererSettings
+                        }
+                    ]
+                }
+            )
+            ; 
+
+        sm.refresh();
+        cam = sm.camera;
+        renderer = sm.renderersPerCamera[ cam.id ][ 0 ];
+
+        var camConfig = { x:0, y:0, ratio:1, angle:0 };
+
+        function showInfo( phaseName ) {
+            s.append_show( '## ' + phaseName, camConfig );
+            s.append_show(
+                'camera.x: ' + cam.x
+                , 'camera.y: ' + cam.y
+                , 'camera.ratio: ' + cam.ratio
+                , 'camera.angle: ' + cam.angle
+            );
+            s.append_show(
+                'renderer.width: ' + renderer.width
+                , 'renderer.height: ' + renderer.height
+            );
+            g.nodes.forEach( function( node ) {
+                var cPos = cam.cameraPosition( node.x, node.y );
+                s.append_show(
+                    'graph coords: ( ' + node.x + ', ' + node.y + ' )'
+                    , 'camera coords: ' + cPos.x + ', ' + cPos.y + ' )'
+                );
+            } );
+            s.append_show( '\n' );
+        }
+
+        showInfo( 'initial' );
+
+        camConfig.ratio = 2;
+        cam.goTo( camConfig );
+        showInfo( 'goTo' );
+
+        camConfig.ratio = 2;
+        camConfig.x = -20;
+        camConfig.y = -20;
+        cam.goTo( camConfig );
+        showInfo( 'goTo' );
+
+    })();
+
+</div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+
+### camera.goTo
+
+在下方代码编辑区中的`cam1.goTo(...)`中填入`合适`的`(x, y)`坐标，使得四个彩色球的图形在画布`居中`显示。
 
 <div id="test_39" class="test">
 <div class="test-container">
@@ -711,12 +862,11 @@ canvas绘制，`5`个`layer`：node、edge、labels、捕获鼠标事件层以�
 
 </div>
 <div class="test-panel">
-<button id="test_10_clear">sm.clear()</button>
 </div>
 </div>
 
 
-Camera与Renderer的对应关系：
+### Camera与Renderer
 
 <style type="text/css">
 #test_40 .test-graph {
@@ -856,7 +1006,7 @@ Camera与Renderer的对应关系：
 </div>
 
 
-## 八、滑块控制缩放
+## 滑块控制缩放
 
 todo
 

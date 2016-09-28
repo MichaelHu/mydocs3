@@ -239,6 +239,100 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
 
 
 
+### 百度瓦片
+
+#### 简写说明
+
+`x202_y73_z10.png`: <http://172.22.1.104:6789/satellite/?qt=tile&x=202&y=73&styles=pl&scaler=1&z=10>
+
+
+#### 瓦片坐标对应
+
+百度tile xyz的y轴是`自下而上`，而leaflet xyz是`自上而下`。
+
+    百度tile xyz    leaflet xyz
+    ------------------------------------
+    x202_y73_z10    x714_y438_z10 
+    x203_y73_z10    x715_y438_z10 
+    x204_y73_z10    x716_y438_z10 
+    x205_y73_z10    x717_y438_z10 
+    x202_y72_z10    x714_y439_z10 
+    x203_y72_z10    x715_y439_z10 
+    x204_y72_z10    x716_y439_z10 
+    x205_y72_z10    x717_y439_z10 
+
+
+#### 瓦片网格
+
+以下展示渤海区域的卫星图瓦片网格。
+
+<style type="text/css">
+.tls {
+    margin-bottom: 10px;
+}
+.tlrow {
+    width: 1100px;
+    margin-top: 2px;
+}
+.tlrow:after {
+    content: '';
+    clear: both;
+    display: block;
+    height: 0;
+    visibility: hidden;
+}
+.bdtl {
+    position: relative;
+    float: left;
+    margin-left: 2px;
+}
+.bdtl span {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    font-size: 12px;
+    font-weight: normal;
+    color: #fff;
+}
+</style>
+
+    @[data-script="html"]<div class="tls tls-tile-grid">
+        <div class="tlrow">
+            <div class="bdtl"><img src="./img/tiles/x202_y73_z10.png"></div>
+            <div class="bdtl"><img src="./img/tiles/x203_y73_z10.png"></div>
+            <div class="bdtl"><img src="./img/tiles/x204_y73_z10.png"></div>
+            <div class="bdtl"><img src="./img/tiles/x205_y73_z10.png"></div>
+        </div>
+        <div class="tlrow">
+            <div class="bdtl"><img src="./img/tiles/x202_y72_z10.png"></div>
+            <div class="bdtl"><img src="./img/tiles/x203_y72_z10.png"></div>
+            <div class="bdtl"><img src="./img/tiles/x204_y72_z10.png"></div>
+            <div class="bdtl"><img src="./img/tiles/x205_y72_z10.png"></div>
+        </div>
+    </div>
+
+下方代码用于渲染瓦片网格对应关系：
+
+    @[data-script="javascript"]( function() {
+        $('.tls-tile-grid img').each( function( index, item ) {
+            var container = item.parentNode
+                , src = item.src
+                , tag = document.createElement( 'span' )
+                ;
+            src = src
+                .replace( /^.+\/([^\/]+)$/, '$1' )
+                .replace( /\.png$/, '' )
+                ;
+            tag.innerHTML = src;
+            container.appendChild( tag );
+        } );
+    } )();
+
+
+
+
+
+
 ## Layers
 
 包含两种类型的层：`base layers`, `overlays`
@@ -258,7 +352,8 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
 
 ### 像素坐标的两个API
 
-* `map.getPixelBounds()`，当前可视区域bounds的像素平面坐标，随map的移动而变。
+* `map.getPixelBounds()`，当前可视区域bounds的像素平面坐标，随map的移动而变，
+    提供`左上`、`右下`两个坐标。
     Returns the bounds of the current map view in projected pixel coordinates (sometimes useful in layer and overlay implementations).
 * `map.getPixelOrigin()`，当前map显示中心点时的左上角像素平面坐标，不随map的移动而变。
     Returns the projected pixel coordinates of the top left point of the map layer (useful in custom layer and overlay implementations).

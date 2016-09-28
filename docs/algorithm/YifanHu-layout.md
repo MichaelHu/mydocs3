@@ -951,6 +951,7 @@ todo
             , tree = quadTree
             , force
             , tip
+            , repulsionRatioWithCluster = opt.repulsionRatioWithCluster || 1 
             ;
 
         if(tree.mass <= 0){
@@ -980,8 +981,8 @@ todo
         }
         else if(distance * opt.barnesHutTheta > tree.size){
             force = computeElectricalForce(node, tree, distance, opt); 
-            force.dx *= tree.mass;
-            force.dy *= tree.mass;
+            force.dx *= Math.pow( tree.mass, repulsionRatioWithCluster );
+            force.dy *= Math.pow( tree.mass, repulsionRatioWithCluster );
             force.num = 1;
         }
         else {
@@ -1175,6 +1176,7 @@ todo
         // options
         opt.stepRatio = opt.stepRatio || 0.95;
         opt.relativeStrength = opt.relativeStrength || 0.2;
+        opt.repulsionRatioWithCluster = opt.repulsionRatioWithCluster || 1;
         opt.optimalDistance = opt.optimalDistance 
             || getOptimalDistance();
         opt.layoutBalancedSpace = opt.layoutBalancedSpace
@@ -1555,6 +1557,7 @@ todo
                 , readPrefix: 'yfh_'
                 , maxIterations: maxIterations 
                 , relativeStrength: 0.2
+                , repulsionRatioWithCluster: 1 
                 , layoutBalanced: layoutBalanced
                 , filter: partialLayout
                     ? function(node){return node.selected;}

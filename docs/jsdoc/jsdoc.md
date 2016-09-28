@@ -1,228 +1,230 @@
-# jsDoc注释语法
+# jsdoc
 
 
-http://usejsdoc.org
+<http://usejsdoc.org>
 
-https://github.com/jsdoc3/jsdoc
+<https://github.com/jsdoc3/jsdoc>
 
-AMD Modules: http://usejsdoc.org/howto-amd-modules.html
+`AMD Modules`: <http://usejsdoc.org/howto-amd-modules.html>
 
 
-## 1 支持标签
+
+
+## 支持标签
 
 
 `62个`块标签，`2个`内联标签
 
 
-### 1.1 块标签
+### 块标签 ( 62 )
 
-@abstract (synonyms: @virtual)
-This member must be implemented (or overridden) by the inheritor.
+1. `@abstract (synonyms: @virtual)`
+    This member must be implemented (or overridden) by the inheritor.
 
-@access
-Specify the access level of this member (private, public, or protected).
+2. `@access`
+    Specify the access level of this member (private, public, or protected).
 
-@alias
-Treat a member as if it had a different name.
+3. `@alias`
+    Treat a member as if it had a different name.
 
-@augments (synonyms: @extends)
-Indicate that a symbol inherits from, ands adds to, a parent symbol.
+3. `@augments (synonyms: @extends)`
+    Indicate that a symbol inherits from, ands adds to, a parent symbol.
 
-@author
-Identify the author of an item.
+3. `@author`
+    Identify the author of an item.
 
-@borrows
-This object uses something from another object.
+3. `@borrows`
+    This object uses something from another object.
 
-@callback
-Document a callback function.
+3. `@callback`
+    Document a callback function.
 
 
-@class (synonyms: @constructor)
-This function is intended to be called with the "new" keyword.
+3. `@class (synonyms: @constructor)`
+    This function is intended to be called with the "new" keyword.
 
-@classdesc
-Use the following text to describe the entire class.
+3. `@classdesc`
+    Use the following text to describe the entire class.
 
-@constant (synonyms: @const)
-Document an object as a constant.
+3. `@constant (synonyms: @const)`
+    Document an object as a constant.
 
-@constructs
-This function member will be the constructor for the previous class.
+3. `@constructs`
+    This function member will be the constructor for the previous class.
 
-@copyright
-Document some copyright information.
+3. `@copyright`
+    Document some copyright information.
 
-@default (synonyms: @defaultvalue)
-Document the default value.
+3. `@default (synonyms: @defaultvalue)`
+    Document the default value.
 
-@deprecated
-Document that this is no longer the preferred way.
+3. `@deprecated`
+    Document that this is no longer the preferred way.
 
-@description (synonyms: @desc)
-Describe a symbol.
+3. `@description (synonyms: @desc)`
+    Describe a symbol.
 
-@enum
-Document a collection of related properties.
+3. `@enum`
+    Document a collection of related properties.
 
-@event
-Document an event.
+3. `@event`
+    Document an event.
 
-@example
-Provide an example of how to use a documented item.
+3. `@example`
+    Provide an example of how to use a documented item.
 
-@exports
-Identify the member that is exported by a JavaScript module.
+3. `@exports`
+    Identify the member that is exported by a JavaScript module.
 
-@external (synonyms: @host)
-Identifies an external class, namespace, or module.
+3. `@external (synonyms: @host)`
+    Identifies an external class, namespace, or module.
 
-@file (synonyms: @fileoverview, @overview)
-Describe a file.
+3. `@file (synonyms: @fileoverview, @overview)`
+    Describe a file.
 
-@fires (synonyms: @emits)
-Describe the events this method may fire.
+3. `@fires (synonyms: @emits)`
+    Describe the events this method may fire.
 
-@function (synonyms: @func, @method)
-Describe a function or method.
+3. `@function (synonyms: @func, @method)`
+    Describe a function or method.
 
-@global
-Document a global object.
+3. `@global`
+    Document a global object.
 
-@ignore
-Omit a symbol from the documentation.
+3. `@ignore`
+    Omit a symbol from the documentation.
 
-@implements
-This symbol implements an interface.
+3. `@implements`
+    This symbol implements an interface.
 
-@inheritdoc
-Indicate that a symbol should inherit its parent's documentation.
+3. `@inheritdoc`
+    Indicate that a symbol should inherit its parent's documentation.
 
-@inner
-Document an inner object.
+3. `@inner`
+    Document an inner object.
 
-@instance
-Document an instance member.
+3. `@instance`
+    Document an instance member.
 
-@interface
-This symbol is an interface that others can implement.
+3. `@interface`
+    This symbol is an interface that others can implement.
 
-@kind
-What kind of symbol is this?
+3. `@kind`
+    What kind of symbol is this?
 
-@lends
-Document properties on an object literal as if they belonged to a symbol with a given name.
+3. `@lends`
+    Document properties on an object literal as if they belonged to a symbol with a given name.
 
-@license
-Identify the license that applies to this code.
+3. `@license`
+    Identify the license that applies to this code.
 
-@listens
-List the events that a symbol listens for.
+3. `@listens`
+    List the events that a symbol listens for.
 
-@member (synonyms: @var)
-Document a member.
+3. `@member (synonyms: @var)`
+    Document a member.
 
-@memberof
-This symbol belongs to a parent symbol.
+3. `@memberof`
+    This symbol belongs to a parent symbol.
 
-@mixes
-This object mixes in all the members from another object.
+3. `@mixes`
+    This object mixes in all the members from another object.
 
-@mixin
-Document a mixin object.
+3. `@mixin`
+    Document a mixin object.
 
-@module
-Document a JavaScript module.
+3. `@module`
+    Document a JavaScript module.
 
-@name
-Document the name of an object.
+3. `@name`
+    Document the name of an object.
 
-@namespace
-Document a namespace object.
+3. `@namespace`
+    Document a namespace object.
 
-@override
-Indicate that a symbol overrides its parent.
+3. `@override`
+    Indicate that a symbol overrides its parent.
 
-@param (synonyms: @arg, @argument)
-Document the parameter to a function.
+3. `@param (synonyms: @arg, @argument)`
+    Document the parameter to a function.
 
-@private
-This symbol is meant to be private.
+3. `@private`
+    This symbol is meant to be private.
 
-@property (synonyms: @prop)
-Document a property of an object.
+3. `@property (synonyms: @prop)`
+    Document a property of an object.
 
-@protected
-This symbol is meant to be protected.
+3. `@protected`
+    This symbol is meant to be protected.
 
-@public
-This symbol is meant to be public.
+3. `@public`
+    This symbol is meant to be public.
 
-@readonly
-This symbol is meant to be read-only.
+3. `@readonly`
+    This symbol is meant to be read-only.
 
-@requires
-This file requires a JavaScript module.
+3. `@requires`
+    This file requires a JavaScript module.
 
-@returns (synonyms: @return)
-Document the return value of a function.
+3. `@returns (synonyms: @return)`
+    Document the return value of a function.
 
-@see
-Refer to some other documentation for more information.
+3. `@see`
+    Refer to some other documentation for more information.
 
-@since
-When was this feature added?
+3. `@since`
+    When was this feature added?
 
-@static
-Document a static member.
+3. `@static`
+    Document a static member.
 
-@summary
-A shorter version of the full description.
+3. `@summary`
+    A shorter version of the full description.
 
-@this
-What does the 'this' keyword refer to here?
+3. `@this`
+    What does the 'this' keyword refer to here?
 
-@throws (synonyms: @exception)
-Describe what errors could be thrown.
+3. `@throws (synonyms: @exception)`
+    Describe what errors could be thrown.
 
-@todo
-Document tasks to be completed.
+3. `@todo`
+    Document tasks to be completed.
 
-@tutorial
-Insert a link to an included tutorial file.
+3. `@tutorial`
+    Insert a link to an included tutorial file.
 
-@type
-Document the type of an object.
+3. `@type`
+    Document the type of an object.
 
-@typedef
-Document a custom type.
+3. `@typedef`
+    Document a custom type.
 
-@variation
-Distinguish different objects with the same name.
+3. `@variation`
+    Distinguish different objects with the same name.
 
-@version
-Documents the version number of an item.
+3. `@version`
+    Documents the version number of an item.
 
 
 
 
-### 1.2 内联标签
+### 内联标签( 2 )
 
-{@link} (synonyms: {@linkcode}, {@linkplain})
-Link to another item in the documentation.
+1. `{@link} (synonyms: {@linkcode}, {@linkplain})`
+    Link to another item in the documentation.
 
-{@tutorial}
-Link to a tutorial.
+2. `{@tutorial}`
+    Link to a tutorial.
 
 
 
 
 
 
-## 2 例子
+## 例子
 
 
-### 2.1 @description 或 @desc
+### @description 或 @desc
 
 第一行写说明，可以省略@desc，其他地方，需要带上。
 
@@ -250,7 +252,7 @@ Link to a tutorial.
 
 
 
-### 2.2 @param 或 @arg 或 @argument
+### @param 或 @arg 或 @argument
 
 
 Name only
@@ -424,7 +426,7 @@ Parameters that accept a callback
 
 
 
-## 3 @returns 或 @return
+## @returns 或 @return
 
 Type of the return value
 
@@ -468,10 +470,65 @@ The return value can have different types
 
 
 
+## 属性相关
+
+### @property
+
+    /**
+     * @namespace
+     * @property {object}  defaults               - The default values for parties.
+     * @property {number}  defaults.players       - The default number of players.
+     * @property {string}  defaults.level         - The default level for the party.
+     * @property {object}  defaults.treasure      - The default treasure.
+     * @property {number}  defaults.treasure.gold - How much gold the party starts with.
+     */
+    var config = {
+        defaults: {
+            players: 1,
+            level:   'beginner',
+            treasure: {
+                gold: 0
+            }
+        }
+    };
 
 
 
-## 4 AMD Modules
+
+### @enum
+
+    /**
+     * Enum for tri-state values.
+     * @readonly
+     * @enum {number}
+     */
+    var triState = {
+        /** The true value */
+        TRUE: 1,
+        FALSE: -1,
+        /** @type {boolean} */
+        MAYBE: true
+    };
+
+
+### @member
+
+    /** @class */
+    function Data() {
+        /** @member {Object} */
+        this.point = {};
+    }
+
+    /**
+     * A variable in the global namespace called 'foo'.
+     * @var {number} foo
+     */
+
+
+
+
+
+## AMD Modules
 
 
 Function that returns an object literal
@@ -626,3 +683,85 @@ Multiple AMD modules defined in one file
 
         return tag;
     });
+
+
+## ES2015
+
+
+### Classes
+
+<http://usejsdoc.org/howto-es2015-classes.html>
+
+
+#### Definition
+
+    /** Class representing a point. */
+    class Point {
+        /**
+         * Create a point.
+         * @param {number} x - The x value.
+         * @param {number} y - The y value.
+         */
+        constructor(x, y) {
+            // ...
+        }
+
+        /**
+         * Get the x value.
+         * @return {number} The x value.
+         */
+        getX() {
+            // ...
+        }
+
+        /**
+         * Get the y value.
+         * @return {number} The y value.
+         */
+        getY() {
+            // ...
+        }
+
+        /**
+         * Convert a string containing two comma-separated numbers into a point.
+         * @param {string} str - The string containing two comma-separated numbers.
+         * @return {Point} A Point object.
+         */
+        static fromString(str) {
+            // ...
+        }
+    }
+
+
+#### Extends
+
+    /**
+     * Class representing a dot.
+     * @extends Point
+     */
+    class Dot extends Point {
+        /**
+         * Create a dot.
+         * @param {number} x - The x value.
+         * @param {number} y - The y value.
+         * @param {number} width - The width of the dot, in pixels.
+         */
+        constructor(x, y, width) {
+            // ...
+        }
+
+        /**
+         * Get the dot's width.
+         * @return {number} The dot's width, in pixels.
+         */
+        getWidth() {
+            // ...
+        }
+    }
+
+
+
+### Modules
+
+<http://usejsdoc.org/howto-es2015-modules.html>
+

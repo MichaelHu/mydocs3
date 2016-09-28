@@ -18,6 +18,9 @@ sigma.prototype.initializeLayout
             , 'circle_y'
             , 'grid_x'
             , 'grid_y'
+
+            , 'fixed'
+            , '_tmp_children'
         ]
         ;
 

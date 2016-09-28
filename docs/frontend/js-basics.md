@@ -113,6 +113,94 @@
 
 
 
+## 浮点计算性能
+
+
+<div id="test_js_float" class="test">
+<div class="test-console"></div>
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_js_float');
+        var count = 100;
+
+        s.show( 'integer vs float: ' + count );
+        s.append_show( computeInteger( count ) );
+        s.append_show( computeFloat( count ) );
+
+        function getIntegers( count ) {
+            var arr = [];
+            var a, b;
+
+            while ( count-- > 0 ) {
+                a = Math.random() * 10000 | 0; 
+                b = Math.random() * 10000 | 0;
+                arr.push( [ a, b ] );
+            }
+            return arr;
+        }
+
+        function computeInteger( count ) {
+            var a, b, i, item;
+            var _ts1 = +new Date();
+            var arr = getIntegers( count );
+            var _ts2 = +new Date();
+
+            _ts1 = _ts2 - _ts1;
+            for ( i = 0; i < count; i++ ) {
+                item = arr[ i ]; 
+                a = item[ 0 ];
+                b = item[ 1 ];
+                // c = Math.sqrt( Math.pow( a, 2 ) + Math.pow( b, 2 ) );
+                c = Math.pow( a, 2 ) + Math.pow( b, 2 );
+                // c = a + b;
+            }
+            return { 
+                ts1: _ts1
+                , ts2: +new Date() - _ts2
+            };
+        }
+
+        function getFloats( count ) {
+            var arr = [];
+            var a, b;
+
+            while ( count-- > 0 ) {
+                a = Math.random(); 
+                b = Math.random();
+                arr.push( [ a, b ] );
+            }
+            return arr;
+        }
+
+        function computeFloat( count ) {
+            var a, b, i, item;
+            var _ts1 = +new Date();
+            var arr = getFloats( count );
+            var _ts2 = +new Date();
+
+            _ts1 = _ts2 - _ts1;
+            for ( i = 0; i < count; i++ ) {
+                item = arr[ i ]; 
+                a = item[ 0 ];
+                b = item[ 1 ];
+                c = Math.sqrt( Math.pow( a, 2 ) + Math.pow( b, 2 ) );
+            }
+            return { 
+                ts1: _ts1
+                , ts2: +new Date() - _ts2
+            };
+        }
+
+    })();
+
+</div>
+<div class="test-panel">
+</div>
+</div>
+
+
 
 ## 绝对等式
 
