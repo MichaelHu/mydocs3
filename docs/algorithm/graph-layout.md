@@ -1153,6 +1153,7 @@
 
         do {
             if ( opt.useComplicatedLoop ) {
+                // todo: performance
                 circuits = sigma.utils.getComplicatedLoops( nodes, edges, { root: tree } )
                             .complicated;
             }
@@ -1223,11 +1224,14 @@
         , function(options){
 
         var me = this
-            , nodes = me.nodesArray
-            , edges = me.edgesArray
+            , g = me.getSubGraph(options)
             ;
 
-        return sigma.utils.getCircleForest(nodes, edges, options);
+        return sigma.utils.getCircleForest(
+            g.nodes
+            , g.edges
+            , options
+        );
     });
 
 
@@ -1926,6 +1930,7 @@
 
                 , 'fixed'
                 , '_tmp_children'
+                , '_loops'
                 , '_circuit'
             ]
             ;

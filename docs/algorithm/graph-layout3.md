@@ -225,6 +225,11 @@
                     complicatedLoops.push( subPathIfAny );
                 }
             }
+
+            nodes.forEach( function( node ) {
+                delete node._tmp_children;
+                delete node._loops;
+            } );
         }
 
         return {
@@ -806,7 +811,10 @@
         , initialAngleRange: Math.PI / 3 
         , spaceGrid: { xSize: 40, ySize: 40 }
         , makeRootCenter: 0
+        // 针对无回路图，总是将最大度数节点放在中间
+        , makeMaxDegreeNodeRoot: 0
         , sortCircuit: function( a, b ) { return a - b; }
+        , sortChildren: function( a, b ) { return a - b; }
         // 是否使用复杂回路中心
         , useComplicatedLoop: 1
     }
@@ -829,6 +837,7 @@
             , initialAngleRange = opt.initialAngleRange || PI 
             , spaceGrid = opt.spaceGrid || {xSize: 40, ySize: 40}
             , sortCircuit = opt.sortCircuit || 0
+            , sortChildren = opt.sortChildren || 0
             , radius
             ;
 
@@ -913,6 +922,10 @@
                 node.circle_y = circleY;
 
                 if(len > 0){
+                    if( typeof sortChildren == 'function' ) {
+                        children.sort( sortChildren );
+                    }
+
                     children.forEach(function(child){
                         depthTravel(child, _angle, _radius);
                         _angle += _angleStep;
@@ -968,6 +981,12 @@
             }
         );
 
+        me.graph.nodes().forEach( function( node ) {
+            delete node._wt_children;
+            delete node._circuit;
+        } );
+
+
         return this;
 
     };
@@ -977,7 +996,7 @@
 
 ### 算法演示
 
-以下示例展示`环形`布局算法：
+以下示例展示`环形`布局算法，`右下角`为充分优化版本的排布效果：
 
 <div id="test_5" class="test">
 <div class="test-container">
@@ -1285,10 +1304,15 @@
 
 ## 布局方案比较
 
-> 没有普遍适用的布局，只有合适的布局
+> 布局没有银弹。没有普遍适用的布局，只有合适的布局
+
+方便后面的讨论，我们记连通图`G` = `( N, E )`，N为节点集，E为边集。`c(N)`为节点数目，`c(E)`为边数目。
 
 
 ### 层次布局
+
+> 擅长`树图`的布局，一般而言，比较适合`c(N) > c(E)`的图。
+
 
 `层次`布局适合树状结构的布局，`层次感`很清晰。
 
@@ -1328,6 +1352,13 @@
 
 
 ### 力导向布局
+
+
+> 用模拟物理系统来排布节点，比较普遍适用。对于`树状`、`网格状`图等都有不错的展现方式。
+> 其布局具有`簇结构`的特征，对于复杂网络图的`趋势`排布很有应用价值。
+
+树状图的排布，与层次布局做比较的话，较多情况下后者更加稳定、精致。
+
 
 `力导向`能`均衡`边的长度，整体形成`簇`的布局。整体形成舒展的布局。
 对于层次布局遇到的问题，`力导向`布局能有更好的展现。
@@ -1376,6 +1407,21 @@
     <img src="./img/hier_by_hand_160810.png">
 
     层次布局 ＋ 手工
+
+
+
+### 环形布局
+
+> 环形布局是对层次布局和力导向布局的有力补充。对于`c(N) >= c(E)`的情况，使用`最大复杂回路中心`的环形布局比层次和力导向更加清晰、直观。
+
+复杂回路本身满足`c(N) >= c(E)`，回路节点间存在较多的边，使用圆形布局，天生避免边重叠，能得到较好的布局效果。
+
+ <img src="./img/layout-circle-0929.png">
+
+
+ <img src="./img/layout-circle-0929-1.png">
+
+ 完美的`星形图`。
 
 
 ### 有普适布局吗？
