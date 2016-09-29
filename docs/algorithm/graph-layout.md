@@ -1926,6 +1926,7 @@
 
                 , 'fixed'
                 , '_tmp_children'
+                , '_circuit'
             ]
             ;
 

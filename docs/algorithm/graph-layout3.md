@@ -801,11 +801,13 @@
 > @param {object} [options]
 
     {
-        // 与node.size不完全等同，可以认为nodeSize是你希望
-        // 给一个节点的空间占用，而不是节点本身的尺寸
-        nodeSize: 30
+        nodeOccupiedSpace: 30
         , radiusStep: 100
         , initialAngleRange: Math.PI / 3 
+        , spaceGrid: { xSize: 40, ySize: 40 }
+        , makeRootCenter: 0
+        , sortCircuit: function( a, b ) { return a - b; }
+        // 是否使用复杂回路中心
         , useComplicatedLoop: 1
     }
 
@@ -821,20 +823,16 @@
             , forest = this.graph.getCircleForest(opt)
             , treeOffsetX = 0
             , PI = Math.PI
-            // `nodeSize` is not exactly `node.size`
-            , nodeSize = opt.nodeSize || 0.2
+            , nodeSize = forest.length && forest[ 0 ].size || 0.2 
+            , nodeOccupiedSpace = opt.nodeOccupiedSpace || nodeSize * 3 
             , radiusStep = opt.radiusStep || 2 
             , initialAngleRange = opt.initialAngleRange || PI 
             , spaceGrid = opt.spaceGrid || {xSize: 40, ySize: 40}
+            , sortCircuit = opt.sortCircuit || 0
             , radius
             ;
 
         sigma.utils.computeLeaves(forest);
-
-        var a = forest.map(function(tree){
-            return tree.id 
-        }).join(', ');
-        // console.log(a);
 
         forest.forEach(function(tree){
             var circuit
@@ -850,13 +848,18 @@
                 circuit = tree._circuit;     
                 config = _getAngleStepAndRadius(
                     2 * PI // layout the circuit with a circle
-                    , nodeSize
                     , circuit.length 
                     , radiusStep
                     , 0
+                    , { fillMaxAngleRange: 1 }
                 );
                 angleStep = config.angleStep;
                 radius = config.radius; 
+
+                if( typeof sortCircuit == 'function' ) {
+                    circuit.sort( sortCircuit );
+                }
+                
                 circuit.forEach(function(node){
                     depthTravel(node, angle, radius);
                     angle += angleStep; 
@@ -874,14 +877,24 @@
                     , len = children.length
                     , circleX
                     , circleY
-                    , angleRange = initialAngleRange / level
+                    , forMakeRootCenter = 
+                        !hasCircuit && level == 1 && opt.makeRootCenter
+
+                    // todo: adaptive angle range
+                    , maxAngleRange = (
+                        forMakeRootCenter
+                            ? 2 * PI
+                            : initialAngleRange / level
+                    )
+
                     , config = _getAngleStepAndRadius(
-                        angleRange
-                        , nodeSize
+                        maxAngleRange
                         , len || 1
                         , radiusStep
                         , radius
+                        , { fillMaxAngleRange: forMakeRootCenter ? 1 : 0 }
                     )
+                    , angleRange = config.angleRange 
                     , _angleStep = config.angleStep 
                     , _radius = config.radius
                     , angleStart = angle - angleRange / 2
@@ -889,6 +902,7 @@
                     ;
 
                 if(level > maxLevel) {
+                    // maxLevel is in `forest.forEach` context
                     maxLevel = level;
                 }
 
@@ -898,14 +912,7 @@
                 node.circle_x = circleX;
                 node.circle_y = circleY;
 
-                // console.log(radius, angle, circleX, circleY, _angleStep);
-
                 if(len > 0){
-
-                    if(!hasCircuit && level == 1 && opt.makeRootCenter){
-                        _angleStep = 2 * PI / len;  
-                    }
-
                     children.forEach(function(child){
                         depthTravel(child, _angle, _radius);
                         _angle += _angleStep;
@@ -916,23 +923,37 @@
         });
 
         function _getAngleStepAndRadius(
-            angleRange, nodeSize, nodeCount, radiusStep, radiusStart){
+            maxAngleRange, nodeCount, radiusStep, radiusStart, options){
 
-            var radius
+            var opt = options || {} 
+                , radius
                 , angleStep
+                , angleRange
+                , radian
                 , i = 0
                 ;
 
             while(1){
                 i++;
                 radius = radiusStart + i * radiusStep;
-                if(radius * angleRange / ( nodeSize * 3 ) >= nodeCount){
+                radian = nodeOccupiedSpace * nodeCount / radius;
+                if ( radian <= maxAngleRange ) {
                     break;
-                } 
+                }
             }
+
+            if ( opt.fillMaxAngleRange ) {
+                angleRange = maxAngleRange;
+            }
+            else {
+                angleRange = radian;
+            }
+
             angleStep = angleRange / nodeCount;
+
             return {
                 radius: radius
+                , angleRange: angleRange
                 , angleStep: angleStep
             };
         }
@@ -1189,28 +1210,6 @@
         }, 500);
 
         
-        /*
-        sm4
-            .normalizeSophonNodes()
-            .alignCenter({
-                rescaleToViewport: 1
-            })
-            .refresh()
-            .layoutCircle({
-                makeRootCenter: 1
-                , makeMaxDegreeNodeRoot: 1
-            })
-            .normalizeSophonNodes({
-                readPrefix: 'circle_'
-            })
-            .alignCenter({
-                rescaleToViewport: 1
-                , readPrefix: 'circle_'
-                , writePrefix: 'circle_'
-            })
-            ;
-        */
-
         sm4
             .normalizeSophonNodes()
             .alignCenter({
@@ -1221,9 +1220,8 @@
                 makeRootCenter: 1
                 , makeMaxDegreeNodeRoot: 1
                 , useComplicatedLoop: 1
-                // 设置该值来影响布局，不一定等同于node.size
-                , nodeSize: 30
-                , radiusStep: 180
+                , nodeOccupiedSpace: 30
+                , radiusStep: 100
                 , initialAngleRange: Math.PI / 3
             })
             .normalizeSophonNodes({
