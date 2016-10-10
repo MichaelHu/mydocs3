@@ -2,15 +2,17 @@ sigma.utils.getLayoutForest
     = function(nodes, edges, options){
 
     var opt = options || {}
-        , nodesVisited = {}
+        ;
+
+    if ( opt.makeMaxDegreeNodeRoot ) {
+        nodes = sigma.utils.sortByNodesDegree( nodes, edges, 1 );
+    }
+
+    var nodesVisited = {}
         , forest = []
         , node = opt.dummyRoot 
             || opt.root 
-            || ( 
-                opt.makeMaxDegreeNodeRoot
-                    ? sigma.utils.getMaxDegreeNode( nodes.slice( 0 ), edges.slice( 0 ) )
-                    : nodes[0]
-            )
+            || nodes[ 0 ] 
         , excludes = opt.excludes
         ;
 
@@ -22,8 +24,8 @@ sigma.utils.getLayoutForest
             , {
                 onNode: function(node){
                     nodesVisited[node.id] = true;
-                    if ( 'function' == typeof opt.childrenSort ) {
-                        node._wt_children.sort( opt.childrenSort );
+                    if ( 'function' == typeof opt.sortChildren ) {
+                        node._wt_children.sort( opt.sortChildren );
                     }
                 }
             } 

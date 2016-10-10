@@ -1172,7 +1172,7 @@ todo
 
 #### 优化策略
 
-1. 节点`归类`，使满足相同类型，或时间接近的节点靠近。使用`childrenSort` option。
+1. 节点`归类`，使满足相同类型，或时间接近的节点靠近。使用`sortChildren` option。
     这需要节点提供足够的信息用于归类。
 
 2. 新子图若`包含B`，同时`AB`间也存在边，则可能出现以下布局效果，同层节点相互边较多，会启动`avoidSameLevelTravelThrough`调整，显得更乱：
@@ -1465,7 +1465,7 @@ todo
                 , sigma.utils.getNodeById( sm2.graph.nodes(), g2.nodes[ 1 ].id )
                 , {
                     xUnit: 20
-                    , childrenSort: function( childA, childB ) {
+                    , sortChildren: function( childA, childB ) {
                         if ( !childA.type || !childB.type ) {
                             return 0;
                         }

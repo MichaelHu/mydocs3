@@ -318,7 +318,7 @@
 
 #### sortByNodesDegree
 
-`sortByNodesDegree()`：按节点度进行排序。
+`sortByNodesDegree( reverse )`：按节点度进行排序[`graph method`]。
 
     @[data-script="javascript"]sigma.classes.graph.addMethod(
         'sortByNodesDegree'
@@ -340,6 +340,80 @@
     });
 
 
+`sortByNodesDegree( nodes, edges, reverse )`：按节点度进行排序[`sigma utils`]。
+
+    @[data-script="javascript"]sigma.utils.sortByNodesDegree
+        = function( nodes, edges, reverse ) {
+
+        if(!nodes || !edges) {
+            throw new Error( 'sigma.utils.sortByNodesDegree: empty `nodes` or `edges`' );
+        }
+
+        var degreeArr = [] 
+            , retNodes = []
+            , degree
+            , node, edge, i, j
+            ;
+
+        for(i=0; i<nodes.length; i++){
+            node = nodes[i];
+            degree = {
+                node: node
+                , data: 0
+            };
+            degreeArr.push(degree);
+
+            for(j=0; j<edges.length; j++){
+                edge = edges[j]; 
+                if(
+                    edge.source  == node.id
+                    || edge.target  == node.id
+                ){
+                    degree.data++;
+                }
+            }
+        }
+
+        degreeArr.sort(function(a, b){
+            return ( 
+                reverse
+                    ? b.data - a.data
+                    : a.data - b.data
+            );
+        });
+
+        degreeArr.forEach( function( item ) {
+            retNodes.push( item.node );
+        } );
+
+        return retNodes;
+
+    };
+
+
+
+<div id="test_sortByNodesDegree" class="test">
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_sortByNodesDegree');
+        var g1 = getRandomGraph( 5, 10, 1 );
+        s.show( 'testing sortByNodesDegree:\n ' );
+
+        s.append_show( 'graph data:\n ' );
+        s.append_show( g1 );
+
+        s.append_show( 'sorted nodes:\n ' );
+        s.append_show( sigma.utils.sortByNodesDegree( g1.nodes, g1.edges, 1 ) );
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
 
 
 
@@ -539,6 +613,7 @@
         root: ...
         , dummyRoot: ...
         , makeMaxDegreeNodeRoot: 0
+        , sortChildren: function( a, b ) { ... }
         , excludes: ...
         , subGraph: ...
     }
@@ -550,15 +625,17 @@
         = function(nodes, edges, options){
 
         var opt = options || {}
-            , nodesVisited = {}
+            ;
+
+        if ( opt.makeMaxDegreeNodeRoot ) {
+            nodes = sigma.utils.sortByNodesDegree( nodes, edges, 1 );
+        }
+
+        var nodesVisited = {}
             , forest = []
             , node = opt.dummyRoot 
                 || opt.root 
-                || ( 
-                    opt.makeMaxDegreeNodeRoot
-                        ? sigma.utils.getMaxDegreeNode( nodes.slice( 0 ), edges.slice( 0 ) )
-                        : nodes[0]
-                )
+                || nodes[ 0 ] 
             , excludes = opt.excludes
             ;
 
@@ -570,8 +647,8 @@
                 , {
                     onNode: function(node){
                         nodesVisited[node.id] = true;
-                        if ( 'function' == typeof opt.childrenSort ) {
-                            node._wt_children.sort( opt.childrenSort );
+                        if ( 'function' == typeof opt.sortChildren ) {
+                            node._wt_children.sort( opt.sortChildren );
                         }
                     }
                 } 
@@ -1168,12 +1245,15 @@
         = function(nodes, edges, options){
 
         var opt = options || {} 
-            , circuits
+            ;
+
+        if ( opt.makeMaxDegreeNodeRoot ) {
+            nodes = sigma.utils.sortByNodesDegree( nodes, edges, 1 );
+        }
+
+        var circuits
             , circuit
-            , tree = opt.root 
-                || ( opt.makeMaxDegreeNodeRoot 
-                    ? sigma.utils.getMaxDegreeNode(nodes, edges) : null )
-                || nodes[0]
+            , tree = opt.root || nodes[0]
             , excludes
             , nodesVisited = {}
             , forest = []

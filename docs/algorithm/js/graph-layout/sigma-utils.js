@@ -1044,12 +1044,15 @@ sigma.utils.getCircleForest
     = function(nodes, edges, options){
 
     var opt = options || {} 
-        , circuits
+        ;
+
+    if ( opt.makeMaxDegreeNodeRoot ) {
+        nodes = sigma.utils.sortByNodesDegree( nodes, edges, 1 );
+    }
+
+    var circuits
         , circuit
-        , tree = opt.root 
-            || ( opt.makeMaxDegreeNodeRoot 
-                ? sigma.utils.getMaxDegreeNode(nodes, edges) : null )
-            || nodes[0]
+        , tree = opt.root || nodes[0]
         , excludes
         , nodesVisited = {}
         , forest = []
@@ -1059,6 +1062,7 @@ sigma.utils.getCircleForest
 
     do {
         if ( opt.useComplicatedLoop ) {
+            // todo: performance
             circuits = sigma.utils.getComplicatedLoops( nodes, edges, { root: tree } )
                         .complicated;
         }
@@ -1409,15 +1413,17 @@ sigma.utils.getLayoutForest
     = function(nodes, edges, options){
 
     var opt = options || {}
-        , nodesVisited = {}
+        ;
+
+    if ( opt.makeMaxDegreeNodeRoot ) {
+        nodes = sigma.utils.sortByNodesDegree( nodes, edges, 1 );
+    }
+
+    var nodesVisited = {}
         , forest = []
         , node = opt.dummyRoot 
             || opt.root 
-            || ( 
-                opt.makeMaxDegreeNodeRoot
-                    ? sigma.utils.getMaxDegreeNode( nodes.slice( 0 ), edges.slice( 0 ) )
-                    : nodes[0]
-            )
+            || nodes[ 0 ] 
         , excludes = opt.excludes
         ;
 
@@ -1429,8 +1435,8 @@ sigma.utils.getLayoutForest
             , {
                 onNode: function(node){
                     nodesVisited[node.id] = true;
-                    if ( 'function' == typeof opt.childrenSort ) {
-                        node._wt_children.sort( opt.childrenSort );
+                    if ( 'function' == typeof opt.sortChildren ) {
+                        node._wt_children.sort( opt.sortChildren );
                     }
                 }
             } 
@@ -1816,18 +1822,28 @@ sigma.utils.layoutTreesByGrid
         spaceBlock.x = rect.x;
         spaceBlock.y = rect.y;
         if(tree._node_count > 1){
-            extendRatio = 1.2;
+            // extendRatio = 1.2;
+            extendRatio = 1;
         }
 
         // `extendRatio` is for reserved space for node-collision on boundaris
         spaceBlock.w = Math.ceil(rect.w * extendRatio / unit);
         spaceBlock.h = Math.ceil(rect.h * extendRatio / unit);
 
+        if(spaceBlock.w * unit - rect.w < unit
+            && tree._node_count > 1){
+            spaceBlock.w++;
+        }
+        if(spaceBlock.h * unit - rect.h < unit
+            && tree._node_count > 1){
+            spaceBlock.h++;
+        }
+
         return spaceBlock;
     }
 
 
-};
+};     
 ( function() {
 
 
@@ -2230,6 +2246,53 @@ sigma.utils.normalizeSophonNodes
 
     return nodes;
 }
+sigma.utils.sortByNodesDegree
+    = function( nodes, edges, reverse ) {
+
+    if(!nodes || !edges) {
+        throw new Error( 'sigma.utils.sortByNodesDegree: empty `nodes` or `edges`' );
+    }
+
+    var degreeArr = [] 
+        , retNodes = []
+        , degree
+        , node, edge, i, j
+        ;
+
+    for(i=0; i<nodes.length; i++){
+        node = nodes[i];
+        degree = {
+            node: node
+            , data: 0
+        };
+        degreeArr.push(degree);
+
+        for(j=0; j<edges.length; j++){
+            edge = edges[j]; 
+            if(
+                edge.source  == node.id
+                || edge.target  == node.id
+            ){
+                degree.data++;
+            }
+        }
+    }
+
+    degreeArr.sort(function(a, b){
+        return ( 
+            reverse
+                ? b.data - a.data
+                : a.data - b.data
+        );
+    });
+
+    degreeArr.forEach( function( item ) {
+        retNodes.push( item.node );
+    } );
+
+    return retNodes;
+
+};   
 sigma.utils.widthTravel
     = function(nodes, edges, root, callbacks, excludes) {
 

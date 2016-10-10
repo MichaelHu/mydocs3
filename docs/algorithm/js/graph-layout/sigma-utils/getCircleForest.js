@@ -2,12 +2,15 @@ sigma.utils.getCircleForest
     = function(nodes, edges, options){
 
     var opt = options || {} 
-        , circuits
+        ;
+
+    if ( opt.makeMaxDegreeNodeRoot ) {
+        nodes = sigma.utils.sortByNodesDegree( nodes, edges, 1 );
+    }
+
+    var circuits
         , circuit
-        , tree = opt.root 
-            || ( opt.makeMaxDegreeNodeRoot 
-                ? sigma.utils.getMaxDegreeNode(nodes, edges) : null )
-            || nodes[0]
+        , tree = opt.root || nodes[0]
         , excludes
         , nodesVisited = {}
         , forest = []
@@ -17,6 +20,7 @@ sigma.utils.getCircleForest
 
     do {
         if ( opt.useComplicatedLoop ) {
+            // todo: performance
             circuits = sigma.utils.getComplicatedLoops( nodes, edges, { root: tree } )
                         .complicated;
         }
