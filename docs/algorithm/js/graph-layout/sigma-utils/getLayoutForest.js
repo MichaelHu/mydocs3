@@ -4,7 +4,13 @@ sigma.utils.getLayoutForest
     var opt = options || {}
         , nodesVisited = {}
         , forest = []
-        , node = opt.root || nodes[0]
+        , node = opt.dummyRoot 
+            || opt.root 
+            || ( 
+                opt.makeMaxDegreeNodeRoot
+                    ? sigma.utils.getMaxDegreeNode( nodes.slice( 0 ), edges.slice( 0 ) )
+                    : nodes[0]
+            )
         , excludes = opt.excludes
         ;
 

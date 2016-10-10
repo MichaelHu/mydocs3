@@ -1307,6 +1307,61 @@ sigma.utils.getClusterLevels
     while(all < totalNum);
     return i - 1; 
 }   
+sigma.utils.getDummyEdges 
+    = function( fromNode, toNodes, options ) {
+    var opt = options || {} 
+        , edges = []
+        , edge
+        ;
+
+    // assertions
+    if ( !fromNode ) {
+        throw new Error( 'sigma.utils.getDummyEdges: `fromNode` is undefined' );
+    }
+    if ( !toNodes ) {
+        throw new Error( 'sigma.utils.getDummyEdges: `toNodes` is undefined' );
+    }
+    if ( !toNodes.length ) {
+        throw new Error( 'sigma.utils.getDummyEdges: `toNodes.length` is zero' );
+    }
+
+    for ( var i = 0; i < toNodes.length; i++ ) {
+        edge = {
+            source: fromNode.id
+            , target: toNodes[ i ].id
+            , size: opt.size || 1
+            , color: opt.color || '#0f0'
+            , hover_color: opt.hover_color || '#f00'
+            , _isdummy: 1
+        };
+        edge.id = 'dummyedge_' 
+            + new Date().getTime()
+            + '_' + ( Math.random() + '' ).substr( 2, 6 )
+            ;
+        edges.push( edge );
+    }
+
+    return edges;
+};  
+sigma.utils.getDummyNode = function( options ) {
+    var opt = options || {} 
+        , node = {
+            x: +opt.x === opt.x ? opt.x : null
+            , y: +opt.y === opt.y ? opt.y : null
+            , size: opt.size || 1
+            , color: opt.color || '#f00'
+            , _isdummy: 1
+        };
+
+    node.id = 'dummynode_' 
+        + new Date().getTime()
+        + '_' + ( Math.random() + '' ).substr( 2, 6 )
+        ;
+
+    node.label = node.id;
+
+    return node;
+};   
 sigma.utils.getGridLayout
     = function(nodes, options){
 
@@ -1356,7 +1411,13 @@ sigma.utils.getLayoutForest
     var opt = options || {}
         , nodesVisited = {}
         , forest = []
-        , node = opt.root || nodes[0]
+        , node = opt.dummyRoot 
+            || opt.root 
+            || ( 
+                opt.makeMaxDegreeNodeRoot
+                    ? sigma.utils.getMaxDegreeNode( nodes.slice( 0 ), edges.slice( 0 ) )
+                    : nodes[0]
+            )
         , excludes = opt.excludes
         ;
 
@@ -1697,7 +1758,7 @@ sigma.utils.layoutTreesByGrid
                 children.forEach(function(child){
                     __depthTravel(child);
                 }); 
-                delete node._wt_children;
+                // delete node._wt_children;
             }
         }
     });
@@ -1735,7 +1796,9 @@ sigma.utils.layoutTreesByGrid
                 , len = children.length
                 ;
 
-            nodes.push(node);
+            if ( !node._isdummy ) {
+                nodes.push(node);
+            }
             if(len > 0){
                 children.forEach(function(child){
                     __depthTravel(child); 
@@ -1764,7 +1827,7 @@ sigma.utils.layoutTreesByGrid
     }
 
 
-}; 
+};
 ( function() {
 
 

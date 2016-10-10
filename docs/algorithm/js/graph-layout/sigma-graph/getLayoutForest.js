@@ -2,7 +2,8 @@ sigma.classes.graph.addMethod(
     'getLayoutForest'
     , function(options){
     var me = this
-        , g = me.getSubGraph(options)
+        , opt = options || {}
+        , g = opt.subGraph || me.getSubGraph(options)
         ;
 
     return sigma.utils.getLayoutForest(
@@ -10,4 +11,4 @@ sigma.classes.graph.addMethod(
         , g.edges
         , options
     ); 
-});
+});   

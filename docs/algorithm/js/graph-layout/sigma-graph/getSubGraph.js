@@ -5,8 +5,10 @@ sigma.classes.graph.addMethod(
         , me = this
         , filter = opt.filter
         , edgeFilter = opt.edgeFilter
-        , nodes = me.nodesArray
-        , edges = me.edgesArray
+        , dummyRoot = opt.dummyRoot || null
+        , dummyEdges = opt.dummyEdges || []
+        , nodes = me.nodesArray.slice( 0 )
+        , edges = me.edgesArray.slice( 0 )
         , _node_ids
         ;
 
@@ -26,7 +28,6 @@ sigma.classes.graph.addMethod(
                 edges.push(edge);
             }
         });
-
     }
 
     if('function' == typeof edgeFilter){
@@ -35,6 +36,11 @@ sigma.classes.graph.addMethod(
                 edges.splice(i, 1);
             }
         }
+    }
+
+    if ( dummyRoot && dummyEdges.length ) {
+        nodes.push( dummyRoot );
+        edges = edges.concat( dummyEdges );
     }
 
     return {

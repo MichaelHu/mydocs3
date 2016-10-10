@@ -48,7 +48,8 @@ sigma.classes.graph.addMethod(
     'getLayoutForest'
     , function(options){
     var me = this
-        , g = me.getSubGraph(options)
+        , opt = options || {}
+        , g = opt.subGraph || me.getSubGraph(options)
         ;
 
     return sigma.utils.getLayoutForest(
@@ -56,19 +57,18 @@ sigma.classes.graph.addMethod(
         , g.edges
         , options
     ); 
-});
+});   
 sigma.classes.graph.addMethod(
     'getMaxDegreeNode'
-    , function(){
+    , function( options ){
 
-    var nodes = nodes || this.nodesArray
-        , edges = edges || this.edgesArray
-        , me = this
+    var me = this
+        , opt = options || {}
+        , g = opt.subGraph || me.getSubGraph( opt )
         ;
 
-    return sigma.utils.getMaxDegreeNode(nodes, edges);        
-});  
-
+    return sigma.utils.getMaxDegreeNode( g.nodes, g.edges );        
+});
 sigma.classes.graph.addMethod(
     'getSubGraph'
     , function(options){
@@ -76,8 +76,10 @@ sigma.classes.graph.addMethod(
         , me = this
         , filter = opt.filter
         , edgeFilter = opt.edgeFilter
-        , nodes = me.nodesArray
-        , edges = me.edgesArray
+        , dummyRoot = opt.dummyRoot || null
+        , dummyEdges = opt.dummyEdges || []
+        , nodes = me.nodesArray.slice( 0 )
+        , edges = me.edgesArray.slice( 0 )
         , _node_ids
         ;
 
@@ -97,7 +99,6 @@ sigma.classes.graph.addMethod(
                 edges.push(edge);
             }
         });
-
     }
 
     if('function' == typeof edgeFilter){
@@ -106,6 +107,11 @@ sigma.classes.graph.addMethod(
                 edges.splice(i, 1);
             }
         }
+    }
+
+    if ( dummyRoot && dummyEdges.length ) {
+        nodes.push( dummyRoot );
+        edges = edges.concat( dummyEdges );
     }
 
     return {

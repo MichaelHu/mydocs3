@@ -1,12 +1,11 @@
 sigma.classes.graph.addMethod(
     'getMaxDegreeNode'
-    , function(){
+    , function( options ){
 
-    var nodes = nodes || this.nodesArray
-        , edges = edges || this.edgesArray
-        , me = this
+    var me = this
+        , opt = options || {}
+        , g = opt.subGraph || me.getSubGraph( opt )
         ;
 
-    return sigma.utils.getMaxDegreeNode(nodes, edges);        
-});  
-
+    return sigma.utils.getMaxDegreeNode( g.nodes, g.edges );        
+});

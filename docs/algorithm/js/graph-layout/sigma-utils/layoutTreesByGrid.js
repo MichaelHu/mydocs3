@@ -64,7 +64,7 @@ sigma.utils.layoutTreesByGrid
                 children.forEach(function(child){
                     __depthTravel(child);
                 }); 
-                delete node._wt_children;
+                // delete node._wt_children;
             }
         }
     });
@@ -102,7 +102,9 @@ sigma.utils.layoutTreesByGrid
                 , len = children.length
                 ;
 
-            nodes.push(node);
+            if ( !node._isdummy ) {
+                nodes.push(node);
+            }
             if(len > 0){
                 children.forEach(function(child){
                     __depthTravel(child); 
@@ -120,15 +122,25 @@ sigma.utils.layoutTreesByGrid
         spaceBlock.x = rect.x;
         spaceBlock.y = rect.y;
         if(tree._node_count > 1){
-            extendRatio = 1.2;
+            // extendRatio = 1.2;
+            extendRatio = 1;
         }
 
         // `extendRatio` is for reserved space for node-collision on boundaris
         spaceBlock.w = Math.ceil(rect.w * extendRatio / unit);
         spaceBlock.h = Math.ceil(rect.h * extendRatio / unit);
 
+        if(spaceBlock.w * unit - rect.w < unit
+            && tree._node_count > 1){
+            spaceBlock.w++;
+        }
+        if(spaceBlock.h * unit - rect.h < unit
+            && tree._node_count > 1){
+            spaceBlock.h++;
+        }
+
         return spaceBlock;
     }
 
 
-}; 
+};     

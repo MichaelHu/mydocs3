@@ -467,6 +467,10 @@
     {
         filter: function( node ) { ... }
         , edgeFilter: function( edge ) { ... }
+
+        // 复杂层次布局的虚拟节点和虚拟边
+        , dummyRoot: ...
+        , dummyEdges: ...
     }
 
 以下为代码实现：
@@ -478,8 +482,10 @@
             , me = this
             , filter = opt.filter
             , edgeFilter = opt.edgeFilter
-            , nodes = me.nodesArray
-            , edges = me.edgesArray
+            , dummyRoot = opt.dummyRoot || null
+            , dummyEdges = opt.dummyEdges || []
+            , nodes = me.nodesArray.slice( 0 )
+            , edges = me.edgesArray.slice( 0 )
             , _node_ids
             ;
 
@@ -509,6 +515,11 @@
             }
         }
 
+        if ( dummyRoot && dummyEdges.length ) {
+            nodes.push( dummyRoot );
+            edges = edges.concat( dummyEdges );
+        }
+
         return {
             nodes: nodes
             , edges: edges
@@ -521,6 +532,18 @@
 
 #### getLayoutForest
 
+
+> @param {object} [options]
+
+    {
+        root: ...
+        , dummyRoot: ...
+        , makeMaxDegreeNodeRoot: 0
+        , excludes: ...
+        , subGraph: ...
+    }
+
+
 `getLayoutForest()`：生成布局森林。对图进行`广度`遍历，获得其`遍历树`。
 
     @[data-script="javascript"]sigma.utils.getLayoutForest
@@ -529,7 +552,13 @@
         var opt = options || {}
             , nodesVisited = {}
             , forest = []
-            , node = opt.root || nodes[0]
+            , node = opt.dummyRoot 
+                || opt.root 
+                || ( 
+                    opt.makeMaxDegreeNodeRoot
+                        ? sigma.utils.getMaxDegreeNode( nodes.slice( 0 ), edges.slice( 0 ) )
+                        : nodes[0]
+                )
             , excludes = opt.excludes
             ;
 
@@ -569,7 +598,8 @@
         'getLayoutForest'
         , function(options){
         var me = this
-            , g = me.getSubGraph(options)
+            , opt = options || {}
+            , g = opt.subGraph || me.getSubGraph(options)
             ;
 
         return sigma.utils.getLayoutForest(
@@ -1105,14 +1135,14 @@
 
     @[data-script="javascript"]sigma.classes.graph.addMethod(
         'getMaxDegreeNode'
-        , function(){
+        , function( options ){
 
-        var nodes = nodes || this.nodesArray
-            , edges = edges || this.edgesArray
-            , me = this
+        var me = this
+            , opt = options || {}
+            , g = opt.subGraph || me.getSubGraph( opt )
             ;
         
-        return sigma.utils.getMaxDegreeNode(nodes, edges);        
+        return sigma.utils.getMaxDegreeNode( g.nodes, g.edges );        
     });
 
 
@@ -1843,7 +1873,9 @@
                     , len = children.length
                     ;
 
-                nodes.push(node);
+                if ( !node._isdummy ) {
+                    nodes.push(node);
+                }
                 if(len > 0){
                     children.forEach(function(child){
                         __depthTravel(child); 
@@ -1861,12 +1893,22 @@
             spaceBlock.x = rect.x;
             spaceBlock.y = rect.y;
             if(tree._node_count > 1){
-                extendRatio = 1.2;
+                // extendRatio = 1.2;
+                extendRatio = 1;
             }
 
             // `extendRatio` is for reserved space for node-collision on boundaris
             spaceBlock.w = Math.ceil(rect.w * extendRatio / unit);
             spaceBlock.h = Math.ceil(rect.h * extendRatio / unit);
+
+            if(spaceBlock.w * unit - rect.w < unit
+                && tree._node_count > 1){
+                spaceBlock.w++;
+            }
+            if(spaceBlock.h * unit - rect.h < unit
+                && tree._node_count > 1){
+                spaceBlock.h++;
+            }
 
             return spaceBlock;
         }
@@ -2132,6 +2174,129 @@
 
 
 
+
+
+#### getDummyNode
+
+`getDummyNode()`：获取虚拟节点。
+
+    @[data-script="javascript"]sigma.utils.getDummyNode = function( options ) {
+        var opt = options || {} 
+            , node = {
+                x: +opt.x === opt.x ? opt.x : null
+                , y: +opt.y === opt.y ? opt.y : null
+                , size: opt.size || 1
+                , color: opt.color || '#f00'
+                , _isdummy: 1
+            };
+
+        node.id = 'dummynode_' 
+            + new Date().getTime()
+            + '_' + ( Math.random() + '' ).substr( 2, 6 )
+            ;
+
+        node.label = node.id;
+
+        return node;
+    };
+
+
+
+<div id="test_getDummyNode" class="test">
+<div class="test-container">
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_getDummyNode');
+        s.show( 'testing getDummyNode: \n' );
+        s.append_show( sigma.utils.getDummyNode() );
+        s.append_show( sigma.utils.getDummyNode( {
+            size: 25
+            , x: 0
+            , y: 0
+            , color: '#000'
+        } ) );
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+
+
+
+#### getDummyEdges
+
+`getDummyEdges( fromNode, toNodes )`: 获取从一个节点至一组节点的虚拟边。
+
+    @[data-script="javascript"]sigma.utils.getDummyEdges 
+        = function( fromNode, toNodes, options ) {
+        var opt = options || {} 
+            , edges = []
+            , edge
+            ;
+
+        // assertions
+        if ( !fromNode ) {
+            throw new Error( 'sigma.utils.getDummyEdges: `fromNode` is undefined' );
+        }
+        if ( !toNodes ) {
+            throw new Error( 'sigma.utils.getDummyEdges: `toNodes` is undefined' );
+        }
+        if ( !toNodes.length ) {
+            throw new Error( 'sigma.utils.getDummyEdges: `toNodes.length` is zero' );
+        }
+
+        for ( var i = 0; i < toNodes.length; i++ ) {
+            edge = {
+                source: fromNode.id
+                , target: toNodes[ i ].id
+                , size: opt.size || 1
+                , color: opt.color || '#0f0'
+                , hover_color: opt.hover_color || '#f00'
+                , _isdummy: 1
+            };
+            edge.id = 'dummyedge_' 
+                + new Date().getTime()
+                + '_' + ( Math.random() + '' ).substr( 2, 6 )
+                ;
+            edges.push( edge );
+        }
+
+        return edges;
+    };
+
+
+
+
+<div id="test_getDummyEdges" class="test">
+<div class="test-container">
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_getDummyEdges');
+        s.show( 'testing getDummyEdges: \n' );
+        s.append_show( sigma.utils.getDummyEdges(
+            sigma.utils.getDummyNode()
+            , [
+                { id: 'n1' }
+                , { id: 'n2' }
+                , { id: 'n3' }
+            ]
+        ) );
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
 
 
 

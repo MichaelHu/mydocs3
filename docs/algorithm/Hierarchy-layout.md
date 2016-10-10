@@ -66,6 +66,8 @@
 6. `层高`与同层`邻接`节点`距离`可独立`配置`，特别对于同层孩子节点较多的情况，加大层高效果更明显
 7. 综合考虑与`兄弟`节点关系、与`堂兄弟`节点关系以及其他`外部`节点关系，使得有关联的节点相互靠近，获得较优排布。已`包含3`的优化
 8. 直接兄弟、间接兄弟、直接堂兄弟、间接堂兄弟按`子树大小`排序，能解决兄弟排序算法的bad case（虽不一定是普遍最优，但能有效解决目前发现的问题）。
+9. 若未特别指定，将`最大度数`节点作为`根节点`
+10. 支持引入`虚拟`节点，将指定节点排布在第一层
 
 `适用场景`：
 
@@ -1557,13 +1559,41 @@
 `层次布局算法`(`使用均衡优化`、`优化策略1`、`优化策略2`、`优化策略5`、`优化策略6`、`优化策略3`、`优化策略7`、`优化策略8`)：
 
 
+> @param {object} [options]
+
+    {
+        xUnit: 50 || unit
+        , yUnit: 100 || unit
+        , spaceGrid: { xSize: 40, ySize: 40 }
+        , unit: 1
+        , heightLimit: 2000
+        , adjustSiblingsOrder: 0
+        , perfectAdjustSiblingsOrder: 0
+        , noSortBySubTreeSize: 0
+        , avoidSameLevelTravelThrough: 0
+        , avoidSameLevelTravelThroughDelta: 0.2
+        , layoutHorizontal: 0
+        , filter: ...
+        , makeMaxDegreeNodeRoot: 0
+        , dummyRoot: null
+        , dummyEdges: null
+    }
+
+
+以下为代码实现：
+
     @[data-script="javascript"]sigma.prototype.layoutHierarchy2
         = function(options){
         var me = this;
         me.initializeLayout();
 
         var opt = options || {} 
-            , forest = me.graph.getLayoutForest(opt)
+            , subGraph = me.graph.getSubGraph( opt )
+            ;
+
+        opt.subGraph = opt.subGraph || subGraph;
+
+        var forest = me.graph.getLayoutForest(opt)
             , treeOffsetX = 0
             , spaceGrid = opt.spaceGrid || {xSize: 40, ySize: 40}
 
@@ -1573,7 +1603,7 @@
             , xUnit = opt.xUnit || unit
             , yUnit = opt.yUnit || unit
             , gridUnit = Math.min( xUnit, yUnit )
-            , edges = me.graph.getSubGraph(options).edges
+            , edges = subGraph.edges
             , layoutHorizontal = opt.layoutHorizontal || 0
             ;
 
@@ -1625,6 +1655,10 @@
                         delete node._wt_dy;
                     });
                 }
+            }
+
+            if(opt.perfectAdjustSiblingsOrder){
+                sigma.utils.clearLocalAndExternalNodes( tree );
             }
 
             function computeLENodes(tree){
@@ -1728,6 +1762,9 @@
         var layoutHorizontal = 0;
         var perfectAdjustSiblingsOrder = 1;
         var noSortBySubTreeSize = 1;
+        var usingDummyRoot = 0;
+        var makeMaxDegreeNodeRoot = 0;
+
         // var g1 = getRandomGraph(20, 18, 8);
         // var g1 = getLineGraph(20, 18, {nodeSize: 8});
         var g1 = networkGraph_edges_between_the_same_level_nodes_3;
@@ -1847,6 +1884,36 @@
             .refresh()
             ;
 
+        var dummyRoot = sigma.utils.getDummyNode()
+            , dummyFirstLevelNodes = ( function( nodes ) {
+                    var len = nodes.length 
+                        , count = len * 0.3 < 5 ? Math.ceil( len * 0.3 ) : 5
+                        , dummyNodes = []
+                        , skipIndexes = []
+                        , step = Math.ceil( Math.random() * count )
+                        , i = 0
+                        ;
+                    while( dummyNodes.length < count ) {
+                        if ( skipIndexes.indexOf( i ) < 0 ) {
+                            dummyNodes.push( nodes[ i ] );
+                            skipIndexes.push( i );
+                            i += step;
+                        }
+                        else {
+                            i++;
+                        }
+
+                        if ( i >= len ) {
+                            i %= len;
+                        }
+                    }
+
+                    // console.log( step, skipIndexes );
+                    return dummyNodes;
+                } )( g2.nodes ) 
+            , dummyEdges = sigma.utils.getDummyEdges( dummyRoot, dummyFirstLevelNodes )
+            ;
+
         sm2
             .normalizeSophonNodes()
             .alignCenter({rescaleToViewport:1})
@@ -1866,6 +1933,9 @@
                 , filter: partialLayout
                     ? function(node){return node.selected;}
                     : null
+                , makeMaxDegreeNodeRoot: makeMaxDegreeNodeRoot
+                , dummyRoot: usingDummyRoot ? dummyRoot : null
+                , dummyEdges: dummyEdges
             })
             .normalizeSophonNodes({
                 readPrefix: 'hier_'
