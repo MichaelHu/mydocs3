@@ -2381,6 +2381,21 @@
 
 
 
+#### isSubGraphsConnected
+
+> todo
+
+`isSubGraphsConnected( g1, g2, options )`：判断两个子图是否连通。
+
+    @[data-script="javascript"]sigma.utils.isSubGraphsConnected
+        = function( g1, g2, options ) {
+        var opt = option || {}
+            ;
+    };
+
+
+
+
 ### 常用方法验证 
 
 

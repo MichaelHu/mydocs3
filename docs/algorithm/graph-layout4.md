@@ -73,6 +73,16 @@
 
 ### 算法实现
 
+> @param {object} [options]
+
+    {
+        filter: function( node ) { ... }
+        , ...YifanHu Layout Options
+    }
+
+
+以下是代码实现：
+
     @[data-script="javascript"]sigma.prototype.layoutNearby
         = function( options ) {
         var me = this
@@ -98,6 +108,7 @@
 
         return me.layoutYifanHu( {
             skipInitialization: 1
+            , skipPreLayoutCheck: opt.skipPreLayoutCheck || 0
             , optimalDistance: opt.optimalDistance || 500
             , readPrefix: opt.readPrefix || 'yfh_'
             , maxIterations: opt.maxIterations || 50

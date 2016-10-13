@@ -79,24 +79,25 @@ sigma.prototype.layoutYifanHu
         , newOpt = Object.assign({}, opt, {readPrefix: ''})
         ;
 
-    if(isLinelikeLayout(nodes, {
-            threshold: 10
-        })
-        || hasWhollyOverlayedNodes(nodes)
-        || hasInvalidValues(nodes)
-        ){
-        // note: `opt.readPrefix` must be ''
-        me.layoutGrid(newOpt)
-            .applyLayoutInstantly({
-                readPrefix: 'grid_'
-                , clearOld: 1
-            });
+    if(!opt.skipPreLayoutCheck) {
+        if(isLinelikeLayout(nodes, {
+                threshold: 10
+            })
+            || hasWhollyOverlayedNodes(nodes)
+            || hasInvalidValues(nodes)
+            ){
+            // note: `opt.readPrefix` must be ''
+            me.layoutGrid(newOpt)
+                .applyLayoutInstantly({
+                    readPrefix: 'grid_'
+                    , clearOld: 1
+                });
+        }
     }
 
     sigma.utils.layoutYifanHu(nodes, edges, opt);
     return me;
-}; 
-
+};   
 
 
 } )();

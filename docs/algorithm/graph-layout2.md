@@ -831,15 +831,241 @@
 
 `incLayoutYifanHu()`：YifanHu增量布局，需提供参数：
 * `nodes`：原有节点数组
-* `newNodes`：新增节点数组。新节点需要确保。。。
-* `selectedNodes`：...
-* `options`：...
-
-todo
+* `newNodes`：新增节点数组。新节点需要确保`x, y`字段`存在`，即使其值是null
+* `selectedNodes`：`选中`节点数组。新增节点初始会出现在选中节点的`中心处`。
+* `options`：其他选项，同`getGridLayout()`方法的options
 
 
+#### 算法实现
+
+> @param {object} [options]
+
+    {
+        microRadius: 1
+        , ...YifanHu Layout Options
+    }
 
 
+以下为代码实现：
+
+    @[data-script="javascript"]sigma.prototype.incLayoutNearby
+        = function(newNodes, selectedNodes, options){
+        var me = this
+            , nodes = me.graph.nodes()
+            ;
+
+        if(!newNodes || !newNodes.length
+            || !nodes || !nodes.length){
+            return;
+        }
+
+        var opt = options || {} 
+            , rect
+            , selectedCenter
+            , selectedRect
+            , newLen = newNodes.length
+            , newNodesIdHash = {}
+            , radius = opt.microRadius || 1
+            , angleStep = 2 * Math.PI / newLen
+            , i = 0
+            , angle
+            ;
+
+        selectedNodes = selectedNodes || [];
+
+        // not by search around
+        if(!selectedNodes.length){
+            selectedNodes = nodes;
+        }
+
+        selectedRect = rect 
+            = sigma.utils.getNodesRect(selectedNodes);
+        selectedCenter = {
+            x: rect.x + rect.w / 2
+            , y: rect.y + rect.h / 2
+        };
+
+        // from selected nodes' center point 
+        newNodes.forEach(function(node){
+            // prevent duplicated coordinates
+            angle = i * angleStep;
+            node.x = selectedCenter.x + radius * Math.cos( angle ); 
+            node.y = selectedCenter.y + radius * Math.sin( angle );
+            newNodesIdHash[ node.id ] = 1;
+            i++;
+        });
+
+        // extend options
+        opt.filter = function( node ) {
+            return newNodesIdHash[ node.id ];
+        };
+        opt.skipPreLayoutCheck = 1;
+
+        return me.layoutNearby( opt );
+    };
+
+
+
+#### 算法验证
+
+<div id="incLayoutNearby" class="test">
+<div class="test-container">
+<div id="incLayoutNearby_graph" class="test-graph">
+</div>
+<div class="test-console"></div>
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#incLayoutNearby');
+        // var g1 = getRandomGraph(200, 200, 1);
+        // var g1 = networkGraph_circle_0628;
+        // var g1 = networkGraph_FR;
+        // var g1 = networkGraph_ForceAtlas2;
+        // var g1 = networkGraph0520_allEdges;
+        // var g1 = networkGraph_grid_0521; 
+        // var g1 = networkGraph_tree_0521;
+        // var g1 = networkGraph_2circles_0523;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes;
+        var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        // var g1 = networkGraph_many_children_0526;
+        // var g1 = networkGraph_grid_0612; 
+        var containerId = 'incLayoutNearby_graph';
+        var rendererSettings = {
+                // captors settings
+                doubleClickEnabled: true
+                , mouseWheelEnabled: false
+
+                // rescale settings
+                , minEdgeSize: 0.5
+                , maxEdgeSize: 1
+                , minNodeSize: 1 
+                , maxNodeSize: 5
+
+                // renderer settings
+                , edgeHoverColor: fly.randomColor() 
+                , edgeHoverSizeRatio: 1
+                , edgeHoverExtremities: true
+                , drawLabels: false
+            };
+        var sigmaSettings = {
+                // rescale settings 
+                sideMargin: 10 
+
+                // instance global settings
+                , enableEdgeHovering: true
+                , edgeHoverPrecision: 5
+            };
+
+        var sm;
+
+        g1.nodes.forEach(function(node){
+            node.color = '#aaa';
+        });
+
+        if((sm = isSigmaInstanceExisted(containerId))){
+            sm.kill();
+        };
+
+        sm = getUniqueSigmaInstance(
+                    containerId
+                    , {
+                        settings: sigmaSettings 
+                        , graph: g1
+                        , renderers: [
+                            {
+                                type: 'canvas' 
+                                , container: containerId
+                                , settings: rendererSettings
+                            }
+                        ]
+                    }
+                ); 
+
+        sm.refresh();
+
+        setTimeout(function(){
+            var newData = createRawGraphData(
+                    18
+                    , sm.graph.nodes()
+                )
+                , newNodes = newData.nodes
+                , newEdges = newData.edges
+                , selectedNodes = getRandomSelectedNodes()
+                ; 
+
+            function getRandomSelectedNodes(){
+                var _nodes = sm.graph.nodes()
+                    , len = _nodes.length
+                    , retNodes = []
+                    ;
+
+                _nodes.forEach(function(_node){
+                    if(Math.random() > 0.8){
+                        _node.color = '#e6550d';
+                        retNodes.push(_node);
+                    }
+                });
+                return retNodes;
+            }
+
+            newNodes.forEach(function(node){
+                node.x = node.y = 0;
+                sm.graph.addNode(node);
+            });
+
+            newEdges.forEach(function(edge){
+                sm.graph.addEdge(edge);
+            });
+
+            newNodes = sm.graph.getSubGraph( {
+                filter: function( node ){
+                    return node.newAdded;
+                }
+            } ).nodes;
+
+            sm
+                .incLayoutNearby(
+                    newNodes
+                    , selectedNodes
+                    , {
+                        microRadius: 2
+                        , optimalDistance: 20 
+                        , maxIterations: 50
+                        , readPrefix: 'yfh_'
+                    }
+                )
+                .prepareAnimation( { readPrefix: 'yfh_' } )
+                ;
+
+            sm.refresh();
+
+            setTimeout(function(){
+                sigma.plugins.animate(
+                    sm
+                    , {
+                        x: 'yfh_x'
+                        , y: 'yfh_y'
+                    }
+                    , {
+                        duration: 500
+                        , onComplete: function(){
+                            sm.graph.nodes().forEach(function(node){
+                                delete node.yfh_x;
+                                delete node.yfh_y;
+                            });
+                        }
+                    }
+                );
+            }, 1000);
+
+        }, 1000);
+
+    })();
+
+</div>
+<div class="test-panel">
+</div>
+</div>
 
 
 
