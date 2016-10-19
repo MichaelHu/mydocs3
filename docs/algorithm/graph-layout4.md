@@ -445,11 +445,15 @@
 
             function depthTravel(node, angleInput){
                 var children = node._wt_children
+                    , len = children.length
                     , angleInput = angleInput || Math.PI * 3 / 2
                     , nonLeafChildren
                     , clusterConfig
                     , ai
                     , distance
+                    , angleRange = opt.angleRange 
+                        || _getAngleRange(len) 
+                        || Math.PI / 2
                     ;
 
                 clusterConfig = sigma.utils.clustersNodes(
@@ -459,9 +463,7 @@
                         , root: node
                         , readPrefix: 'cluster_'
                         , writePrefix: 'cluster_'
-                        , angleRange: opt.angleRange 
-                            || _getAngleRange(children.length) 
-                            || Math.PI / 2
+                        , angleRange: angleRange 
                         , radiusStep: opt.radiusStep
                         , randomRadius: opt.randomRadius || 0
                         , centerFirst: 1
@@ -599,17 +601,18 @@
 
         var s = fly.createShow('#test_50');
         var g1 = getRandomGraph(20, 18, 8);
-        var g1 = getClusterGraph(20, {xMax: 200, yMax: 200, nodeSize: 10});
-        var g1 = networkGraph_edges_between_the_same_level_nodes_3;
-        var g1 = networkGraph_FR;
-        var g1 = networkGraph_ForceAtlas2;
-        var g1 = networkGraph0520_allEdges;
-        var g1 = networkGraph_grid_0521; 
-        var g1 = networkGraph_tree_0521;
-        var g1 = networkGraph_2circles_0523;
-        var g1 = networkGraph_edges_between_the_same_level_nodes;
-        var g1 = networkGraph_edges_between_the_same_level_nodes_2;
-        var g1 = networkGraph_many_children_0526;
+        // var g1 = getClusterGraph(20, {xMax: 200, yMax: 200, nodeSize: 10});
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_3;
+        // var g1 = networkGraph_FR;
+        // var g1 = networkGraph_ForceAtlas2;
+        // var g1 = networkGraph0520_allEdges;
+        // var g1 = networkGraph_grid_0521; 
+        // var g1 = networkGraph_tree_0521;
+        // var g1 = networkGraph_2circles_0523;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        // var g1 = networkGraph_many_children_0526;
+        // var g1 = networkGraph_star_161017;;
 
         var g2 = {
                 nodes: g1.nodes.slice()
@@ -686,6 +689,8 @@
             .alignCenter({rescaleToViewport: 1})
             .refresh()
             ;
+
+        sigmaEnableNodeDrag( sm2 );
 
         sm2
             .normalizeSophonNodes()

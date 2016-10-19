@@ -1442,10 +1442,11 @@ todo
         // var g1 = networkGraph_tree_0524;
         // var g1 = networkGraph_many_children_0526;
         // var g1 = networkGraph_edges_between_the_same_level_nodes_3;
-        // var g1 = networkGraph_person_event_event_person_0729;;
-        // var g1 = networkGraph_person_event_event_person_0801;;
-        // var g1 = networkGraph_triangle_0801;;
-        // var g1 = networkGraph_triangle_0801_2;;
+        // var g1 = networkGraph_person_event_event_person_0729;
+        // var g1 = networkGraph_person_event_event_person_0801;
+        // var g1 = networkGraph_triangle_0801;
+        // var g1 = networkGraph_triangle_0801_2;
+        // var g1 = networkGraph_star_161017;
 
         fixedNodes && g1.nodes.forEach(function(node){
             if(Math.random() < 0.1){

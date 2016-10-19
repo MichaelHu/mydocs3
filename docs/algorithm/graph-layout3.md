@@ -1047,6 +1047,7 @@
         // var g1 = networkGraph_edges_between_the_same_level_nodes_2;
         // var g1 = networkGraph_tree_0524;
         // var g1 = networkGraph_many_children_0526;
+        // var g1 = networkGraph_star_161017;
 
         var g2 = {
                 nodes: g1.nodes.slice()

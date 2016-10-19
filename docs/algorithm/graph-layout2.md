@@ -483,6 +483,10 @@
             || sigma.utils.getNumOfFirstClusterLevel(len, 15, 1);
         clusterLevels = sigma.utils.getClusterLevels(numOfFirstLevel, len); 
 
+        if ( len <= 1 ) {
+            angleRange = 0;
+        }
+
         if(angleRange < PI * 2){
             angleStart = ( 2 * PI - angleRange ) / 2 + angleInput;
         }

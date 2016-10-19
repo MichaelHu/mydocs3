@@ -3,6 +3,20 @@
 > 记下，以备后续查看
 
 
+## 2016-10-18
+
+### favicon.ico
+
+* `favicon.ico`，尺寸16*16, 32*32, 48*48，甚至可以更大，百度使用的是32*32，有说兼容性更好。
+    使用`上传png`文件可以自动生成（这不一定是最好的转换网站）：<http://www.easyicon.net/covert/>
+* 必须声明`meta`标签
+
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+* 一般放置在站点`根目录`
+
+
+
 ## 2016-09-23
 
 ### 掘金－技术社区
