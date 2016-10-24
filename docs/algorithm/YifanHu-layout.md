@@ -110,7 +110,7 @@
 * `无向图`表示：`G = {V, E}`，其中`V`为节点集合，`E`为边集合。
 * `邻接`关系：节点`i`和`j`有边相连，或`i`和`j`是`邻接`节点，用<img src="./img/notation-adjacent.png" height="30">表示。
 * `图距离`：节点`i`到`j`的`空间`距离，用`d(i, j)`表示。对于`二维图`来说，等于<img src="./img/notation-distance.png" height="30">。
-* `2-norm`距离：<img src="./img/notation-2-norm.png" height="30">，对于`1维`向量来说，实际上就是`绝对值`，`|Xi - Xj|`，而对于`2维`向量来说(x1, x2)，则是`Math.sqrt(x1^2, x2^2)`。
+* `2-norm`距离：<img src="./img/notation-2-norm.png" height="30">，对于`1维`向量来说，实际上就是`绝对值`，`|xi - xj|`；而对于`2维`向量来说(xi1-xj1, xi2-xj2)，则是`Math.sqrt((xi1-xj1)^2, (xi2-xj2)^2)`。
     p-norm: <img src="./img/p-norm.png" height="56" style="vertical-align:middle;"> 
 
     (参考: <https://en.wikipedia.org/wiki/Norm_(mathematics)#p-norm>)
@@ -129,7 +129,7 @@
 
 ### spring-electron model
 
-`引力`、`斥力`公式：
+`斥力`、`引力`公式：
 
  <img src="./img/formula-attractive-repulsive-force.png" height="70">
 
@@ -834,6 +834,26 @@ todo
 </div>
 </div>
 
+
+
+### zeroForce
+
+`zeroForce()`，返回`零力向量`。
+
+    @[data-script="javascript"]function zeroForce() {
+        var force = { dx: 0, dy: 0 };
+
+        // !!NOTE: trigger `copy-on-write`
+        // , especially on windows chrome 50+
+        force.num = 0;
+
+        return force;
+    }
+
+
+
+
+
 ### computeElectricalForce
 
 `computeElectricalForce()`，计算两个节点的`库仑`斥力。
@@ -915,24 +935,6 @@ todo
 <div class="test-panel">
 </div>
 </div>
-
-
-
-
-
-### zeroForce
-
-`zeroForce()`，返回`零力向量`。
-
-    @[data-script="javascript"]function zeroForce() {
-        var force = { dx: 0, dy: 0 };
-
-        // !!NOTE: trigger `copy-on-write`
-        // , especially on windows chrome 50+
-        force.num = 0;
-
-        return force;
-    }
 
 
 
@@ -1447,6 +1449,8 @@ todo
         // var g1 = networkGraph_triangle_0801;
         // var g1 = networkGraph_triangle_0801_2;
         // var g1 = networkGraph_star_161017;
+        // var g1 = networkGraph_two_cores_1024;
+        // var g1 = networkGraph_two_cores_1024_1;
 
         fixedNodes && g1.nodes.forEach(function(node){
             if(Math.random() < 0.1){
