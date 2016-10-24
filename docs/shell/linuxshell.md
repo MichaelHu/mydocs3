@@ -19,6 +19,25 @@ hudamin 2014
     for (( a=9; a>=1; a-- )); do git stash drop stash@{$a}; done
 
 
+## which vs whereis
+
+1. `whereis`输出系统标准目录中的程序地址
+2. `which`输出根据用户目录优先级查找的程序地址，更接近用户视角
+
+比如：
+
+    which vim
+    $ which -a vim
+    /Users/hudamin/softwares/vim8/bin/vim
+    /usr/bin/vim
+    $ which vim
+    /Users/hudamin/softwares/vim8/bin/vim
+    $ whereis vim
+    /usr/bin/vim
+
+用户输入`vim`真正使用的是`vim8`，which能真正体现用户视角。
+
+
 
 ## 版本号
 

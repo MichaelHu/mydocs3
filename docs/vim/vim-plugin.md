@@ -55,5 +55,10 @@
 
 
 
+## neocompl*插件
+
+* `neocomplcache`插件，配合`neosnippet`插件一起使用。可以不需要lua支持。
+* `neocomplete`插件，可以独立使用，但需要vim编译时带上`lua`支持。是neocomplcache插件的新一代插件。
+
 
 

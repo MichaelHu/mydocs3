@@ -422,6 +422,17 @@
 
 #### 算法实现
 
+> @param {object} options
+
+    {
+        distanceCoefficient: 1.5
+        , radiusStep: ...
+        , randomRadius: ...
+        , spaceGrid: ...
+        , gridUnit: ...
+    }
+
+
 `簇布局算法`：
 
     @[data-script="javascript"]sigma.prototype.layoutCluster
@@ -431,6 +442,8 @@
 
         var opt = options || {} 
             , distanceCoefficient = opt.distanceCoefficient || 1.5 
+		    , spaceGrid = opt.spaceGrid || {xSize: 40, ySize: 40}	
+            , gridUnit = opt.gridUnit || 10
             , forest = me.graph.getLayoutForest(opt)
             , edges = me.graph.edges()
             ;
@@ -494,6 +507,17 @@
 
         });
 
+		sigma.utils.layoutTreesByGrid( 
+			forest
+			, {
+				spaceGrid: spaceGrid
+				, optimalDistance: gridUnit
+				, readPrefix: 'cluster_'
+			} 
+		); 
+
+        return me;
+
         function _getAngleRange(totalNum){
             var ret = 1;
             if(totalNum <= 2){
@@ -518,7 +542,7 @@
                 , distance
                 , childrenCount = cl.numOfNodes
                 , grandChildrenCount = node._wt_children.length
-                , childrenRadiius
+                , childrenRadius
                 , grandChildrenRadius
                 ;
 
@@ -528,8 +552,13 @@
             }
             grandChildrenRadius = _getRadius(grandChildrenCount, rs); 
 
-            distance = ( childrenRadius + grandChildrenRadius ) 
-                * distanceCoefficient;
+            if( grandChildrenCount <= 1 ) {
+                distance = childrenRadius;
+            }
+            else {
+                distance = ( childrenRadius + grandChildrenRadius ) 
+                    * distanceCoefficient;
+            }
 
             return distance;
         }
@@ -558,6 +587,7 @@
                 , newX, newY
                 ;
 
+            // do stretching
             newX = fromNode.cluster_x 
                 + scale * ( node.cluster_x - fromNode.cluster_x );
             newY = fromNode.cluster_y 
@@ -578,7 +608,6 @@
             return ret;
         }
 
-        return this;
     };
 
 
@@ -701,6 +730,7 @@
                 distanceCoefficient: 1.1
                 , radiusStep: 50
                 , randomRadius: 1
+                , gridUnit: 50
             })
             .normalizeSophonNodes({
                 readPrefix: 'cluster_'

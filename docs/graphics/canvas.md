@@ -20,6 +20,37 @@
 <script src="http://258i.com/static/bower_components/jquery/dist/jquery.min.js"></script>
 
 
+## 前置基本要点
+
+### piexl adaptive
+
+> 物理像素自适应，高分屏和普通屏的适应
+
+`参数`说明：
+
+    @param {dom} canvas
+    @param {object} cssSize css尺寸（或逻辑尺寸）
+
+    cssSize = { w: 300, h: 300 };
+
+
+以下是`代码`实现：
+
+    @[data-script="javascript"]function adaptDevice(canvas, cssSize){
+        var ratio = window.devicePixelRatio
+            , ctx = canvas.getContext('2d')
+            ;
+        canvas.width = cssSize.w * ratio;
+        canvas.height = cssSize.h * ratio;
+        ctx.scale(ratio, ratio);
+    }
+
+
+
+
+
+
+
 ## Canvas基础
 
 
@@ -163,15 +194,6 @@ closePath()并`不会清空`当前路径的子路径列表。
         var canvas = $wrapper.find('canvas')[0]
             , ctx = canvas.getContext('2d')
             ;
-
-        function adaptDevice(canvas, cssSize){
-            var ratio = window.devicePixelRatio
-                , ctx = canvas.getContext('2d')
-                ;
-            canvas.width = cssSize.w * ratio;
-            canvas.height = cssSize.h * ratio;
-            ctx.scale(ratio, ratio);
-        }
 
         function point(ctx, center, options){
             var opt = options || {}

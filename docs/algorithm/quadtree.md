@@ -6,7 +6,7 @@
 
 ## 前言
 
-octree，3D quadtree
+`关键词`：`quadtree`(四叉树), `octree`(八叉树，用于3D): 3D quadtree
 
 
 * wikipedia: <https://en.wikipedia.org/wiki/Quadtree>
@@ -21,7 +21,9 @@ octree，3D quadtree
 
 * quadtree web demos: <https://www.michaelfogleman.com/static/quads/>
 
-* <http://my.oschina.net/xhload3d/blog/353020>
+* HT for Web可视化QuadTree四叉树碰撞检测：<http://my.oschina.net/xhload3d/blog/353020>
+
+* 四叉树与八叉树：<http://blog.csdn.net/zhanxinhang/article/details/6706217>
 
 
 

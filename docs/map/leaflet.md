@@ -210,6 +210,7 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
         var point = [40.0455555555, 116.3497222222].reverse(); // 东升科技园B-6
         var point = [39.9975,116.3044444444].reverse(); // 地铁四号线圆明园站附近 
         var point = [23.5,116.3044444444].reverse(); // 北回归线上与圆明园同经度的地方
+        var point = [30.17444,120.17555].reverse(); // 杭州市滨江区江南大道附近
         var zoom = 13;
         var center = window.datum.bd09.fromWGS84(point).reverse();
         var myMap = L.map(
