@@ -93,8 +93,10 @@
             , nonselectedFilter = function( node ) { 
                 return !selectedFilter( node ); 
             }
+            , subGraphFilter = opt.subGraphFilter
             , selectedGraph = me.graph.getSubGraph( { filter: selectedFilter } )
-            , nonselectedGraph = me.graph.getSubGraph( { filter: nonselectedFilter } )
+            , nonselectedGraph
+            , subGraph
             ;
 
         if ( selectedGraph.nodes.length == 0 ) {
@@ -102,12 +104,25 @@
         }
 
         me.initializeLayout();
-        nonselectedGraph.nodes.forEach( function( node ) {
-            node.fixed = true;
-        } );
+
+        if ( 'function' == typeof subGraphFilter ) {
+            subGraph = me.graph.getSubGraph( { filter: subGraphFilter } );
+            subGraph.nodes.forEach( function( node ) {
+                if ( !selectedFilter( node ) ) {
+                    node.fixed = true;
+                }
+            } );
+        }
+        else {
+            nonselectedGraph = me.graph.getSubGraph( { filter: nonselectedFilter } );
+            nonselectedGraph.nodes.forEach( function( node ) {
+                node.fixed = true;
+            } );
+        }
 
         return me.layoutYifanHu( {
             skipInitialization: 1
+            , filter: subGraphFilter
             , skipPreLayoutCheck: opt.skipPreLayoutCheck || 0
             , optimalDistance: opt.optimalDistance || 500
             , readPrefix: opt.readPrefix || 'yfh_'

@@ -8,14 +8,14 @@
 
 ## 一、初识
 
-Facebook使用的webapp应用架构，用于控制数据流。它提出一种应用架构模式，而不是一个应用框架（代码库）。
+Facebook使用的webapp应用架构，用于`控制数据流`。它提出一种应用`架构模式`，而不是一个应用框架（代码库）。
 
 所以，理解其架构思想才是关键。
 
 
 ### 1.1 3 Major parts
 
-单向数据流，避开使用传统MVC。
+`单向`数据流，避开使用传统MVC。
 
 <img src="./img/flux-simple-f8-diagram-explained-1300w.png" width="700">
 

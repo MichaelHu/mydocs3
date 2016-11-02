@@ -537,12 +537,14 @@ canvas绘制，`5`个`layer`：node、edge、labels、捕获鼠标事件层以�
 
         camera.x = graph.x * ratio
 
-2. 将图形居中，可先获得`graph``坐标空间`中其图形中点的位置，记为`graph.x`, `graph.y`，再调用`camera.goTo()`
+2. 将图形居中，可先获得`graph坐标`空间中其图形中点的位置，记为`graph.x`, `graph.y`，再通过`camera.cameraPosition()`转换成`Camera坐标`，最后调用`camera.goTo()`
+
 
         cam1.goTo({
             x: graph.x
             , y: graph.y
         });
+
 
     `不受`当前`ratio`以及`angle`的`影响`。
 

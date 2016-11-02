@@ -2381,6 +2381,28 @@
 
 
 
+#### getNodesWithinRadius
+
+`getNodesWithinRadius( nodes, node, radius, options )`：获取`nodes`集合中与`node`相距不超过`radius`的所有节点，不包括node本身。
+
+    @[data-script="javascript"]sigma.utils.getNodesWithinRadius
+        = function( nodes, node, radius, options ) {
+        var opt = options || {}
+            , retNodes = []
+            ;
+
+        nodes.forEach( function ( to ) {
+            if ( sigma.utils.getDistance( node.x, node.y, to.x, to.y ) <= radius ) {
+                retNodes.push( to );
+            }
+        } );
+
+        return retNodes;
+    };
+
+
+
+
 #### isSubGraphsConnected
 
 > todo

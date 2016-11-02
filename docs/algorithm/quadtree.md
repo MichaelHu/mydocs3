@@ -2,9 +2,19 @@
 
 > A `QuadTree` is a data structure in which the coordinate space is broken up into `regions / nodes` that contain items. If `too many items` are added into a node, then that node is `divided into` `4 sub-nodes`. This can provide very `fast lookup` of items based on the coordinates and coordinates and dimensions.
 
+> 结构之法，算法之道。多一种数据结构就多一种解决问题的方法，多一种方法就多一种思维模式。
 
 
 ## 前言
+
+
+### 结构思想
+
+利用将空间进行`四等分`的思想，对一组空间对象建立`空间索引`。在需要的时候能`快速`找出与给定空间参数相关的对象集合。`避免`总是进行全局查找带来的性能`消耗`。
+
+
+
+### 参考资料
 
 `关键词`：`quadtree`(四叉树), `octree`(八叉树，用于3D): 3D quadtree
 
@@ -149,7 +159,7 @@
             else {
                 me.divideTree();
 
-                // This quadTree represents one node, add it to a child accordingly
+                // This quadTree also represents a node, add it to a child accordingly
                 me.addToChildren(me);
 
                 return me.rootAdd(node);
@@ -558,12 +568,23 @@
 
 ## Sigmajs quadTree
 
+### 原理解析
+
+以边四叉树为例，将边转换成矩形（`axis-aligned对象`），构建一个四叉树。在点与边的碰撞过程中，可以先从
+四叉树中`快速`选出可能发生碰撞的边集合，而这些边是否真正与点发生碰撞，则交由调用者提供`自定义`函数来
+判断。
+
+`两点`思想：
+
+1. `粗粒度`构建四叉树，也就是所谓的转换成矩形来构建四叉树
+2. `自定义`碰撞函数
+
+
+### github代码
+
 * <https://github.com/jacomyal/sigma.js/blob/master/src/classes/sigma.classes.quad.js>
 * <https://github.com/jacomyal/sigma.js/blob/master/src/classes/sigma.classes.edgequad.js>
 * <https://github.com/jacomyal/sigma.js/blob/master/src/sigma.core.js#L479>
-
-
-todo
 
 
 
