@@ -38,6 +38,20 @@
 
 
 
+### 系列目录
+
+* graph-layout: 综述，基础方法
+* graph-layout2: 增量布局，边展开布局，节点尺寸非线性变化等
+* graph-layout3：环形布局（星形布局），布局方案比较
+* graph-layout4：就近布局，复合布局，簇布局
+* graph-layout5：自动布局：Noverlap，FDA，forceAtlas2等
+* Hierarchy-layout：层次布局
+* YifanHu-layout：Yifanhu布局（力导向布局，Barnes-Hut斥力模型）
+* graph-tools：图形编辑工具
+* layout-grid：布局网格平衡
+* quadtree：四叉树
+
+
 
 <script src="http://258i.com/static/build/sigma/sigma.min.js"></script>
 <script src="http://258i.com/static/build/sigma/plugins/sigma.plugins.animate.min.js"></script>

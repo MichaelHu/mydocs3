@@ -1,7 +1,6 @@
 # map summary
 
 
-<http://www.thinkgis.cn/user/lzxue/topics?page=2>
 
 
 <style type="text/css">
@@ -93,6 +92,10 @@
 
 * `可视区域坐标`：地图DOM容器的坐标
 * `覆盖物坐标`
+
+
+
+
 
 
 GIS的全名是Geographic Information System
@@ -197,6 +200,77 @@ WebGIS的数据大致可以分为三种，一种是地图、影像数据，一�
 
 
 
+## 经纬度类型
+
+三类经纬度：天文经纬度、大地经纬度、地心经纬度
+
+
+
+## 坐标类型
+
+GIS系统中，三种需要了解的坐标类型：`投影坐标`、`地理坐标`以及`垂直坐标`。
+
+参考：<http://baike.baidu.com/link?url=X9PiT8evOi2xVkZ_YV8wA1Dhadd8-k__nCMzPmuJBW8ccy52Nh3uZd2l6A1d7oJ3pRh3KfjvjQsUJg7x5eR8X8KkjkIjJceHStQccwnuyJalZwns3m1-_mAeoN1swdoOFrGmMCGXqF4dNylIc2s02_>
+
+
+
+## 坐标系统
+
+WGS-84, Web墨卡托, 火星坐标, 百度坐标。还有不常见的北京54坐标，西安80坐标。
+
+
+### 地球坐标系
+
+> WGS-84
+
+WGS-84坐标系是美国国防部研制确定的大地坐标系，是一种协议地球坐标系。
+
+WGS-84坐标系的定义是：原点是地球的`质心`，空间直角坐标系的Z轴指向BIH（1984.0）定义的地极（CTP）方向，即国际协议原点CIO，它由IAU和IUGG共同推荐。X轴指向BIH定义的零度子午面和CTP赤道的交点，Y轴和Z，X轴构成右手坐标系。WGS-84椭球采用国际大地测量与地球物理联合会第17届大会测量常数推荐值，采用的两个常用基本几何参数：  
+
+长半轴  a = 6378137m
+
+扁率  f = 1:298.257223563
+
+
+
+
+### 火星坐标系
+
+> GCJ-02
+
+火星坐标系统简介：<http://blog.csdn.net/giswens/article/details/8775121>
+
+火星坐标系百科参考：<http://baike.baidu.com/link?url=FMaVjWjAFmRZY-NxSeJKaCF1bmsm4KJkI-gRXHvbGfCciveUddhqnWi0eR3OXQMTRcFbZoAJaWhDn5UBguiP-xLeAvlTeDBCQ4j7jGuTVLEMyIPWoAJJJDmiEXKKsmMWyphfiy0DUMGFbElwRuG8Sq>
+
+是一种`国家保密`插件，也叫做加密插件或者加偏或者SM模组，其实就是对真实坐标系统进行人为的加偏处理，按照特殊的算法，将真实的坐标加密成虚假的坐标，而这个加偏并不是线性的加偏，所以各地的偏移情况都会有所不同。而加密后的坐标也常被人称为火星坐标系统
+
+所有的电子地图、导航设备，都需要加入国家保密插件。
+
+* 第一步，地图公司测绘地图，测绘完成后，送到国家测绘局，将真实坐标的电子地图，加密成“火星坐标”，这样的地图才是可以出版和发布的，然后才可以让GPS公司处理。
+* 第二步，所有的GPS公司，只要需要汽车导航的，需要用到导航电子地图的，都需要在软件中加入国家保密算法，将COM口读出来的真实的坐标信号，加密转换成国家要求的保密的坐标。这样，GPS导航仪和导航电子地图就可以完全匹配，GPS也就可以正常工作了。
+
+
+
+### 百度坐标系
+
+> BD-09，二次加密
+
+国际经纬度坐标标准为`WGS-84`,国内必须至少使用`国测局`制定的`GCJ-02`,对地理位置进行`首次加密`。
+
+百度坐标在此基础上，进行了BD-09`二次加密`措施,更加保护了个人隐私。百度对外接口的坐标系并不是GPS采集的真实经纬度，需要通过坐标转换接口进行转换。
+
+
+
+### 墨卡托坐标
+
+Google Maps、Virtual Earth等网络地理所使用的地图投影，常被称作`Web Mercator`或`Spherical Mercator`，它与常规墨卡托投影的主要区别就是把地球`模拟为球体`而非椭球体。
+
+
+
+
+
+
+
 
 ## GeoJSON
 
@@ -227,3 +301,17 @@ GeoJSON支持的几何图形类型有：`Point`, `LineString`, `Polygon`, `Multi
 ## 地图颜色酿造师
 
 <http://colorbrewer2.org>
+
+
+
+
+
+## 参考资料
+
+* WebGIS学习：<http://www.thinkgis.cn/user/lzxue/topics?page=2>
+* WGS84、Web墨卡托、火星坐标、百度坐标互转：<http://blog.csdn.net/wildboy2001/article/details/12031351>
+* 地理坐标系：<http://baike.baidu.com/link?url=9zrqgPWYuUWwAuvBY73QosnOe4ac8MH3RCchIqhQZbS4ctSIaRLv4gyI-iOiSUXRBSnqUS1CxGMladHteMGMfz93_db6Z_-vWKJRwiiUYh8cz-WgKGHNjnYXNpRFmfuMbuAg9QD7cEhskkbcHIOUX_>
+* WGS84经纬度坐标：<http://wenku.baidu.com/link?url=IuHisq6Xz82nkMPYosSuGXa2kyn9uTk28gxABcg55AqgZaZiF0uIppfCTagHGFGGCUvyVJgLSY2I7sMfyMMn9ZNe0A6TMtYMU7y46jikZ_u>
+* 火星坐标系：<http://baike.baidu.com/link?url=FMaVjWjAFmRZY-NxSeJKaCF1bmsm4KJkI-gRXHvbGfCciveUddhqnWi0eR3OXQMTRcFbZoAJaWhDn5UBguiP-xLeAvlTeDBCQ4j7jGuTVLEMyIPWoAJJJDmiEXKKsmMWyphfiy0DUMGFbElwRuG8Sq>
+
+
