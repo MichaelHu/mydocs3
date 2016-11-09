@@ -1,6 +1,7 @@
 # git
 
 
+2016-11-05,
 2016-07-28,
 2016-03,
 2015,
@@ -175,6 +176,14 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
     git config --global user.name MichaelHu
     git config --global user.email hdm258i@gmail.com
 
+设置`ignorecase`选项，确保文件名大小写严格区分，`默认`的ignorecase是`true`，如果要区分大小写，需要显式设置：
+
+    git config --get core.ignorecase
+    git config core.ignorecase false
+
+如果设置`全局`，则：
+
+    git config --global core.ignorecase false
 
 
 
