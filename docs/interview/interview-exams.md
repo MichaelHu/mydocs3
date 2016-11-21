@@ -78,6 +78,46 @@
 
 
 
+### 实现query函数
+
+
+    @[data-script="javascript"]( function() {
+
+        function query( key, queryString ) {
+            var reg = new RegExp( '[&?]' + key + '=([^&]*)', 'g' );
+            if ( reg.test( queryString ) ) {
+                return decodeURIComponent( RegExp.$1 );
+            } 
+            return '';
+        }
+
+        window.testQuery = query;
+
+    } ) ();
+
+
+
+<div id="test_PH" class="test">
+<div class="test-container">
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_PH');
+        s.show( 'start testing `query`:\n' );
+        s.append_show( testQuery( 'a', '?a=5&b=6' ) );
+        s.append_show( testQuery( 'b', '?a=5&b=%E7%BB%BF%E6%B9%BE&c=12345' ) );
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+
 ### 代码纠错能力
 
 1. 纠错1
