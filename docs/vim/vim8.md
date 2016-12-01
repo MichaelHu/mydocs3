@@ -42,7 +42,7 @@
     make install
     make test
 
-其中，lua相关选项用于vim插件`neocomplete`，该插件式`neocomplcache`的取代。安装好以后，通过：
+其中，lua（相关安装见`lua目录`）相关选项用于vim插件`neocomplete`，该插件是`neocomplcache`的取代。安装好以后，通过：
 
     vim --version
 

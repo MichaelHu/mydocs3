@@ -9,6 +9,10 @@
 2013,
 2012
 
+<img src="./img/git.png" height="30">
+<https://git-scm.com>
+
+> Docs: <https://git-scm.com/doc>
 
 > 参考图文教程： <http://pcottle.github.io/learnGitBranching/?demo>
 
@@ -132,6 +136,19 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
 
 
 
+## git commit
+
+    # 提交更新到本地仓库
+    git commit -m "COMMENT MESSAGE"
+
+    # 添加modifined的内容并提交到本地仓库
+    git commit -am "COMMENT MESSAGE"
+
+    # 更改上一次提交的日志
+    git commit --amend -m "COMMENT MESSAGE"
+
+
+
 ## git push
 
 常用命令：
@@ -240,6 +257,20 @@ Push URL需要`身份验证`。
 
 
 
+## git pull
+
+    fatal: refusing to merge unrelated histories
+
+遇到以上问题，可能由于你操作过`git commit --amend`，最终导致无法merge，后续的push/pull都无法继续。
+查看stackoverflow（<http://stackoverflow.com/questions/37937984/git-refusing-to-merge-unrelated-histories>），`git merge`有这样的说明：
+
+"git merge" used to allow merging two branches that have no common base by default, which led to a brand new history of an existing project created and then get pulled by an unsuspecting maintainer, which allowed an unnecessary parallel history merged into the existing project. The command has been taught not to allow this by default, with an escape hatch "--allow-unrelated-histories" option to be used in a rare event that merges histories of two projects that started their lives independently.
+
+所以，使用`--allow-unrelated-histories`选项能解决问题，副作用就是两个不同历史的分支会合并。
+
+
+
+
 ## git branch
 
 ### 分支列表
@@ -333,7 +364,10 @@ Push URL需要`身份验证`。
 
 
 
+
 ## git stash
+
+> 将针对当前工作目录的改动`暂存`，相比新建branch更加`轻量`。
 
 ### stash列表
 
@@ -354,5 +388,45 @@ Push URL需要`身份验证`。
     git stash drop <stashname>
 
 
+
+
+## git rev-parse
+
+    git rev-parse master
+    802bc153526bdb7ab1aa07e5b8b694906d52e907
+
+    git rev-parse HEAD
+    802bc153526bdb7ab1aa07e5b8b694906d52e907
+
+    git rev-parse --short HEAD
+    802bc15
+
+    git rev-parse --all
+    c981e44a3eb090eb7f27504953733cb343f0800f
+    802bc153526bdb7ab1aa07e5b8b694906d52e907
+    c981e44a3eb090eb7f27504953733cb343f0800f
+    eb9a30eafae1d9bb5b579460d326adaf2154c231
+    33b0546012b182c2c8eccd6a89499975ab9f28a0
+
+    git rev-parse --show-toplevel
+    /home/Users/hudamin/git/mydocs
+
+    git rev-parse --symbolic --all
+    refs/heads/develop
+    refs/heads/master
+
+    git rev-parse --git-dir
+
+
+## git rev-list
+
+    git rev-list --all
+
+    git rev-list --timestamp --max-count=5 --all
+    1480420721 802bc153526bdb7ab1aa07e5b8b694906d52e907
+    1480420243 c53d12cecddd194925dcba1d79fe4bf362a71a24
+    1480419586 94a92415050bc95e3764e9b5dd80672784f00ac9
+    1480419039 f9699aef7ec77a4ad3aa67ff0e4e49307074dadb
+    1480418999 aeabcc2deca6e6f2a7608d1411d5a53565a5e328
 
 

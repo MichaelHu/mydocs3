@@ -126,8 +126,11 @@ or if you are running Ruby you can use
 
 ### VirtualBox升级
 
-升级至Mac OX El Capitan，10.11.1以后，发现原来的Virtual Box 4.3装载的Windows 7系统，无法识别USB设备。
+1. 升级至Mac OX El Capitan，10.11.1以后，发现原来的Virtual Box 4.3装载的Windows 7系统，无法识别USB设备。
 解决方案是，升级至Virtual Box 5.x版本，并且安装相应的Additions。并在Windows虚拟机打开后，安装相应配套的Gust Addition
+
+2. [ `161124` ] VirtualBox升级后，原来的Window7打开后无法使用蓝牙键盘和鼠标。解决办法是移除虚拟机，重新建一次。
+
 
 
 

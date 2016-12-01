@@ -10,7 +10,7 @@
 ## 拎出来放在前面的内容
 
 1. 编辑模式搞清楚，记住`normal, insert, visual, command-line`
-2. `normal`模式下，`单引号'`用于访问mark，`双引号"`用于设置下一delete，yank或者put操作使用的寄存器
+2. `normal`模式下，`单引号'`用于访问bookmark，`双引号"`用于设置下一delete，yank或者put操作使用的寄存器
 3. `normal`以及`command-line`模式下，`@`用于访问寄存器
 4. 带`g前缀`的命令原来功能这么强大，比如：`g0, g^, g$, gm, gp, gP, gJ, ge, gE, 
     ga, g8, g CTRL-G, gk, gj, gq, gqq`，

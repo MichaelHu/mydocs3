@@ -15,6 +15,11 @@
     npm install electron-prebuild -g
 
 
+## 问题
+
+* 如何禁用Chrome的快捷键，比如刷新、调起开发者工具等
+
+
 ## Quick Start
 
 以下两个例子，能帮助你快速了解`electron`。
@@ -32,6 +37,32 @@
         $ npm install && npm start
 
 
+
+## Installer
+
+
+
+## BrowserWindow
+
+    new BrowserWindow( [ options ] )
+
+> @param {object} options
+
+    title: ...
+    , icon: ...
+    , closable: ...
+    , alwaysOnTop: ...
+    , fullscreen: ...
+    , fullscreenable: ...
+    , skipTaskbar: ...
+    , kiosk: ...
+    , show: ...
+    , frame: ...
+    , parent: ...
+    , modal: ...
+
+    // Whether the web view accepts a single mouse-down event that simultaneously activates the window. Default is false
+    , acceptFirstMouse: ...
 
 
 

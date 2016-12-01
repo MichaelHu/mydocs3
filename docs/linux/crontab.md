@@ -1,13 +1,13 @@
 # crontab Memo
 
 
-## 2 crontab file格式
+## crontab file格式
 
-### 2.1 行格式：
+### 行格式：
 
     M H D m d cmd 
 
-### 2.2 说明：
+### 说明：
 
 * `M`: 分钟（0-59） 
 * `H`：小时（0-23） 
@@ -16,7 +16,7 @@
 * `d`: 一星期内的天（0~6，0为星期日） 
 * `cmd`: 要运行的程序，程序被送入sh执行，这个shell只有USER,HOME,SHELL这三个环境变量
 
-### 2.3 例子：
+### 例子：
 
 每晚的21:30重启apache
 
@@ -35,7 +35,26 @@
     * 23-7/1 * * * /usr/local/etc/rc.d/lighttpd restart 
 
 
-### 2.4 文件格式
+### 文件格式
 
 一定注意，如果使用`crontab crontab-file`形式，其中的`crontab-file文件必须是unix类型的文件`。
+
+
+## 常用命令
+
+    # parse and start
+    crontab crontab-file
+
+    # list
+    crontab -l
+
+    # remove
+    crontab -r
+
+    # edit
+    crontab -e
+
+    # list specified user
+    crontab -u USERNAME
+
 
