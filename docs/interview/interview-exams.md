@@ -257,7 +257,7 @@
 
 2. 用js实现类的定义、继承、包含类属性、实例属性、类方法、实例方法、公共属性、私有属性
 
-3. 用js定义一个`Person`类，包含属性name和age，方法sayHello，输出name和age；再定义一个子类Student，包含属性grade，方法sayHello，除了输出父类相关属性外，再输出grade。
+3. 用js（ES5的方式）定义一个`Person`类，包含属性name和age，方法sayHello，输出name和age；再定义一个子类Student，包含属性grade，方法sayHello，除了输出父类相关属性外，再输出grade。
     
         function Person(name, age) {
             this.name = name;
@@ -369,6 +369,13 @@
 1. 垂直居中 
 2. 二列布局
 3. flex-box
+
+
+
+## 学校阶段
+
+1. 毕业课题
+2. 专业课
 
 
 

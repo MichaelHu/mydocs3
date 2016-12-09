@@ -44,6 +44,8 @@ mac下进行`-g`安装，出现`EACCES`错误，原因是对`/usr/local/lib/node
     $ ls -l
     drwxr-xr-x  32 hudamin  wheel  1088  8  6 13:08 node_modules
 
+
+
 #### 自动安装依赖
 
 > Note: npm deprecated `auto-installing` of peerDependencies `since npm@3`, so required peer dependencies like babel-core and webpack must be listed explicitly in your `package.json`.
@@ -664,5 +666,39 @@ npm获取配置信息，来自`六个来源，优先级如下，由高到低`：
 路径格式为：
 
     https://npmcdn.com/package@version/file
+
+
+
+## npm-shrinkwrap
+
+> Lock down dependency versions
+
+`锁定`代码`版本`依赖。
+
+<https://docs.npmjs.com/cli/shrinkwrap>
+
+### 说明
+
+    npm shrinkwrap
+
+在根目录生成`npm-shrinkwrap.json`文件，它由命令`npm shrinkwrap`扫描`node_modules`目录下的所有npm package，自动生成锁定版本的配置文件。`npm-shrinkwrap`的优先级高于`package.json`。
+
+### 使用流程
+
+* 开发过程中，引入一个新包:
+
+        npm install xx --save
+        npm shrinkwrap
+
+
+* 升级一个包:
+
+        npm install xx@version --save
+        npm shrinkwrap
+
+* 删除一个包:
+
+        npm uninstall xx --save
+        npm shrinkwrap
 
 

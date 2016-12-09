@@ -1,6 +1,7 @@
 # git
 
 
+2016-12-02,
 2016-11-05,
 2016-07-28,
 2016-03,
@@ -78,6 +79,7 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
     git diff <branch1> <branch2> <file>
     git diff <commit1>..<commit2> <file>
     git diff <branch1>..<branch2> <file>
+    git diff <commit> -- <file>
 
     # 两次提交的公共merge祖先与commit2的比较，两次commit需遵从历史先后关系
     git diff <commit1>...<commit2> <file>

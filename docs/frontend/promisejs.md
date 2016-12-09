@@ -11,6 +11,7 @@
 
 ## Promise Features
 
+* `Promise`对象能对函数进行封装，该函数接收两个参数，分别是`resolve`和`reject`
 
 * 通过`.then()`方法，自动生成新的`Promise`对象，形成`链式`调用
 
