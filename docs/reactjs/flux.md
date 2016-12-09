@@ -3,6 +3,10 @@
 
 > Flux is the `application architecture` that Facebook uses for building client-side web applications.
 
+> An application architecture for React utilizing a unidirectional data flow.
+
+`关键词`： 应用程序架构、React、Facebook
+
 <https://facebook.github.io/flux/docs/overview.html>
 
 
@@ -35,4 +39,11 @@ Facebook使用的webapp应用架构，用于`控制数据流`。它提出一种�
 Redux是一个接受度比较高的应用框架，Flux的设计思想的实现者。
 
 Flux之于Redux，正如CommonJS之于RequireJS。
+
+例子：
+
+<https://github.com/facebook/flux/tree/master/examples/flux-todomvc>
+
+<https://github.com/facebook/flux/tree/master/examples/flux-utils-todomvc>
+
 
