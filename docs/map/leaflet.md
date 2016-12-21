@@ -1,13 +1,24 @@
 # leaflet
 
+
+20161219
+, 201609
+, 201607
+
+
 * 官网: <http://leafletjs.com>
 * github: <https://github.com/Leaflet/Leaflet>
 * 1.0 docs: <http://leafletjs.com/reference-1.0.0.html>
 
-创始人是Mapbox的`Vladimir Agafonkin`
+ <img src="./img/leaflet-logo.png" height="36">创始人是Mapbox的`Vladimir Agafonkin`
 
 * 移动端友好
 * 轻量，gzip压缩以后`30+k`
+
+`change logs:`
+
+* 2016-09-27, `1.0`
+* 2016-10-21, `1.0.2`, bugfix
 
 
 <style type="text/css">
@@ -47,7 +58,7 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
 
 ### 支持的交互
 
-* Drag panning with inertia
+* Drag panning with inertia (惯性拖动)
 * Scroll wheel zoom
 * Pinch-zoom on mobile
 * Double click zoom
@@ -74,6 +85,30 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
 * 基于`图片`和`HTML`的标注
 * 自定义的地图投射(projection)
 * 强大的`OOP`机制
+
+
+
+## 用例
+
+### 简单底图和标注
+
+    var map = L.map('map')
+                .setView([51.505, -0.09], 13);
+
+    L.tileLayer(
+            'http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+            , {
+                attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            }
+        )
+        .addTo(map)
+        ;
+
+    L.marker([51.5, -0.09])
+        .addTo(map)
+        .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+        .openPopup()
+        ;
 
 
 
@@ -208,11 +243,12 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
         // -----DEFINE- wgs84--
         var point = [40.0455321506, 116.3452903556].reverse(); // 西小口地铁站
         var point = [40.0455555555, 116.3497222222].reverse(); // 东升科技园B-6
-        var point = [39.9975,116.3044444444].reverse(); // 地铁四号线圆明园站附近 
+        var point2 = [39.9975,116.3044444444].reverse(); // 地铁四号线圆明园站附近 
         var point = [23.5,116.3044444444].reverse(); // 北回归线上与圆明园同经度的地方
         var point = [30.17444,120.17555].reverse(); // 杭州市滨江区江南大道附近
         var zoom = 13;
         var center = window.datum.bd09.fromWGS84(point).reverse();
+        var center2 = window.datum.bd09.fromWGS84(point2).reverse();
         var myMap = L.map(
                 'test_50_map'
                 , {
@@ -228,6 +264,9 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
         L.tileLayer.baidu('Satellite.Map').addTo(myMap);
         L.tileLayer.baidu('Satellite.Road').addTo(myMap);
         // L.tileLayer.baidu('Normal.Map').addTo(myMap);
+        setTimeout( function() {
+            myMap.panTo( center2 );
+        }, 5000 );
 
     })();
 
@@ -249,7 +288,7 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
 
 #### 瓦片坐标对应
 
-百度tile xyz的y轴是`自下而上`，而leaflet xyz是`自上而下`。
+百度tile xyz的`y轴`是`自下而上`，而leaflet xyz是`自上而下`。
 
     百度tile xyz    leaflet xyz
     ------------------------------------

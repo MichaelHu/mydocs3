@@ -112,20 +112,49 @@
 还有挺多其他API，待补充
 
 
+### Examples
+
+	"test should stub method differently based on arguments": function () {
+		var callback = sinon.stub();
+		callback.withArgs(42).returns(1);
+		callback.withArgs(1).throws("TypeError");
+
+		callback(); // No return value, no exception
+		callback(42); // Returns 1
+		callback(1); // Throws TypeError
+	}
+
+
 ## Mocks
+
+> Mocks (and mock expectations) are fake methods (like spies) with pre-programmed behavior (like stubs) as well as pre-programmed expectations. A mock will fail your test if it is not used as expected.
+
+1. 有预编程行为（类似stub）的虚拟方法（类似spy）
+2. 同时还有预编程的期望（expectations）
+3. mock若未按预期使用，会使测试失败
+4. `expectations`同时实现了stub和spy的API
+5. 一个测试用例`至多`使用`一个`mock
+6. 附带一个可能让test失败（比如抛出异常）的内建预期，所以强制要求具体的实现细节。如果你不为一个特定调用加assertion的话，那么就不要mock，转而使用stub就行。
 
 
 ### APIs
+
+
+#### Mocks
 
     var mock = sinon.mock( obj );
     var expectation = mock.expects( 'method' );
 
     mock.restore();
+
+	// Verifies all expectations on the mock.
     mock.verify();
 
     sinon.mock( jQuery ).expects( 'ajax' ).atLeast( 2 ).atMost( 5 );
     jQuery.ajax.verify();
 
+
+#### Expectations
 
     var expectation = sinon.expectation.create( [methodName] );
     var expectation = sinon.mock();
@@ -139,7 +168,11 @@
     expectation.withArgs( arg1, arg2, ... );
     expectation.withExactArgs( arg1, arg2, ... );
     expectation.on( obj );
+
+	// Verifies the expectation and throws an exception if it's not met.
     expectation.verify();
+
+
 
 
 

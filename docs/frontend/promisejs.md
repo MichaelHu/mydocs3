@@ -1,17 +1,41 @@
 # Promisejs
 
+2016-12-14, 
 2016-07-06, 2014-03-06
 
 > 新型异步编程模型
 
-在`ES6`中已经作为语言的原生支持的特性
+* 在`ES6`中已经作为语言的原生支持的特性
+* `node 4.0+`版本，已经默认支持ES6新特性
+* 浏览器原生支持： Chrome32+, Edge, Firefox 29+, Opera 19+, Safari 7.1+
 
-`node 4.0+`版本，已经默认支持ES6新特性
+
+<style type="text/css">
+@import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
+</style>
+<script src="http://258i.com/static/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 
 
-## Promise Features
 
-* `Promise`对象能对函数进行封装，该函数接收两个参数，分别是`resolve`和`reject`
+## Syntax
+
+> MDN: The Promise object is used for `asynchronous computations`. A Promise represents a value which may be available now, or in the future, or never.
+
+<https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise>
+
+    new Promise( /* executor */ function( resolve, reject ) { ... } );
+
+* 为`异步计算`而生。
+* `简介优雅`的异步编程方式，看似同步的方式来实现异步的功能，`减少`回调函数的多层`嵌套`
+
+
+
+
+
+## Features & Demos
+
+* `Promise`对象能对函数进行封装，该函数（也即`executor`）接收两个参数，分别是`resolve`和`reject`。executor会在同步代码中`立即执行`，比如发起异步请求。
 
 * 通过`.then()`方法，自动生成新的`Promise`对象，形成`链式`调用
 
@@ -33,6 +57,150 @@
 
 
 
+### Demo 1
+
+* `executor`函数在同步代码中立即执行，比如发起定时器，发起异步请求等
+
+
+<div id="test_promise_create" class="test">
+<div class="test-panel">
+<button>Start Testing</button>
+</div>
+<div class="test-console"></div>
+<div class="test-container">
+
+    @[data-script="javascript"](function(){
+
+		'use strict';
+		var promiseCount = 0;
+
+		function testPromise() {
+			var thisPromiseCount = ++promiseCount;
+
+			// var log = document.getElementById('log');
+			var log = $( '#test_promise_create .test-console' ).get( 0 );
+			log.insertAdjacentHTML('beforeend', thisPromiseCount +
+				') Started (<small>Sync code started</small>)<br/>');
+
+			// We make a new promise: we promise a numeric count of this promise, starting from 1 (after waiting 3s)
+			var p1 = new Promise(
+				// The resolver function is called with the ability to resolve or
+				// reject the promise
+				function(resolve, reject) {
+					log.insertAdjacentHTML('beforeend', thisPromiseCount +
+						') Promise started (<small>Async code started</small>)<br/>');
+					// This is only an example to create asynchronism
+					window.setTimeout(
+						function() {
+							// We fulfill the promise !
+							resolve(thisPromiseCount);
+						}, Math.random() * 2000 + 1000);
+				}
+			);
+
+			// We define what to do when the promise is resolved/fulfilled with the then() call,
+			// and the catch() method defines what to do if the promise is rejected.
+			p1.then(
+				// Log the fulfillment value
+				function(val) {
+					log.insertAdjacentHTML('beforeend', val +
+						') Promise fulfilled (<small>Async code terminated</small>)<br/>');
+				})
+			.catch(
+				// Log the rejection reason
+				function(reason) {
+					console.log('Handle rejected promise ('+reason+') here.');
+				});
+
+			log.insertAdjacentHTML('beforeend', thisPromiseCount +
+				') Promise made (<small>Sync code terminated</small>)<br/>');
+		}
+
+		$( '#test_promise_create button' ).on( 'click', function() {
+			testPromise();	
+		} );
+
+    })();
+
+</div>
+</div>
+
+
+
+
+### Demo 2
+
+
+<div id="test_promise_demo" class="test">
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_promise_demo');
+
+        s.show( 'Start testing ...' );
+        var p = new Promise( function( onFulfilled, onRejected ) {
+            s.append_show( 'Promise 1 started ( Async code started )' );
+            setTimeout( function() {
+                var r = Math.random();
+                if ( r < 0.5 ) {
+                    onRejected( r );
+                }
+                else {
+                    onFulfilled( r );
+                }
+            }, 2000 ); 
+        } );
+
+        p.then( 
+            function( v ) {
+                s.append_show( 'Promise 1 fulfilled ( Async code terminated )', v ); 
+                return 'OK';
+            } 
+            , function( v ) {
+                s.append_show( 'Promise 1 rejected', v ); 
+                return 'Fail';
+            }
+        )
+        // Promise 2 is always fulfilled
+        .then(
+            function( v ) {
+                s.append_show( 'Promise 2 fulfilled', v );
+                return new Promise( function( onFulfilled, onRejected ) {
+                    s.append_show( 'Promise 3 started ( Async code started )' );
+                    setTimeout( function() {
+                        var r = Math.random();
+                        if ( r < 0.5 ) {
+                            onRejected( r );
+                        }
+                        else {
+                            onFulfilled( r );
+                        }
+                    } );
+                } );
+            }
+            , function( v ) {
+                s.append_show( 'Promise 2 rejected', v );
+            }
+        )
+        // Promise 3
+        .then( 
+            function( v ) {
+                s.append_show( 'Promise 3 fulfilled ( Async code terminated )', v ); 
+            }
+            , function( v ) {
+                s.append_show( 'Promise 3 rejected', v ); 
+            }
+        )
+        ;
+
+    })();
+
+</div>
+</div>
 
 
 
@@ -50,7 +218,23 @@
         });
 
 上面代码会生成一个新的`Promise`对象，它的状态为`fulfilled`，所以回调函数会`立即`执行，
-`Promise.resolve()`方法的参数就是回调函数的参数。
+`Promise.resolve()`方法的`参数`就是回调函数的参数。
+
+
+
+
+## Promise.prototype
+
+### .catch( onRejected )
+
+### .then( onFulfilled, onRejected )
+
+> Appends fulfillment and rejection handlers to the promise, and returns a new promise resolving to the return value of the called handler, or to its original settled value if the promise was not handled (i.e. if the relevant handler onFulfilled or onRejected is not a function).
+
+关于返回值：
+
+* 如果onFulfilled或onRejected都不是函数，则返回original setted value
+* 否则，返回被调用handler的返回值
 
 
 

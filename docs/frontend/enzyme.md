@@ -1,15 +1,15 @@
 # enzyme
 
-> Enzyme is a JavaScript Testing utility for React that makes it easier to `assert`, `manipulate`, and `traverse` your React Components' output.
+> Enzyme is a JavaScript Testing utility for React that makes it easier to `assert`, `manipulate`, and `traverse` your `React Components'` output.
 
-> 猜测：扩展选择器、事件模拟等。`airbnb`出品
+> 猜测：扩展选择器、事件模拟等。`airbnb`出品，与`React Component`结合紧密
 
 
 * website: <http://airbnb.io/enzyme/>
 * github: <https://github.com/airbnb/enzyme>
 
 
-独立于使用的单测引擎或断言库。mocha, chai, jest, karma等都可以。
+独立于使用的单测引擎或断言库。`mocha`, `chai`, `jest`, `karma`等都可以。
 
 
 ## 用例入门
@@ -32,6 +32,8 @@ React组件`CheckboxWithLabel`的测试用例：
 
 		expect(checkbox.text()).toEqual('On');
 	});
+
+
 
 
 ## Installation
@@ -64,7 +66,7 @@ React组件`CheckboxWithLabel`的测试用例：
 
 ## Test Utilities
 
-> 主要用于react component的测试
+> `ReactTestUtils`，主要用于测试`react component`时来使用。
 
 * facebook针对自家react开发的测试套件
 * 可与`enzyme`天生搭配

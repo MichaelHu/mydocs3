@@ -1,14 +1,14 @@
 # 模板引擎
 
 
-## 1 artTemplate
+## artTemplate
 
-https://github.com/aui/artTemplate
+<https://github.com/aui/artTemplate>
 
 两种语法使用`不同`的脚本文件。
 
 
-### 1.1 简洁语法
+### 简洁语法
 
     {{if admin}}
         {{include 'admin_content'}}
@@ -19,7 +19,7 @@ https://github.com/aui/artTemplate
     {{/if}}
 
 
-### 1.2 原生语法
+### 原生语法
 
     <%if (admin){%>
         <%include('admin_content')%>
@@ -30,9 +30,14 @@ https://github.com/aui/artTemplate
     <%}%>
 
 
+
+
+
 ## underscore
+
 ## baiduTemplate
 
+## Jade
 
-## 2 Jade
+## ETpl
 

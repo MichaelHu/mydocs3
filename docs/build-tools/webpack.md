@@ -1,6 +1,7 @@
 # webpack
 
-> CommonJS Module Bundler
+> <img src="./img/webpack-logo.png" height="40"> CommonJS Module Bundler。智能的模块打包器。但不仅仅是一个打包器。
+
 
 对`SPA`有`天生`很好的支持，但是也支持`AMD`。通过复用模块拆分，也能很好的支持`MP`。
 
@@ -9,19 +10,40 @@
 * <http://webpack.github.io/docs/tutorials/getting-started/>
 
 
+
 相关阅读： Browserify : <http://browserify.org>
 相关介绍文档： <https://segmentfault.com/a/1190000006178770>
 
+
+
+
 ## 印象
 
+* 模块`打包`，可以将`css`甚至`image`文件都以`js`的方式打包。
+* `依赖分析`
+* 通过插件可以支持`各种`前端中间`文件类型`：.jade, .coffee, .less, .sass, .jsx等
 * 两个很关键的抽象：`loader`, `plugin`
+* `loader`是一个输出一个`函数`的node模块，`plugin`是符合特定接口的类（比如`.apply()`方法，在install时被调用一次），它可以使用webpack引擎提供的功能，可以使用`compiler`和`compilation`对象。
+* `loader`的使用，需要了解清楚其`输入输出`，了解清楚了就不会迷惑了
 * `loader`和`plugin`很丰富，还支持自行扩展。有些功能是重叠的，不同配置可能达到同样的效果。
 * js模块`复用`，`自动`支持复用模块提取
 * `SPA`和`MP`有对应的适合的loader或plugin，建议项目更加`纯粹`，要么都使用SPA，要么就是用MP，因为混合容易造成冲突。
+* webpack对inline require的解析是`右结合`的，你会在输出中看到`__webpack_require( N )`的形式
+
+ <img src="./img/what-is-webpack.png" height="360">
+
+
+
 
 
 
 ## 安装
+
+### 版本
+
+1. webpack 1.x
+2. webpack 2.x
+
 
 ### webpack
 
@@ -33,7 +55,7 @@
 
 ### loaders
 
-`npm@3.x`开始，`npm install`不会自动安装依赖，所以在新版中以上安装时需要写全。
+`npm@3.x`开始，`npm install`不会自动安装依赖，所以在新版中以下安装时需要写全。
 
 
 
@@ -48,7 +70,7 @@
 
     npm install --save-dev style-loader css-loader
 
-* `css-loader`: 对css文件的`@import`， `url(...)`等进行require解析
+* `css-loader`: 对css文件的`@import`， `url(...)`等进行require解析，返回字符串形式的CSS内容
 * `style-loader`: 将css文件添加至Document
 
 
@@ -102,18 +124,36 @@ html文件的解析，输出为`字符串`。它能对`html`文件的`标签属�
 
 第三方插件。
 
+插件列表：<https://webpack.github.io/docs/list-of-plugins.html>
+
 #### html-webpack-plugin
+
+github: <https://github.com/ampedandwired/html-webpack-plugin>
 
     npm install --save-dev html-webpack-plugin
 
-html文件自动生成，或者按模板生成。
+html文件自动生成，或者按模板生成。简化创建一个html文件来调用webpack生成的bundle文件的过程，该插件会为你自动生成对应的html文件。
 
 
 #### extract-text-webpack-plugin
 
+> Extract text from bundle into a file.
+
+> webpack团队提供的一款插件，用于将文本`提取`出来`放入`另外一个文件中。
+
+github: <https://github.com/webpack/extract-text-webpack-plugin>
+
     npm install --save-dev extract-text-webpack-plugin
 
-提取插件。有`extract-loader`的功能，同时还会将提取的文件`追加`到HTML文件中。 
+提取插件。有`extract-loader`的功能，同时还会将提取的文件`追加`到HTML文件中 `[ important ]`。 
+
+
+
+#### copy-webpack-plugin
+
+> Copy files and directories in webpack.
+
+github: <https://github.com/kevlened/copy-webpack-plugin>
 
 
 
@@ -123,6 +163,8 @@ html文件自动生成，或者按模板生成。
 
 
 ## 命令行使用
+
+参考：<https://webpack.github.io/docs/cli.html>
 
     webpack ./entry.js bundle.js
 
@@ -159,8 +201,10 @@ html文件自动生成，或者按模板生成。
 ### Library输出
 
 共有`6种`库输出方式，分别为：`var`, `this`, `commonjs`, `commonjs2`, `amd`, `umd`
+，使用`--output-library-target`选项。
 
 <https://webpack.github.io/docs/configuration.html#output-library>
+
     
 #### var方式
 
@@ -200,6 +244,29 @@ html文件自动生成，或者按模板生成。
 ## 使用配置文件
 
 使用配置文件后，就不需要在`webpack`的命令行调用中添加`过多`参数，虽然配置项也可以通过命令行参数传递。
+
+* doc：<http://webpack.github.io/docs/configuration.html>
+
+
+### 配置点
+
+1. 区别`dev`和`prod`状态
+    * 使用`webpack.DefinePlugin`
+    * 命令行`export PNAME=...`
+    * `maybe`: `webpack --define <string>=<string>`
+    
+    然后在config代码中使用`process.env.*`获取状态。
+
+
+2. 样式文件是否需要抽取成单独文件
+3. html文件自动引用样式文件和脚本文件
+4. 多个html文件自动引用样式文件和脚本文件
+
+
+待续
+
+
+### 配置文件
 
 配置文件默认为`webpack.config.js`。以下为一个例子：
 
@@ -250,6 +317,74 @@ html文件自动生成，或者按模板生成。
     }; 
 
 
+### 可配置项
+
+#### 配置项须知
+
+
+1. `context`作为项目根路径，建议`不要`设置成源码根路径，比如（`__dirname + '/src'`）。这样设置的话，默认情况下会导致module查找不到的错误，而不得不设置`resolve`。
+2. 续第一点来说，设置`resolve`的好处之一是可以`复用`webpack的`module`路径
+
+
+
+#### 配置项列表
+
+配置文件包含的可配置选项：
+
+	context // 项目根路径，必须是绝对路径
+	entry  	// 指定bundle的入口点，可以是字符串（单入口）、数组或对象，解析方法各不相同
+	output
+		output.filename
+		output.path
+		output.publicPath
+		output.chunkFilename
+		output.sourceMapFilename
+		output.devtoolModuleFilenameTemplate
+		output.devtoolFallbackModuleFilenameTemplate
+		output.devtoolLineToLine
+		output.hotUpdateChunkFilename
+		output.hotUpdateMainFilename
+		output.jsonpFunction
+		output.hotUpdateFunction
+		output.pathinfo
+		output.library
+		output.libraryTarget
+		output.umdNamedDefine
+		output.sourcePrefix
+		output.crossOriginLoading
+	module
+		module.loaders
+		module.preLoaders, module.postLoaders
+		module.noParse
+		automatically created contexts defaults module.xxxContextXxx
+	resolve
+		resolve.alias
+		resolve.root
+		resolve.modulesDirectories
+		resolve.fallback
+		resolve.extensions
+		resolve.packageMains
+		resolve.packageAlias
+		resolve.unsafeCache
+		resolveLoader
+		resolveLoader.moduleTemplates
+	externals
+	target
+	bail
+	profile
+	cache
+	debug
+	devtool
+	devServer
+	node
+	amd
+	loader
+	recordsPath, recordsInputPath, recordsOutputPath
+	plugins
+
+
+
+
 
 ### html文件处理
 
@@ -257,8 +392,6 @@ html文件自动生成，或者按模板生成。
 #### html文件自动生成
 
 需要使用`plugins`配置项来引入插件`HtmlWebpackPlugin`
-
-plugins相关文档说明：<https://webpack.github.io/docs/list-of-plugins.html>
 
 HtmlWebpackPlugin插件: <https://github.com/ampedandwired/html-webpack-plugin>
 
@@ -321,11 +454,13 @@ HtmlWebpackPlugin插件: <https://github.com/ampedandwired/html-webpack-plugin>
 
 webpack支持html文件的自动生成，非常方便。但是项目中也避免不了存在自行编写的html文件，因为它比较轻量级，不需要由js来加载，这种html文件如何处理呢？
 
-答案是： `extract-loader`
+答案是： `file-loader`和`extract-loader`
+
+> file loader for webpack.
 
 > webpack loader to extract `HTML` and `CSS` from the bundle.
 
-通过该loader，可以对html文件进行提取，将html文件内引用的`css`，`img`等资源按发布后的格式来引用，比如替换路径，添加hash等。
+通过以上两个loader的配合，可以对html文件进行提取，将html文件内引用的`css`，`img`等资源按发布后的格式来引用，比如替换路径，添加hash等。
 
 举例如下：
 
@@ -456,7 +591,7 @@ css文件可能需要在js代码中`require`；也可能是用sass编写，还�
 
 `1. extract-loader`:
 
-从bundle里提取html或者css，所以`前提`是html和css在bundle中被引用。
+从bundle里提取`html`或者`css`，所以`前提`是html和css在bundle中被引用。
 
     ...
     , loaders: [
@@ -475,6 +610,8 @@ css文件可能需要在js代码中`require`；也可能是用sass编写，还�
 
 功能基本上同extract-loader，`不同`的是，该plugin可以将得到的独立文件`inject`到引用的html文件中。
 
+github: <https://github.com/webpack/extract-text-webpack-plugin>
+
 配置文件：
 
     var ExtractTextPlugin = require("extract-text-webpack-plugin");
@@ -483,7 +620,7 @@ css文件可能需要在js代码中`require`；也可能是用sass编写，还�
             loaders: [
                 { 
                     test: /\.css$/
-                    , loader: ExtractTextPlugin.extract("style-loader", "css-loader") 
+                    , loader: ExtractTextPlugin.extract("css-loader") 
                 }
             ]
         },
@@ -504,11 +641,23 @@ css文件可能需要在js代码中`require`；也可能是用sass编写，还�
 
 js文件可能有`es2015`或者`react`的语法，这些情况都可以通过配置相应loader来解决 —— `babel-loader` 
 
-`babel-loader options`: <http://babeljs.io/docs/usage/options/>
+* `babel-loader options`: <http://babeljs.io/docs/usage/options/>
+* `github`: <https://github.com/babel/babel-loader>
 
-并且在配置文件中添加`loaders`配置，具体参考上文的config文件`loaders`部分。
+并且在配置文件中添加`loaders`配置，如下：
 
+	...
+	, module: {
+			loaders: [
+				{ 
+					test: /\.jsx?$/
+					, loader: 'babel?presets[]=es2015,presets[]=react'
+				}
+			]
+		}
+	...
 
+以上配置，支持js文件的`es2015`以及`react`语法。
 
 
 
@@ -648,67 +797,274 @@ shimming
 
 ## loader技术
 
+> Loaders are transformations that are applied on a resource file of your app.
+
 > `加载器`是webpack很关键的抽象之一
+
+1. 是一种`转换器`
+2. 作用于`文件`
+
+
+
+### Features
+
+1. 可以`链式`串联。loader在管道中运行。`最后`一个loader`返回js`，其他loader可能返回任意格式的资源，用于下一个loader的输入
+2. 可同步亦可异步
+3. 运行在`nodejsi`中，大有发挥空间
+4. 可接受query params，也可接受配置文件
+5. 可以`绑定`至`文件扩展`名或者`正则`表达式
+6. 可以通过npm发布或者安装
+7. Normal modules can export a loader in addition to the normal main via package.json loader.
+8. 可以获取配置文件
+9. `插件`可以为loader提供更多特性
+10. loader可以`输出`任意格式的额外`文件`
+11. loader同module一样进行解析，[?]比如`--module-bind`
+
+
+
 
 ### 参考：
 
-* <https://webpack.github.io/docs/using-loaders.html>
-* <https://webpack.github.io/docs/list-of-loaders.html>
+* loader使用：<https://webpack.github.io/docs/using-loaders.html>
+* 常见loader列表：<https://webpack.github.io/docs/list-of-loaders.html>
 
 
-### 三种使用方式：
+### 三种使用方式
 
-1. `inline`，`!`分隔loader与资源
+1. require `inline`，`!`用于分隔loader与资源，也可分隔多个loader；`?`用于分隔loader与query params
+
+        require( "./loader!./dir/file.txt" );
+        require( "jade!./template.jade" );
+        require( "!style!css!less!bootstrap/less/bootstrap.less" );
+
+    规则首部的`!`将重写相关文件的其他变换，也即作用于相关文件的其他变换将不再执行。
+
 2. `configuration`
+
+		{
+			module: {
+				loaders: [
+					{ test: /\.jade$/, loader: "jade" },
+					// => "jade" loader is used for ".jade" files
+
+					{ test: /\.css$/, loader: "style!css" },
+					// => "style" and "css" loader is used for ".css" files
+					// Alternative syntax:
+					{ test: /\.css$/, loaders: ["style", "css"] },
+				]
+			}
+		}
+
 3. `CLI`参数， `--module-bind`
 
+        webpack --module-bind jade --module-bind 'css=style!css'
 
 
-### loader命名规范： 
+
+### loader命名规范 
 
 `style-loader`, `style`，两者`皆可`，后者为`缩写`方式。
 
 
 
-### 有用的loader：
+### 有用的loader
 
 #### basic类
+
 1. script: <https://github.com/webpack/script-loader>
 2. base64: <https://github.com/antelle/base64-loader>
 3. to-string: <https://github.com/gajus/to-string-loader>
 
 
 #### packaging类
-1. file: <https://github.com/webpack/file-loader>
-2. url: <https://github.com/webpack/url-loader>
-3. extract: <https://github.com/peerigon/extract-loader>
+
+1. `file`: <https://github.com/webpack/file-loader>
+
+    将文件输出到输出目录，并返回公共url。
+
+        var url = require("file-loader!./file.png");
+        // => emits file.png as file in the output directory and returns the public url
+        // => returns i. e. "/public-path/0dcbbaa701328a3c262cfd45869e351f.png"
+
+        var url = require("file-loader!emitFile=false!./file.png");
+
+    其他例子：
+
+        require("file-loader?name=[name].[ext]&publicPath=assets/foo/&outputPath=app/images/");
+
+    filename template:
+
+        [path][name].[ext]
+
+        require("file-loader?name=html-[hash:6].html!./page.html");
+        // => html-109fa8.html
+
+        require("file-loader?name=img-[sha512:hash:base64:7].[ext]!./image.jpg");
+        // => img-VqzT5ZC.jpg
+
+        require("file-loader?name=[path][name].[ext]?[hash]!./dir/file.png")
+        // => dir/file.png?e43b20c069c4a01867c31e98cbce33c9
+
+
+2. `url`: <https://github.com/webpack/url-loader>
+
+    依赖`file-loader`，除了具有file-loader的功能外，可以对文件大小小于某个阈值是，输出`DataURI`
+
+        require("url-loader?limit=10000!./file.png");
+        // => DataUrl if "file.png" is smaller than 10kb
+
+        require("url-loader?mimetype=image/png!./file.png");
+        // => Specify mimetype for the file (Otherwise it's inferred from extension.)
+
+        require("url-loader?prefix=img/!./file.png");
+        // => Parameters for the file-loader are valid too
+        //    They are passed to the file-loader if used.
+
+
+3. `extract`: <https://github.com/peerigon/extract-loader>
+
+    
+
+    与`extract-text-webpack-plugin`类似，可以作为它的简单代替。由于设计原因，主要和`html-loader`以及`css-loader`配合使用，其他的不一定确保好用。
+
+        import stylesheetUrl from "file-loader!extract-loader!css-loader!main.css";
+        // stylesheetUrl will now be the hashed url to the final stylesheet
+
 
 
 #### templating类
+
 1. html: <https://github.com/webpack/html-loader>
+
+    将`html`文件输出成`字符串`，且可根据需求将输出压缩。可`配置`针对哪些`tag`进行`属性解析`。
+
+
 2. markdown: <https://github.com/peerigon/markdown-loader>
 
 
 #### style类
-1. style: <https://github.com/webpack/style-loader>
-2. css: <ihttps://github.com/webpack/css-loader>
-3. less: <>
-4. sass: <>
+
+1. `style`: <https://github.com/webpack/style-loader>
+
+    主要功能为将`CSS字符串`内容通过`注入<style>标签`的方式添加到DOM中。同时也可以解析CSS文件的URL。
+
+        require( "style-loader!raw-loader!./file.css" );
+        // => add rules in file.css to document
+
+    推荐将`style-loader`和`css-loader`结合使用，`css-loader`能返回CSS文件内容：
+
+        require( "style-loader!css-loader!./file.css" );
+
+    `URL方式`如下：
+
+        require( "style-loader/url!file-loader!./file.css" );
 
 
+2. `css`: <https://github.com/webpack/css-loader>
+
+    解析css文件，包括其中的`imports`和`url(...)`，并返回CSS文件的字符串内容
+
+        var css = require( "css-loader!./file.css" );
+        // => returns css code from file.css, resolves imports and url(...)
+
+3. `less`: <https://github.com/webpack/less-loader>
+
+    `安装`
+
+        npm install less-loader less --save-dev
+
+    `使用`
+
+        var css = require("!raw-loader!less-loader!./file.less");
+        // => returns compiled css code from file.less, resolves imports
+
+        var css = require("!css-loader!less-loader!./file.less");
+        // => returns compiled css code from file.less, resolves imports and url(...)s
+
+4. `sass`: <https://github.com/jtangelder/sass-loader>
+
+    `安装`
+
+        npm install sass-loader node-sass webpack --save-dev
+
+    `使用`
+
+        var css = require("!raw-loader!sass-loader!./file.scss");
+        // returns compiled css code from file.scss, resolves Sass imports
+
+        var css = require("!css-loader!sass-loader!./file.scss");
+        // returns compiled css code from file.scss, resolves Sass and CSS imports and url(...)s
+
+
+
+### 编写loader
+
+> just a function
+
+	// Identity loader
+	module.exports = function(source) {
+	  return source;
+	};
+
+
+	// Identity loader with SourceMap support
+	module.exports = function(source, map) {
+	  this.callback(null, source, map);
+	};
 
 
 
 
 ## plugin技术
 
+> Use plugins to add functionality typically related to bundles in webpack.
+
+1. 作用于`bundle`
+2. 添加特定功能
+3. 使用方式一般通过`创建`一个plugin的`新实例`，放入plugin链表中
 
 
-### 参考：
 
+### 参考
+
+* <https://webpack.github.io/docs/list-of-plugins.html>
 * <https://webpack.github.io/docs/using-plugins.html>
 * <https://webpack.github.io/docs/how-to-write-a-plugin.html>
 
+
+
+### 编写plugin
+
+一个例子如下：
+
+	function FileListPlugin(options) {}
+
+	FileListPlugin.prototype.apply = function(compiler) {
+	  compiler.plugin('emit', function(compilation, callback) {
+		// Create a header string for the generated file:
+		var filelist = 'In this build:\n\n';
+
+		// Loop through all compiled assets,
+		// adding a new line item for each filename.
+		for (var filename in compilation.assets) {
+		  filelist += ('- '+ filename +'\n');
+		}
+
+		// Insert this list into the Webpack build as a new file asset:
+		compilation.assets['filelist.md'] = {
+		  source: function() {
+			return filelist;
+		  },
+		  size: function() {
+			return filelist.length;
+		  }
+		};
+
+		callback();
+	  });
+	};
+
+	module.exports = FileListPlugin;
 
 
 

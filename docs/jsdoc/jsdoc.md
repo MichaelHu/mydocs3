@@ -1,11 +1,8 @@
 # jsdoc
 
-
-<http://usejsdoc.org>
-
-<https://github.com/jsdoc3/jsdoc>
-
-`AMD Modules`: <http://usejsdoc.org/howto-amd-modules.html>
+* website: <http://usejsdoc.org>
+* github: <https://github.com/jsdoc3/jsdoc>
+* `AMD Modules`: <http://usejsdoc.org/howto-amd-modules.html>
 
 
 
@@ -764,4 +761,145 @@ Multiple AMD modules defined in one file
 ### Modules
 
 <http://usejsdoc.org/howto-es2015-modules.html>
+
+
+
+
+## CLI
+
+> An API documentation generator for JavaScript.  Need nodejs `0.10+`
+
+### 相关命令行
+
+    npm install jsdoc
+    # lastest development version
+    npm install git+https://github.com/jsdoc3/jsdoc.git
+    # install globally
+    sudo npm install -g jsdoc
+    
+    ./node_modules/.bin/jsdoc yourJavaScriptFile.js
+
+
+### jsdoc.json
+
+> jsdoc配置文件
+
+* `conf.json`: <http://usejsdoc.org/about-configuring-jsdoc.html>
+* jsdoc默认使用的配置文件：`path/to/jsdoc/conf.json`
+
+默认情况：
+
+    {
+        "tags": {
+            "allowUnknownTags": true,
+            "dictionaries": ["jsdoc","closure"]
+        },
+        "source": {
+            "includePattern": ".+\\.js(doc|x)?$",
+            "excludePattern": "(^|\\/|\\\\)_"
+        },
+        "plugins": [],
+        "templates": {
+            "cleverLinks": false,
+            "monospaceLinks": false
+        }
+    }
+
+jsdoc安装包`自带`的`插件`，不需额外安装，但`需要配置`在plugins数组中(jsdoc3)：
+
+        commentConvert.js
+        commentsOnly.js
+        escapeHtml.js
+        eventDumper.js
+        markdown.js
+        overloadHelper.js
+        partial.js
+        railsTemplate.js
+        shout.js
+        sourcetag.js
+        summarize.js
+        underscore.js
+
+`zrender`的例子，命名为`jsdoc.json`：
+
+    {
+        "source": {
+            "include": ["src", "README.md"],
+            "includePattern": ".+\\.js(doc)?$"
+        },
+        "opts": {
+            "template": "./doc/jsdoc-tmpl",
+            "encoding": "utf8",
+            "destination": "./doc/api/",
+            "recurse": true
+        },
+        "plugins": ["plugins/markdown"],
+        "templates": {
+            "applicationName": "ZRender",
+            "disqus": "",
+            "googleAnalytics": "",
+            "openGraph": {
+                "title": "",
+                "type": "website",
+                "image": "",
+                "site_name": "",
+                "url": ""
+            },
+            "meta": {
+                "title": "",
+                "description": "",
+                "keyword": ""
+            }
+        },
+        "readme": "./README.md"
+    }
+
+使用：
+
+    npm install jsdoc
+    ./node_modules/.bin/jsdoc -c jsdoc.json
+
+
+### 模板
+
+* `jaguarjs-jsdoc`
+
+    github: <https://github.com/davidshimjs/jaguarjs-jsdoc>
+    example: <http://jaguarjs.com/doc/>
+
+        npm install
+        grunt demo
+        grunt demo --debug
+
+        # 已存在jsdoc的，可将`jaguarjs-jsdoc`作为模板目录
+        jsdoc -t `project folder` -c `configuration file` `source files` `README.md file`
+
+* `DocStrap`: DocStrap is Bootstrap based template for JSDoc3.
+
+    website: <http://docstrap.github.io/docstrap/>
+
+        npm install ink-docstrap
+
+        # cli usage
+        jsdoc -c path/to/conf.json -t ./node_modules/ink-docstrap/template -R README.md -r .
+
+
+* jsdoc3Template
+* minami
+* `docdash`
+
+    site: <http://clenemt.github.io/docdash/>
+
+        npm install docdash
+           
+        # cli usage
+        jsdoc -c path/to/conf.json -t ./node_modules/docdash -R README.md -r .
+
+
+
+### 构建工具
+
+* JSDoc Ant task
+* JSDoc Grunt plugin
+* JSDoc Gulp plugin
 

@@ -5,6 +5,26 @@
 > 合作，最难的是定义`边界`和`共赢`。
 
 
+## 2016-12-19
+
+* Progressive WebApps：让WebApps无限接近NativeApps的技术
+* `Visual Studio Code`：微软的开源跨平台代码编辑工具，<https://code.visualstudio.com>
+    * 对`前端`开发深度`支持`，代码补全，各类前端插件等都齐全
+    * 安装非常`简洁、干净`，下载后就是一个独立的可运行程序包（ .app后缀 ）
+    * 自带`git`工具
+    * 丰富的`extensions`，安装方便，左侧第五个tab点开即是
+* `.Net Core`：C# 7.0，跨平台方案SDK
+
+
+## 2016-12-17
+
+* anywhere <https://github.com/JacksonTian/anywhere>
+    Running static file server anywhere / 随启随用的静态文件服务器
+
+* doxmate <https://github.com/JacksonTian/doxmate>
+    文档伴侣
+
+
 ## 2016-10-20
 
 编辑器的问题都不是小问题，值得花时间去把编辑器调到理想状态。
@@ -124,13 +144,7 @@ or if you are running Ruby you can use
 
 ## 15-10-27
 
-### VirtualBox升级
-
-1. 升级至Mac OX El Capitan，10.11.1以后，发现原来的Virtual Box 4.3装载的Windows 7系统，无法识别USB设备。
-解决方案是，升级至Virtual Box 5.x版本，并且安装相应的Additions。并在Windows虚拟机打开后，安装相应配套的Gust Addition
-
-2. [ `161124` ] VirtualBox升级后，原来的Window7打开后无法使用蓝牙键盘和鼠标。解决办法是移除虚拟机，重新建一次。
-
+`[ 161219 ] virtualbox相关内容，已经单独移至`vm/virtualbox.md`文档。
 
 
 

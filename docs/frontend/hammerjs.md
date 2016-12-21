@@ -1,8 +1,9 @@
 # Hammerjs memo
 
-http://hammerjs.github.io/
+> A javascript library for multi-touch gestures. `多点触控`的支持。
 
-https://github.com/hammerjs/hammer.js
+* <http://hammerjs.github.io/>
+* <https://github.com/hammerjs/hammer.js>
 
 
 ## 手势说明

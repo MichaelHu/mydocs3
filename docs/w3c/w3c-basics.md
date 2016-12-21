@@ -22,10 +22,12 @@
     * DOM
     * DOM events
     * Declarative Web Applications
-    * Javascript APIs: <https://www.w3.org/standards/techs/js> `Version 2016-11-11`
+    * Javascript APIs: <https://www.w3.org/standards/techs/js> `Version 2016-12-19`
 
         `Standards:`
 
+		* 2016-12-15 WebIDL Level 1 <https://www.w3.org/TR/2016/REC-WebIDL-1-20161215/>
+		* 2016-11-17 Media Source Extensions <https://www.w3.org/TR/2016/REC-media-source-20161117/>
         * 2016-11-08 Geolocation API Specification 2nd Edition <https://www.w3.org/TR/2016/REC-geolocation-API-20161108/>
         * 2016-10-27 Pointer Lock <https://www.w3.org/TR/2016/REC-pointerlock-20161027/>
         * 2016-10-18 Vibration API ( Second Edition ) <https://www.w3.org/TR/2016/REC-vibration-20161018/>
@@ -76,12 +78,13 @@
 
         `Drafts - Proposed Recommendations:`
 
-        * 2016-10-04 Media Source Extensions <https://www.w3.org/TR/2016/PR-media-source-20161004/>
-        * WebIDL Level 1 <https://www.w3.org/TR/2016/PR-WebIDL-1-20160915/>
+		* 2016-12-15 Web Cryptography API <https://www.w3.org/TR/2016/PR-WebCryptoAPI-20161215/>
 
 
         `Drafts - Candidate Recommendations:`
 
+		* 2016-12-08 Performance Timeline Level 2 <https://www.w3.org/TR/2016/CR-performance-timeline-2-20161208/>
+		* 2016-11-22 Page Visibility Level 2 <https://www.w3.org/TR/2016/CR-page-visibility-2-20161122/>
         * 2016-11-01 High Resolution Time Level 2 <https://www.w3.org/TR/2016/CR-hr-time-2-20161101/>
         * 2016-08-18 DeviceOrientation Event Specification <https://www.w3.org/TR/2016/CR-orientation-event-20160818/>
         * 2016-07-21 Resource Timing Level 1 <http://www.w3.org/TR/2016/CR-resource-timing-1-20160721/>
@@ -98,9 +101,21 @@
 
         * Geolocation API Specification Level 2 <http://www.w3.org/TR/2011/WD-geolocation-API-v2-20111201/>
 
-        `Drafts - Other Working Drafts:`
+        `Drafts - Other Working Drafts:` 这部分变化比较快
 
-        * 2016-11-08 MediaStream Image Capture <https://www.w3.org/TR/2016/WD-image-capture-20161108/>
+        * 2016-12-16 MediaStream Image Capture <https://www.w3.org/TR/2016/WD-image-capture-20161216/> 视频流截屏
+		* 2016-12-16 Input Events <https://www.w3.org/TR/2016/WD-input-events-20161216/>
+        * 2016-12-15 Audio Output Devices API <https://www.w3.org/TR/2016/WD-audio-output-20161215/>
+		* 2016-12-14 MediaStream Recording <https://www.w3.org/TR/2016/WD-mediastream-recording-20161214/> 语音和视频流录制
+		* 2016-12-14 Idenfifiers for WebRTC's Statistics API <https://www.w3.org/TR/2016/WD-webrtc-stats-20161214/>
+		* 2016-12-13 Clipboard API and events <https://www.w3.org/TR/2016/WD-clipboard-apis-20161213/> 剪贴板相关的还在草案中
+		* 2016-12-13 Navigation Timing Level 2 <https://www.w3.org/TR/2016/WD-navigation-timing-2-20161213/>
+		* 2016-12-06 Selection API <https://www.w3.org/TR/2016/WD-selection-api-20161206/>
+        * 2016-12-02 Gamepad <https://www.w3.org/TR/2016/WD-gamepad-20161202/>
+        * 2016-11-29 WebDriver <https://www.w3.org/TR/2016/WD-webdriver-20161129/>
+        * 2016-11-24 WebRTC 1.0: Real-time Communication Between Browsers <https://www.w3.org/TR/2016/WD-webrtc-20161124/> 浏览器间的实时音视频流通讯
+		* 2016-11-22 Pointer Lock 2.0 <https://www.w3.org/TR/2016/WD-pointerlock-2-20161122/> 当鼠标事件锁定在某个单独元素上，而鼠标从视图上移出，提供获取鼠标移动信息的API。特别对于第一人称3D视角应用非常需要。
+        * 2016-11-08 MediaStream Image Capture <https://www.w3.org/TR/2016/WD-image-capture-20161108/> 视频流截屏
         * 2016-11-07 Remote Playback API <https://www.w3.org/TR/2016/WD-remote-playback-20161107/>
         * 2016-11-03 Resource Timing Level 2 <https://www.w3.org/TR/2016/WD-resource-timing-2-20161103/>
         * 2016-11-02 Audio Output Devices API <https://www.w3.org/TR/2016/WD-audio-output-20161102/>
@@ -116,7 +131,7 @@
         * 2016-10-24 UI Events KeyboardEvent code Values <https://www.w3.org/TR/2016/WD-uievents-code-20161024/>
         * 2016-10-24 UI Events KeyboardEvent key Values <https://www.w3.org/TR/2016/WD-uievents-key-20161024/>
         * 2016-10-18 Input Events <https://www.w3.org/TR/2016/WD-input-events-20161018/>
-        * 2016-10-11 Service Workers 1 <https://www.w3.org/TR/2016/WD-service-workers-1-20161011/>
+        * 2016-10-11 `Service Workers 1` <https://www.w3.org/TR/2016/WD-service-workers-1-20161011/>
         * 2016-09-21 Selection API <https://www.w3.org/TR/2016/WD-selection-api-20160921/>
         * 2016-09-21 Identifiers for WebRTC's Statistics API <https://www.w3.org/TR/2016/WD-webrtc-stats-20160921/>
         * 2016-09-13 WebRTC 1.0: Real-time Communication Between Browsers <https://www.w3.org/TR/2016/WD-webrtc-20160913/>

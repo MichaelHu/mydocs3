@@ -111,7 +111,7 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
     # 最近n次详细修改日志
     git log -p -n <file>
 
-    # 修改日志统计信息
+    # 修改日志统计信息，包含文件名和概要
     git log --stat <file>
 
 

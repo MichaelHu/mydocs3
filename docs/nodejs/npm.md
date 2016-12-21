@@ -683,6 +683,8 @@ npm获取配置信息，来自`六个来源，优先级如下，由高到低`：
 
 在根目录生成`npm-shrinkwrap.json`文件，它由命令`npm shrinkwrap`扫描`node_modules`目录下的所有npm package，自动生成锁定版本的配置文件。`npm-shrinkwrap`的优先级高于`package.json`。
 
+对于package.json文件中`devDependencies不生效`，但不代表一个项目的package.json只有devDependencies字段就用不上，因为这些dev阶段的package会调用很多其他的包，`其他包`的版本固化`也`是`需要`的。
+
 ### 使用流程
 
 * 开发过程中，引入一个新包:

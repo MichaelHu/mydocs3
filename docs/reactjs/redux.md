@@ -2,6 +2,9 @@
 
 > Redux is a predictable state container for JavaScript apps.
 
+2016-12-14
+, 2016-05
+
 <img src="./img/redux-logo.png" height="60"> 
 <http://redux.js.org/index.html>
 
@@ -20,7 +23,7 @@
 
     npm install --save redux
 
-如果是和react配合使用，则还需要安装react-redux
+如果是和`react`配合使用，则还需要安装`react-redux`
 
     npm install --save react-redux
     
@@ -31,8 +34,8 @@
 
 ## 三条原则(The Gist)
 
-1. 整个应用`只有`一棵状态树
-2. 状态是`只读`的，唯一修改方法是`派发(dispatch)`actions
+1. 整个应用`只有`一棵状态树（Store）
+2. 状态是`只读（getState()）`的，`唯一`修改`方法`是`派发(dispatch)`actions
 3. 改变总是通过`函数`（reducer）来完成，它们接收之前的状态和一个action，计算并返回新的状态
 
 
@@ -621,6 +624,10 @@ Redux的middleware与`Express`或`Koa`的middleware是类似的，只不过解�
 
 ### 实现思路
 
+先重温一下middleware的`signature`，`next`是一个封装的dispatch：
+
+    ({ getState, dispatch }) => next => action 
+
 以下用`简单`方式展示了Redux的`applyMiddleware`的实现思想：
 
     // Warning: Naïve implementation!
@@ -685,7 +692,7 @@ Redux的middleware与`Express`或`Koa`的middleware是类似的，只不过解�
 1. `ES6`的`箭头操作符`能大大减少函数嵌套层次，很多情况下只需关注`最里层`函数体的实现
 2. 实现最里层函数体就是在`return next(action)`的基础上加上其他特殊处理逻辑
 3. middleware是一个`符合`特定接口的`函数`，接收`store`为其`参数`，`返回值`为一个封装后的`dispatch()`
-4. 实现一个middleware时，`store`和`next`（封装的dispatch）总是`直接`可用，middleware机制会为你准备好
+4. `[重要]`实现一个middleware时，`store`和`next`（封装的dispatch）总是`直接`可用，middleware机制会为你准备好
 
 
 ### 延迟执行例子
@@ -802,10 +809,13 @@ Redux的middleware与`Express`或`Koa`的middleware是类似的，只不过解�
 
 
 
+> `[重要]`实现一个middleware时，`store`和`next`（封装的dispatch）总是`直接`可用，middleware机制会为你准备好
+
 
 ## Test
 
-Mocha推荐
+* Mocha推荐
+* Jest
 
 ### npm istall:
 
