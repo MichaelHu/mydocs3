@@ -5,6 +5,13 @@
 > 合作，最难的是定义`边界`和`共赢`。
 
 
+## 2016-12-26
+
+* [ 杨磊 ] 分享一个<http://www.12306bypass.com/>刷火车票插件 非vip帐号1s刷新1次（vip帐号（需赞助）可1秒刷票10次，适合放票时间点），已用三年亲测 （需win环境，mac安装win虚拟机即可）
+
+
+
+
 ## 2016-12-19
 
 * Progressive WebApps：让WebApps无限接近NativeApps的技术
@@ -21,8 +28,15 @@
 * anywhere <https://github.com/JacksonTian/anywhere>
     Running static file server anywhere / 随启随用的静态文件服务器
 
+		sudo npm install -g anywhere
+		cd PATH/TO/DOCROOT
+		anywhere
+
+    [ 1223 ]详细内容请移步 `webserver/anywhere.md`
+
 * doxmate <https://github.com/JacksonTian/doxmate>
     文档伴侣
+
 
 
 ## 2016-10-20
@@ -144,7 +158,7 @@ or if you are running Ruby you can use
 
 ## 15-10-27
 
-`[ 161219 ] virtualbox相关内容，已经单独移至`vm/virtualbox.md`文档。
+`[ 161219 ]` virtualbox相关内容，已经单独移至`vm/virtualbox.md`文档。
 
 
 

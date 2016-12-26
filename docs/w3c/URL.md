@@ -1,11 +1,17 @@
 # URL
 
+> The URL Standard defines URLs, domains, IP addresses, the `application/x-www-form-urlencoded` format, and their `API`.
+
+* w3c: <https://www.w3.org/TR/2014/WD-url-1-20141209/>
+
 
 <style type="text/css">
 @import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
 </style>
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 
+
+## demo
 
 
 <div id="test_URL" class="test">

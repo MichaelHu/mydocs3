@@ -1,4 +1,4 @@
-# REACTJS 
+# reactjs 
 
 
 > <img src="./img/react_logo.svg" width="60"> A JAVASCRIPT LIBRARY FOR BUILDING USER INTERFACES
@@ -117,9 +117,13 @@ onClick
 
 ### 特殊属性
 
-DOM: className, htmlFor
+* `DOM`: `className`, `htmlFor`
+* `非DOM`: `key`, `ref`, `dangerouslySetInnerHTML`
 
-非DOM: key, ref, dangerouslySetInnerHTML
+
+#### key属性
+
+`sibling`之间，key必须唯一，但不需要全局唯一
 
 
 #### ref属性
@@ -239,7 +243,18 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
 1. `this.props.children`的类型。如果存在多个孩子节点，则表现为Array类型；如果仅有一个孩子节点，则表现为仅有的孩子节点本身。
 
 2. `this.props.children`在组件的`render()`方法中使用，用于将孩子节点渲染出来。
+3. 以下代码看似能省的`import React from 'react';`实际上不能省：
 
+		// import React from 'react';
+		import ReactDOM from 'react-dom';
+		import Hello from './components/Hello';
+
+		ReactDOM.render(
+			<Hello name="hudamin" />
+			, document.getElementById( 'wrapper' )
+		);
+
+	原因是`<Hello name="hudamin" />`通过babel编译后，会生成`React.createElement(...)`的代码，直接引用了`React`。
         
 
 
@@ -729,7 +744,9 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
 
 该方法提供一个时机，通过`return false;`来阻止重新渲染，这样，在下次状态发生改变前，后续的`componentWillUpdate()`和`componentDidUpdate()`都不会调用。
 
-`默认`情况下，该方法总是返回true，一般只在需要进行性能优化的时候才会重写该方法。
+`默认`情况下，该方法总是返回`true`，一般只在需要进行`性能优化`的时候才会重写该方法。
+
+> Warning: IndexPage.shouldComponentUpdate(): Returned undefined instead of a boolean value. Make sure to return true or false.
 
 
 

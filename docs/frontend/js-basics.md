@@ -313,6 +313,43 @@ IE9以下，`hasEnumBug`
 
 
 
+## 匿名函数
+
+> 以下a, b两种写法，目前来看是`等价的`。
+
+<div id="test_anonymous_func" class="test">
+<div class="test-container">
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_anonymous_func');
+
+        var tool = {
+                a: function() {
+                    return this.value;
+                }
+                , b: function b() {
+                    return this.value;
+                }
+            }
+            , obj = { value: 10 }  
+            ;
+
+        s.show( tool.a.apply( obj ) );
+        s.append_show( tool.b.apply( obj ) );
+        s.append_show( 'typeof b', typeof b );
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+
 ## arguments是Array-like的
 
     (function(){

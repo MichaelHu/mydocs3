@@ -19,6 +19,7 @@
 
 ## 印象
 
+
 * 模块`打包`，可以将`css`甚至`image`文件都以`js`的方式打包。
 * `依赖分析`
 * 通过插件可以支持`各种`前端中间`文件类型`：.jade, .coffee, .less, .sass, .jsx等
@@ -119,10 +120,20 @@ html文件的解析，输出为`字符串`。它能对`html`文件的`标签属�
 
 
 
+### internal plugins
+
+在`webpack.*`命名空间下，可以直接通过new关键字创建实例。比如：
+
+	new webpack.BannerPlugin
+    new webpack.optimize.UglifyJsPlugin
+
+等。
+
+
 
 ### third plugins
 
-第三方插件。
+> `第三方插件`都通过`github + npm`的方式发布。可以通过npm install安装
 
 插件列表：<https://webpack.github.io/docs/list-of-plugins.html>
 
@@ -1069,6 +1080,23 @@ shimming
 
 
 
+
+## 解决方案
+
+> 常用的配置方案
+
+1. `create-react-app`提供的`SPA`模板，在其subpackage `react-scripts`中能查阅到
+1. 支持amd, umd, cmd等输出
+2. 支持提供html模板，自动添入css, js bundle
+3. 支持`copyright`添加，并在压缩文件中保留
+
+
+todo
+
+
+
+
+
 ## APIs
 
 <http://webpack.github.io/docs/api-in-modules.html>
@@ -1272,9 +1300,63 @@ AMD风格。
 
 ## 开发服务器
 
+> Serves a webpack app. Updates the browser on changes.
+
+* doc: <http://webpack.github.io/docs/webpack-dev-server.html>
+* github: <https://github.com/webpack/webpack-dev-server>
+
+1. 不会输出到`output`目录，而是在内存中。
+2. 模块热替换，它通过为webpack的配置文件增加`HotModuleReplacementPlugin`插件来达到热替换。命令行选项为`--hot`，而配置文件为`{ hot: true }`
+3. `iframe`模式，只需访问方式更换即可，在根路径前插入一个新的根目录：`http://<<host>>:<<port>>/webpack-dev-server/<<path>>`，其他无需做任何配置上的修改。这种模式会增加一个iframe，但是app的URL变化不会导致浏览器URL的变化。
+
+    另外，注意，如果path为空，那么`webpack-dev-server`后跟的斜线`/`不能省略。比如：
+
+        http://test.irice.com:9000/webpack-dev-server/
+
+    `而不是`：
+
+        http://test.irice.com:9000/webpack-dev-server
+
+
+4. `inline`模式，还不是很理解，`[ todo ]`
+
+
+### 安装及运行
+
     npm install -g webpack-dev-server
+    npm install webpack-dev-server
 
     webpack-dev-server --progress --colors
+    webpack-dev-server --port 9000 --progress --colors
+
+
+### 启动选项
+
+    contentBase
+    hot
+    proxy
+    host
+    port
+    open    # 2.0开始支持，能在默认浏览器中打开链接
+    ...
+
+### proxy选项
+
+{
+    ...
+    proxy: {
+        "/api": {
+            "target": {
+                "host": "action-js.dev"
+                , "protocol": "http:"
+                , "port": 80
+            }
+            , ignorePath: true
+            , changePrigin: true
+            , secure: false
+        }
+    }
+}
 
 
 

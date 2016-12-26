@@ -51,6 +51,26 @@ mac下进行`-g`安装，出现`EACCES`错误，原因是对`/usr/local/lib/node
 > Note: npm deprecated `auto-installing` of peerDependencies `since npm@3`, so required peer dependencies like babel-core and webpack must be listed explicitly in your `package.json`.
 
 
+#### ENOSELF
+
+> npm ERR! Refusing to install react as a dependency of itself
+
+不能install和当前package的name同名的package。
+
+复现方式：
+
+    vim package.json
+
+        ...
+        , name: 'react'
+        ...
+
+    npm install react react-dom
+
+
+
+
+
 ## 淘宝npm镜像
 
 <http://npm.taobao.org>
