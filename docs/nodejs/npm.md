@@ -516,10 +516,10 @@ npm获取配置信息，来自`六个来源，优先级如下，由高到低`：
 * author, contributors (数组) 
 * files，受.npmignore影响
 * main
-* bin
+* `bin`
 
-    1. `global install`的时候，npm会将bin配置的文件创建符号链接至`prefix/bin`目录下；
-    2. `local install`的时候，会将bin配置我的文件创建符号链接至`./node_modules/.bin/`目录下。
+    * `global install`的时候，npm会将bin配置的文件创建符号链接至`prefix/bin`目录下；
+    * `local install`的时候，会将bin配置我的文件创建符号链接至`./node_modules/.bin/`目录下。
 
     比如，npm包的bin就是这么配置的：
 

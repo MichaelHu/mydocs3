@@ -260,6 +260,17 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
 
 #### 演示一
 
+`style`属性的设置，接收的是一个`对象`：
+
+    var divStyle = { color: 'red', height: 50 };
+    return ( <div style={divStyle}></div> );
+
+或者
+
+    return ( <div style={{ color:'red', height: 50 }}></div> );
+
+以下为例子：
+
 <div id="test_5" class="test">
 <div class="test-container">
 
@@ -911,6 +922,13 @@ React.createElement()
 
 
 
+
+## Debugging
+
+> New React Developer Tools
+
+* site: <https://facebook.github.io/react/blog/2015/09/02/new-react-developer-tools.html>
+* github: <https://github.com/facebook/react-devtools>
 
 
 

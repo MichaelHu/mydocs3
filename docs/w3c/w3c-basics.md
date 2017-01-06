@@ -15,11 +15,75 @@
 
 #### Web Design and Applications
 
-* `HTML&CSS`: HTML for strcture, CSS for style and layout, including WebFonts.
+* `HTML&CSS`: HTML for structure, CSS for style and layout, including WebFonts.
+
+    * HTML
+
+        `Standards:`
+
+        * 2016-11-17 Media Source Extensions
+        * 2016-11-01 `HTML 5.1`
+        * 2016-04-19 Web Storage ( Second Edition )
+        * 2015-11-19 HTML Canvas 2D Context
+        * 2015-03-17
+        * ...
+        * 2014-10-28 `HTML5` <http://www.w3.org/TR/2014/REC-html5-20141028/>
+        * 2013-11-07 CSS Style Attributes
+        * 1999-12-24 HTML 4.02 Specification
+        * 1997-01-14 HTML 3.2 Reference Specification
+
+        `Group Notes:`
+
+        ...
+
+        `Drafts:`
+
+        * 2016-12-15 Encoding
+        * ...
+
+        `Other Working Drafts:`
+
+        * 2016-12-23 HTML Accessibility API Mappings 1.0
+        * 2016-12-06 HTML 5.2
+        * ...
+
+
+
+    * CSS
+    * Best Practices for Authoring HTML
+    * `Web Fonts`
+    * Digital Publishing
+
 * `JavaScript Web APIs`: Geolocation, XMLHttpRequest, mobile widgets, `DOM`, etc. <http://www.w3.org/standards/webdesign/script>
 
     * WAI-ARIA ( Accessible Rich Internet Applications)
     * DOM
+
+        `Standards:`
+
+        * 2015-11-19 W3C DOM4 <http://www.w3.org/TR/2015/REC-dom-20151119/>
+        * 2015-02-03 Server-Sent Events <http://www.w3.org/TR/2015/REC-eventsource-20150203/>
+        * 2008-12-22 Element Traversal Specification <http://www.w3.org/TR/2008/REC-ElementTraversal-20081222/>
+        * 2004-04-07 Document Object Model (DOM) Level 3 Load and Save Specification <http://www.w3.org/TR/2004/REC-DOM-Level-3-LS-20040407>
+        * 2004-04-07 Document Object Model (DOM) Level 3 Core Specification <http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407>
+        * 2004-01-27 Document Object Model (DOM) Level 3 Validation Specification <http://www.w3.org/TR/2004/REC-DOM-Level-3-Val-20040127>
+        * 2003-01-09 Document Object Model (DOM) Level 2 HTML Specification <http://www.w3.org/TR/2003/REC-DOM-Level-2-HTML-20030109>
+        * 2000-11-13 Document Object Model (DOM) Level 2 Core Specification <http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113>
+        * 2000-11-13 Document Object Model (DOM) Level 2 Events Specification <http://www.w3.org/TR/2000/REC-DOM-Level-2-Events-20001113>
+        * 2000-11-13 Document Object Model (DOM) Level 2 Style Specification <http://www.w3.org/TR/2000/REC-DOM-Level-2-Style-20001113>
+        * 2000-11-13 Document Object Model (DOM) Level 2 Traversal and Range Specification <http://www.w3.org/TR/2000/REC-DOM-Level-2-Traversal-Range-20001113>
+        * 2000-11-13 Document Object Model (DOM) Level 2 Views Specification <http://www.w3.org/TR/2000/REC-DOM-Level-2-Views-20001113>
+
+        `Group Notes:`
+
+        ...
+
+        `Drafts:`
+
+        ...
+
+        
+
     * DOM events
     * Declarative Web Applications
     * Javascript APIs: <https://www.w3.org/standards/techs/js> `Version 2016-12-19`
@@ -218,6 +282,29 @@
         * Web App Manifest 2016-11-10 <https://www.w3.org/TR/2016/WD-appmanifest-20161110/>
     * ...
 * `Graphics`: PNG, SVG, Canvas API, `WebCGM`
+
+    <https://www.w3.org/standards/webdesign/graphics>
+
+    * SVG: <https://www.w3.org/standards/techs/svg> 
+
+        `Standards`:
+
+        * 2011-08-16 Scalable Vector Graphics ( SVG ) 1.1 ( Second Edition ) <http://www.w3.org/TR/2011/REC-SVG11-20110816/>
+        * 2008-12-22 Scalable Vector Graphics ( SVG ) Tiny 1.2 Specification <http://www.w3.org/TR/2008/REC-SVGTiny12-20081222/>
+        * 2003-01-14 Mobile SVG Profiles: SVG Tiny and SVG Basic <http://www.w3.org/TR/2003/REC-SVGMobile-20030114/>
+
+        ...
+
+    * PNG
+    * WebCGM
+    * Graphics: <https://www.w3.org/standards/techs/graphics>
+
+        `Standards`:
+
+        * 2015-11-19 HTML Canvas 2D Context <http://www.w3.org/TR/2015/REC-2dcontext-20151119/>
+        * 2010-03-01 WebCGM 2.1 <http://www.w3.org/TR/2010/REC-webcgm21-20100301/>
+
+
 * `Audio and Video`
 * `Accessibility`
 * `Internationalization`: Unicode, bidi text, etc.

@@ -2,10 +2,10 @@
 
 > The HTML5 `<canvas>` tag is used to draw graphics, on the fly, via scripting (usually JavaScript). 
 
-* `W3C Docs`: <http://www.w3.org/TR/2dcontext/>
+* `W3C HTML5`: <https://www.w3.org/TR/2014/REC-html5-20141028/scripting-1.html#the-canvas-element>
+* `W3C Docs about 2d context`: <http://www.w3.org/TR/2dcontext/>
 * `W3C Schools Ref:` <http://www.w3schools.com/tags/ref_canvas.asp>
-
-2015-11-19成为推荐标准
+* `2015-11-19`成为推荐标准
 
 
 <style type="text/css">
@@ -18,6 +18,49 @@
 </style>
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <script src="http://258i.com/static/bower_components/jquery/dist/jquery.min.js"></script>
+
+
+
+
+## Canvas Element基础
+
+> `HTML5`定义的canvas元素，也即`HTMLCanvasElement`支持的接口
+
+* standards: <https://www.w3.org/TR/2014/REC-html5-20141028/scripting-1.html#the-canvas-element>
+
+
+### IDL
+
+	typedef (CanvasRenderingContext2D or WebGLRenderingContext) RenderingContext;
+
+	interface HTMLCanvasElement : HTMLElement {
+			   attribute unsigned long width;
+			   attribute unsigned long height;
+
+	  RenderingContext? getContext(DOMString contextId, any... arguments);
+
+	  DOMString toDataURL(optional DOMString type, any... arguments);
+	  void toBlob(FileCallback? _callback, optional DOMString type, any... arguments);
+	};
+
+`3`个主要接口：
+
+* getContext()
+* toDataURL()
+    * default type - `image/png`，还支持`image/jpeg`
+    * 分辨率 - `96dpi`
+    * 宽高为0的图：`data:,`
+* toBlob()
+
+
+### 注意事项
+
+通过Javascript API group制定的`HTML Canvas 2D Context`提供的2D上下文接口区别开来。后文着重介绍。
+
+
+
+
+
 
 
 ## 前置基本要点
@@ -86,7 +129,7 @@ Canvas 的 W3C 的标准上没有提及 canvas 的最大高/宽度和面积，�
 
 
 
-## Canvas基础
+## Canvas Context基础
 
 
 ### drawing state 
@@ -306,6 +349,9 @@ closePath()并`不会清空`当前路径的子路径列表。
 #### rect
 
 `context.rect(x, y, w, h)`
+
+
+
 
 
 
@@ -625,6 +671,9 @@ android 2.3.3的原生浏览器是不支持的，虽然该函数可以正常调�
 
 * `getContext`: function()
 * `getTextWidth`: function(text)
+
+    底层使用`context.measureText( text )`，返回的值是一个`TextMetrics`类型的对象。有一个`width`属性。
+
 * `getWidth`: function()
 * `getHeight`: function()
 
@@ -770,89 +819,39 @@ android 2.3.3的原生浏览器是不支持的，虽然该函数可以正常调�
 
 * `rotate`: function(angle)
 
+    * `angle`是`顺时针``弧度数`，`负弧度`为`逆时针`。
+    * 旋转以`( 0, 0 )`为中心
+    * `坐标系转换`函数，`在绘制前调用`，才能影响绘制函数。
+
     <img src="./img/canvas_rotate.png">
 
     旋转坐标系，比如旋转20度：
 
-        var c=document.getElementById("myCanvas");
-        var ctx=c.getContext("2d");
-        ctx.rotate(20*Math.PI/180);
-        ctx.fillRect(50,20,100,50);        
+        var c = document.getElementById( "myCanvas" );
+        var ctx = c.getContext( "2d" );
+        ctx.rotate( 20 * Math.PI/180 );
+        ctx.fillRect( 50, 20, 100, 50 );        
 
-    注意，坐标系转换函数，`在绘制前调用`，才能影响绘制函数。
+    * `宽`度为`120`, `高`度为`20`的文本，`顺时针`旋转`45度`，需要绘制在`宽高`为`200 * 200`的正方形内，且水平、垂直居中。
+
+        <img src="./img/canvas-rotated-text.png" height="200">
+
+        做法为（以下代码可以`参数化`）：
+
+            context.textBaseline = 'middle';
+            context.textAlign = 'start';
+            context.rotate( 45 * Math.PI / 180 );
+            context.translate( 200 / 2, 200 / 2 );
+            context.strokeText( text, -120 / 2, -20 / 2, 200 );
+
+
 
 * `translate`: function(tx, ty)
     
     平移
 
 * `transform`: function(a, b, c, d, e, f)
-
-    <img src="./img/canvas_transform.png">
-
-    变换矩阵会叠加，不同于`setTransform`的重置
-
-    参考： http://sumsung753.blog.163.com/blog/static/146364501201281311522752/
-
-    http://shawphy.com/2011/01/transformation-matrix-in-front-end.html
-
-    `平移`：
-
-        matrix(1, 0, 0, 1, tx, ty)
-
-        x' = 1x + 0y + tx = x + tx
-        y' = 0x + 1y + ty = y + ty 
-
-    等价于：
-    
-        translate(tx, ty)
-
-
-    `缩放`：
-
-        matrix(sx, 0, 0, sy, 0, 0)
-
-        x' = sx * x + 0 * y + 0 = sx * x
-        y' = 0 * x + sy * y + 0 = sy * y
-
-    等价于：
-    
-        scale(sx, sy)
-
-
-    `旋转`：
-
-        matrix(cosθ, sinθ, -sinθ, cosθ, 0, 0)
-
-        x' = x * cosθ - y * sinθ + 0 = x * cosθ - y * sinθ
-        y' = x * sinθ + y * cosθ + 0 = x * sinθ + y * cosθ
-    
-    等价于：
-    
-        rotate(θ)
-
-
-    `切变`：
-
-        matrix(1, tan(θy), tan(θx), 1, 0, 0)
-
-        x' = x + y * tan(θx)
-        y' = x * tan(θy) + y
-
-    θx和θy分别代表往x轴正方向和往y轴正方向倾斜的角度，两者是相互独立的。
-
-    比如：
-
-        matrix(1, 0, tan(45deg), 1, 0, 0)
-
-        x' = x + y * tan(45deg)
-        y' = y
-
-    表示向x轴倾斜45度。
-
-    `镜像反射`：todo
-
-
-
+    ，见`变换矩阵( transform matrix )`部分。
 
 * `setTransform`: function(a, b, c, d, e, f)
 
@@ -871,7 +870,7 @@ android 2.3.3的原生浏览器是不支持的，虽然该函数可以正常调�
 
     `关于font-variant：`
 
-    设置小型大写字母的字体显示文本，所有小写字母会被转换为答谢，但是相比其余字幕，尺寸更小。
+    设置小型大写字母的字体显示文本，所有小写字母会被转换为大写，但是相比其余字幕，尺寸更小。
 
         normal | small-caps | inherit
 
@@ -892,13 +891,123 @@ android 2.3.3的原生浏览器是不支持的，虽然该函数可以正常调�
 * `fillText`: function(text, x, y, maxWidth)
 * `strokeText`: function(text, x, y, maxWidth)
 * `globalAlpha`: function(alpha)
+
+    alpha = 0.0 ~ 1.0
+
 * `globalCompositeOperation`: function(gco)
+
+    `refer`: <https://www.w3.org/TR/2dcontext/#compositing>，11种类型，外加一种扩展类型。
+
+    * source-atop
+    * source-in
+    * srouce-out
+    * source-over ( default )
+    * destination-atop
+    * destination-in
+    * destination-out
+    * destination-over
+    * lighter
+    * copy
+    * xor
+    * vendorName-operationName
 
 * `save`: function()
 * `restore`: function()
 * `width`: function(w)
 * `height`: function(h)
 * `css`: function()
+
+
+
+
+## transform matrix
+
+> 变换矩阵
+
+
+### 齐次坐标
+
+将一个原本是`n`维的向量用一个`n+1`维向量来表示。如向量：
+
+    ( x1, x2, x3, ..., xn )
+
+的其次坐标表示为：
+
+    [ hx1, hx2, hx3, ..., hxn ]
+
+其中`h`是一个实数。
+
+`todo`：二维齐次坐标变换。
+
+
+### transform( a, b, c, d, e, f )
+
+ <img src="./img/canvas_transform.png">
+
+变换矩阵会叠加，不同于`setTransform`的重置
+
+参考： <http://sumsung753.blog.163.com/blog/static/146364501201281311522752/>
+
+<http://shawphy.com/2011/01/transformation-matrix-in-front-end.html>
+
+`平移`：
+
+    matrix(1, 0, 0, 1, tx, ty)
+
+    x' = 1x + 0y + tx = x + tx
+    y' = 0x + 1y + ty = y + ty 
+
+等价于：
+
+    translate(tx, ty)
+
+
+`缩放`：
+
+    matrix(sx, 0, 0, sy, 0, 0)
+
+    x' = sx * x + 0 * y + 0 = sx * x
+    y' = 0 * x + sy * y + 0 = sy * y
+
+等价于：
+
+    scale(sx, sy)
+
+
+`旋转`：
+
+    matrix(cosθ, sinθ, -sinθ, cosθ, 0, 0)
+
+    x' = x * cosθ - y * sinθ + 0 = x * cosθ - y * sinθ
+    y' = x * sinθ + y * cosθ + 0 = x * sinθ + y * cosθ
+
+等价于：
+
+    rotate(θ)
+
+
+`切变`：
+
+    matrix(1, tan(θy), tan(θx), 1, 0, 0)
+
+    x' = x + y * tan(θx)
+    y' = x * tan(θy) + y
+
+θx和θy分别代表往x轴正方向和往y轴正方向倾斜的角度，两者是相互独立的。
+
+比如：
+
+    matrix(1, 0, tan(45deg), 1, 0, 0)
+
+    x' = x + y * tan(45deg)
+    y' = y
+
+表示向x轴倾斜45度。
+
+`镜像反射`：todo
+
+
+
 
 
 
@@ -951,17 +1060,51 @@ x0,y0为渐变起始点，x1,y1为渐变结束点。
 
 ## drawImage
 
-1. 画布上定位图像
+> `s`代表`source`，`d`代表`destination`
 
-        context.drawImage(img,x,y);
+1. 画布上定位( dx, dy )图像
 
-2. 画布上定位图像，并规定图像的宽度和高度
+        context.drawImage( img, dx, dy );
 
-        context.drawImage(img,x,y,width,height);
+2. 画布上定位图像( dx, dy )，并规定图像的宽度和高度( dw, dh )
 
-3. 剪切图像，并在画布上定位被剪切的部分
+        context.drawImage( img, dx, dy, dw, dh );
 
-        context.drawImage(img,sx,sy,swidth,sheight,x,y,width,height);
+3. 剪切图像( sx, sy, sw, sh )，并在画布上定位( dx, dy )被剪切的部分，并规定图像的宽度和高度( dw, dh )
+
+        context.drawImage( img, sx, sy, sw, sh, dx, dy, dw, dh );
+
+ <img src="./img/canvas-drawImage.png">
+
+
+### Image Sources
+
+> 2d context能处理的来源，也即`img`对应的对象
+
+* HTMLImageElement对象，也即`<img>`对应的DOM对象
+* HTMLVideoElement对象，也即`<video>`对应的DOM对象
+* HTMLCanvasElement对象，也即`<canvas>`对应的DOM对象
+
+
+
+
+
+
+## Shadows
+
+> 4个全局阴影属性。
+
+1. 不能被转换成CSS值的value将被忽略
+
+### shaowColor
+### shadowOffsetX
+### shadowOffsetY
+### shadowBlur
+
+
+
+
+
 
 
 

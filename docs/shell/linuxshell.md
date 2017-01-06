@@ -3,7 +3,8 @@
 
 > 简单是终极的复杂。 —— 达芬奇
 
-2016-11
+2017-1
+, 2016-11
 , 2016 , 2015
 , 2014 hudamin
 
@@ -19,6 +20,26 @@
 ## for循环
 
     for (( a=9; a>=1; a-- )); do git stash drop stash@{$a}; done
+
+
+## env
+
+> set environment and execute command, or print environment
+
+`hello`：
+
+    #! /usr/bin/env node
+    console.log( 'Hello' );
+
+以上方式可以将基本环境变量设置好，再运行`node`这个utility，就不会出现查找不到的错误提示。
+当然，也可以直接将node的全路径写好，不过node的路径相较env来说，没那么稳定。
+
+执行：
+
+    chmod +x hello
+    ./hello
+
+
 
 
 ## which vs whereis

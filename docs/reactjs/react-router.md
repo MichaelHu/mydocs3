@@ -6,6 +6,7 @@
 
 
 * 文档： <https://github.com/reactjs/react-router/tree/master/docs>
+* react-router-redux: <https://github.com/reactjs/react-router-redux>
 
 
 
@@ -496,3 +497,56 @@ fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f64c.png
 
 
 
+## react-router-redux
+
+> Ruthlessly simple bindings to keep react-router and redux in sync.
+
+github: <https://github.com/reactjs/react-router-redux>
+
+确保react-router与redux的store保持同步。
+
+    npm install --save react-router-redux
+
+### 原理
+
+history + store ( redux ) `->` react-router-redux `->` enhanced history `->` react-router
+
+
+### Examples
+
+	import React from 'react'
+	import ReactDOM from 'react-dom'
+	import { createStore, combineReducers } from 'redux'
+	import { Provider } from 'react-redux'
+	import { Router, Route, browserHistory } from 'react-router'
+	import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
+
+	import reducers from '<project-path>/reducers'
+
+	// Add the reducer to your store on the `routing` key
+	const store = createStore(
+	  combineReducers({
+		...reducers,
+		routing: routerReducer
+	  })
+	)
+
+	// Create an enhanced history that syncs navigation events with the store
+	const history = syncHistoryWithStore(browserHistory, store)
+
+	ReactDOM.render(
+	  <Provider store={store}>
+		{ /* Tell the Router to use our enhanced history */ }
+		<Router history={history}>
+		  <Route path="/" component={App}>
+			<Route path="foo" component={Foo}/>
+			<Route path="bar" component={Bar}/>
+		  </Route>
+		</Router>
+	  </Provider>,
+	  document.getElementById('mount')
+	)
+
+> Now any time you navigate, which can come from pressing browser buttons or navigating in your application code, the enhanced history will first pass the new location through the Redux store and then on to React Router to update the component tree. If you time travel, it will also pass the new state to React Router to update the component tree again.
+
+`syncHistoryWithStore`：

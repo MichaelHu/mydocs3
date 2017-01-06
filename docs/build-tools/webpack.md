@@ -71,7 +71,7 @@
 
     npm install --save-dev style-loader css-loader
 
-* `css-loader`: 对css文件的`@import`， `url(...)`等进行require解析，返回字符串形式的CSS内容
+* `css-loader`: 对css文件的`@import`， `url(...)`等进行require解析，返回字符串形式的CSS内容。与`import`配合使用，可以将`local化`的selector通过对象返回，方便在js中使用。
 * `style-loader`: 将css文件添加至Document
 
 
@@ -576,13 +576,32 @@ css文件可能需要在js代码中`require`；也可能是用sass编写，还�
             // 开启驼峰类名 
             // , loader: 'style!css?camelCase'
 
+            // 设置local化selector的格式 
+            // , loader: 'style!css?localIdentName=[path][name]---[local]--[hash:base64:7]'
+
         }
     ]
     ...
 
+
+
+另外，`css-loader`中引入非常重要的机制，对`component化`非常重要：
+
+* `:local`, `:local(...)`，local化的selector才会在import的对象中获取到
+* `:global`, `:global(...)`
+* 查询参数：
+    * `modules`参数，提供默认开启local module模式
+    * `camelCase`参数，支持类名引用的驼峰模式
+    * `localIdentName`参数，支持类名实际值的格式指定
+    * `-url`，关闭url解析；`-import`，关闭@import解析
+
+
 其他相关功能：
 * Local Scope: <https://github.com/webpack/css-loader#local-scope>
 * CSS Modules: <https://github.com/webpack/css-loader#css-modules>
+	，理解css-modules，可以查看`build-tools/css-modules`
+
+
 
 
 #### css预编译
@@ -602,7 +621,11 @@ css文件可能需要在js代码中`require`；也可能是用sass编写，还�
 
 `1. extract-loader`:
 
-从bundle里提取`html`或者`css`，所以`前提`是html和css在bundle中被引用。
+从bundle里提取`html`或者`css`，所以`前提`是html和css在bundle中被`引用`。
+
+可以这么理解，默认情况下，css文件会打包在bundle里，通过js安装到DOM中，有了extract-loader，会将bundle中这部分css内容单独拎出来成为一个文件，而不放入bundle。
+
+作为文件输出到output目录，需要和`file-loader`配合使用。
 
     ...
     , loaders: [
@@ -891,7 +914,7 @@ shimming
 
 1. `file`: <https://github.com/webpack/file-loader>
 
-    将文件输出到输出目录，并返回公共url。
+    将文件输出到`output`目录，并返回`public url`。
 
         var url = require("file-loader!./file.png");
         // => emits file.png as file in the output directory and returns the public url
@@ -919,7 +942,7 @@ shimming
 
 2. `url`: <https://github.com/webpack/url-loader>
 
-    依赖`file-loader`，除了具有file-loader的功能外，可以对文件大小小于某个阈值是，输出`DataURI`
+    依赖`file-loader`，除了具有file-loader的功能外，可以对文件大小小于某个阈值时，输出`DataURI`
 
         require("url-loader?limit=10000!./file.png");
         // => DataUrl if "file.png" is smaller than 10kb
@@ -936,7 +959,7 @@ shimming
 
     
 
-    与`extract-text-webpack-plugin`类似，可以作为它的简单代替。由于设计原因，主要和`html-loader`以及`css-loader`配合使用，其他的不一定确保好用。
+    与`extract-text-webpack-plugin`类似，可以作为它的简单代替（`简版`）。由于设计原因，主要和`html-loader`以及`css-loader`配合使用，其他的不一定确保好用。
 
         import stylesheetUrl from "file-loader!extract-loader!css-loader!main.css";
         // stylesheetUrl will now be the hashed url to the final stylesheet

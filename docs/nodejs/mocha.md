@@ -1,7 +1,5 @@
 # MochaJS Memo
 
-
-
 `Mocha` 是一个简单、灵活有趣的 JavaScript 测试框架，用于 `Node.js` 和浏览器上的 JavaScript 应用测试。
 
 Mocha 是具有丰富特性的 JavaScript 测试框架，可以运行在 Node.js 和浏览器中，使得异步测试更简单更有趣。Mocha 可以持续运行测试，支持灵活又准确的`报告`，当映射到未捕获异常时转到正确的测试示例。

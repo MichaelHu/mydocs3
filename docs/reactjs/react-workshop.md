@@ -173,7 +173,71 @@
 sass, less
 
 
+### react-bootstrap
+
+* site: <https://react-bootstrap.github.io>
+* github: <https://github.com/react-bootstrap/react-bootstrap>
+* components: <https://react-bootstrap.github.io/components.html>
+
+`react-bootstrap`: 使用react方式重新实现的bootstrap组件库，不依赖bootstrap.js
+
+    npm install --save react-bootstrap
+
     
+#### usage
+
+1. CommonJS
+
+        var Alert = require( 'react-bootstrap/lib/Alert' );
+        var Alert = require( 'react-bootstrap' ).Alert;
+    
+2. ES6
+
+        import Button from 'react-bootstrap/lib/Button';
+        import { Button } from 'react-bootstrap';
+
+3. AMD
+
+        define( [ 'react-bootstrap' ], function( ReactBootstrap ) {
+            var Alert = ReactBootstrap.Alert;
+            ...
+        } );
+
+
+#### 引入css
+
+> 没有包含css文件，所以需要自行引入。
+
+有两种方案：
+
+1. 使用cdn
+
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css">
+
+2. 自定义下载：<http://getbootstrap.com/customize/>
+
+todo
+
+
+
+### style, css, sass
+
+    npm install --save-dev style-loader css-loader node-sass sass-loader 
+
+* 文件扩展名：`.scss`
+
+#### css-loader
+
+* 提供的`:local`
+
+
+
+
+
 
 
 

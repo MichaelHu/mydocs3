@@ -1,13 +1,15 @@
 # Koa Memo
 
 
-http://koa.bootcss.com
+<http://koa.bootcss.com>
 
-https://github.com/koajs/koa
+<https://github.com/koajs/koa>
 
-https://github.com/koajs/koa/wiki
+<https://github.com/koajs/koa/wiki>
 
-中间件级联：Connect 简单地将控制权交给一系列函数来处理，直到函数返回。 与之不同，当执行到 yield next 语句时，Koa 暂停了该中间件，继续执行下一个符合请求的中间件(`downstrem`)，然后控制权再逐级返回给上层中间件(`upstream`)。
+## 中间件级联
+
+`Connect`简单地将控制权交给一系列函数来处理，直到函数返回。 与之不同，当执行到`yield next`语句时，Koa 暂停了该中间件，继续执行下一个符合请求的中间件(`downstrem`)，然后控制权再逐级返回给上层中间件(`upstream`)。
 
 
 

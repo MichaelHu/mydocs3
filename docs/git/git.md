@@ -114,6 +114,12 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
     # 修改日志统计信息，包含文件名和概要
     git log --stat <file>
 
+`commit log`按时间先后逆序排布，但是最近的commit不一定比较远的commit对应的代码包新，比如下图，`hangzhou1229-newlogo`分支是第二个commit，但是该分支是基于半个月前的master分支进行的一个patch。
+
+ <img src="./img/git-log.png" height="500">
+
+
+
 
 
 
@@ -361,6 +367,9 @@ Push URL需要`身份验证`。
     Merge made by the 'recursive' strategy.
      src/components/graphHistory/index.js | 8 ++++++++
       1 file changed, 8 insertions(+)
+
+    # 不自动提交一个commit，或希望自己添加commit说明时
+    $ git merge --no-commit maint
 
 `recursive` strategy
 

@@ -4,10 +4,28 @@
 
  <img src="./img/Ecma_RVB-003.jpg" height="60">
 
+* es6: <http://www.ecma-international.org/ecma-262/6.0/index.html>
+* mozilla es6: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/New_in_JavaScript/ECMAScript_6_support_in_Mozilla>
+
 实时转码DEMO：
 
 <http://google.github.io/traceur-compiler/demo/repl.html>
 
+
+## import & export
+
+    import { sex, echo } from './a';
+    import * as utils from './a';
+    import { sex, echo as ECHO } from './a';
+    export { sex, echo };
+    export function echo( ... ) { ... };
+    export default sex;
+
+错误写法：
+
+    export sex;
+
+* import不支持此种类型的解构：`import { name, sex: varA } from './a';`
 
 
 
@@ -140,6 +158,49 @@
 ## Proxies
 
 
+
+
+## Map
+
+* es6: <http://www.ecma-international.org/ecma-262/6.0/index.html#sec-map-objects>
+* mozilla: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/values>
+
+### APIs
+
+#### size
+#### clear()
+#### delete()
+#### entries()
+
+    var myMap = new Map();
+    myMap.set("0", "foo");
+    myMap.set(1, "bar");
+    myMap.set({}, "baz");
+
+    var mapIter = myMap.entries();
+
+    console.log(mapIter.next().value); // ["0", "foo"]
+    console.log(mapIter.next().value); // [1, "bar"]
+    console.log(mapIter.next().value); // [Object, "baz"]
+
+
+#### forEach()
+#### get()
+#### has()
+#### keys()
+#### set()
+#### values()
+
+    var myMap = new Map();
+    myMap.set("0", "foo");
+    myMap.set(1, "bar");
+    myMap.set({}, "baz");
+
+    var mapIter = myMap.values();
+
+    console.log(mapIter.next().value); // "foo"
+    console.log(mapIter.next().value); // "bar"
+    console.log(mapIter.next().value); // "baz"
 
 
 
