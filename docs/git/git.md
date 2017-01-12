@@ -1,6 +1,7 @@
 # git
 
 
+2017-1-11,
 2016-12-02,
 2016-11-05,
 2016-07-28,
@@ -65,6 +66,9 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
 
     # 即使map存在，也强行reset
     git checkout -B map 41e86dec9d37b74e12b234fa5b95c35943f52932
+
+    # 从develop分支fork出功能分支
+    git checkout -b some-feature develop
 
 
 ## git diff
@@ -177,14 +181,166 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
     # 本地存在、远程不存在的会上传；本地删除、远程存在的会在远程删除
     git push --mirror
 
+    # 设置远程分支
+    git push -u origin marys-feature
+    git push --set-upstream origin marys-feature
+
+
+
+## git init
+
+    git init --bare /path/to/repo.git
+
+
+
+## git reset
+
+    git reset --hard <newbase>
+
+`等同`于：
+
+    git rebase --onto <newbase>
+
 
 
 
 ## git rebase
 
-常用命令：
+> 使不同功能的提交历史形成串式，通常在需要`往父分支合并前`进行rebase操作。
 
+    # 从master fork出新分支
+    git checkout -b some-feature master
+
+    # 编辑提交
+    git add
+    git commit
+
+    # 更新master
+    git checkout master
+    git pull origin master
+
+    # some-feature的更新串接至master头部
     git rebase master topic
+
+    # 合并some-feature分支，Fast-forward过程
+    git merge topic
+
+
+
+### 说明
+
+> `git rebase master topic`
+
+`普通rebase`，将topic分支的提交置于master分支顶部，形成串联提交。
+
+          A---B---C topic                          A'--B'--C' topic
+         /                   ->                   /
+    D---E---F---G master             D---E---F---G master
+
+
+若master分支中也有`同样`的历史`提交`，会进行`合并`。
+
+         A---B---C topic                            B'---C' topic
+        /                    ->                    /
+    D---E---A'---F master            D---E---A'---F master       
+
+
+
+### 常用命令
+
+    git rebase <upstream> <branch>
+    git rebase master topic
+    git rebase --continue
+    git rebase --skip
+    git rebase --abort
+
+命令`git rebase master topic`等同于( `master头部`接上`topic`的改动)：
+
+    git checkout topic
+    git rebase master
+
+相关命令：
+
+    git pull --rebase origin master
+
+
+
+### 例子
+
+> rebase后，commit的`时间`保持`不变`，但是在`显示顺序`上发生`变化`
+
+
+	git checkout -b feature/watermark feature-watermark-170107
+	# now we in branch feature/watermark
+	git log
+
+		commit 04dc2acd30f848c90cc4c1340c6ff21bafa3e53d
+		Author: jixuecong <jixuecong@lvwan.com>
+		Date:   Wed Jan 11 15:20:47 2017 +0800
+
+			修改水印位置
+
+	git add
+	git commit -m "feature/watermark: add searchSelectedItem markType"
+	git log
+		commit a088e00d2bc2b167f46f40078113f9b740c08749
+		Author: hudamin <hudamin@lvwan365.com>
+		Date:   Thu Jan 12 16:05:40 2017 +0800
+
+			feature/watermark: add searchSelectedItem markType
+
+		commit 04dc2acd30f848c90cc4c1340c6ff21bafa3e53d
+		Author: jixuecong <jixuecong@lvwan.com>
+		Date:   Wed Jan 11 15:20:47 2017 +0800
+
+			修改水印位置
+
+	git checkout feature-watermark-170107
+	git log
+
+		commit 04dc2acd30f848c90cc4c1340c6ff21bafa3e53d
+		Author: jixuecong <jixuecong@lvwan.com>
+		Date:   Wed Jan 11 15:20:47 2017 +0800
+
+			修改水印位置
+
+	git add
+	git commit -m "feature-watermark-170107: just for test"
+	git log
+
+		commit 9b4d99d5a7bb7b939ded3de521b2ec971e4bc3cb
+		Author: hudamin <hudamin@lvwan365.com>
+		Date:   Thu Jan 12 16:07:03 2017 +0800
+
+			feature-watermark-170107: just for test
+
+		commit 04dc2acd30f848c90cc4c1340c6ff21bafa3e53d
+		Author: jixuecong <jixuecong@lvwan.com>
+		Date:   Wed Jan 11 15:20:47 2017 +0800
+
+			修改水印位置
+
+	git checkout feature/watermark
+	git rebase feature-watermark-170107
+	git log
+
+		commit 4ccc58d77f1c9d2d51d2e5278176edb756c00d8b
+		Author: hudamin <hudamin@lvwan365.com>
+		Date:   Thu Jan 12 16:05:40 2017 +0800
+
+			feature/watermark: add searchSelectedItem markType
+
+		commit 9b4d99d5a7bb7b939ded3de521b2ec971e4bc3cb
+		Author: hudamin <hudamin@lvwan365.com>
+		Date:   Thu Jan 12 16:07:03 2017 +0800
+
+			feature-watermark-170107: just for test
+
+		commit 04dc2acd30f848c90cc4c1340c6ff21bafa3e53d
+		Author: jixuecong <jixuecong@lvwan.com>
+		Date:   Wed Jan 11 15:20:47 2017 +0800
+
+			修改水印位置
 
 
 
@@ -266,6 +422,34 @@ Push URL需要`身份验证`。
 
 
 ## git pull
+
+### 常用命令
+
+    git pull origin master
+    git pull origin master:master
+    git pull origin master:abc
+    git pull --rebase origin master
+
+ <img src="./img/git-rebase.png" height="300">
+
+`rebase`过程中，出现`合并冲突`，如下图所示：
+
+ <img src="./img/git-rebase-continue.png" height="300">
+
+可以通过`git status`查看冲突文件，并编辑冲突文件，然后继续进行rebase:
+
+    git add 
+    git rebase --continue
+
+如果发现冲突无法解决，则可以通过
+
+    git rebase --abort
+
+回到`git pull --rebase origin master`命令执行前的状态。
+
+
+
+### 问题
 
     fatal: refusing to merge unrelated histories
 
@@ -359,6 +543,8 @@ Push URL需要`身份验证`。
 
 ## git merge
 
+### 命令
+
     $ git branch
       map
     * map-snapshot
@@ -373,6 +559,71 @@ Push URL需要`身份验证`。
 
 `recursive` strategy
 
+### 例子
+
+> `merge`按`时间先后顺序`合并不同分支上的提交。注意与`rebase`的区别。
+
+另外，merge如果不添加`--no-commit`选项的话，会出现一个没啥意义的`Merge branch ...` commit
+
+	git checkout -b feature/watermark1
+	# we now in feature/watermark1 branch
+	git add
+	git commit -m "feature/watermark1: just for test2"
+	git log
+	
+		commit 15bc60a9f86c9f63baad9e8418c3b891a713ecb4
+		Author: hudamin <hudamin@lvwan365.com>
+		Date:   Thu Jan 12 16:24:38 2017 +0800
+	
+			feature/watermark1: just for test2
+	
+		commit 4ccc58d77f1c9d2d51d2e5278176edb756c00d8b
+		Author: hudamin <hudamin@lvwan365.com>
+		Date:   Thu Jan 12 16:05:40 2017 +0800
+	
+			....	
+	
+	
+	git checkout feature-watermark-170107
+	git add
+	git commit -m "feature-watermark-170107: remove just for test"
+	git log
+	
+		commit 30754f379de39fc9bee5d36279e61c6df54f8dc0
+		Author: hudamin <hudamin@lvwan365.com>
+		Date:   Thu Jan 12 16:25:36 2017 +0800
+	
+			feature-watermark-170107: remove just for test
+	
+		commit 4ccc58d77f1c9d2d51d2e5278176edb756c00d8b
+		Author: hudamin <hudamin@lvwan365.com>
+		Date:   Thu Jan 12 16:05:40 2017 +0800
+	
+			....	
+	
+	
+	git checkout feature/watermark1
+	git merge feature-watermark-170107
+	git log
+	
+		commit 89b50bea2059c7c937557f934401d57d59277c2b
+		Merge: 15bc60a 30754f3
+		Author: hudamin <hudamin@lvwan365.com>
+		Date:   Thu Jan 12 16:32:00 2017 +0800
+	
+			Merge branch 'feature-watermark-170107' into feature/watermark1
+	
+		commit 30754f379de39fc9bee5d36279e61c6df54f8dc0
+		Author: hudamin <hudamin@lvwan365.com>
+		Date:   Thu Jan 12 16:25:36 2017 +0800
+	
+			feature-watermark-170107: remove just for test
+	
+		commit 15bc60a9f86c9f63baad9e8418c3b891a713ecb4
+		Author: hudamin <hudamin@lvwan365.com>
+		Date:   Thu Jan 12 16:24:38 2017 +0800
+	
+			feature/watermark1: just for test2
 
 
 

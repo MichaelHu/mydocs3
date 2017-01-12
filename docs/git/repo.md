@@ -1,13 +1,18 @@
 # repo
 
+## tips
 
 * `gitflow`
-* 是否使用目录形式
-* 使用下划线还是减号
-* 分支定位于临时开发还是稳定功能
-* 无用分支及时删除 
-* commit log的格式：`分支名: comment content`
-
+* 标准git开发过程： 编辑、暂存( Stage )、提交( Commit )
+* 5种分支：`master`, `hotfix`, `release`, `develop`, `feature`
+* 分支命名使用目录形式或减号间隔形式
+* gitflow对分支的定位很明确
+* `commit log`的格式：`分支名: comment content`
+* 阶段性分支或发布分支及时合并到相关分支，无用分支及时删除 
+* 冲突解决办法，谁负责谁解决，多人负责多人协同解决
+* 避免合并提交，`git pull --rebase origin master`
+* 每个阶段常用命令以及`SourceTree`操作过程
+* 现有项目迁移方式
 
 
 ## branches
