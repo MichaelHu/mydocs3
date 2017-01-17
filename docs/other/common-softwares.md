@@ -2,6 +2,7 @@
 
 > 工作常用软件
 
+
 ## OmniGraffle
 
 作图工具
@@ -15,11 +16,13 @@
 
 300rmb
 
+
 ## ColorSnapper
 
 Mac下一款功能强大的`取色器`
 
 68rmb
+
 
 ## vim
 

@@ -16,7 +16,7 @@
 
     import React from 'react'
     import { render } from 'react-dom'
-    import { Router, Route, Link } from 'react-router'
+    import { Router, Route, Link, browserHistory } from 'react-router'
 
     const App = React.createClass({
       render() {
@@ -57,7 +57,7 @@
     })
 
     render((
-      <Router>
+      <Router history={browserHistory}>
         <Route path="/" component={App}>
           <Route path="about" component={About} />
           <Route path="inbox" component={Inbox}>
@@ -114,6 +114,8 @@
 
     render(<Router history={history} routes={routes} />, document.body)
 
+
+注意： Router的`history`属性不能缺少，必须提供。
 
 
 ### 绝对路径
@@ -437,7 +439,7 @@ fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f64c.png
 
 #### 注入属性
 
-如果某个Route匹配URL，则对应的Route Component会被渲染出来。渲染的同时，一些属性会被注入：
+如果某个`Route`匹配`URL`，则对应的Route Component会被渲染出来。渲染的同时，一些`属性`会被`注入`：
 
 * location
 * params
@@ -550,3 +552,6 @@ history + store ( redux ) `->` react-router-redux `->` enhanced history `->` rea
 > Now any time you navigate, which can come from pressing browser buttons or navigating in your application code, the enhanced history will first pass the new location through the Redux store and then on to React Router to update the component tree. If you time travel, it will also pass the new state to React Router to update the component tree again.
 
 `syncHistoryWithStore`：
+
+
+

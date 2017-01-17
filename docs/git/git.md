@@ -238,12 +238,13 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
     D---E---F---G master             D---E---F---G master
 
 
-若master分支中也有`同样`的历史`提交`，会进行`合并`。
+若`master`分支中也有`同样`的历史`提交`，会进行`合并`。
 
          A---B---C topic                            B'---C' topic
         /                    ->                    /
     D---E---A'---F master            D---E---A'---F master       
 
+对`topic`分支有`副作用`，执行rebase后，topic分支发生了变化。
 
 
 ### 常用命令
@@ -451,6 +452,8 @@ Push URL需要`身份验证`。
 
 ### 问题
 
+#### refusing
+
     fatal: refusing to merge unrelated histories
 
 遇到以上问题，可能由于你操作过`git commit --amend`，最终导致无法merge，后续的push/pull都无法继续。
@@ -461,6 +464,15 @@ Push URL需要`身份验证`。
 所以，使用`--allow-unrelated-histories`选项能解决问题，副作用就是两个不同历史的分支会合并。
 
 
+#### rejected
+
+	hudamin@local SophonWeb $ git pull origin master:release/watermark
+	From 172.22.1.88:sophon/SophonWeb
+	 ! [rejected]        master     -> release/watermark  (non-fast-forward)
+	   b6a5fa3..43a1843  master     -> origin/master
+
+`non-fast-forward`，master本来就是`release/watermark`已经合并过的。
+另外，如果`develop`刚从`master` fork下来的时候，执行`git pull`，也会出同样的提示`![rejected]`。
 
 
 ## git branch
@@ -690,5 +702,38 @@ Push URL需要`身份验证`。
     1480419586 94a92415050bc95e3764e9b5dd80672784f00ac9
     1480419039 f9699aef7ec77a4ad3aa67ff0e4e49307074dadb
     1480418999 aeabcc2deca6e6f2a7608d1411d5a53565a5e328
+
+
+
+## git file mode
+
+* refer: <http://stackoverflow.com/questions/1580596/how-do-i-make-git-ignore-file-mode-chmod-changes>
+
+文件内容未变，但是`pull`的时候发现以下`diff`信息：
+
+	mode change 100644 => 100755 build/favicon.ico
+	mode change 100644 => 100755 build/index.html
+	mode change 100644 => 100755 build/js/1.7dfac55a.js
+	mode change 100644 => 100755 build/js/10.9a21928a.js
+
+原因是文件模式发生了变化。可以通过`git config`设置忽略此种信息。
+
+	git config core.filemode false
+	git config --global core.filemode false
+
+但默认情况下，该配置是`true`。所以还是得尽量避免这种文件模式更新的改动。
+
+### core.fileMode
+
+	core.fileMode 
+
+       If false, the executable bit differences between the index and the
+       working copy are ignored; useful on broken filesystems like FAT.
+       See git-update-index(1). True by default.
+
+但实际上，这种`非常规变化`也是不能接受的，会给项目组其他成员带来困惑，最好恢复回去。
+
+一个规避方法，`不要忽略提交前的diff信息`。
+
 
 

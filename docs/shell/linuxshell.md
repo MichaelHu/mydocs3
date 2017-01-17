@@ -624,6 +624,14 @@ todo
 
 
 
+## find
+
+    find . -type f
+    find . -type f -name ".*.swp" -exec rm {} \;
+    find . -inum 35806669 -exec rm {} \;
+
+
+
 ## 实用例子
 
 ### 批量进行文件改名 
@@ -745,3 +753,20 @@ output：
             | grep -i exception -B 10 -A 50 -n"  \
         | tee /Users/hudamin/tmp/log/$$.log
     
+
+### 计算文本行数
+
+计算项目目录下的源代码文件的总行数。只计算`.js`, `.scss`, `.html`三类文件，并且不计算`./lib`目录下的文件。
+
+    c=0; \
+    for i in `find . -type f -and \( -iregex '.*.js' -or -iregex '.*.scss' -or -iregex '.*.html' \) -and -not -iregex '.*\/lib\/.*'`; \
+    do \
+        a=`wc -l $i | awk '{print $1}'`; \
+        echo $c $a $i; \
+        (( c = $c + $a )); \
+        echo $c; \
+    done; \
+    echo "All lines: $c"
+
+
+

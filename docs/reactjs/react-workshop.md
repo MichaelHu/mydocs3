@@ -232,7 +232,24 @@ todo
 
 #### css-loader
 
-* 提供的`:local`
+* 由css-modules提供的`:local`, `:global`等功能
+* 以及`composes` rule的使用 
+
+具体可以参考`webpack`, `css-modules`文章。
+
+
+
+
+## 使用路由
+
+理论上讲，就是如何将URL的变化反映到组件的展示上。
+
+这种效果的实现，可以有多种办法，可以手写，也可以使用Backbone之类提供路由机制的框架，还可以使用配套的`react-router`。
+
+    npm install --save react-router
+
+
+
 
 
 

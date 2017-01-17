@@ -1,6 +1,15 @@
 # UserAgent 分析
 
 
+## WES7-sp1-64
+
+### Chrome 55
+
+    Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36
+
+win7旗舰版的UA同上。也即通过ua无办法区分win7和wes7。
+
+
 ## 微信UA
 
 Mozilla/5.0 (iPhone; CPU iPhone OS 9_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13C75 MicroMessenger/6.3.9 NetType/WIFI Language/zh_CN

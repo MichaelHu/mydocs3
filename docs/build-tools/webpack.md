@@ -1383,4 +1383,36 @@ AMD风格。
 
 
 
+### historyApiFallback 选项
+
+使用browserHistory，需要服务器将所有url请求都导向首页（`index.html`）输出，避免404。
+
+    { 
+        historyApiFallback: true
+    }
+
+#### index 子选项
+
+如果`output.publicPath`设置成了`非/`，则需要如下设置，指明首页的路径：
+
+    {
+        historyApiFallback: {
+            index: '/foo-app/'
+        }
+    }
+
+#### rewrites 子选项
+
+使用`rewrites`子选项，可以用于静态文件的资源路径重写:
+
+	historyApiFallback: {
+		rewrites: [
+			// shows views/landing.html as the landing page
+			{ from: /^\/$/, to: '/views/landing.html' },
+			// shows views/subpage.html for all routes starting with /subpage
+			{ from: /^\/subpage/, to: '/views/subpage.html' },
+			// shows views/404.html on all other pages
+			{ from: /./, to: '/views/404.html' },
+		]
+	},
 
