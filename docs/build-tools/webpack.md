@@ -5,14 +5,13 @@
 
 对`SPA`有`天生`很好的支持，但是也支持`AMD`。通过复用模块拆分，也能很好的支持`MP`。
 
-* <https://webpack.github.io>
-* <http://webpack.github.io/docs/>
-* <http://webpack.github.io/docs/tutorials/getting-started/>
 
+* site: <https://webpack.github.io>
+* docs: <http://webpack.github.io/docs/>
+* get started: <http://webpack.github.io/docs/tutorials/getting-started/>
 
-
-相关阅读： Browserify : <http://browserify.org>
-相关介绍文档： <https://segmentfault.com/a/1190000006178770>
+1. 相关阅读： Browserify : <http://browserify.org>
+2. 相关介绍文档： <https://segmentfault.com/a/1190000006178770>
 
 
 

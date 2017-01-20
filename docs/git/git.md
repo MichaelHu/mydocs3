@@ -1,6 +1,8 @@
 # git
 
 
+2017-1-19,
+2017-1-18,
 2017-1-11,
 2016-12-02,
 2016-11-05,
@@ -11,42 +13,130 @@
 2013,
 2012
 
-<img src="./img/git.png" height="30">
-<https://git-scm.com>
+* site: <https://git-scm.com><img src="./img/git.png" height="20">
+* docs: <https://git-scm.com/doc>
+* 参考图文教程： <http://pcottle.github.io/learnGitBranching/?demo>
 
-> Docs: <https://git-scm.com/doc>
+    github: <https://github.com/pcottle/learnGitBranching>
 
-> 参考图文教程： <http://pcottle.github.io/learnGitBranching/?demo>
-
-
-
-## ssh访问
-
-1. 本地机器上生成SSH Key
-
-    1. 先查看是否存在`~/.ssh`，该目录下存在两个文件
-            
-            id_rsa
-            id_rsa.pub
-
-        一个秘钥，一个公钥。如果已经存在，直接进入第二步，否则运行以下命令：
-
-            $ ssh-keygen -t rsa
-
-2. 将生成的公钥`id_rsa.pub`的内容复制到github上的用户设置之`SSH keys`
-3. 测试是否添加成功：
-
-        $ ssh -T git@github.com
-        The authenticity of host 'github.com (192.30.252.128)' can't be established.
-        RSA key fingerprint is 16:22:ac:a5:76:88:2d:36:63:1b:56:4d:eb:df:a2:48.
-        Are you sure you want to continue connecting (yes/no)? yes
-        Warning: Permanently added 'github.com,192.30.252.128' (RSA) to the list of known hosts.
-        Hi MichaelHu! You've successfully authenticated, but GitHub does not provide shell access.
-
-    以上显示已经添加成功
+    <img src="./img/git-learnbranch-success.png" style="max-height:400px">
 
 
-windows机器上添加sshkey，可以使用`git bash`来生成。
+## Tips
+
+* 使用`git rebase -i`或`git cherry-pick`，交换commit的顺序
+* 使用`git branch -f`强制修改分支的指向
+* `git reset <reset-to-target>`与`git revert <reverted-commit>`的区别之一，后者有log
+* `origin/master`分支，仅在`远端master`分支更新时才会更新，`不作为本地的一个可更新分支`，本地checkout出来，只作为普通commit看待，HEAD指向`origin/master`时，处于`detached HEAD`状态。
+
+        git checkout origin/master
+        git commit
+
+    此时，`origin/master`并不会更新。
+* `git pull`与`git fetch`, `git merge`命令组合的`等价`关系
+    * 理解`git pull origin master^:tmp`
+    * `git pull`对当前分支的`副作用`
+* 从remote同步的时候，使用`rebase`与`merge`，取决于喜好问题。
+* `pull`与`push`之所以能够同步本地和远程对应的分支，原因在于`master`与`origin/master`分支的关系，也就是`upstream`
+
+        git checkout -b abc origin/master
+
+    或
+        
+        git branch -u origin/master abc
+        git branch --set-upstream-to origin/master abc
+
+    设置好track关系后，`git status`命令会有如下输出：
+
+        hudamin@local SophonWeb $ git status
+        On branch master
+        Your branch is behind 'origin/master' by 4 commits, and can be fast-forwarded.
+          (use "git pull" to update your local branch)
+
+
+
+
+## Concepts
+
+### Commit vs Branch
+
+> 本质上是一致的
+
+* lightweight branch
+* branch is only a `pointer` to a commit
+
+
+### HEAD
+
+
+* 当前检出的commit的别名
+* `通常指向`分支名
+
+
+### Detaching HEAD
+
+> HEAD不指向分支名，而指向commit的状态
+
+    git checkout -b bugFix  # commit c1
+    git checkout c1         # detaching HEAD
+
+`HEAD -> bugFix -> c1`  => `HEAD -> c1`
+
+
+### Relative Refs
+
+`fed2da64c0efc5293610bdd892f82a58e8cbc5d8a`  => `fed2`
+
+#### ^ 操作符
+
+    # checkout出 master的父commit，HEAD detached到父commit
+    git checkout master^
+    # checkout出 master的爷爷commit，HEAD detached到爷爷commit
+    git checkout master^^
+
+    git checkout C3
+    git checkout HEAD^
+    git checkout HEAD^
+    git checkout HEAD^
+
+`^num`，指明往上追溯时，parents中选择第几个parent，默认是第一个，可以指定第二个（merge时的merged分支）
+
+    git checkout master^2
+    git checkout HEAD^2
+
+ <img src="./img/git-checkout-nth-parent.png">
+
+
+#### ~num 操作符
+
+    git checkout bugFix
+    git checkout HEAD~4
+    git reset HEAD~1
+    git branch -f master HEAD~3
+
+`HEAD~`代表`HEAD~1`
+
+
+#### 混用操作符
+
+    git checkout HEAD~^2~2
+
+达到如下效果：
+
+ <img src="./img/git-checkout-nth-parent-2.png">
+
+其他例子如：
+
+    git branch bugWork HEAD^^2~
+
+
+
+### TAG
+
+> 不变的永久历史锚点。
+
+添加后，可以像branch一样checkout出来，但是不能在它之上提交更新。
+
 
 
 
@@ -59,6 +149,8 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
     git checkout -f <new_branch> [<start_point>]
     git checkout -b <new_branch> [<start_point>]
     git checkout -B <new_branch> [<start_point>]
+    git checkout -- <filename> 
+    git checkout <commit> -- <filename> 
     git checkout master^
     git checkout master^^
 
@@ -69,6 +161,12 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
 
     # 从develop分支fork出功能分支
     git checkout -b some-feature develop
+
+    # 恢复filename文件到当前工作目录的commit
+    git checkout -- filename
+
+    # 恢复filename文件到commit所指的状态
+    git checkout 41e86dec9d37b74e12b234fa5b95c35943f52932 -- filename
 
 
 ## git diff
@@ -104,6 +202,8 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
 
 ## git log
 
+    git log [<options>] [<revision range>] [[--] <path>...]
+
 常用命令：
 
     # 最近n次修改日志
@@ -111,6 +211,9 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
 
     # 详细修改日志
     git log -p <file>
+
+    # 包括文件更名情况下的日志 
+    git log --follow <single-file>
 
     # 最近n次详细修改日志
     git log -p -n <file>
@@ -122,6 +225,34 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
 
  <img src="./img/git-log.png" height="500">
 
+
+### 有用日志信息Merge
+
+> `Merge字`段，提示该分支的merge信息，在分析日志的时候，可以追溯其合并的分支
+
+如下命令输出的`Merge: 88e579f 04ece21`，表明了commit `314d8b0`合并了`88e579f`以及`04ece21 ( master分支 )`。
+
+	git log
+
+	commit 314d8b02b6525fd19e54fd8d87342c6003506630
+	Merge: 88e579f 04ece21
+	Author: hudamin <hdm258i@gmail.com>
+	Date:   Wed Jan 18 15:33:20 2017 +0800
+
+		Merge branch 'master' into feature
+
+	commit 04ece21e5c768a2873872d6cb46f3fe1e3716cce
+	Author: hudamin <hdm258i@gmail.com>
+	Date:   Wed Jan 18 15:32:18 2017 +0800
+
+		master: add package.json
+
+	commit 88e579fceb709879649a900b7caf4f1fe30f7789
+	Merge: 09b9c7b e248118
+	Author: hudamin <hdm258i@gmail.com>
+	Date:   Wed Jan 18 15:30:10 2017 +0800
+
+		Merge branch 'master' into feature
 
 
 
@@ -166,7 +297,11 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
 常用命令：
 
     # 上传本地分支至远程分支
+    git push origin master
     git push origin master:master
+
+    # 删除远程分支abc
+    git push origin :abc
 
     # 上传tags
     git push --tags
@@ -181,9 +316,14 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
     # 本地存在、远程不存在的会上传；本地删除、远程存在的会在远程删除
     git push --mirror
 
-    # 设置远程分支
+    # 设置upstream
     git push -u origin marys-feature
     git push --set-upstream origin marys-feature
+
+
+todo: `git config --set push.default ...`
+
+    git push origin master^:abc
 
 
 
@@ -195,18 +335,183 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
 
 ## git reset
 
+* 适用与本地分支的重置，可以重写本地历史，但不能记录到log中。
+* 分支参数指定的是reset后的`新目标分支`
+
+例如：
+
     git reset --hard <newbase>
 
 `等同`于：
 
     git rebase --onto <newbase>
 
+往后退一个commit：
+
+    git reset HEAD^
+
+或
+
+    git reset HEAD~1
+
+
+
+
+
+## git revert
+
+回退`指定commit`，需要确保`当前工作目录是干净的`。
+
+> 分支参数指定的是需要`被revert的commit`。
+
+    git revert <commit>...
+    git revert --continue
+    git revert --quit
+    git revert --abort
+
+
+> 与reset不一样的是，revert`能记录到log中`，远程也能看到。
+
+例如：
+
+    git revert 38e35a630575d5412ce1c91de47f32455a52b1d6
+    git log
+
+	commit dfcecbd98f7040793fcb7d87c4044246da7a99ff
+	Author: hudamin <hdm258i@gmail.com>
+	Date:   Wed Jan 18 21:01:17 2017 +0800
+
+		Revert "feature: update package.json"
+
+		This reverts commit 38e35a630575d5412ce1c91de47f32455a52b1d6.
+
+	commit 38e35a630575d5412ce1c91de47f32455a52b1d6
+	Author: hudamin <hdm258i@gmail.com>
+	Date:   Wed Jan 18 15:41:36 2017 +0800
+
+		feature: update package.json
+
+
+
+
+## git merge
+
+
+### 命令
+
+    $ git branch
+      map
+    * map-snapshot
+    $ git checkout map
+    $ git merge map-snapshot
+    Merge made by the 'recursive' strategy.
+     src/components/graphHistory/index.js | 8 ++++++++
+      1 file changed, 8 insertions(+)
+
+    # 不自动提交一个commit，或希望自己添加commit说明时
+    $ git merge --no-commit maint
+
+    # 放弃merge过程
+    $ git merge --abort
+
+    # 更新master分支
+    git fetch
+    git merge origin/master
+
+`recursive` strategy
+
+### 例子
+
+> `merge`按`时间先后顺序`合并不同分支上的提交。注意与`rebase`的区别。
+
+另外，merge如果不添加`--no-commit`选项的话，会出现一个没啥意义的`Merge branch ...` commit
+
+	git checkout -b feature/watermark1
+	# we now in feature/watermark1 branch
+	git add
+	git commit -m "feature/watermark1: just for test2"
+	git log
+	
+		commit 15bc60a9f86c9f63baad9e8418c3b891a713ecb4
+		Author: hudamin <hudamin@lvwan365.com>
+		Date:   Thu Jan 12 16:24:38 2017 +0800
+	
+			feature/watermark1: just for test2
+	
+		commit 4ccc58d77f1c9d2d51d2e5278176edb756c00d8b
+		Author: hudamin <hudamin@lvwan365.com>
+		Date:   Thu Jan 12 16:05:40 2017 +0800
+	
+			....	
+	
+	
+	git checkout feature-watermark-170107
+	git add
+	git commit -m "feature-watermark-170107: remove just for test"
+	git log
+	
+		commit 30754f379de39fc9bee5d36279e61c6df54f8dc0
+		Author: hudamin <hudamin@lvwan365.com>
+		Date:   Thu Jan 12 16:25:36 2017 +0800
+	
+			feature-watermark-170107: remove just for test
+	
+		commit 4ccc58d77f1c9d2d51d2e5278176edb756c00d8b
+		Author: hudamin <hudamin@lvwan365.com>
+		Date:   Thu Jan 12 16:05:40 2017 +0800
+	
+			....	
+	
+	
+	git checkout feature/watermark1
+	git merge feature-watermark-170107
+	git log
+	
+		commit 89b50bea2059c7c937557f934401d57d59277c2b
+		Merge: 15bc60a 30754f3
+		Author: hudamin <hudamin@lvwan365.com>
+		Date:   Thu Jan 12 16:32:00 2017 +0800
+	
+			Merge branch 'feature-watermark-170107' into feature/watermark1
+	
+		commit 30754f379de39fc9bee5d36279e61c6df54f8dc0
+		Author: hudamin <hudamin@lvwan365.com>
+		Date:   Thu Jan 12 16:25:36 2017 +0800
+	
+			feature-watermark-170107: remove just for test
+	
+		commit 15bc60a9f86c9f63baad9e8418c3b891a713ecb4
+		Author: hudamin <hudamin@lvwan365.com>
+		Date:   Thu Jan 12 16:24:38 2017 +0800
+	
+			feature/watermark1: just for test2
 
 
 
 ## git rebase
 
+The second way of combining work between branches is `rebasing`. Rebasing essentially `takes a set of commits, "copies" them, and plops them down somewhere else`.
+
+While this sounds confusing, the advantage of rebasing is that it can be used to make a nice linear sequence of commits. `The commit log / history of the repository will be a lot cleaner if only rebasing is allowed`.
+
 > 使不同功能的提交历史形成串式，通常在需要`往父分支合并前`进行rebase操作。
+
+<style type="text/css">
+img.c3 {
+    width: 30%;
+    margin-left: 3%;
+}
+</style>
+
+    git checkout master
+    git commit
+    git checkout -b bugFix
+    git commit
+    git rebase master
+    git checkout master
+    git rebase bugFix
+
+ <img src="./img/git-rebase-step-1.png" class="c3"><img src="./img/git-rebase-step-2.png" class="c3"><img src="./img/git-rebase-step-3.png" class="c3">
 
     # 从master fork出新分支
     git checkout -b some-feature master
@@ -244,7 +549,10 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
         /                    ->                    /
     D---E---A'---F master            D---E---A'---F master       
 
-对`topic`分支有`副作用`，执行rebase后，topic分支发生了变化。
+对`topic`分支有`副作用`，执行rebase后，topic分支发生了变化，但是master没有变化。
+这时可以`git rebase topic master`，完成topic到master的串行合并。
+
+若项目中只允许rebase，而不允许merge的话，那么仓库历史总是串行而干净利落。
 
 
 ### 常用命令
@@ -263,6 +571,14 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
 相关命令：
 
     git pull --rebase origin master
+
+
+
+### 交互式rebase
+
+    git rebase -i <newbase>
+
+会弹出选择框，`由你来决定哪些commit需要包含进来`。
 
 
 
@@ -346,6 +662,20 @@ windows机器上添加sshkey，可以使用`git bash`来生成。
 
 
 
+## merge or rebase
+
+There's a lot of debate about the tradeoffs between merging and rebasing in the development community. Here are the general `pros / cons of rebasing`:
+
+Pros: Rebasing makes your commit tree look very clean since everything is in a straight line
+
+Cons: Rebasing modifies the (apparent) history of the commit tree.
+
+For example, commit C1 can be rebased past C3. It then appears that the work for C1' came after C3 when in reality it was completed beforehand.
+
+> 取决与`个人喜好`，是喜欢提交树的清晰可见，还是喜欢保留原汁原味的提交历史。团队最好确定一种方式。
+
+
+
 ## git config
 
 写在`.git/config`文件中：
@@ -422,14 +752,35 @@ Push URL需要`身份验证`。
 
 
 
+## git fetch
+
+    # 更新本地的远程分支，比如origin/master, origin/develop
+    git fetch
+    git fetch origin
+    git fetch origin foo
+
+* `只将`本地的远程分支，比如`origin/master`, `origin/develop`和远程的`对应分支`进行`同步`
+* `绝对不会`更新本地分支`master`
+
+以下命令：
+
+    git fetch origin :bar
+
+比较奇怪，git的行为是创建新分支`bar`
+
+
+
+
+
+
 ## git pull
 
 ### 常用命令
 
     git pull origin master
-    git pull origin master:master
-    git pull origin master:abc
     git pull --rebase origin master
+
+    git pull origin master^:bugfix
 
  <img src="./img/git-rebase.png" height="300">
 
@@ -475,7 +826,43 @@ Push URL需要`身份验证`。
 另外，如果`develop`刚从`master` fork下来的时候，执行`git pull`，也会出同样的提示`![rejected]`。
 
 
+
+
+## fetch & pull
+
+`pull`是`fetch`与`merge`的等价方式：
+
+    git pull origin foo
+
+等价于：
+
+    git fetch origin foo
+    git merge origin/foo
+
+再有：
+
+    git pull origin bar~1:bugFix
+
+等价于：
+
+    git fetch origin bar~1:bugFix
+    git merge bugFix
+
+* 切记：`git pull`对`当前分支`有`副作用`
+
+
+
+
 ## git branch
+
+Branches in Git are incredibly `lightweight` as well. They are simply `pointers to a specific commit` -- nothing more. This is why many Git enthusiasts chant the mantra:
+
+> branch early, and branch often
+
+Because there is `no storage / memory overhead` with making many branches, it's easier to logically divide up your work than have big beefy branches.
+
+When we start mixing branches and commits, we will see how these two features combine. For now though, just remember that a branch essentially says `"I want to include the work of this commit and all parent commits."`
+
 
 ### 分支列表
 
@@ -550,92 +937,52 @@ Push URL需要`身份验证`。
     git branch -M <oldbranch> <newbranch>
 
 
+### 强制修改分支
+
+    # master往后退3个commit
+    git branch -f master HEAD~3
+
+    # bugFix指向master分支的爷爷commit
+    git branch -f bugFix master^^
 
 
 
-## git merge
 
-### 命令
 
-    $ git branch
-      map
-    * map-snapshot
-    $ git checkout map
-    $ git merge map-snapshot
-    Merge made by the 'recursive' strategy.
-     src/components/graphHistory/index.js | 8 ++++++++
-      1 file changed, 8 insertions(+)
 
-    # 不自动提交一个commit，或希望自己添加commit说明时
-    $ git merge --no-commit maint
+## git tag
 
-`recursive` strategy
+    # 在commit上打tag
+    git tag <tagname> <commit>
 
-### 例子
+    # 在HEAD上打tag
+    git tag -a <tagname> -m <comment>
 
-> `merge`按`时间先后顺序`合并不同分支上的提交。注意与`rebase`的区别。
 
-另外，merge如果不添加`--no-commit`选项的话，会出现一个没啥意义的`Merge branch ...` commit
 
-	git checkout -b feature/watermark1
-	# we now in feature/watermark1 branch
-	git add
-	git commit -m "feature/watermark1: just for test2"
-	git log
-	
-		commit 15bc60a9f86c9f63baad9e8418c3b891a713ecb4
-		Author: hudamin <hudamin@lvwan365.com>
-		Date:   Thu Jan 12 16:24:38 2017 +0800
-	
-			feature/watermark1: just for test2
-	
-		commit 4ccc58d77f1c9d2d51d2e5278176edb756c00d8b
-		Author: hudamin <hudamin@lvwan365.com>
-		Date:   Thu Jan 12 16:05:40 2017 +0800
-	
-			....	
-	
-	
-	git checkout feature-watermark-170107
-	git add
-	git commit -m "feature-watermark-170107: remove just for test"
-	git log
-	
-		commit 30754f379de39fc9bee5d36279e61c6df54f8dc0
-		Author: hudamin <hudamin@lvwan365.com>
-		Date:   Thu Jan 12 16:25:36 2017 +0800
-	
-			feature-watermark-170107: remove just for test
-	
-		commit 4ccc58d77f1c9d2d51d2e5278176edb756c00d8b
-		Author: hudamin <hudamin@lvwan365.com>
-		Date:   Thu Jan 12 16:05:40 2017 +0800
-	
-			....	
-	
-	
-	git checkout feature/watermark1
-	git merge feature-watermark-170107
-	git log
-	
-		commit 89b50bea2059c7c937557f934401d57d59277c2b
-		Merge: 15bc60a 30754f3
-		Author: hudamin <hudamin@lvwan365.com>
-		Date:   Thu Jan 12 16:32:00 2017 +0800
-	
-			Merge branch 'feature-watermark-170107' into feature/watermark1
-	
-		commit 30754f379de39fc9bee5d36279e61c6df54f8dc0
-		Author: hudamin <hudamin@lvwan365.com>
-		Date:   Thu Jan 12 16:25:36 2017 +0800
-	
-			feature-watermark-170107: remove just for test
-	
-		commit 15bc60a9f86c9f63baad9e8418c3b891a713ecb4
-		Author: hudamin <hudamin@lvwan365.com>
-		Date:   Thu Jan 12 16:24:38 2017 +0800
-	
-			feature/watermark1: just for test2
+
+
+
+## git describe
+
+    git describe <ref>
+
+其中`<ref>`是任何能解析成commit的值。
+以上命令的输出是:
+
+    <tag>_<numCommits>_g<hash>
+
+* `<tag>`: 最近的祖先tag，如果当前`ref同时指向一个tag`，则返回`当前tag`
+* `<numCommits>`: 与那个tag相隔的commit数 
+* `<hash>`：被描述的`<ref>`的commit hash
+
+
+例如：
+
+    hudamin@local SophonWeb $ git describe
+    sophonweb_170112-2110_508f082_alpha-4-70-gc674fbe
+
+
 
 
 
@@ -734,6 +1081,73 @@ Push URL需要`身份验证`。
 但实际上，这种`非常规变化`也是不能接受的，会给项目组其他成员带来困惑，最好恢复回去。
 
 一个规避方法，`不要忽略提交前的diff信息`。
+
+
+
+
+## git cherry-pick
+
+It's a very straightforward way of saying that you would like to `copy a series of commits below your current location (HEAD)`. 
+
+> 复制一系列的commit到当前的工作目录中。
+
+    git cherry-pick <commit1> <commit2>...
+
+ <img src="./img/git-cherry-pick-step-1.png">
+
+ <img src="./img/git-cherry-pick-step-2.png">
+
+实现方式为：
+
+    git checkout master
+    git cherry-pick C3 C4 C7
+
+相比rebase和merge，它的特殊之处在于：
+
+* 可以`精确指定commit`
+* 当然，它运行得好的前提也是，你必须精确知道你要哪个commit，但有时候你不一定知道。
+
+另外，还有：
+
+    git fetch
+    git cherry-pick origin/master
+
+
+
+
+
+
+
+## ssh访问
+
+1. 本地机器上生成SSH Key
+
+    1. 先查看是否存在`~/.ssh`，该目录下存在两个文件
+            
+            id_rsa
+            id_rsa.pub
+
+        一个秘钥，一个公钥。如果已经存在，直接进入第二步，否则运行以下命令：
+
+            $ ssh-keygen -t rsa
+
+2. 将生成的公钥`id_rsa.pub`的内容复制到github上的用户设置之`SSH keys`
+3. 测试是否添加成功：
+
+        $ ssh -T git@github.com
+        The authenticity of host 'github.com (192.30.252.128)' can't be established.
+        RSA key fingerprint is 16:22:ac:a5:76:88:2d:36:63:1b:56:4d:eb:df:a2:48.
+        Are you sure you want to continue connecting (yes/no)? yes
+        Warning: Permanently added 'github.com,192.30.252.128' (RSA) to the list of known hosts.
+        Hi MichaelHu! You've successfully authenticated, but GitHub does not provide shell access.
+
+    以上显示已经添加成功
+
+
+windows机器上添加sshkey，可以使用`git bash`来生成。
+
+
+
 
 
 

@@ -6,9 +6,9 @@
 
 ## 初识
 
-<http://sigmajs.org>
-
-<https://github.com/jacomyal/sigma.js/wiki>
+* latest version: `1.2.0`
+* site: <http://sigmajs.org>
+* github: <https://github.com/jacomyal/sigma.js/wiki>
 
 
 
