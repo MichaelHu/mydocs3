@@ -59,9 +59,23 @@
 				, template: srcDir + '/index.html'
 			} )
 		]
-        , devServer: 
-            contendBase: 
-        }
+		, devServer: {
+			contentBase: buildDir
+			, host: '0.0.0.0'
+			, port: 9100
+			, historyApiFallback: true
+			, proxy: {
+				'/notes': {
+					target: 'http://127.0.0.1:8700'
+					// , pathRewrite: { '^/notes': '/abc/def' }
+				}
+				, '/note': {
+					target: 'http://127.0.0.1:8700'
+					// , pathRewrite: { '^/notes': '/abc/def' }
+				}
+			}
+		}
+
 	};
 
     
@@ -143,6 +157,23 @@
 * Warning: getInitialState was defined on IndexPage, a plain JavaScript class. This is only supported for classes created using React.createClass. Did you mean to define a state property instead?
 
     带有`getInitialState`方法的React类，不要使用`class`关键字来定义
+
+
+### constructor and super
+
+	ERROR in ./src/components/ArticleList/index.js
+	Module build failed: SyntaxError: missing super() call in constructor
+
+	   6 | class ArticleListItem extends Component {
+	   7 |
+	>  8 |     constructor() {
+		 |     ^
+	   9 |     }
+	  10 |
+	  11 |     render() {
+
+`constructor`构造函数，必须调用`super()`来调用父类构造函数，否则编译报错。
+
 
 
 
@@ -248,6 +279,14 @@ todo
 
     npm install --save react-router
 
+
+### browserHistory
+
+	import { browserHistory } from 'react-router';
+
+	...
+	browserHistory.push( location );
+	...
 
 
 

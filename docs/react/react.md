@@ -1,7 +1,7 @@
-# reactjs 
+# react 
 
 
-> <img src="./img/react_logo.svg" width="60"> A JAVASCRIPT LIBRARY FOR BUILDING USER INTERFACES
+> A JAVASCRIPT LIBRARY FOR BUILDING USER INTERFACES <img src="./img/react_logo.svg" width="50"> 
 
 
 * Reactjs: <http://facebook.github.io/react/docs/getting-started.html>
@@ -255,7 +255,11 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
 		);
 
 	原因是`<Hello name="hudamin" />`通过babel编译后，会生成`React.createElement(...)`的代码，直接引用了`React`。
-        
+
+4. `this`关键字:
+	* 在`constructor`, `render`等预定义的方法中，可以直接使用`this`；其他`非预定义方法`，使用this关键字时，是一个`null`对象
+	* `箭头`函数对this关键字的支持        
+
 
 
 #### 演示一
@@ -723,7 +727,7 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
 
 调用`一次`，只在client端调用，调用时机为`初始`渲染刚刚完成时。这个时候，你已经可以操作DOM元素了。
 
-另一个重要的点时，`子组件`的componentDidMount()总是在`父组件`的componentDidMount()`前`调用。
+另一个重要的点是，`子组件`的componentDidMount()总是在`父组件`的componentDidMount()`前`调用。
 
 此处可以放心进行`setTimeout()`, `setInterval()`, `AJAX请求`等。
 
@@ -932,3 +936,9 @@ React.createElement()
 
 
 
+## 性能优化
+
+* React at 60fps: <https://hackernoon.com/react-at-60fps-4e36b8189a4c#.yon4m05et>
+* `Profiling Components with Chrome Timeline`: <https://facebook.github.io/react/blog/2016/11/16/react-v15.4.0.html#profiling-components-with-chrome-timeline>
+
+	`?react_perf`开启性能监控: <http://localhost:3000/?react_perf>

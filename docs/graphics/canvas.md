@@ -9,7 +9,7 @@
 
 
 <style type="text/css">
-@import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
+@import url(http://258i.com/static/bower_components/snippets/css/mp/style.css);
 .test canvas {
     width: 100%;
     height: 300px;

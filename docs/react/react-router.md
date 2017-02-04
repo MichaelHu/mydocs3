@@ -271,6 +271,18 @@ Router内置了`history`机制。`三种`最常见的history类型：`browserHis
 
 #### browserHistory
 
+`usage`: <https://github.com/ReactTraining/react-router/blob/master/modules/Link.js#L11>
+
+`APIs`:
+* creatHref
+* go
+* push( location )
+* replace( location )
+* transitionTo( location )
+
+与`history`的原生接口不一致，做了高级封装。它来自<https://github.com/mjackson/history>项目。
+
+
 最常见的是`browserHistory`，使用了HTML5的`History API`。使用这种方式的URL看起来比较清晰易懂。但这种方式对服务器端有一定要求，它需要服务端对各种链接（可能不可枚举）都能进行处理，返回整个APP逻辑。
 
 `服务器方案`，以下列举三种：express, nginx, Apache：

@@ -1,4 +1,4 @@
-# 数学知识备忘
+# math basics
 
 
 

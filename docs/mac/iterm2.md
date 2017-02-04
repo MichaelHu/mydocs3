@@ -16,6 +16,6 @@
     <img src="./img/iterm2-keys-option-left.png" height="380">
     
 * 按住`Option + Command`同时鼠标选择，可以按矩形选择
-* 安装`Command`，支持多段文本的选择
+* 按住`Command`，支持多段文本的选择
 
 

@@ -3,6 +3,10 @@
 > 前端技术资源汇总
 
 * thx <https://github.com/thx>
+    * site: <https://thx.github.io>
+    * canvax
+    * chartx
+    * cube，css框架
     * mock.js
     * RAP
 

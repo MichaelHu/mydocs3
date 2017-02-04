@@ -70,7 +70,7 @@
 
 
 * 当前检出的commit的别名
-* `通常指向`分支名
+* `通常指向`分支名，如果通过`git checkout`指向commit或者tag，则会变成detaching HEAD状态
 
 
 ### Detaching HEAD

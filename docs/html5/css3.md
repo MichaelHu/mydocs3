@@ -8,6 +8,8 @@
 <img src="./img/font-size.jpg">
 
 
+## clip ( todo ) 
+
 
 
 ## flexible box layout
@@ -204,13 +206,13 @@
    
     <img src="./img/magic-animations.png" style="max-width:400px">
 
-2. `joemottershaw/animations (338 stars)`: <http://www.cloud-eight.com/github/animations/>
+2. `joemottershaw/animations (38499 stars)`: <https://daneden.github.io/animate.css/>
 
 3. `Flux Slider (1214 stars)`: 
 
     基于图片的动画特效：<http://www.joelambert.co.uk/flux/> 
 
-    <img src="./img/flux-slider.png" style="max-width:400px">
+    <video width="837" height="480" controls><source src="./video/flux-slider.mp4"></video>
 
 4. `textillate (2065 stars)`: <http://textillate.js.org>
 

@@ -1,8 +1,15 @@
 # vue.js
 
- <img src="./img/vuejs-logo.png" height="60"> <http://vuejs.org>
+* <http://vuejs.org> <img src="./img/vuejs-logo.png" height="30"> 
+* github:  <https://github.com/vuejs/vue>
 
-github:  <https://github.com/vuejs/vue>
+
+
+## features
+
+* lightweight
+* 滴滴2017年1月份上线vue重构后的webapp
+* 一个国人产出的UI组件库：`iview` <https://github.com/iview/iview> <https://www.iviewui.com>
 
 
 

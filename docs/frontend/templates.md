@@ -32,6 +32,24 @@
 
 
 
+## handlebars
+
+* site: <http://handlebarsjs.com>
+* github: <https://github.com/wycats/handlebars.js/>
+* 和`underscore.js`挺像
+
+模板格式：
+
+	<div class="entry">
+	  <h1>{{title}}</h1>
+	  <div class="body">
+		{{body}}
+	  </div>
+	</div>
+
+
+
+
 
 ## underscore
 
