@@ -8,7 +8,36 @@
 <img src="./img/font-size.jpg">
 
 
-## clip ( todo ) 
+## clip
+
+* w3c: <https://www.w3.org/TR/2011/REC-CSS2-20110607/visufx.html#overflow-clipping>
+* 博客介绍：<http://www.zhangxinxu.com/wordpress/2011/04/css-clip-rect/>
+
+### 格式
+
+
+	clip: auto;
+	clip: inherit;
+	clip: ( <top>, <right>, <bottom>, <left> );
+
+### 特点
+
+* 只针对`绝对定位`的元素
+* 目前仅支持rect shape
+
+ <img src="./img/css-clip.png">
+
+
+### 例子
+
+    .hidden{
+        position: absolute;
+        clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+        clip: rect(1px, 1px, 1px, 1px);
+    }
+
+
+
 
 
 
@@ -21,8 +50,10 @@
 1. `css2.1`定义了`4种`布局模式: `block`, `inline`, `table`, `positioned`
 2. `css3`新引入了一种布局: `flex`
 
+        display: flex | inline-flex;
 
-### 例子
+
+### 例子1
 
     #deals {
       display: flex;        /* Flex layout so items have equal height  */
@@ -60,7 +91,39 @@
       …
     </section>
 
+ <img src="./img/flex-layout-case-1.png" style="max-height:400px;">
 
+
+
+### 例子2
+
+* float儿子，float行为会被忽略
+* inline内容会被匿名块状盒子包围
+* inline儿子也会成为一个块状盒子
+
+ <img src="./img/flex-layout-case-2.png" style="max-height:100px;">
+
+具体代码如下：
+
+	<div style="display:flex">
+
+		<!-- flex item: block child -->
+		<div id="item1">block</div>
+
+		<!-- flex item: floated element; floating is ignored -->
+		<div id="item2" style="float: left;">float</div>
+
+		<!-- flex item: anonymous block box around inline content -->
+		anonymous item 3
+
+		<!-- flex item: inline child -->
+		<span>
+			item 4
+			<!-- flex items do not split around blocks -->
+			<q style="display: block" id=not-an-item>item 4</q>
+			item 4
+		</span>
+	</div>
 
 
 

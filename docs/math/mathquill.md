@@ -40,6 +40,9 @@
 * `MathField`是可编辑展示框，`StaticMath`为不可编辑展示框
 * `\text`与`\mbox`支持公式中的`纯文本`输出
 * handlers事件钩子：`enter`, `edit`等
+* `Short Math Guide for LaTex`: <ftp://ftp.ams.org/pub/tex/doc/amsmath/short-math-guide.pdf>
+    ，或者：<a href="./pdf/short-math-guide.pdf">本地下载版</a>。该文档提供了各类数学公式编辑器
+    遵循的`LaTex`语法标准。
 
 
 <div id="test_getting_started" class="test">

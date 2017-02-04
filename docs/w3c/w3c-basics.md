@@ -4,7 +4,8 @@
 
 致力于`Web标准`的制定和推广。
 
-主页：<http://www.w3.org>
+* 主页：<http://www.w3.org>
+* W3C中国：<http://www.chinaw3c.org>
 
 
 ## Web标准
@@ -22,13 +23,13 @@
         `Standards:`
 
         * 2016-11-17 Media Source Extensions
-        * 2016-11-01 `HTML 5.1`
+        * 2016-11-01 `HTML 5.1` <https://www.w3.org/TR/2016/REC-html51-20161101/>
         * 2016-04-19 Web Storage ( Second Edition )
         * 2015-11-19 HTML Canvas 2D Context
         * 2015-03-17
         * ...
         * 2014-10-28 `HTML5` <http://www.w3.org/TR/2014/REC-html5-20141028/>
-        * 2013-11-07 CSS Style Attributes
+        * 2013-11-07 CSS Style Attributes <http://www.w3.org/TR/2013/REC-css-style-attr-20131107/>
         * 1999-12-24 HTML 4.02 Specification
         * 1997-01-14 HTML 3.2 Reference Specification
 
@@ -50,11 +51,55 @@
 
 
     * CSS
+
+        `Standards:`
+
+        * 2014-03-20 CSS Namespaces Module Level 3 <http://www.w3.org/TR/2014/REC-css-namespaces-3-20140320/>
+        * 2013-11-07 CSS Style Attributes <http://www.w3.org/TR/2013/REC-css-style-attr-20131107/>
+        * 2013-02-21 Selectors API Level 1 <http://www.w3.org/TR/2013/REC-selectors-api-20130221/>
+        * 2012-06-19 Media Queries <http://www.w3.org/TR/2012/REC-css3-mediaqueries-20120619/>
+        * 2011-09-29 Selectors Level 3 <http://www.w3.org/TR/2011/REC-css3-selectors-20110929/>
+        * 2011-06-07 CSS Color Module Level 3 <http://www.w3.org/TR/2011/REC-css3-color-20110607>
+        * 2011-06-07 A MathML for CSS Profile <http://www.w3.org/TR/2011/REC-mathml-for-css-20110607/>
+        * 2011-06-07 `Cascading Style Sheets Level 2 Revision 1 ( CSS 2.1 ) Specification` <http://www.w3.org/TR/2011/REC-CSS2-20110607>
+        * 2010-10-28 Associating Style Sheets with XML documents 1.0 ( Second Edition ) <http://www.w3.org/TR/2010/REC-xml-stylesheet-20101028>
+        * 2008-04-11 Cascading Style Sheets (CSS1) Level 1 Specification
+        * 2000-11-13 Document Object Model (DOM) Level 2 Style Specification <http://www.w3.org/TR/2000/REC-DOM-Level-2-Style-20001113>
+
+        `Group Notes:`
+
+        * ...
+        * 2015-03-26 CSS Template Layout Module <http://www.w3.org/TR/2015/NOTE-css-template-3-20150326/>
+        * ...
+
+        `Drafts - Candidate Recommendations:`
+
+        * ...
+        * 2016-09-29 CSS Grid Layout Module Level 1 <https://www.w3.org/TR/2016/CR-css-grid-1-20160929/>
+        * 2016-05-26 CSS Flexible Box Layout Module Level 1 <http://www.w3.org/TR/2016/CR-css-flexbox-1-20160526/>
+        * ...
+
+
+        `Other Working Drafts:`
+
+        * ...
+        * 2016-09-13 Web Animations <https://www.w3.org/TR/2016/WD-web-animations-1-20160913/>
+        * 2016-07-06 Media Queries Level 4 <http://www.w3.org/TR/2016/WD-mediaqueries-4-20160706/>
+        * 2016-06-07 CSS Painting API Level 1 <http://www.w3.org/TR/2016/WD-css-paint-api-1-20160607/> 
+        * 2016-03-17 CSSOM View Module <http://www.w3.org/TR/2016/WD-cssom-view-1-20160317/>
+        * 2016-03-17 CSS Object Module (CSSOM) <http://www.w3.org/TR/2016/WD-cssom-1-20160317/>
+        * ...
+        * 2013-11-19 CSS Transitions <http://www.w3.org/TR/2013/WD-css3-transitions-20131119/>
+        * 2013-02-19 CSS Animations <http://www.w3.org/TR/2013/WD-css3-animations-20130219/>
+        * ...
+
+
     * Best Practices for Authoring HTML
     * `Web Fonts`
     * Digital Publishing
 
 * `JavaScript Web APIs`: Geolocation, XMLHttpRequest, mobile widgets, `DOM`, etc. <http://www.w3.org/standards/webdesign/script>
+
 
     * WAI-ARIA ( Accessible Rich Internet Applications)
     * DOM

@@ -13,6 +13,32 @@
 
 ## 函数与极限
 
+### 数列极限
+
+<script type="math/tex; mode=display">
+\lim_{n\rightarrow \infty}x_n=a
+</script>
+
+或
+
+<script type="math/tex; mode=display">
+x_n\rightarrow a(当n\rightarrow \infty)
+</script>
+
+
+### 函数极限
+
+<script type="math/tex; mode=display">
+\lim_{x\rightarrow x_0}f(x)=A
+</script>
+
+或
+
+<script type="math/tex; mode=display">
+f(x)\rightarrow A(当x\rightarrow x_0)
+</script>
+
+
 ## 导数与微分
 
 ## 微分中值定理与导数的应用

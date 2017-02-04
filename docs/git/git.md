@@ -1,9 +1,10 @@
 # git
 
 
-2017-1-19,
-2017-1-18,
-2017-1-11,
+2017-02-04,
+2017-01-19,
+2017-01-18,
+2017-01-11,
 2016-12-02,
 2016-11-05,
 2016-07-28,
@@ -1112,6 +1113,27 @@ It's a very straightforward way of saying that you would like to `copy a series 
     git fetch
     git cherry-pick origin/master
 
+
+
+## git submodule
+
+博客参考：<http://www.tuicool.com/articles/jqiEJzU>
+
+    git submodule add git@github.com:diguage/child.git
+
+### 带子模块项目的clone
+
+    git clone --recursive git@github.com:diguage/parent.git
+    cd parent/child
+    git status
+    git checkout master
+
+### 子模块删除
+
+    git rm <submodulename>
+    git status
+    git commit
+    git push
 
 
 
