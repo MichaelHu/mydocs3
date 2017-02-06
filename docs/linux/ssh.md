@@ -50,3 +50,7 @@
 
 
 
+
+## ssh连接时的中文乱码问题
+
+可参考<ref://../mycloud/memo.md.preview.html>
