@@ -22,6 +22,26 @@
     for (( a=9; a>=1; a-- )); do git stash drop stash@{$a}; done
 
 
+
+## scp
+
+* `远程路径`如果带`有空格`，需要使用`反斜线转义`，并将路径用`双引号`包围。比如：
+
+        scp file root@server:"/some\ folder/"
+        scp file "root@server:/some\ folder/"
+
+* 其他本地命令涉及的路径参数`可以不用引号包围`:
+
+        cp file /some\ folder/
+
+    当然，如果使用引号的话，`反斜线`都`可以省掉`，不过要注意`最后的斜线`不能放在引号里面：
+
+        cp file /"some folder"/
+        cp file /'some folder'/
+
+* `注意`：以上差异可能因不同系统平台而存在不同
+
+
 ## env
 
 > set environment and execute command, or print environment
@@ -767,6 +787,80 @@ output：
         echo $c; \
     done; \
     echo "All lines: $c"
+
+
+
+### 服务器间按需同步指定目录
+
+> 代码来自我的两个私有云服务器之间数据的同步
+
+代码需要注意的地方：
+
+* 以下代码认为两台服务器之间已经建立了`ssh`连接的`互信机制`
+* scp命令的远程路径，如果包含空格，需要反斜线转义，并使用双引号包围
+* awk命令的深度使用
+    * 通过`system`命令调用shell，极大扩展了其功能，做到`按需同步`
+    * 通过将参数用双引号包围，使得变量可以传递进去
+    * 双引号包围后，里面多层参数的转义规则，比如下文的`三个反斜线`
+* scp的`-p`选项，保证了文件的属性不变
+
+
+#### 使用方式
+
+* 设置`DEST`参数
+* 运行`sh sync.sh`
+
+
+#### 具体代码实现
+
+    #!/bin/bash
+    
+    LOCAL_LST_FILE=/root/local.lst
+    LOCAL_DIR_LST_FILE=/root/local-dir.lst
+    REMOTE_LST_FILE=/root/remote.lst
+    SYNC_LST_FILE=/root/sync.lst
+    SYNC_DIR_LST_FILE=/root/sync-dir.lst
+    
+    REMOTE_HOST=192.168.1.101
+    
+    # DEST=`pwd`
+    DEST="/DataVolume/shares/Public/Shared Videos"
+    SCP_DEST=${DEST// /\\ }
+    
+    pushd "$DEST"
+    
+    find . -type f > $LOCAL_LST_FILE
+    find . -type d > $LOCAL_DIR_LST_FILE
+    
+    ssh $REMOTE_HOST "cd '$DEST' && find . -type f" > $REMOTE_LST_FILE
+    # ssh $REMOTE_HOST "cd '/DataVolume/shares/Public/Shared Videos' && find . -type f"
+    
+    
+    # awk '{if(system(sprintf("grep \"%s\" /root/remote.lst 1>/dev/null", $0))) print $0;}' \
+    #    $LOCAL_LST_FILE > $SYNC_LST_FILE 
+    
+    awk "{if(system(sprintf(\"grep \\\"%s\\\" $REMOTE_LST_FILE 1>/dev/null\", \$0))) print \$0;}" \
+       $LOCAL_LST_FILE > $SYNC_LST_FILE
+    
+    awk "{if(system(sprintf(\"grep \\\"%s\\\" $REMOTE_LST_FILE 1>/dev/null\", \$0))) print \$0;}" \
+       $LOCAL_DIR_LST_FILE > $SYNC_DIR_LST_FILE
+    
+    for i in `cat $SYNC_DIR_LST_FILE`; do
+        ssh $REMOTE_HOST "cd '$DEST' && mkdir $i 2>/dev/null"
+    done
+    
+    # count=0
+    for i in `cat $SYNC_LST_FILE`; do
+        # (( count = count + 1 ))
+        # if [ $count -lt 5 ]; then
+            echo scp -rp "$i" $REMOTE_HOST:"$SCP_DEST/$i"
+            scp -rp "$i" $REMOTE_HOST:"$SCP_DEST/$i"
+        # fi
+    done
+    
+    popd
+
+
 
 
 
