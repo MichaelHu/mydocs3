@@ -2,7 +2,7 @@
 
 
 
-## 一、登录
+## 登录
 
 配置ECS实例，选择Linux系统为Centos，可以ssh直接登录机器：
 
@@ -37,9 +37,18 @@
 
 
 
-## 二、环境安装
+## 环境安装
 
-### 2.1 安装PHP
+### 系统环境
+
+`CentOS 6.5`
+
+    [root@iZ25o3dvl9aZ ~]# cat /etc/issue
+    CentOS release 6.5 (Final)
+        Kernel \r on an \m
+
+
+### 安装PHP
 
     # yum search php
     # yum install php.x86_64
@@ -57,7 +66,7 @@
 
 
 
-### 2.2 fcgid模块安装
+### fcgid模块安装
 
 安装Apache的fcgid模块：
 
@@ -81,7 +90,7 @@
 
 
 
-### 2.3 配置PHP-FCGI
+### 配置PHP-FCGI
 
 配置php的fastcgi（可参考<http://httpd.apache.org/mod_fcgid/mod/mod_fcgid.html#examples>），在`/etc/httpd/conf.d/`目录下添加文件`fcgid.php.conf`，内容如下：
 
@@ -126,7 +135,7 @@
 
 
 
-### 2.4 配置GIT服务
+### 配置GIT服务
 
 安装git服务器，用于ECS机器和本地机器的数据传输，个人使用，只需基于ssh服务的访问就行。如果需要HTTP访问，可以通过配置Apache的DAV来完成，另有文章记录。
 
@@ -173,7 +182,7 @@
 
 
 
-### 2.5 安装nodejs
+### 安装nodejs
 
     yum search nodejs
     yum install nodejs
