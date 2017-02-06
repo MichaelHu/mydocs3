@@ -23,10 +23,10 @@ span.line-through {
 * 一旦创建，不再改变 
 * 逻辑简单，高性能
 * 无防御性复制，高级内存管理
-* 改变型API，不会原地更新数据，格式生成新的更新数据。（有点像写时拷贝 copy-on-write） 
+* 改变型API，不会原地更新数据，而是生成新的更新数据。（有点像写时拷贝 copy-on-write） 
 * 多种持久不可变数据结构：`List`, `Stack`, `Map`, `OrderedMap`, `Set`, `OrderedSet`, `Record`. 
 * 原生支持嵌套
-* <span class="line-through">`redux`的`mapStateToProps`得到的props是一个`嵌套的Map对象`，每个子元素都是一个Map，需要使用`map.get()`方式获取。</span> 实际上是Map的使用不正确导致，`Map( json )`与`Map.fromJS( json )`的区别
+* <span class="line-through">`redux`的`mapStateToProps`得到的props是一个`嵌套的Map对象`，每个子元素都是一个Map，需要使用`map.get()`方式获取。</span> 实际上是Map的使用不正确导致，使用时需要注意区分`Map( json )`与`Map.fromJS( json )`的区别，一个浅转换，一个深转换
 
 
 
@@ -84,17 +84,19 @@ span.line-through {
 
 ### MAP
 
-`Immutable.Map( {} )`：只做浅转换。
+`Immutable.Map( {} )`：`只做浅转换`。
 
 
 #### merge()
 
 会做`深度`转换。
 
+
+#### update()
+
 #### mergeWith()
 #### mergeDeep()
 #### mergeDeepWith()
-
 #### toJS(), toJSON()
 #### toArray()
 #### toObject()

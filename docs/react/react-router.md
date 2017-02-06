@@ -375,6 +375,39 @@ todo
 
 ### 动态路由
 
+docs: <https://github.com/ReactTraining/react-router/blob/master/docs/guides/DynamicRouting.md>
+
+> React Router does all of its path matching and component fetching asynchronously, which allows you to not only load up the components lazily, but also lazily load the route configuration. You really only need one route definition in your initial bundle, the router can resolve the rest on demand.
+
+* 路由负责所有的`路径匹配`，以及`组件`的`异步获取`
+* 不仅组件`懒加载`，对应的`路由配置`也可以懒加载
+
+#### 基础方法
+
+* getChildRoutes
+* getIndexRoute
+* getComponents
+* getComponent
+
+
+#### huge app examples
+
+<https://github.com/ReactTraining/react-router/tree/master/examples/huge-apps>
+
+某个子路由配置文件：
+
+	module.exports = {
+		path: 'profile',
+		getComponent(nextState, cb) {
+			require.ensure([], (require) => {
+				cb(null, require('./components/Profile'))
+			})
+		}
+	}
+
+
+
+
 ### 组件生命周期
 
 ### 服务端渲染

@@ -7,6 +7,14 @@
 > `标识符`的选择应做到“见名知义”、“常用取简”、“专用取繁”
 
 
+## Airbnb
+
+> 4w+ Stars，包含JavaScript, React, CSS-in-JavaScript, CSS&Sass, Ruby
+
+* <https://github.com/airbnb/javascript>
+* <https://github.com/yuche/javascript>
+* <https://github.com/JasonBoy/javascript/tree/master/react>
+
 
 ## w3schools
 
@@ -1003,3 +1011,4 @@ W3C CSS validator：http://jigsaw.w3.org/css-validator/
 CSS Lint：http://csslint.net/
 
 CSS Usage：https://addons.mozilla.org/en-us/firefox/addon/css-usage/
+

@@ -18,7 +18,7 @@
 
 * `HTML&CSS`: HTML for structure, CSS for style and layout, including WebFonts.
 
-    * HTML
+    * HTML <https://www.w3.org/standards/techs/html>
 
         `Standards:`
 
@@ -50,7 +50,7 @@
 
 
 
-    * CSS
+    * CSS <https://www.w3.org/standards/techs/css>
 
         `Standards:`
 
