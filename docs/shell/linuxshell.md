@@ -16,10 +16,156 @@
 * `.bash_profile`与`登录`相关，用户登录后会执行一次.bash_profile
 
 
+## stat命令
+
+> todo
+
+    # linux
+    stat <file>
+
+	MyBookLive:~# stat reset-locale.sh 
+	  File: `reset-locale.sh'
+	  Size: 39            Blocks: 8          IO Block: 4096   regular file
+	Device: 900h/2304d    Inode: 102390      Links: 1
+	Access: (0666/-rw-rw-rw-)  Uid: (    0/    root)   Gid: (    0/    root)
+	Access: 2017-02-07 11:51:41.000000000 +0800
+	Modify: 2017-02-07 11:51:41.000000000 +0800
+	Change: 2017-02-07 11:51:41.000000000 +0800
+
+    # mac
+    stat -x <file>
+
+
+
+
+## 条件和逻辑表达式
+
+### 常用语法
+
+    if [ expr ]; then
+        ...
+    fi
+
+    if cmp a b &> /dev/null
+
+    if grep -q Bash file
+        then echo "File contains at least one occurrence of Bash."
+    fi
+
+    if [ condition-true ]
+    then
+        command-list
+    else
+        command-list
+    fi
+
+    # &&, ||，最好在`[[ ]]`中
+    [[ expr1 && expr2 ]]
+    [[ expr1 || expr2 ]]
+
+    # -a, -o，皆可
+    [[ expr1 -a expr2 ]]
+    [[ expr1 -o expr2 ]]
+    [ expr1 -a expr2 ]
+    [ expr1 -o expr2 ]
+
+* `[]`与`[[ ]]`，使用后者能避免一些逻辑错误
+* `[]`与`(( ))`
+
+        if [ 0 ]; then echo 'yes'; fi
+        yes
+
+        if (( 0 )); then echo 'yes'; fi
+
+    前者使用`exit status`，后者使用`计算值`。
+
+
+
+
+### 例子
+
+#### 直接使用命令返回作为条件
+
+    if cd "$dir" 2>/dev/null; then
+        echo "Now in $dir."
+    else
+        echo "Can't change to $dir."
+    fi
+
+
+#### 独立表达式
+
+    var1=3
+    var2=4
+    [ "$var1" -ne "$var2" ] && echo "$var1 is not equal to $var2"
+
+    home=/home/bozo
+    [ -d "$home" ] || echo "$home directory does not exist."
+
+
+
+### 字符串比较
+
+
+### 数字比较
+
+> 使用`(( ))`结构
+
+    if (( 0 )); then 
+        echo 'no'
+    else
+        echo 'yes'
+    fi
+    no
+    
+
+    (( 0 ))
+    echo $?
+    1 
+
+* 用在condition处，使用的是计算的`expr的值`，这不同于`[ ]`结构，使用的是`exit status`
+* 其`exit status`与`计算值`刚好`相反`，如上所示
+
+
 
 ## for循环
 
+### 语法说明
+
     for (( a=9; a>=1; a-- )); do git stash drop stash@{$a}; done
+
+    for i in `cat file.lst`; do
+        wc -l $i
+    done
+
+
+### 空白字符作为列表分割
+
+> `list`部分总是使用`空白字符`作为分割
+
+文件`a.lst`的内容，是文件列表，路径包含空格：
+
+    ./shared pictures/170101/IMG_339.JPG
+    ./shared videos/170101/IMG_45.MOV
+
+以下命令：
+
+    for i in `cat a.lst`; do
+        echo $i
+    done
+
+不能获得预期效果，因为list的值是4个部分：
+    
+    ./shared 
+    pictures/170101/IMG_339.JPG
+    ./shared
+    videos/170101/IMG_45.MOV
+
+一种hack的方式就是将路径中包含的空白字符先做预处理，处理完后恢复回去。
+
+    for i in `cat a.lst | sed -e 's/ /@__@/g'; do
+        echo $i
+    done
 
 
 
@@ -30,7 +176,9 @@
         scp file root@server:"/some\ folder/"
         scp file "root@server:/some\ folder/"
 
-* 其他本地命令涉及的路径参数`可以不用引号包围`:
+	需要注意的是`scp`的`本地路径`，`不使用`反斜线转义。
+
+* 其他`本地命令`涉及的路径参数`可以不用引号包围`:
 
         cp file /some\ folder/
 
@@ -40,6 +188,10 @@
         cp file /'some folder'/
 
 * `注意`：以上差异可能因不同系统平台而存在不同
+
+更多参考：<https://github.com/MichaelHu/wd-cloud-sync/blob/master/sync.sh>
+
+
 
 
 ## env
@@ -58,6 +210,12 @@
 
     chmod +x hello
     ./hello
+
+
+## rm
+
+    # 删除`-`开头的文件
+    rm -rf -- -abc.*
 
 
 
@@ -422,6 +580,11 @@
         -in package_$commitId.tar.bz2 \
         -out package_$commitId.tar.bz2.openssl
 
+    # 解密
+    openssl enc -d -aes-128-cbc \
+        -in <in-file> \
+        -out <out-file>
+
 
 ### 密码串传递
 
@@ -640,8 +803,27 @@ for `MAC`
 
 ## awk
 
-todo
+### 常用语法
 
+	# 取特定字段
+	line_count=`wc -l file | awk '{print $1}'`
+	
+	# 格式化输出
+	awk '/pattern/{printf "..%s..%s..", $2, $1}' file
+	
+
+
+### 各类函数
+
+`system`函数，扩展了awk的功能，可以调用各种shell命令来获取其`exit status`。以下摘自`wd-cloud-sync`
+
+	awk "{if(system(sprintf(\"grep -m 1 \\\"%s\\\" $REMOTE_LST_FILE 1>/dev/null\", \$0))) print \$0;}" \
+		$LOCAL_DIR_LST_FILE > $SYNC_DIR_LST_FILE 
+	awk "{if(system(sprintf(\"c=\`grep \\\"%s\\\" $SYNC_DIR_LST_FILE | wc -l\`; exit \$c\", \$0)) == 1) print \$0;}" \
+		$SYNC_DIR_LST_FILE > $TMP_FILE
+
+* `双引号`内部`各层命令`涉及的`特殊字符`的`转义`，在上面两个命令体现非常强烈。
+	其中，`$c`的`$`进行了`转义`，使其`延迟`到system命令执行时才做替换，而不是在第一层双引号解析时就进行替换。
 
 
 ## find
@@ -797,12 +979,15 @@ output：
 代码需要注意的地方：
 
 * 以下代码认为两台服务器之间已经建立了`ssh`连接的`互信机制`
-* scp命令的远程路径，如果包含空格，需要反斜线转义，并使用双引号包围
-* awk命令的深度使用
+* `scp`命令的`远程路径`，如果包含`空格`，需要`反斜线`转义，并使用`双引号包围`
+	* `仅限远程路径`，本地部分不需要转义
+	* 除了`空格`，还有`&`, `(`, `)`等，也需要转义 
+
+* `awk`命令的`深度`使用
     * 通过`system`命令调用shell，极大扩展了其功能，做到`按需同步`
     * 通过将参数用双引号包围，使得变量可以传递进去
-    * 双引号包围后，里面多层参数的转义规则，比如下文的`三个反斜线`
-* scp的`-p`选项，保证了文件的属性不变
+    * `双引号`包围后，里面`多层参数`的`转义`规则，比如下文的`三个反斜线`
+* `scp`的`-p`选项，保证了文件的属性不变
 
 
 #### 使用方式
@@ -813,52 +998,142 @@ output：
 
 #### 具体代码实现
 
-    #!/bin/bash
-    
-    LOCAL_LST_FILE=/root/local.lst
-    LOCAL_DIR_LST_FILE=/root/local-dir.lst
-    REMOTE_LST_FILE=/root/remote.lst
-    SYNC_LST_FILE=/root/sync.lst
-    SYNC_DIR_LST_FILE=/root/sync-dir.lst
-    
-    REMOTE_HOST=192.168.1.101
-    
-    # DEST=`pwd`
-    DEST="/DataVolume/shares/Public/Shared Videos"
-    SCP_DEST=${DEST// /\\ }
-    
-    pushd "$DEST"
-    
-    find . -type f > $LOCAL_LST_FILE
-    find . -type d > $LOCAL_DIR_LST_FILE
-    
-    ssh $REMOTE_HOST "cd '$DEST' && find . -type f" > $REMOTE_LST_FILE
-    # ssh $REMOTE_HOST "cd '/DataVolume/shares/Public/Shared Videos' && find . -type f"
-    
-    
-    # awk '{if(system(sprintf("grep \"%s\" /root/remote.lst 1>/dev/null", $0))) print $0;}' \
-    #    $LOCAL_LST_FILE > $SYNC_LST_FILE 
-    
-    awk "{if(system(sprintf(\"grep \\\"%s\\\" $REMOTE_LST_FILE 1>/dev/null\", \$0))) print \$0;}" \
-       $LOCAL_LST_FILE > $SYNC_LST_FILE
-    
-    awk "{if(system(sprintf(\"grep \\\"%s\\\" $REMOTE_LST_FILE 1>/dev/null\", \$0))) print \$0;}" \
-       $LOCAL_DIR_LST_FILE > $SYNC_DIR_LST_FILE
-    
-    for i in `cat $SYNC_DIR_LST_FILE`; do
-        ssh $REMOTE_HOST "cd '$DEST' && mkdir $i 2>/dev/null"
-    done
-    
-    # count=0
-    for i in `cat $SYNC_LST_FILE`; do
-        # (( count = count + 1 ))
-        # if [ $count -lt 5 ]; then
-            echo scp -rp "$i" $REMOTE_HOST:"$SCP_DEST/$i"
-            scp -rp "$i" $REMOTE_HOST:"$SCP_DEST/$i"
-        # fi
-    done
-    
-    popd
+参考：<https://github.com/MichaelHu/wd-cloud-sync/blob/master/sync.sh>
+
+样例如下：
+
+	#!/bin/bash
+	
+	REMOTE_HOST=192.168.1.101
+	
+	# no backslashes, can be a relative path
+	DEST="$1"
+	if [ ! -d "$DEST" -o ! "$DEST" ]; then
+	    echo "usage: sh sync.sh <sync_dir>"
+	    echo "you must specify a existed directory"
+	    exit 0
+	fi
+	DEST=`cd "$1"; pwd`
+	echo "sync with server $REMOTE_HOST: [ $DEST ]"
+	echo "note: please make sure [ $DEST ] has existed on remote server"
+	
+	[ ! -d /root/sync ] && mkdir -p /root/sync
+	PREFIX=/root/sync/prefix-$(date +%y%m%d%H%M%S)
+	
+	LOCAL_LST_FILE=$PREFIX-local.lst
+	LOCAL_DIR_LST_FILE=$PREFIX-local-dir.lst
+	REMOTE_LST_FILE=$PREFIX-remote.lst
+	SYNC_LST_FILE=$PREFIX-sync.lst
+	SYNC_DIR_LST_FILE=$PREFIX-sync-dir.lst
+	TMP_FILE=$PREFIX-tmp.lst
+	
+	SCP_DEST=${DEST// /\\ }
+	
+	echo
+	echo "# 1. preparing sync ..."
+	
+	pushd "$DEST" 2>&1 1>/dev/null
+	
+	echo "# 1.1 getting local file list ..."
+	# `.wdmc` directory is generated by wdmycloud 
+	find . -type f -not -regex ".*/\.wdmc/.*" > $LOCAL_LST_FILE 
+	echo "# 1.1.1 local file count: `wc -l $LOCAL_LST_FILE | awk '{print $1}'`"
+	
+	echo
+	echo "# 1.2 getting local directory list ..."
+	find . -type d -not -regex '.*/\.wdmc/.*' > $LOCAL_DIR_LST_FILE 
+	echo "# 1.2.1 local directory count: `wc -l $LOCAL_DIR_LST_FILE | awk '{print $1}'`"
+	
+	echo
+	echo "# 1.3 getting remote file list ..."
+	ssh $REMOTE_HOST "[ ! -d '$DEST' ] && mkdir '$DEST'; cd '$DEST' && find . -type f -not -regex '.*/\.wdmc/.*'" > $REMOTE_LST_FILE 
+	echo "# 1.3.1 remote file count: `wc -l $REMOTE_LST_FILE | awk '{print $1}'`"
+	
+	echo
+	echo "# 1.4 getting sync file list ..."
+	awk "{if(system(sprintf(\"grep -m 1 \\\"%s\\\" $REMOTE_LST_FILE 1>/dev/null\", \$0))) print \$0;}" \
+	  $LOCAL_LST_FILE > $SYNC_LST_FILE 
+	echo "# 1.4.1 sync file count: `wc -l $SYNC_LST_FILE | awk '{print $1}'`"
+	
+	echo
+	echo "# 1.5 getting sync directory list ..."
+	awk "{if(system(sprintf(\"grep -m 1 \\\"%s\\\" $REMOTE_LST_FILE 1>/dev/null\", \$0))) print \$0;}" \
+	    $LOCAL_DIR_LST_FILE > $SYNC_DIR_LST_FILE 
+	awk "{if(system(sprintf(\"c=\`grep \\\"%s\\\" $SYNC_DIR_LST_FILE | wc -l\`; exit \$c\", \$0)) == 1) print \$0;}" \
+	    $SYNC_DIR_LST_FILE > $TMP_FILE
+	mv $TMP_FILE $SYNC_DIR_LST_FILE
+	count_sync_dir=`wc -l $SYNC_DIR_LST_FILE | awk '{print $1}'`
+	echo "# 1.5.1 sync directory count: $count_sync_dir"
+	
+	
+	echo
+	echo "# 2. sync ..."
+	echo "# 2.1 creating remote sync directories ..."
+	count=0
+	for i in `sed 's/ /@__@/g' $SYNC_DIR_LST_FILE`; do
+	    (( count = count + 1 ))
+	    file_name=${i//@__@/ }
+	    echo "# creating remote directory [ $count / $count_sync_dir ] '$DEST/$file_name'"
+	    ssh $REMOTE_HOST "cd '$DEST' && mkdir -p '$file_name' 2>/dev/null"
+	done
+	
+	MAX_COUNT=50000
+	echo
+	echo "# 2.2 set max send count: $MAX_COUNT"
+	
+	count_sync_files=`wc -l $SYNC_LST_FILE | awk '{print $1}'`
+	
+	echo
+	echo "# 2.3 start coping $count_sync_files files to remote server ..."
+	count=0
+	for i in `sed 's/ /@__@/g' $SYNC_LST_FILE`; do
+	    (( count = count + 1 ))
+	    if [ $count -lt $MAX_COUNT ]; then
+	        # local file needs no backslashes
+	        file_name_local=${i//@__@/ }
+	        # remote file needs backslashes
+	           file_name_remote=${file_name_local// /\\ } 
+	           file_name_remote=${file_name_remote//(/\\(} 
+	           file_name_remote=${file_name_remote//)/\\)} 
+	           file_name_remote=${file_name_remote//&/\\&} 
+	        echo
+	        echo "# sending $count / $count_sync_files: $file_name_local => $file_name_remote"
+	        scp -rp "$file_name_local" $REMOTE_HOST:"$SCP_DEST/$file_name_remote"  
+	        if [ $? -ne 0 ]; then
+	            echo "error occured"
+	            exit 1
+	        fi
+	    fi
+	done
+	
+	popd
+	
+	echo
+	echo "# 2.4 sync successfully: $count files in all"
+	echo "bye!!"
+
+
+
+### 获取文件的绝对路径
+
+参考： <http://blog.csdn.net/10km/article/details/51906821>
+
+`方案一`：cd + pwd
+
+    file_path=./path/to/file
+    abs_path=`cd $file_path && pwd`
+
+    或
+
+    abs_path=$(cd $file_path && pwd)
+
+
+`方案二`：readlink
+
+    file_path=./path/to/file
+    abs_path=`readlink -f $file_path`
+
+方案二，`仅适用于Linux系统`，Mac系统下不支持，Mac下的readlink功能已经弱化，更多使用`stat`。
 
 
 

@@ -13,6 +13,12 @@
 
  <img src="./img/mycloud.png" style="max-height:300px">
 
+服务器间进行同步，存在不少问题，比如如何增量备份、文件名带空格等特殊字符。这有一款精心编写的
+自动同步脚本工具：`wd-cloud-sync` <https://github.com/MichaelHu/wd-cloud-sync>
+
+    sh sync.sh <sync-dir>
+
+
 
 ## 镜像个人云
 
