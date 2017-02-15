@@ -9,7 +9,6 @@
 , 2014 hudamin
 
 
-
 ## .bashrc和.bash_profile
 
 * `.bashrc`与`session`相关，每新建一个session都会执行，`su`命令切换，也会执行
@@ -210,6 +209,7 @@
 
     chmod +x hello
     ./hello
+
 
 
 ## rm
@@ -826,11 +826,21 @@ for `MAC`
 	其中，`$c`的`$`进行了`转义`，使其`延迟`到system命令执行时才做替换，而不是在第一层双引号解析时就进行替换。
 
 
+
+
+
+
 ## find
 
     find . -type f
     find . -type f -name ".*.swp" -exec rm {} \;
     find . -inum 35806669 -exec rm {} \;
+
+`windows`下的对应命令是`dir /b /s <file>`
+
+
+
+
 
 
 
@@ -851,7 +861,7 @@ for `MAC`
 
     :s/a/ \0 /g
 
-sed有`perl` style的扩展正则功能，vim只有`magic`方式的`初级正则`。`反向匹配`串引用也存在区别，主要是`整串匹配`；同时，magic模式下，sed不支持:
+sed有`perl` style的扩展正则功能，vim只有`magic`方式的`初级正则`。`反向匹配`串引用也存在区别，主要是`整串匹配`，sed使用`&`，vim使用`\0`；同时，magic模式下，sed不支持:
 
 1. "`\+`", "`\s`"
 2. `单引号`括住的命令中`不能`带`单引号`，使用"`\'`"也不行
@@ -861,11 +871,12 @@ sed有`perl` style的扩展正则功能，vim只有`magic`方式的`初级正则
 
 
 
+
 ### 查询近24小时内修改过的文件
 
     find . -type f -name "*.md" -mtime -1
 
-注意，`-mtime`后面的数字，仅当和`+`和`-`配合才有意义。
+注意，`-mtime`后面的数字，`仅当`和`+`和`-`配合才有意义。
 
 
 
@@ -954,6 +965,7 @@ output：
         "tail -f /Users/work/Documents/code/SophonDispatchServerApi/nohup.out \
             | grep -i exception -B 10 -A 50 -n"  \
         | tee /Users/hudamin/tmp/log/$$.log
+
     
 
 ### 计算文本行数
@@ -1133,9 +1145,22 @@ output：
     file_path=./path/to/file
     abs_path=`readlink -f $file_path`
 
-方案二，`仅适用于Linux系统`，Mac系统下不支持，Mac下的readlink功能已经弱化，更多使用`stat`。
+方案二，`仅适用于Linux系统`，Mac系统下不支持，Mac下的`readlink`功能已经弱化，更多使用`stat`。
+
+
+
+### 打开命令所在目录
+
+    cd `dirname $(which node)`
+    cd `dirname \`which node\``
+
+1. `\``的`嵌套`使用
 
 
 
 
 
+## 参考
+
+* `ABS`: Advanced Bash Scripting
+* `ss64`: <https://ss64.com/bash/>

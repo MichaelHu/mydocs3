@@ -6,5 +6,19 @@
 
 百科：<http://baike.baidu.com/link?url=4SSxScCk6a8-QM182XjOl33VCgaApegoooJ1Flf2ImYocaUTJHYskxTxusdQG0q1qTFjpxWCS6SvMQH7feSPJa>
 
+## HTTPS
+
+WEB服务器需使用`HTTPS`协议。结合使用`公钥加密技术`和`对称加密技术`。参考<ref://../http/https.md>
+
+
+## 非对称加密技术
+
+公钥 + 密钥
+
+
+
+## 参考文章
+
+* 「PKI认证」: <http://blog.csdn.net/suntao860/article/details/5610634>
 
 

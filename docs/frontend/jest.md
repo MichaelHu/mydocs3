@@ -69,7 +69,8 @@ __tests__目录
 ## Jest Configuration
 
 1. package.json，`jest`关键字必须在顶层
-2. `--config path/to/json`，必须不用`jest`关键字
+2. `--config path/to/json`，必须不用`jest`关键字，相当于把`package.json`的`顶层`jest`展开`
+
 
 
 ### 配置文件

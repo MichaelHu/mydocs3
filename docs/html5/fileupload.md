@@ -2,6 +2,11 @@
 
 > 使用`<input type="file">`
 
+## RFC参考：rfc1867
+
+<ref://./rfc/rfc.md>
+
+
 ## 兼容性
 
 1. `iOS6`才开始支持，但只支持视频和图片上传

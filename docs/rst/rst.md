@@ -12,6 +12,7 @@
 * 在线编辑器2（ 更像是markdown编辑器 ）：<https://www.notex.ch/editor>
 * 使用`.rst`写技术文档的项目：<https://github.com/mathjax/MathJax-docs>
 * `Sphinx`为Python官方指定的文档撰写工具
+* 使用`Sphinx`构建的文档：<https://aria2.github.io/manual/en/html/>
 * `github`能直接解析
 
 

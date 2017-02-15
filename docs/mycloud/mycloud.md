@@ -157,3 +157,36 @@
 因为涉及自动固件升级，所以就尽量不要修改配置文件了，直接用`export`已经基本满足要求。
 
 
+
+## 关于PC版的WD mycloud
+
+以下是捕获的一个远程获取家庭云盘的固件版本的请求：
+
+	GET /api/1.0/rest/version?device_user_id=xxxxxxx&device_user_auth_code=xxxxxxxx HTTP/1.1
+	Host: wdmycloud.devicexxxxx.wd2go.com:xxxx
+	Referer: app:/WDMyCloudDesktopApp.swf
+	Accept: */*
+	Content-Type: application/x-www-form-urlencoded
+	Accept-Language: zh-cn
+	Accept-Encoding: gzip, deflate
+	Connection: keep-alive
+	x-flash-version: 11,5,502,146
+	User-Agent: Mozilla/5.0 (Macintosh; U; Intel Mac OS X; zh-CN) AppleWebKit/533.19.4 (KHTML, like Gecko) AdobeAIR/3.5
+
+从Referer看出，这个应用是一个`Flash`，使用`AdobeAIR`开发。
+
+
+## Mobile版的WD mycloud
+
+可以创建`分享链接`，在社交软件上传播分享，以一个`WEB相册`的方式展现：
+
+* 包括`公共分享`和`专用分享`相册，当然也有`视频`
+* 公共分享链接如：<http://files.mycloud.com/mobile?seuuid=63462be1134b2b9f37654a2e98634d0b&name=IMG_5528&brand=webfiles>，它不需要权限验证
+* 是一个`SPA`，但没有做专业的前端优化，加载的资源非常多，可能会加载不全，需要多刷新几次。
+
+ <video width="273" height="480" controls><source src="./video/mycloud-share.mp4"></video>
+
+
+
+
+

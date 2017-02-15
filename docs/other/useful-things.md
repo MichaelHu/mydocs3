@@ -5,6 +5,19 @@
 > 合作，最难的是定义`边界`和`共赢`。
 
 
+## 2017-02-15
+
+`oh-my-zsh`: <https://github.com/robbyrussell/oh-my-zsh>
+* 提供`zsh`使用的便利
+* 在zsh中包括了`rails、git、OSX、brew、ant、php、python`等的插件，使用时更加便利
+* 提供了`超过140种`主题皮肤
+
+
+## 2017-02-14
+
+Chrome出了个小bug：论如何在Chrome下劫持原生只读对象: <https://zhuanlan.zhihu.com/p/24342684>
+
+
 ## 2016-12-26
 
 * [ 杨磊 ] 分享一个<http://www.12306bypass.com/>刷火车票插件 非vip帐号1s刷新1次（vip帐号（需赞助）可1秒刷票10次，适合放票时间点），已用三年亲测 （需win环境，mac安装win虚拟机即可）

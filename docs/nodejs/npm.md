@@ -19,7 +19,7 @@
 
 ### 手动升级npm
 
-通过nodejs安装的npm通常版本都比较低，有时需要`手动升级`npm版本：
+通过nodejs安装的npm通常版本都`比较低`，有时需要`手动升级`npm版本：
 
     $ npm -v
     2.15.5
@@ -28,6 +28,7 @@
     npm@3.9.5 /usr/local/lib/node_modules/npm
     $ nodejs $ npm -v
     3.9.5
+
 
 
 ### npm包安装问题
@@ -70,6 +71,61 @@ mac下进行`-g`安装，出现`EACCES`错误，原因是对`/usr/local/lib/node
 
 
 
+## nvm
+
+> Node Version Manager - Simple bash script to manage multiple active node.js versions
+
+* github: <https://github.com/creationix/nvm>
+
+### install
+
+    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh | bash
+or
+    wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh | bash
+
+### 使用方式
+
+    nvm install node
+    nvm use node
+    nvm run node --version
+    nvm exec 4.2 node --version
+    nvm which 5.0
+    nvm use system
+    nvm ls
+    nvm ls-remote
+    nvm alias default node
+
+列出可用命令，使用`两个tab`:
+
+    $ nvm [tab][tab]
+    alias             deactivate        install           ls                  run               unload
+    clear-cache       exec              list              ls-remote           unalias           use
+    current           help              list-remote       reinstall-packages  uninstall         version
+
+    $ nvm alias [tab][tab]
+    default
+
+    $ nvm alias my_alias [tab][tab]
+    v0.6.21     v0.8.26     v0.10.28
+
+    $ nvm use [tab][tab]
+    my_alias    default     v0.6.21     v0.8.26     v0.10.28
+
+
+### .nvmrc
+
+项目根路径创建`.nvmrc`文件，内容为使用的node版本号。
+
+    echo "5.9" > .nvmrc
+
+在项目路径下：
+
+    $ nvm use
+    Found '/path/to/project/.nvmrc' with version <5.9>
+    Now using node v5.9.1 (npm v3.7.3)
+
+
+
 
 ## 淘宝npm镜像
 
@@ -81,6 +137,14 @@ mac下进行`-g`安装，出现`EACCES`错误，原因是对`/usr/local/lib/node
 
 cnpm支持除`publish`之外的所有命令。
 
+`cnpm`实际上是一个`特殊`配置的`npm`，它还可以通过设置`alias`方式安装：
+
+    alias cnpm="npm --registry=https://registry.npm.taobao.org \
+                --cache=$HOME/.npm/.cache/cnpm \
+                --disturl=https://npm.taobao.org/dist \
+                --userconfig=$HOME/.cnpmrc"
+
+`关键`在于: `--registry`选项的扩展。
 
 
 
