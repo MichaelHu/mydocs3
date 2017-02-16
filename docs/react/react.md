@@ -58,6 +58,20 @@
 * ReactDOM.render()
 
 
+### 重要的概念
+
+* `Component`: `Class`
+* Component Instance: `new Component`得到的
+* `Element`: plain object，由Component Instance的`render()`方法返回，利于做高性能`Virtual DOM`的比较
+* ReactDOM.render(): 将Element同步到DOM 
+* `props`: 通常是`父组件`与`子组件`交互的`唯一`方式，若要更新子组件，只需用`新的props`来`re-render`子组件即可
+* `ref`: 遇`HTML Element`，代表的是`DOM对象`；遇自定义组件，则代表的是`Component Instance`
+* `Virtual DOM`: 按需更新DOM。
+
+> Thinking about how the UI should look at any given moment rather than how to change it over time eliminates a whole class of bugs.
+
+> 思考UI该如何表现，而不是如何改变，能避免很多问题。
+
 
 
 ## cbScriptBlock回调
@@ -123,13 +137,12 @@ onClick
 
 #### key属性
 
-`sibling`之间，key必须唯一，但不需要全局唯一
+`sibling`之间，key必须唯一，但不需要全局唯一。
 
 
 #### ref属性
 
-可以是`字符串`，也可以是`回调函数`（实例作为参数传入）。
-
+可以是`字符串`，也可以是`回调函数`（实例作为参数传入）。可以指向`DOM`，也可以是`Component Instance`。
 
 <div id="test_ref" class="test">
 <div class="test-container">
@@ -889,7 +902,9 @@ nativeEvent获得原生事件对象。
 > 伟大的思想能变成巨大的财富。 —— 塞内加
 
 TODO:
-* 与Rocket的比较，分治的思想是一致的，不过React更加深入
+* 与Rocket的比较，`分治`的思想是一致的，不过React更加深入
+* 伟大之处在于`jsx`的引入
+* 牛逼之处在于`生态`的建立
 
 
 
