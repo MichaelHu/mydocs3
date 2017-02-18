@@ -76,5 +76,5 @@ todo
 
 ## openssl的日常加密传输
 
-参考: <ref://../shell/linuxshell.md>
+参考: <ref://../shell/linuxshell.md.html>
 

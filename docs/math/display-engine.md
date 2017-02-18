@@ -66,7 +66,7 @@ So, in LaTeX you would input this document as:
 
 ## MathJax
 
-详见<ref://./eathjax.md> [ todo ]
+详见<ref://./mathjax.md.html> [ todo ]
 
 * 安装文档：<https://github.com/mathjax/MathJax-docs/blob/master/installation.rst>
 * AMS为其`Managing Partner`，`stackoverflow`是其`partner`

@@ -2,6 +2,7 @@
 __tmp/
 *.swp
 *.preview.html
+*.md.html
 *.tar.gz
 
 docs/sophon

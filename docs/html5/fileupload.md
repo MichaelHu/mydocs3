@@ -4,7 +4,7 @@
 
 ## RFC参考：rfc1867
 
-<ref://./rfc/rfc.md>
+<ref://./rfc/rfc.md.html>
 
 
 ## 兼容性

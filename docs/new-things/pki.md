@@ -8,7 +8,7 @@
 
 ## HTTPS
 
-WEB服务器需使用`HTTPS`协议。结合使用`公钥加密技术`和`对称加密技术`。参考<ref://../http/https.md>
+WEB服务器需使用`HTTPS`协议。结合使用`公钥加密技术`和`对称加密技术`。参考<ref://../http/https.md.html>
 
 
 ## 非对称加密技术
