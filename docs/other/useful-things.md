@@ -37,6 +37,7 @@ Chrome出了个小bug：论如何在Chrome下劫持原生只读对象: <https://
     * 安装非常`简洁、干净`，下载后就是一个独立的可运行程序包（ .app后缀 ）
     * 自带`git`工具
     * 丰富的`extensions`，安装方便，左侧第五个tab点开即是
+    * 基于`Electron`开发，同样有性能问题
 * `.Net Core`：C# 7.0，跨平台方案SDK
 
 

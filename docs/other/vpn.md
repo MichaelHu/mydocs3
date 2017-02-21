@@ -13,7 +13,8 @@
 * 其他平台，比如windows和android，都提供客户端下载。
 * 线路多，有日本、美国、上海线路，支持`ipsec`、`pptp`、`l2tp`三种vpn协议。
 
-<http://www.nydusproxy.info>
+1. new: <http://www.nyduschina.com>
+2. old: <http://www.nydusproxy.info>
 
 
 

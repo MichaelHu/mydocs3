@@ -730,7 +730,7 @@ For example, commit C1 can be rebased past C3. It then appears that the work for
 
     git remote set-url origin https://MichaelHu@github.com/MichaelHu/fast-slides.git
 
-关键在于`username@`这一部分的添加。设置好以后，再次push的时候，就会提示输入密码。
+关键在于`username@`这一部分的添加。设置好以后，再次push的时候，就会`提示输入密码`。
 
 另外按网上的方案通过`git config [--global] user.name ...`和`git config [--global] user.email ...`来设置用户名和邮箱，也不行（至少我这里没有试成功）。
 
@@ -750,7 +750,17 @@ For example, commit C1 can be rebased past C3. It then appears that the work for
 
 Push URL需要`身份验证`。
 
+以上通过`set-url`，在密码提示框输入密码的情况，还有可能会遇到以下问题：
 
+    [hudamin@258i my-help]$ git push
+
+    (gnome-ssh-askpass:19541): Gtk-WARNING **: cannot open display:
+
+遇到这种情况，简单的处理办法是将环境变量`SSH_ASKPASS`去掉：
+
+    $ unset SSH_ASKPASS
+
+参考<http://blog.163.com/hevensun@126/blog/static/2015336320143413148101/>
 
 
 ## git fetch
