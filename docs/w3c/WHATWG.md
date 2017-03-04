@@ -1,6 +1,7 @@
 # WHATWG
 
 * site: <https://whatwg.org>
+* spec: <https://spec.whatwg.org>
 * help@whatwg.org
 
 
@@ -20,14 +21,14 @@
 
 > HTML5 related
 
-* HTML
+* HTML: <https://html.spec.whatwg.org/multipage/>
 * Infra
 * DOM
 * Fullscreen
 * Notifications
 * Encoding
 * URLs
-* Fetch
+* Fetch: `The Fetch standard defines requests, responses, and the process that binds them: fetching.` <https://fetch.spec.whatwg.org>
 * MIME Sniffing
 * XMLHttpRequest
 * Compatibility
@@ -37,3 +38,10 @@
 * Books
 * Figures
 * Quirks Mode
+
+
+### Fetch
+
+* fetch
+* CORS: <https://www.w3.org/TR/cors/>
+* HTTP `Origin` header: 

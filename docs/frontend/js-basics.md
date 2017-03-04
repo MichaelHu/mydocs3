@@ -8,6 +8,11 @@
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 
 
+## references
+
+* MDN: <https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide>
+
+
 ## typeof
 
 `typeof`输出是`字符串`类型，输出为以下`7个`值之一：

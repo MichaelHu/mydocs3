@@ -115,7 +115,8 @@
     git reset HEAD~1
     git branch -f master HEAD~3
 
-`HEAD~`代表`HEAD~1`
+`HEAD~`代表`HEAD~1`。`~num`指明往上追溯num个祖先commit。
+
 
 
 #### 混用操作符

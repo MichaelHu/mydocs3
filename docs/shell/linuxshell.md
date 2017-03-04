@@ -842,6 +842,24 @@ for `MAC`
 
 
 
+## nohup
+
+> invoke a utility immune to hangups
+
+* 调用一个程序而不受挂起影响。即使你退出当前终端，该程序也能继续运行。
+* tip: 需要显式键入`exit`，而不是直接关闭ssh终端
+
+正常操作步骤如下：
+
+    $ nohup command &
+    appending output to nohup.out
+    $ exit
+
+参考<http://www.cnblogs.com/allenblogs/archive/2011/05/19/2051136.html>
+
+
+
+
 
 
 ## 实用例子

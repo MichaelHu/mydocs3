@@ -25,7 +25,29 @@
 
     export sex;
 
+* export不支持此种类型的输出：`export { name: varB, sex: varA };`，但支持：`export { varB, varA };`
 * import不支持此种类型的解构：`import { name, sex: varA } from './a';`
+
+a.js:
+
+    var a = 1;
+    function b() {}
+    export { a, b }
+
+b.js:
+
+    var a = 1;
+    function b() {}
+    export default { a, b }
+
+c.js:
+
+    export { a: 1, b: 2 };
+
+import.js: 
+
+    import { a, b } from 'a.js';
+    import m from 'b.js'; // default可以随意取名
 
 
 

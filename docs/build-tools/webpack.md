@@ -459,6 +459,13 @@ HtmlWebpackPlugin插件: <https://github.com/ampedandwired/html-webpack-plugin>
 同时，`template`字段`支持``loader`，可以在解析模板前做其他解析。但是如果使用了loader，那么`title`替换就`不生效`了。
 
 
+#### 内联脚本
+
+两种方式：
+1. 使用`模板`，将需要内联的文件`原封不动`的输出到html中
+2. 使用`html-webpack-plugin`的子插件`html-webpack-inline-source-plugin`，这时需要`html-webpack-plugin`的版本高于`2.24.0`，其`html-webpack-plugin-alter-asset-tags`hook才会正确执行。此种方式输出内容为`webpack package`的方式，而非原封不动。
+
+
 
 #### html优化
 

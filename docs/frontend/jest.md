@@ -105,6 +105,22 @@ __tests__目录
     });
 
 
+### globals
+
+    afterAll( fn )
+    afterEath( fn )
+    beforeAll( fn )
+    beforeEach( fn )
+    describe( name, fn )
+    describe.only( name, fn ) or fdescribe( name, fn )
+    describe.skip( name, fn ) or xdescribe( name, fn )
+    require.requireActual( moduleName )
+    require.requireMock( moduleName )
+    test( name, fn )
+    test.only( name, fn ) or it.only( name, fn ) or fit( name, fn )
+    test.skip( name, fn ) or it.skip( name, fn ) or xit( name, fn ) or xtest( name, fn )
+
+
 ### Basic Testing
 
     it()
@@ -115,36 +131,70 @@ __tests__目录
 
 ### Assertions
 
-    expect()
+    expect( value )
     lastCalledWith( arg1, arg2, ... )
     toHaveBeenLastCalledWith( arg1, arg2, ... )
     not
-    toBe()
+
+
+#### helper functions
+
+> under `this` inside a custom matcher
+
+    this.isNot
+    this.utils.*
+
+`this.utils.*` are exported from `jest-matcher-utils` <https://github.com/facebook/jest/tree/master/packages/jest-matcher-utils> :
+
+    module.exports = {
+        EXPECTED_BG,
+        EXPECTED_COLOR,
+        RECEIVED_BG,
+        RECEIVED_COLOR,
+        ensureActualIsNumber,
+        ensureExpectedIsNumber,
+        ensureNoExpected,
+        ensureNumbers,
+        getType,
+        highlightTrailingWhitespace,
+        matcherHint,
+        pluralize,
+        printExpected,
+        printReceived,
+        printWithType,
+        stringify,
+    };
+
+
+#### matcher functions
+
+    toBe( value )
     toBeCloseTo()
     toBeDefined()
     toBeFalsy(): false, 0, '', null, undefined, NaN
-    toBeGreaterThan()
-    toBeGreaterThanOrEqual()
-    toBeLessThan()
-    toBeLessThanOrEqual()
-    toBeInstanceOf()
+    toBeGreaterThan( number )
+    toBeGreaterThanOrEqual( number )
+    toBeLessThan( number )
+    toBeLessThanOrEqual( number )
+    toBeInstanceOf( Class )
     toBeNull()
     toBeTruthy()
     toBeUndefined()
-    toContain()
-    toContainEqual()
-    toEqual()
-    toHaveLength()
-    toMatch( reg )
-    toMatchObject()
-    toMatchSnapshot()
-    toThrow()
+    toContain( item )
+    toContainEqual( item )
+    toEqual( value )
+    toHaveLength( number )
+    toMatch( regexpOrString )
+    toMatchObject( object )
+    toMatchSnapshot( optionalString )
+    toThrow( error )
     toThrowError()
     toThrowErrorMatchingSnapshot()
     toHaveBeenCalled()
     toHaveBeenCalledTimes()
     toHaveBeenCalledWith( arg1, arg2, ... )
     toHaveBeenLastCalledWith( arg1, arg2, ... )
+
 
 
 ### Mock Functions

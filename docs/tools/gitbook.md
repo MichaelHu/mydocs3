@@ -19,6 +19,13 @@
 * 有一些免费书籍可查看
 
 
+## 参考资料
+
+1. `markdown`语法： <https://toolchain.gitbook.com/syntax/markdown.html>
+2. `目录页`写法： <https://toolchain.gitbook.com/pages.html>
+3. `引用`子目录中`非md文档`的写法：<https://github.com/MichaelHu/gitbook-plugin-otherlink>
+
+
 ## getting started
 
 <https://github.com/GitbookIO/gitbook/blob/master/docs/setup.md>
@@ -104,6 +111,7 @@ editor本地book的目录存放在`~/GitBook/Library/Import/`目录下，假如�
 * `_book/`：生成静态书籍的目录
 * `_layouts`: theme目录
 * `book.json`: 配置文件
+* `.bookignore`: 忽略文件列表，语法同`.gitignore`
 
 
 ### book.json
@@ -170,16 +178,14 @@ editor本地book的目录存放在`~/GitBook/Library/Import/`目录下，假如�
 * `gitbook-plugin-theme-faq`
 * `gitbook-plugin-theme-api`
 * `gitbook-plugin-theme-official`
-* `gitbook-plugin-comment`: 支持内联评论
+* `gitbook-plugin-comment`: 支持内联评论，`gitbook.com专用`
+* `gitbook-plugin-search-pro`: <https://github.com/gitbook-plugins/gitbook-plugin-search-pro>
 
 其他插件可在此处获得：<https://github.com/GitbookIO>
 
 新插件安装可以通过在`book.json`中配置，并通过`gitbook install`命令安装：
 
     gitbook install
-
-
-
 
 
 
@@ -226,6 +232,7 @@ editor本地book的目录存放在`~/GitBook/Library/Import/`目录下，假如�
 #### 模板语法
 
 * Nunjucks: <https://mozilla.github.io/nunjucks/>
+* docs: <https://toolchain.gitbook.com/templating/>
 * gitbook相关扩展： <https://github.com/GitbookIO/gitbook/tree/master/docs/templating>
 
 
@@ -236,6 +243,49 @@ editor本地book的目录存放在`~/GitBook/Library/Import/`目录下，假如�
 以已有theme为代码蓝本，稍作改动，发布至npm即可。
 
 `gitbook install`现查找`GitbookIO`下以`theme-`为前缀的主题，再查找以`gitbook-plugin-theme-`为前缀的主题。
+
+
+
+## 插件编写
+
+### Features
+
+* 可以引入资源，包括`js`，`css`文件
+* 可以扩展模板`block`， `filters`以及`hooks`
+
+### 插件参考模板
+1. sample: <https://github.com/GitbookIO/plugin>
+2. plugin-highlight: <https://github.com/GitbookIO/plugin-highlight>
+
+### APIs
+
+> 主要是`3.x.x`版，4.x版本开始，变化很大，后续再研究
+
+* `plugin`类：<https://github.com/GitbookIO/gitbook/blob/3.2.2/lib/models/plugin.js>
+
+		module.exports = {
+			book: {},
+			ebook: {},
+			filters: {},
+			hooks: {},
+			// 很强大的扩展 
+			blocks: {
+				// {% testblock %}content{% endtestblock %}
+				otherlink: {
+					process: function( block ) {
+						return '<div style="color:red">' + block.body + '</div>';
+					}
+				}
+			},
+		};
+
+	格式可参考（可能有点笔误）：<https://github.com/GitbookIO/plugin/blob/master/index.js>
+
+
+### 说明
+
+* `gitbook.js`，来自`theme-default`，<https://github.com/GitbookIO/theme-default/blob/master/src/js/core/index.js>，gitbook对象本身是一个集合。`gitbook.push( fn )`方法可以注册ready后执行的函数，不过目前尚未验证成功。
+* `otherlink`插件，用于在gitbook中引用子目录的`非md文件`: <https://github.com/MichaelHu/gitbook-plugin-otherlink/>
 
 
 

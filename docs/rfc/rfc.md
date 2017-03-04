@@ -2,6 +2,8 @@
 
 > `Request For Comments（RFC）`，是一系列以编号排定的文件。文件收集了有关互联网相关信息，以及UNIX和互联网社区的软件文件。目前RFC文件是由`Internet Society（ISOC）`赞助发行。基本的`互联网通信协议`都有在RFC文件内详细说明。RFC文件还额外加入许多的论题在标准内，例如对于互联网新开发的协议及发展中所有的记录。因此几乎所有的`互联网标准`都有收录在RFC文件之中。
 
+`IETF`: `Internet Engineering Task Force`
+
 ## HTTP/1.1
 
 > Hypertext Transfer Protocol -- HTTP/1.1
@@ -10,6 +12,12 @@
 
 ### RFC 2616
 [ 1999 ] <https://tools.ietf.org/html/rfc2616>
+
+### RFC 2965, 6265
+> HTTP State Management Mechanism, like `cookie`
+* [ 2000 ] <https://tools.ietf.org/html/rfc2965>
+* [ 2011 ] <https://tools.ietf.org/html/rfc6265>
+
 
 ### RFC 7230
 > Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing
@@ -143,5 +151,7 @@ The Multipart/alternative subtype
 		...contents of file2.gif...
 		--BbC04y--
 		--AaB03x--
+
+
 
 

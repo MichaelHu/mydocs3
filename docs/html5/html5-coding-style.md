@@ -7,6 +7,20 @@
 > `标识符`的选择应做到“见名知义”、“常用取简”、“专用取繁”
 
 
+## Primer
+
+> HTML&CSS等的编码规范
+
+<http://primercss.io/guidelines/>
+
+
+## idiomatic.js
+
+> 无论有多少人在维护，所有在代码仓库中的代码理应看起来像同一个人写的。
+
+<https://github.com/rwaldron/idiomatic.js/tree/master/translations/zh_CN>
+
+
 ## Airbnb
 
 > 4w+ Stars，包含JavaScript, React, CSS-in-JavaScript, CSS&Sass, Ruby

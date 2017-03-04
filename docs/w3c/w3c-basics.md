@@ -6,6 +6,8 @@
 
 * 主页：<http://www.w3.org>
 * W3C中国：<http://www.chinaw3c.org>
+* 如何阅读W3C规范：<http://www.chinaw3c.org/how-to-read-spec-gb.html>
+
 
 
 ## Web标准
