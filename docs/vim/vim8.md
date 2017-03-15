@@ -35,14 +35,14 @@
 
     git clone https://github.com/vim/vim.git
     cd vim
-    ./configure --prefix=/Users/hudamin/softwares/vim8 \
+    ./configure --prefix=/Users/hudamin/softwares/vim8.0.0402 \
         --with-lua-prefix=/usr/local \
         --enable-luainterp=yes
     make
     make install
     make test
 
-其中，lua（相关安装见`lua目录`）相关选项用于vim插件`neocomplete`，该插件是`neocomplcache`的取代。安装好以后，通过：
+其中，lua（相关安装见<ref://../lua/lua.md.html>）相关选项用于vim插件`neocomplete`，该插件是`neocomplcache`的取代。安装好以后，通过：
 
     vim --version
 
@@ -57,6 +57,6 @@
 
 修改`~/.bash_profile`，满足vim7和vim8同时存在，但是想`优先`使用`vim8`的要求。
 
-    PATH=~/softwares/vim8/bin:$PATH
+    PATH=~/softwares/vim8.0.0402/bin:$PATH
     export PATH
 

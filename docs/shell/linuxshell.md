@@ -168,6 +168,52 @@
 
 
 
+## case分支
+
+### 语法
+
+    case "$variable" in
+        "$condition1" )
+        command...
+        ;;
+
+        "$condition2" )
+        command...
+        ;;
+    esac
+
+说明：
+
+* Quoting the variables is not mandatory, since word splitting does not take place.
+* Each test line ends with a right paren ).
+* Each condition block ends with a double semicolon ;;.
+* The entire case block terminates with an esac (case spelled backwards).
+
+### 判断按键
+
+    read Keypress
+    case "$Keypress" in
+        [[:lower:]] ) echo "Lowercase letter";;
+        [[:upper:]] ) echo "Uppercase letter";;
+        [0-9]       ) echo "Digit";;
+        *           ) echo "Punctuation, whitespace, or other";;
+    esac
+
+
+### 或表达式
+
+    case "$person" in
+        "E" | "e"   ) echo "1";;
+        "J" | "j"   ) echo "2";;
+        *           ) echo "3";;
+    esac
+
+todo
+
+
+
+
+
 ## scp
 
 * `远程路径`如果带`有空格`，需要使用`反斜线转义`，并将路径用`双引号`包围。比如：
@@ -209,6 +255,10 @@
 
     chmod +x hello
     ./hello
+
+> Probably the most common use of `env` is to `find the correct interpreter for a script`, when the interpreter may be in different directories on different systems.  The following example will find the `perl` interpreter by searching through the directories specified by `PATH`.
+
+     #!/usr/bin/env perl
 
 
 
@@ -1180,5 +1230,5 @@ output：
 
 ## 参考
 
-* `ABS`: Advanced Bash Scripting
+* `ABS`: Advanced Bash Scripting <ref://./pdf/ABS-Guide.pdf>
 * `ss64`: <https://ss64.com/bash/>

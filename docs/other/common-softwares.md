@@ -26,6 +26,14 @@ Mac下一款功能强大的`取色器`
 68rmb
 
 
+### SecureCRT
+
+<https://www.vandyke.com>
+
+`$99`，而且只能1年的更新，暂时不买了。
+
+
+
 
 
 
