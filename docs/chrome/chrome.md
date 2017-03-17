@@ -1,6 +1,11 @@
 # chrome
 
-> chrome安装
+> chrome相关信息及安装
+
+
+## chrome升级信息
+
+* Google将在Chrome56中停止支持SHA-1: <http://www.wosign.com/news/Google-Chrome-SHA1.htm>
 
 
 ## XP平台上的最后版本

@@ -15,6 +15,7 @@
 * 与RD同时维护一份模拟数据，能及时同步数据接口的更新
 * 现有`.json`文件mock方式`仅支持GET`方式，无法模拟POST方式
 * 能导出数据接口文档
+* 支持mock数据根据`queryString`动态变化，但只支持queryString的参数，而不支持POST data的参数
 
 
 
@@ -60,6 +61,8 @@ J2EE开发环境
 
 
 ### MySQL-5.6.12+
+
+参考：<ref://../database/mysql.md.html>
 
 
 ### Redis 3+
@@ -147,3 +150,22 @@ J2EE开发环境
     <
     ["/user/add","/graph/search","/search/page","/search/history"]
 
+
+## 简单运维脚本
+
+参考：<https://github.com/MichaelHu/shell-valley/tree/master/bash/rap>
+
+
+
+## 常见问题
+
+1. `__root__`属性，支持`最外层`数据的mock规则
+2. `${queryparam}`，支持在属性值中引用请求参数的值
+3. `/mockjsdata`与`/mockjs`，前者可以直接返回mock的数据
+4. 路径匹配是去掉queryString以后再匹配，所以
+        /graph?action=delete
+        /graph?action=add
+    总是匹配到delete，这时需要为参数名加上`{}`，来确保路径匹配能考虑queryString的值。
+        /graph?{action}=delete
+        /graph?{action}=add
+5. restful API支持中，`/path/:type`仅命中的是`数字类型`的值

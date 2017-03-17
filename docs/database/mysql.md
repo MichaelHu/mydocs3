@@ -3,8 +3,10 @@
 ## Overview
 
 * site: <https://www.mysql.com>
+* 5.7 docs: <https://dev.mysql.com/doc/refman/5.7/en/>
 * community downloads: <https://dev.mysql.com/downloads/mysql/>
 * 详解MySQL的用户密码过期功能: <http://www.jb51.net/article/79347.htm>
+* 备份数据库：<https://dev.mysql.com/doc/refman/5.7/en/mysqldump-copying-database.html>
 
 
 ## Installation
@@ -35,6 +37,9 @@
         --datadir=$MYSQL/data \
         --log-error=$MYSQL/logs/mysqld.log
 
+会建立一个用户`root`，并且`密码在log文件中给出`。
+
+
 ### start server
 
     $MYSQL/bin/mysqld \
@@ -42,14 +47,10 @@
         --datadir=$MYSQL/data \
         --port=4567 \
         --plugin-dir=$MYSQL/lib/plugin \
-        --user=mysql \
+        --user=root \
         --log-error=$MYSQL/logs/mysqld.log \
         --pid-file=$MYSQL/pids/mysqld.pid \
-        --socket=$MYSQL/mysql.sock
-
-
-
-password: FZw?ySY!5g?f
+        --socket=$MYSQL/mysql.sock &
 
 
     $MYSQL/bin/mysql --port=4567 -uroot -p --socket=$MYSQL/mysql.sock
@@ -83,4 +84,10 @@ password: FZw?ySY!5g?f
         < /path/to/ROOT/WEB-INF/classes/database/initialize.sql
 
 
+
+
+
+## 简单数据库运维脚本
+
+参考：<https://github.com/MichaelHu/shell-valley/tree/master/bash/rap>
 
