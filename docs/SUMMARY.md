@@ -2,11 +2,11 @@
 
 * [简介](README.md)
 * W3C
-    * [W3C基础](./w3c-basics.md)
-    * [WHATWG](./whatwg.mc)
-    * [URL](./URL.md)
-    * [PWA](./pwa.md)
-    * [navigation timing](./navigation-timing.md)
+    * [W3C基础](./w3c/w3c-basics.md)
+    * [WHATWG](./w3c/whatwg.mc)
+    * [URL](./w3c/URL.md)
+    * [PWA](./w3c/pwa.md)
+    * [navigation timing](./w3c/navigation-timing.md)
 * Shell
     * [Linux Shell](./shell/linuxshell.md)
     * [Windows Shell](./shell/winshell.md)
