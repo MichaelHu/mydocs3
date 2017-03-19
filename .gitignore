@@ -6,6 +6,7 @@ _book/
 *.md.html
 *.tar.gz
 
+node_modules
 docs/sophon
 docs/didi
 docs/private
