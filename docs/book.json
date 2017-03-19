@@ -13,8 +13,8 @@
         "otherlink",
         "scripts",
         "-sharing",
-		"-lunr",
-		"-search",
+        "-lunr",
+        "-search",
         "search-pro"
     ],
     "pluginsConfig": {
