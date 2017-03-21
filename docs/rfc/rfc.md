@@ -4,6 +4,9 @@
 
 `IETF`: `Internet Engineering Task Force`
 
+ietf blog: <https://www.ietf.org/blog/>
+
+
 ## HTTP/1.1
 
 > Hypertext Transfer Protocol -- HTTP/1.1

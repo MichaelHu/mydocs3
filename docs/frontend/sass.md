@@ -149,6 +149,21 @@ github: <https://github.com/sass/sassc>
 
 函数调用
 
+## 其他@-规则和指令
+
+### @import
+
+扩展了css的`@import`指令
+
+### @media
+### @extend
+### @at-root
+### @debug
+### @warn
+### @error
+
+
+
 
 
 ## 数据类型
@@ -198,7 +213,7 @@ github: <https://github.com/sass/sassc>
 
 ### 数字操作符
 
-* 关系操作符`<, >, <=, >=`
+* 关系操作符`<, >, <=,`  `>=`
 * 除号，css支持的默认不会执行除法（毕竟sass是css的扩展），另外有几种特殊情况会进行除法。
 
         p {
