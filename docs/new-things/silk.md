@@ -15,3 +15,10 @@
     等等
 * 都是以`silk.co`为二级域名，每个故事自己一个三级子域名。制作、展示，包括分享展示都是在silk平台上。
 
+
+## 视频demo
+
+通过Silk平台讲述谷歌无人驾驶汽车的事故发生情况。
+
+<video width="869" height="480" controls><source src="./video/silk-demo-google-cars-accidents.mp4"></video>
+

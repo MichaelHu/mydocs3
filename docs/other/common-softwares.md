@@ -79,3 +79,22 @@ UE效果图制作，通常用于查看UE输出稿。
 github: <https://github.com/MichaelHu/turbo-markdown>
 
 
+### go2shell
+
+`App Store`可免费下载，Spotlight搜出`Go2Shell`，再拖到Finder的工具栏上。以下命令打开设置界面：
+
+    open -a Go2Shell --args config
+
+site: <http://zipzapmac.com/Go2Shell>
+
+
+
+
+## Safari插件
+
+* Awesome Screenshot，用于网页截屏，支持可视区、整页面、选择区域三种截屏方式
+* QRify，二维码生成
+* QR Code Generator，二维码生成，已经下架
+
+
+

@@ -48,6 +48,8 @@ HTTP 2.0 相比 1.1 的更新大部分集中于：
 
 
 ### 相关布道文章
-<http://www.alloyteam.com/2016/07/httphttp2-0spdyhttps-reading-this-is-enough/>
+
+* <http://www.alloyteam.com/2016/07/httphttp2-0spdyhttps-reading-this-is-enough/>
+* HTTP/2.0那些事 <http://www.mamicode.com/info-detail-1199706.html>
 
 

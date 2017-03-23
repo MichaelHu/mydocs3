@@ -79,9 +79,9 @@ mac下进行`-g`安装，出现`EACCES`错误，原因是对`/usr/local/lib/node
 
 ### install
 
-    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh | bash
+    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
 or
-    wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh | bash
+    wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
 
 ### 使用方式
 
@@ -123,6 +123,14 @@ or
     $ nvm use
     Found '/path/to/project/.nvmrc' with version <5.9>
     Now using node v5.9.1 (npm v3.7.3)
+
+
+### node包手动安装
+
+`nvm`使用`~/.nvm/versions/node/`存放各个版本的node，可将node包释放到该目录下即可。
+
+    $ ls ~/.nvm/versions/node/
+    v6.10.1	v7.7.4
 
 
 

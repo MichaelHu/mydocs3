@@ -212,6 +212,73 @@ todo
 
 
 
+## echo带颜色文本
+
+> 参考：<http://www.cnblogs.com/lr-ting/archive/2013/02/28/2936792.html>
+
+### 格式说明
+
+    $ echo -e "\033[<background-color>;<font-color>m <string> \033[0m"
+    $ echo -e "\033[<font-color>m <string> \033[0m"
+    $ echo -e "\033[<font-color>m\033[4m <string> \033[0m"
+
+* `<font-color>`后面带`m`
+* `<string>`为字符串，其间的`空格保留`
+* 控制字段的格式为：`\033[*m`
+    * 同时设置背景色与前景色： `\033[<background-color>;<font-color>m`
+    * 只设置前景色： `\033[<font-color>m`
+    * 同时设置前景色与下划线：`\033[<font-color>m\033[4m`
+* 属性生效范围在`\033[*m`开始到`\033[0m`结束
+* `Mac`下，`echo -e`在命令行中正常，但在脚本文件中，不能加`-e`选项，否则直接输出`-e`
+
+例如：
+
+    $ echo -e "\033[47;30m 白底黑字 \033[0m"
+    $ echo -e "\033[31m 红字 \033[0m"
+    $ echo -e "\033[33m\033[4m 下划线黄字 \033[0m"
+
+
+### 色值及其他选项
+
+* `前景色`： 30-黑，31-红，32-绿，33-黄，34-蓝，35-紫，36-天蓝，37-白，例如：`\033[31m`，开启红色字属性
+* `背景色`： 40-黑，41-红，42-绿，43-黄，44-蓝，45-紫，46-天蓝，47-白
+* `其他选项`： 
+    * `0` - 关闭所有属性
+    * `1` - 设置高亮度
+    * `4` - 下划线
+    * `5` - 闪烁
+    * `7` - 反显
+    * `8` - 消隐
+    * `nA` 光标上移n行
+    * `nB` 光标下移n行
+    * `nC` 光标右移n行
+    * `nD` 光标左移n行
+    * `y;xH` 设置光标位置
+    * `2J` 清屏
+    * `K` 清除从光标到行尾的内容
+    * `s` 保存光标位置
+    * `u` 恢复光标位置
+    * `?25l` 隐藏光标
+    * `?25h` 显示光标
+
+
+
+
+### 颜色文本例子
+
+    echo -e "# =================================== \033[31mERROR\033[0m ==================================== #"
+    echo -e "# 确保开发环境一致，保证代码构建质量，务必使用\033[47;30m  node-v6.10.1 \033[0m"
+    echo -e "# 请安装\033[33mnvm\033[0m并执行"
+    echo -e "# \033[33m$ nvm use 6.10.1\033[0m"
+    echo -e "# =================================== \033[31mERROR\033[0m ==================================== #"
+
+输出：
+
+ <img src="./img/shell-color-text.png" style="max-height:80px">
+
+
+
+
 
 
 ## scp
@@ -752,6 +819,31 @@ todo
 
     $ grep -irE 'mongodb' --color=auto . # Mac版本
 
+跳过二进制文件的匹配:
+
+    $ grep -I 'hello' file
+    $ grep --binary-file=without-match 'hello' file
+
+跳过某些模式的文件名（注意`mac`和`linux`的差异较大）：
+
+    $ grep -r --exclude=GLOB 'hello' .
+    $ grep -r --exclude-from=listfile 'hello' .
+
+仅查找特定文件：
+
+    $ grep --include=GLOB 'hello'
+
+递归目录树查找：
+
+    $ grep -r recursive 'hello' .
+    $ grep -R recursive 'hello' .
+    $ grep --recursive 'hello' .
+
+
+
+
+    
+
 
 
 
@@ -847,6 +939,16 @@ for `MAC`
 
     b
 
+sed的正则接近`perl`的正则，比如反向引用`&`：
+
+    find ./pdf | sed -e 's/^.*$/<&>/g' 
+
+以上代码将输出：
+
+    <./pdf/a.pdf>
+    <./pdf/c/d.pdf>
+
+
 
 
 
@@ -935,6 +1037,15 @@ sed有`perl` style的扩展正则功能，vim只有`magic`方式的`初级正则
 2. `单引号`括住的命令中`不能`带`单引号`，使用"`\'`"也不行
 3. `双引号`括住的命令中可以带`双引号`，当然包括`单引号`。也即反斜线转义在双引号中有效。
     建议都`使用`双引号
+
+
+### 过滤图片文件，并保留目录结构复制到指定目录
+
+    for i in `find src -type f -name "*.png"`; do \
+        [ ! -e ./tmp/`dirname $i` ] \
+        && mkdir -p ./tmp/`dirname $i`; \
+        cp $i ./tmp/`dirname $i`; \
+    done
 
 
 
