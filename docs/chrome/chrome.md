@@ -5,6 +5,10 @@
 
 ## chrome升级信息
 
+* `Chrome Platform Status`: <https://www.chromestatus.com/samples>
+
+    <img src="./img/chrome-platform-status.png" style="max-height:500px">
+* `github: Google Chrome Samples`: <https://github.com/GoogleChrome/samples>
 * Google将在Chrome56中停止支持SHA-1: <http://www.wosign.com/news/Google-Chrome-SHA1.htm>
 
 

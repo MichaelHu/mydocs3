@@ -246,6 +246,8 @@ editor本地book的目录存放在`~/GitBook/Library/Import/`目录下，假如�
 
 
 
+
+
 ## 插件编写
 
 ### Features
@@ -289,8 +291,17 @@ editor本地book的目录存放在`~/GitBook/Library/Import/`目录下，假如�
 
 
 
+## 二次开发
+
+* <https://github.com/MichaelHu/gitbook-plugin-theme-sophon>
+* <https://github.com/MichaelHu/gitbook-plugin-otherlink>
+
+
+
+
 ## books
 
 * Front-End Developer Handbook 2017 <https://www.gitbook.com/book/frontendmasters/front-end-handbook-2017/details>
 * Front-End Developer Handbook 2016 <https://www.frontendhandbook.com>
+
 

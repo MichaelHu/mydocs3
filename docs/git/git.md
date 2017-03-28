@@ -153,6 +153,7 @@
     git checkout -B <new_branch> [<start_point>]
     git checkout -- <filename> 
     git checkout <commit> -- <filename> 
+    git checkout [-f|--ours|--theirs|-m|--conflict=<style>] [<tree-ish>] [--] <paths>...
     git checkout master^
     git checkout master^^
 
@@ -169,6 +170,13 @@
 
     # 恢复filename文件到commit所指的状态
     git checkout 41e86dec9d37b74e12b234fa5b95c35943f52932 -- filename
+
+    # 将working dir下的package.json文件替换成master分支下的版本
+    git checkout --theirs master package.json
+
+todo:
+
+    git checkout --ours file 和 git checkout --theirs file
 
 
 ## git diff
