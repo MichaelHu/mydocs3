@@ -356,6 +356,43 @@ todo
 用户输入`vim`真正使用的是`vim8`，which能真正体现用户视角。
 
 
+## uname
+
+> print the system information，Mac通用
+
+    uname [amnprsv] 
+    -a      Behave as though all of the options -mnrsv were specified.
+    -m      print the machine hardware name.
+    -n      print the nodename (the nodename may be a name that the system is known by to a communications network).
+    -p      print the machine processor architecture name.
+    -r      print the operating system release.
+    -s      print the operating system name.
+    -v      print the operating system version.
+
+不带任何参数，等价于:`uname -s`。`Linux`下提供更多的option。
+
+举例如下：
+
+    $ uname 
+    Linux
+    $ uname -a
+    Linux iZ25o3dvl9aZ 2.6.32-431.23.3.el6.x86_64 #1 SMP Thu Jul 31 17:20:51 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
+    $ uname -m
+    x86_64
+    $ uname -n
+    iZ25o3dvl9aZ
+    $ uname -p
+    x86_64
+    $ uname -r
+    2.6.32-431.23.3.el6.x86_64
+    $ uname -s
+    Linux
+    $ uname -v
+    #1 SMP Thu Jul 31 17:20:51 UTC 2014
+
+可以用这个命令判断`系统平台`，以适配跨平台脚本。
+
+
 
 ## 版本号
 

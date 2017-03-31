@@ -13,6 +13,11 @@
 * MDN: <https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide>
 
 
+## 算符优先级
+
+`单乘加移小，等位与异或，与或三赋逗`
+
+
 ## typeof
 
 `typeof`输出是`字符串`类型，输出为以下`7个`值之一：
@@ -298,6 +303,11 @@ IE9以下，`hasEnumBug`
         s.append_show(
             '( 3.1415 | 0 )'
             , 3.1415 | 0 
+        );
+
+        s.append_show(
+            '( 3.1415 & 0 )'
+            , 3.1415 & 0 
         );
 
     })();

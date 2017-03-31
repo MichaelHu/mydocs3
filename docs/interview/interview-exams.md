@@ -30,9 +30,15 @@
 3. 有一定的错误处理功能。
 
 `分析`：
-1. 有缜密思考的，表明编写代码有较强的健壮性，质量可以保证。比如对非字符串的判断
-2. 使用正则方式还是只会使用基于索引查找再做字符串方法调用 
+1. 有`缜密`思考的，表明编写代码有较强的健壮性，质量可以保证。比如对非字符串的判断
+2. 使用`正则方式`还是只会使用基于索引查找再做字符串方法调用 
 3. 知道对`&ensp;`, `&emsp;`以及`全角空格`也能过滤，分别是`&#8194;`, `&#8195;`和`&#12288;`
+4. jQuery的一个实现：
+
+        // Support: Android <=4.0 only
+        // Make sure we trim BOM and NBSP
+        rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g
+
 
 `简单例子`：
 
@@ -74,7 +80,6 @@
 <div class="test-panel">
 </div>
 </div>
-
 
 
 
@@ -401,5 +406,11 @@
     * 前端程序架构上，有什么考虑，怎样去推进？
 
 
+
+## 其他参考
+
+* github（之一）:  <https://github.com/helloqingfeng/Awsome-Front-End-learning-resource>
+* github（之二）:  <https://github.com/qiu-deqing/FE-interview>
+* 知乎：<https://zhuanlan.zhihu.com/p/25266542>
 
 

@@ -364,7 +364,43 @@ todo: `git config --set push.default ...`
 
     git reset HEAD~1
 
+### 恢复方法
 
+> `git reset --hard`是一个比较`危险`的`操作`，需要`慎重`。假设不小心误删文件，可以尝试以下方法恢复。
+
+
+只执行了`git add`，但未执行`git commit`，这时执行了`git reset --hard`，那些文件常规方法就不好找回来了。需要花大力气才能找回，一个可行的方法是：
+
+    $ git fsck --lost-found 
+    $ cd .git/lost-found
+    $ ls
+    commit other # 按类型存放在这两个目录下，目前理解只是add而没有commit的都放在other目录下
+
+other目录下的object对象`全都是blob类型`的，但可能对应真实的文本文件、png文件等，需要自己通过`git cat-file`命令，辅以其他命令和判断，自行找回文件。
+
+一个难点在于，文件是保存下来了，但是`原始信息都没有了`，比如原来是什么文件名、后缀名是什么都没有，只能自己通过cat出来的文件内容，判断对应的是什么文件。
+
+一个方法是可以批量输出object文件的`文件名、大小、文件前几行`内容，并导入到一个新文件，然后在新文件中进行`统一判断`。以下命令供参考：
+
+    $ let m=1; for i in `ls`; do \
+        echo; echo $m. $i `ls -lh $i | awk '{print $5}'`; \
+        git cat-file -p $i | head -3; ((m=m+1)); \
+        done > ../../../cat.lst
+    $ vim ../../../cat.lst
+    $ cat ../../../cat-new.lst \
+        | awk '/^[0-9]+/{printf "git cat-file -p %s > ../../../____%s\n",$2,$4}' \
+        | grep -vE '____$' \
+        | sed -e 's/____//g' \
+        | sh -x
+
+另外，以下命令能提供最近添加的对象信息，也能提供一些帮助信息：
+
+    $ find .git/objects -type f | xargs ls -lt | sed 60q
+
+
+若`git reset --hard`前执行过`git commit`，则比较方便能恢复，可以通过`git reflog`找到对应commit，再`reset`回去即可。
+
+参考文章： <http://www.tuicool.com/articles/mqm2uiF>
 
 
 
