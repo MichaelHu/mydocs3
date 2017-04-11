@@ -3,9 +3,32 @@
 > css字体
 
 
+<style type="text/css">
+@import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
+</style>
+<script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
+
+
+## 相关资源
+
+* fonts.css: <http://zenozeng.github.io/fonts.css/>
+* fontmin: <http://ecomfe.github.io/fontmin/>
+* css-font-stack: <http://www.cssfontstack.com> 提供不同`英文字体`的安装比率，提出`web-safe-font`的概念
+    * Sans-serif: `Arial`
+    * Serif: `Times New Roman, Georgia`
+    * Monospaced: `Courier New`
+* List of typefaces included with Microsoft Windows: <https://en.wikipedia.org/wiki/List_of_typefaces_included_with_Microsoft_Windows>
+* `Icon-font`图标字体的四类制作方法 <http://www.jianshu.com/p/095eb298ed18>
+* 阿里妈妈矢量图标库 <http://www.iconfont.cn/plus>
+* 170403 消灭豆腐块！谷歌联合Adobe发布全新开源汉字字体 <https://github.com/googlei18n/noto-fonts>
+
+
 ## tips
 
-* `font-family`兼容性写法
+* `font-family`兼容性写法，最大化兼容OS推荐的优化字体：
+
+        font-family: Arial, "Microsoft YaHei", SimSun, serif;
+
 * font-variant
 
 
@@ -44,6 +67,233 @@
 
     Arial,Times,San-Serif
     SimHei,SimSun,Courier-New
+
+
+
+
+## @font-face
+
+> `css2`定义，可以在浏览器中使用自定义字体
+
+### 语法
+
+语法：
+
+    @font-face { 
+        font-family: <a-remote-font-name>; 
+        src: <source> [,<source>]*; 
+        [font-weight: <weight>]; 
+        [font-style: <style>]; 
+    }
+
+举例：
+
+    @font-face {
+        font-family: 'iconfontyyy';
+        src: url('iconfont.eot');
+        src: url('iconfont.eot?#iefix') format('embedded-opentype'),
+            url('iconfont.woff') format('woff'),
+            url('iconfont.ttf') format('truetype'),
+            url('iconfont.svg#iconfontyyy') format('svg');
+    }
+
+
+### 兼容性
+
+> `5种`格式的字体文件`.ttf`, `.otf`, `.svg`, `.woff`, `.eot`
+
+* Webkit/Safari(3.2+)：TrueType/OpenType TT (.ttf) 、OpenType PS (.otf)；
+* Opera (10+)： TrueType/OpenType TT (.ttf) 、 OpenType PS (.otf) 、 SVG (.svg)；
+* Internet Explorer： 自ie4开始，支持EOT格式的字体文件；ie9支持WOFF；
+* Firefox(3.5+)： TrueType/OpenType TT (.ttf)、 OpenType PS (.otf)、 WOFF (since Firefox 3.6)
+* Google Chrome：TrueType/OpenType TT (.ttf)、OpenType PS (.otf)、WOFF since version 6
+
+由上面可以得出：`.eot + .ttf /.otf + svg + woff` = 所有浏览器的完美支持。
+
+
+
+
+## font-size, line-height 以及 vertical-align
+
+### 默认按baseline对齐
+
+* `同`font-size，`不同`font-family，`基线(baseline)`位置`不同`
+* `inline元素`对齐方式，不管这些元素的font-size、height等是否一样，默认总是按`baseline`对齐
+* `inline-block`元素的高度不足以容纳内部文本，则以inline-block元素的`下边框`和其他元素的`baseline`对齐
+* `line-height: normal;`，会按字体设计渲染出一个`合适`的高度，考虑字体的`ascent`和`descent`等参数
+* `input`文本在现代浏览器中会`垂直居中`展示，但低版本IE浏览器（比如IE8及一下）需要同时设置`height`和`line-height`
+
+
+<div id="test_font_baseline" class="test">
+<div class="test-container">
+
+    @[data-script="html editable"]<style type="text/css">
+        #test_font_baseline p { position: relative; font-size:50px; line-height: normal; }
+        #test_font_baseline p span { padding: 0; margin-right: 0; background-color: #ddd; }
+        #test_font_baseline p .a { font-family: Arial; }
+        #test_font_baseline p .b { font-family: "Times New Roman"; }
+        #test_font_baseline p .c { font-family: "Courier New"; }
+        #test_font_baseline p .d { font-family: Tahoma; }
+        #test_font_baseline p .e { font-family: SimSun; }
+        #test_font_baseline p .input-a { height: 80px; width: 60px; font-size: 20px; line-height: 80px; }
+        #test_font_baseline p .input-b { height: 80px; width: 60px; font-size: 50px; line-height: 80px; }
+        #test_font_baseline p .input-c { height: 100px; width: 60px; font-size: 20px; line-height: 100px; }
+        #test_font_baseline p .input-d { height: 100px; width: 60px; font-size: 50px; line-height: 100px; }
+        #test_font_baseline p .input-e { height: 100px; width: 60px; font-size: 120px; line-height: 100px; }
+        #test_font_baseline p .line { display: block; position: absolute; top: 98px; width: 100%; padding: 0; height: 1px; border: none; background-color: #e377c2; }
+    </style>
+    <p>
+        <span class="a">Bafg</span>
+        <span class="b">Bafg</span>
+        <span class="c">Bafg</span>
+        <span class="d">Bafg</span>
+        <span class="e">Bafg</span>
+        <input class="input-a" type="text" value="xx+">
+        <input class="input-b" type="text" value="X">
+        <input class="input-c" type="text" value="正">
+        <input class="input-d" type="text" value="正">
+        <input class="input-e" type="text" value="中">
+        <span class="line"></span>
+    </p>
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+### 对齐文本框与文本
+
+> `vertical-align: middle` : Align the vertical midpoint of the box with the baseline of the parent box plus half the x-height of the parent.
+
+* `vertical-align`应用于`inline`或`inline-block`的元素，以及`table-cell`元素
+* `vertical-align: middle;`的含义是`子元素`box的垂直方向`中线`与`父元素基线 + 父元素x-height / 2` 对齐，该线穿过`父容器小写x`的中心，如下图所示的紫色线条
+* `x-height`表示`小写x`的高度，`父`容器`font-size`决定`x-height`
+* 子元素box的`高度不足`以容纳内部文本时（子元素高度`小于`line-height为normal时的自然高度），对齐文本无从谈起
+* `vertical-align: baseline;` 等价于 `vertical-align: 0px;`，支持正负值，可进行`基于baseline`的上下`微调整`。
+* 只通过设置`vertical-align: middle;`很难使input文本框与父容器文本对齐，比如`x 文本2 x`与其左右的`文`就上下不对齐，而`@[style="color:#17becf;"]x 文本4 x`通过设置`vertical-align: 13px;`达到了与父容器文本的对齐
+* 我们要求的是子元素的`文本边框`（而不是`文本`）与父容器的文本对齐，从视觉上来说也是有这个倾向
+* `span元素`的边框及文本与父容器文本`默认情况`下( baseline )就有不错的`对齐`效果，如下红色文本`文x本`
+
+
+<div id="test_font_valign" class="test">
+<div class="test-container">
+
+    @[data-script="html editable"]<style type="text/css">
+        #test_font_valign p { position: relative; font-size:50px; line-height: normal; border: 1px dashed #bbb; }
+        #test_font_valign p span { padding: 0; background-color: #ddd; }
+        #test_font_valign p .a { font-family: Arial; }
+        #test_font_valign p .b { font-family: "Times New Roman"; }
+        #test_font_valign p .c { font-family: "Courier New"; }
+        #test_font_valign p .d { font-family: Tahoma; }
+        #test_font_valign p .e { font-family: SimSun; }
+        #test_font_valign p .input-a { height: 60px; width: 100px; font-size: 20px; line-height: 60px; vertical-align: middle; }
+        #test_font_valign p .input-b { height: 60px; width: 160px; font-size: 50px; line-height: 60px; vertical-align: middle; }
+        #test_font_valign p .input-c { height: 60px; width: 100px; font-size: 20px; line-height: 60px; vertical-align: 13px; color: #17becf; }
+        #test_font_valign p .line { display: block; position: absolute; top: 40px; width: 100%; padding: 0; height: 1px; border: none; background-color: #e377c2; }
+    </style>
+    <p>
+        文Xx<span class="a">文x本</span>
+        文<input class="input-a" type="text" value="x 文本2 x">
+        文<input class="input-b" type="text" value="x 文本3 x">
+        文<input class="input-c" type="text" value="x 文本4 x">
+        文Xx
+        <span class="line"></span>
+    </p>
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+### 各类对齐效果
+
+* top对齐，是按照子元素的文本top边框与父容器的文本top边框对齐
+* bottom对齐，是按照子元素的文本bottom边框与父容器的文本bottom边框对齐
+* 随着`font-size`的变化，不同对齐方式的效果也会发生变化。比如把父容器的font-size改成`20px`，对齐效果会发生变化
+
+
+<div id="test_font_valigns" class="test">
+<div class="test-container">
+
+    @[data-script="html editable"]<style type="text/css">
+        #test_font_valigns p { position: relative; font-size:50px; line-height: normal; border: 1px dashed #bbb; padding: 10px 0; }
+        #test_font_valigns p .input-a { height: 50px; width: 90px; font-size: 20px; line-height: 50px; vertical-align: baseline; }
+        #test_font_valigns p .input-b { height: 50px; width: 90px; font-size: 20px; line-height: 50px; vertical-align: top; }
+        #test_font_valigns p .input-c { height: 50px; width: 90px; font-size: 20px; line-height: 50px; vertical-align: middle; }
+        #test_font_valigns p .input-d { height: 50px; width: 90px; font-size: 20px; line-height: 50px; vertical-align: bottom; }
+        #test_font_valigns p .input-e { height: 50px; width: 90px; font-size: 20px; line-height: 50px; vertical-align: 13px; color: #17becf; }
+        #test_font_valigns p .line { display: block; position: absolute; top: 50px; width: 100%; padding: 0; height: 1px; border: none; background-color: #e377c2; }
+    </style>
+    <p>
+        文Xx
+        <input class="input-a" type="text" value="x 文本1 x">
+        文<input class="input-b" type="text" value="x 文本2 x">
+        文<input class="input-c" type="text" value="x 文本3 x">
+        文<input class="input-d" type="text" value="x 文本4 x">
+        文<input class="input-e" type="text" value="x 文本5 x">
+        文Xx
+        <span class="line"></span>
+    </p>
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+### 对齐单、复选框与文本
+
+* 使用`vertical-align: middle;`基本上能做到较好的对齐
+
+<div id="test_font_checkbox" class="test">
+<div class="test-container">
+
+    @[data-script="html editable"]<style type="text/css">
+        #test_font_checkbox p { position: relative; font-size:16px; line-height: normal; border: 1px dashed #bbb; }
+        #test_font_checkbox p label { display: inline-block; margin: 0; }
+        #test_font_checkbox p .input-a { width: 90px; font-size: 16px; line-height: 30px; }
+        #test_font_checkbox p .input-b { width: 90px; vertical-align: middle; }
+        #test_font_checkbox p .input-c { width: 90px; vertical-align: middle; }
+        #test_font_checkbox p .input-d { width: 90px; vertical-align: middle; }
+        #test_font_checkbox p .input-e { width: 90px; vertical-align: middle; }
+        #test_font_checkbox p .line { display: block; position: absolute; top: 18px; width: 100%; padding: 0; height: 1px; border: none; background-color: #e377c2; }
+    </style>
+    <p>
+        文Xx
+        <input class="input-a" type="text" value="x 文本1 x">
+        文x<input class="input-b" type="radio">
+        文x<input class="input-c" type="checkbox">
+        <label>文x<input class="input-d" type="radio"></label>
+        <label>文x<input class="input-e" type="checkbox"></label>
+        文Xx
+        <span class="line"></span>
+    </p>
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+### ie6下的效果
+
+* 不支持`inline-block`
+* input文本与父容器文本的对齐方式，使用`input的下边框`与父容器文本基线对齐
+* 反正`IE6`是一场`噩梦`，幸好现在已经不用考虑它了
+
+见识一下ie6下的效果：
+ <img src="./img/ie6-screenshot-170411.png" style="max-height:600px;">
+
+
 
 
 ## Mac Font

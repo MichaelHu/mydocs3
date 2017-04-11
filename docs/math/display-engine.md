@@ -5,12 +5,12 @@
 ## Overview
 
 * 数学符号标准或语言： `LaTex`, `MathML`, `AsciiMath`等，各种展现引擎支持其中的一种或多种输入
-* 实现以上标准或支持以上语言的展现引擎：MathJax
-* 展现和编辑引擎：mathquill, KityFormula, eWebEditor等等
+* 实现以上标准或支持以上语言的`展现引擎`：MathJax
+* `展现和编辑引擎`：mathquill, KityFormula, eWebEditor等等
 
 ### Tex 与 LaTex
 
-* `Tex`是`1970年代末`出现的数学标记命令，先进仍大量使用，它成为了数学输入的工业标准
+* `Tex`是`1970年代末`出现的数学标记命令，现今仍大量使用，它成为了数学输入的`工业标准`
 * `LaTex`是Tex目前的变种中`最主流`的一种标准
 * <http://docs.mathjax.org/en/latest/tex.html> 
 
@@ -24,14 +24,14 @@ LaTeX is a high-quality typesetting system; it includes features designed for th
 
 * 科学文档排版的`标准`；基于该标准有一系列的免费软件。
 * `AMS-LaTex`就是基于该标准的一个扩展包，提供了数学排版的标准
-* site: <http://www.latex-project.org>，LaTex项目，提供排版系统标准。
+* site: <http://www.latex-project.org>，LaTex项目，提供排版系统标准
 * 基于TEX的排版系统，使用TEX作为格式化引擎
 * 百科：<http://baike.baidu.com/link?url=HASCY6yvUXWoeue0ylDgcTRJA53tsuvaaMmE78C3Ltbyu4EcK0MRs1rfYG9oJdJ5M76ah_E-AsQSCa95Y6xU7K>
 * Tex目前的`主流`变种
 
 > LaTeX is based on the idea that it is better to leave document design to document designers, and to let authors get on with writing documents. 
 
-So, in LaTeX you would input this document as: 
+So, in LaTeX you would input the document as: 
 
 	\documentclass{article}
 	\title{Cartesian closed categories and the price of eggs}
@@ -66,7 +66,7 @@ So, in LaTeX you would input this document as:
 
 ## MathJax
 
-详见<ref://./mathjax.md.html> [ todo ]
+详见<ref://./mathjax.md.html>
 
 * 安装文档：<https://github.com/mathjax/MathJax-docs/blob/master/installation.rst>
 * AMS为其`Managing Partner`，`stackoverflow`是其`partner`
@@ -80,6 +80,8 @@ So, in LaTeX you would input this document as:
 ## mathquill
 
 > Easily type math in your webapp
+
+详见<ref://./mathquill.md.html>
 
  <img src="./img/mathquill-demo.gif" style="max-height:90px">
 

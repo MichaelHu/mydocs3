@@ -42,6 +42,9 @@
     MyBookLive:~# cat /etc/issue
     Debian GNU/Linux 5.0 \n \l
 
+    MyBookLive:~# uname -a
+    Linux MyBookLive 2.6.32.11-svn70860 #1 Thu May 17 13:32:51 PDT 2012 ppc GNU/Linux
+
 系统版本是`Debian GNU/Linux 5.0`
 
 
@@ -49,6 +52,9 @@
 
     WDMyCloud:~# cat /etc/issue
     Debian GNU/Linux 7 \n \l
+
+    WDMyCloud:~# uname -a
+    Linux WDMyCloud 3.2.26 #1 SMP Thu Jul 9 11:14:15 PDT 2015 wd-2.4-rel armv7l GNU/Linux
 
 系统版本是`Debian GNU/Linux 7`
 

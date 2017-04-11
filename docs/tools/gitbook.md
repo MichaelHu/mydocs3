@@ -179,6 +179,7 @@ editor本地book的目录存放在`~/GitBook/Library/Import/`目录下，假如�
 * `gitbook-plugin-theme-api`
 * `gitbook-plugin-theme-official`
 * `gitbook-plugin-comment`: 支持内联评论，`gitbook.com专用`
+* `gitbook-plugin-sitemap`: 暂不知其作用。但已知问题是`node-5.10.1`版本不能安装`1.1.0+`的版本，需要更新node版本才能正常安装。
 * `gitbook-plugin-search-pro`: <https://github.com/gitbook-plugins/gitbook-plugin-search-pro>
 
 其他插件可在此处获得：<https://github.com/GitbookIO>

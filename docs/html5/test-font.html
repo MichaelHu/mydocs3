@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+    <head>
+        <title>css font test</title>
+        <meta charset="utf-8">
+        <style type="text/css">
+            * {
+                margin: 0;
+                padding: 0;
+            }
+            body, input {
+                font-family: Arial, "Microsoft YaHei", SimSun, serif;
+            }
+        </style>
+    </head>
+    <body>
+<style type="text/css">
+    #test_font_baseline p { position: relative; font-size:50px; line-height: normal; }
+    #test_font_baseline p span { padding: 0; margin-right: 0; background-color: #ddd; }
+    #test_font_baseline p .a { font-family: Arial; }
+    #test_font_baseline p .b { font-family: "Times New Roman"; }
+    #test_font_baseline p .c { font-family: "Courier New"; }
+    #test_font_baseline p .d { font-family: Tahoma; }
+    #test_font_baseline p .e { font-family: SimSun; }
+    #test_font_baseline p .input-a { height: 80px; width: 60px; font-size: 20px; line-height: 80px; }
+    #test_font_baseline p .input-b { height: 80px; width: 60px; font-size: 50px; line-height: 80px; }
+    #test_font_baseline p .input-c { height: 100px; width: 60px; font-size: 20px; line-height: 100px; }
+    #test_font_baseline p .input-d { height: 100px; width: 60px; font-size: 50px; line-height: 100px; }
+    #test_font_baseline p .input-e { height: 100px; width: 60px; font-size: 120px; line-height: 100px; }
+    #test_font_baseline p .line { display: block; position: absolute; top: 98px; width: 100%; padding: 0; height: 1px; border: none; background-color: #e377c2; }
+</style>
+<div id="test_font_baseline">
+<p>
+    <span class="a">Bafg</span>
+    <span class="b">Bafg</span>
+    <span class="c">Bafg</span>
+    <span class="d">Bafg</span>
+    <span class="e">Bafg</span>
+    <input class="input-a" type="text" value="xx+">
+    <input class="input-b" type="text" value="X">
+    <input class="input-c" type="text" value="正">
+    <input class="input-d" type="text" value="正">
+    <input class="input-e" type="text" value="中">
+    <span class="line"></span>
+</p>
+</div>
+<br>
+
+
+
+
+
+<style type="text/css">
+    #test_font_valign p { position: relative; font-size:50px; line-height: normal; border: 1px dashed #bbb; }
+    #test_font_valign p span { padding: 0; background-color: #ddd; }
+    #test_font_valign p .a { font-family: Arial; }
+    #test_font_valign p .b { font-family: "Times New Roman"; }
+    #test_font_valign p .c { font-family: "Courier New"; }
+    #test_font_valign p .d { font-family: Tahoma; }
+    #test_font_valign p .e { font-family: SimSun; }
+    #test_font_valign p .input-a { height: 60px; width: 100px; font-size: 20px; line-height: 60px;  vertical-align: middle; }
+    #test_font_valign p .input-b { height: 60px; width: 160px; font-size: 50px; line-height: 60px;  vertical-align: middle; }
+    #test_font_valign p .input-c { height: 60px; width: 100px; font-size: 20px; line-height: 60px;  vertical-align: 13px; color: #17becf; }
+    #test_font_valign p .line { display: block; position: absolute; top: 40px; width: 100%; padding: 0; height: 1px; border: none; background-color: #e377c2; }
+</style>
+<div id="test_font_valign">
+<p>
+    文Xx<span class="a">文x本</span>
+    文<input class="input-a" type="text" value="x 文本2 x">
+    文<input class="input-b" type="text" value="x 文本3 x">
+    文<input class="input-c" type="text" value="x 文本4 x">
+    文Xx
+    <span class="line"></span>
+</p>
+</div>
+<br>
+
+
+
+
+<style type="text/css">
+    #test_font_valigns p { position: relative; font-size:50px; line-height: normal; border: 1px dashed #bbb; padding: 10px 0; }
+    #test_font_valigns p .input-a { height: 50px; width: 90px; font-size: 20px; line-height: 50px; vertical-align: baseline; }
+    #test_font_valigns p .input-b { height: 50px; width: 90px; font-size: 20px; line-height: 50px; vertical-align: top; }
+    #test_font_valigns p .input-c { height: 50px; width: 90px; font-size: 20px; line-height: 50px; vertical-align: middle; }
+    #test_font_valigns p .input-d { height: 50px; width: 90px; font-size: 20px; line-height: 50px; vertical-align: bottom; }
+    #test_font_valigns p .input-e { height: 50px; width: 90px; font-size: 20px; line-height: 50px; vertical-align: 13px; color: #17becf; }
+    #test_font_valigns p .line { display: block; position: absolute; top: 50px; width: 100%; padding: 0; height: 1px; border: none; background-color: #e377c2; }
+</style>
+<div id="test_font_valigns">
+<p>
+    文Xx
+    <input class="input-a" type="text" value="x 文本1 x">
+    文<input class="input-b" type="text" value="x 文本2 x">
+    文<input class="input-c" type="text" value="x 文本3 x">
+    文<input class="input-d" type="text" value="x 文本4 x">
+    文<input class="input-e" type="text" value="x 文本5 x">
+    文Xx
+    <span class="line"></span>
+</p>
+</div>
+<br>
+
+
+
+
+<style type="text/css">
+    #test_font_checkbox p { position: relative; font-size:16px; line-height: normal; border: 1px dashed #bbb; }
+    #test_font_checkbox p label { display: inline-block; margin: 0; }
+    #test_font_checkbox p .input-a { width: 90px; height: 30px; font-size: 16px; line-height: 30px; }
+    #test_font_checkbox p .input-b { width: 90px; vertical-align: middle; }
+    #test_font_checkbox p .input-c { width: 90px; vertical-align: middle; }
+    #test_font_checkbox p .input-d { width: 90px; vertical-align: middle; }
+    #test_font_checkbox p .input-e { width: 90px; vertical-align: middle; }
+    #test_font_checkbox p .line { display: block; position: absolute; top: 18px; width: 100%; padding: 0; height: 1px; border: none; background-color: #e377c2; }
+</style>
+<div id="test_font_checkbox">
+<p>
+    文Xx
+    <input class="input-a" type="text" value="x 文本1 x">
+    文x<input class="input-b" type="radio">
+    文x<input class="input-c" type="checkbox">
+    <label>文x<input class="input-d" type="radio"></label>
+    <label>文x<input class="input-e" type="checkbox"></label>
+    文Xx
+    <span class="line"></span>
+</p>
+</div>
+
+
+
+
+
+    </body>
+</html>

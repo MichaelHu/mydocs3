@@ -1,11 +1,29 @@
 # css3 
 
 
+<style type="text/css">
+@import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
+</style>
+<script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
+
+* w3c css [ the latest ]: <https://www.w3.org/TR/CSS/>
+* css 2.1: <https://www.w3.org/TR/CSS2/>
+
 
 ## rem单位
 
 
 <img src="./img/font-size.jpg">
+
+
+## vertical-align
+
+> Align the vertical midpoint of the box with the baseline of the parent box plus half the x-height of the parent.
+
+* <https://www.w3.org/TR/CSS2/visudet.html#propdef-vertical-align>
+* Deep dive CSS: font metrics, line-height and vertical-align <http://iamvdo.me/en/blog/css-font-metrics-line-height-and-vertical-align>
+* 深入了解CSS字体度量，行高和vertical-align <https://www.w3cplus.com/css/css-font-metrics-line-height-and-vertical-align.html>
+
 
 
 ## clip
@@ -39,6 +57,10 @@
 
 
 
+## css grid layout
+
+<https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout>
+
 
 
 ## flexible box layout
@@ -53,23 +75,55 @@
         display: flex | inline-flex;
 
 
+### 可用属性
+
+> 注意`flex container`与`flex item`的区别
+
+    display: flex | inline-flex;
+    flex-flow: <flex-direction> || <flex-wrap>
+        flex-flow: row wrap;
+    flex-direction: row | row-reverse | column | column-reverse;
+        flex: row;
+    flex-wrap: nowrap | wrap | wrap-reverse;
+    
+    flex: none | [<flex-flow> <flex-shrink>? || <flex-basis>]
+        flex: none;   等价于  flex: 0 0 auto;
+        flex: 1 0 auto;
+        flex: 1 0 content;
+        flex: 1 0 200px;
+
+    justify-content: flex-start | flex-end | center | space-between | space-around;
+
+
 ### 例子1
 
+
+<div id="test_flex_case_1_css" class="test">
+<div class="test-container">
+
+    @[data-script="html editable"]<style type="text/css">
     #deals {
-      display: flex;        /* Flex layout so items have equal height  */
-      flex-flow: row wrap;  /* Allow items to wrap into multiple lines */
+        display: flex;        /* Flex layout so items have equal height  */
+        flex-flow: row wrap;  /* Allow items to wrap into multiple lines */
+        justify-content: center;
+        width: 90%;
+        margin: 0 auto;
     }
     .sale-item {
-      display: flex;        /* Lay out each item using flex layout */
-      flex-flow: column;    /* Lay out item’s contents vertically  */
+        display: flex;        /* Lay out each item using flex layout */
+        flex-flow: column;    /* Lay out item’s contents vertically  */
+        flex: 1 0 100px;
+        margin: 20px;
     }
     .sale-item > img {
-      order: -1;            /* Shift image before other content (in visual order) */
-      align-self: center;   /* Center the image cross-wise (horizontally)         */
+        order: -1;            /* Shift image before other content (in visual order) */
+        align-self: center;   /* Center the image cross-wise (horizontally)         */
+        height: 300px;
     }
     .sale-item > button {
-      margin-top: auto;     /* Auto top margin pushes button to bottom */
+        margin-top: auto;     /* Auto top margin pushes button to bottom */
     }
+    </style>
 
     <section id="deals">
       <section class="sale-item">
@@ -81,15 +135,28 @@
           <li>Keyboard
           <li>Mouse
         </ul>
-        <img src="images/computer.jpg"
+        <img src="img/computer-mac.jpg"
              alt="You get: a white computer with matching peripherals.">
         <button>BUY NOW</button>
       </section>
       <section class="sale-item">
-        …
+        <h1>Printer</h1>
+        <p>Capabel of printing colorful images
+        <ul>
+          <li>Paper and ink not included
+        </ul>
+        <img src="img/printer-cannon.jpg"
+             alt="You get: a white computer with matching peripherals.">
+        <button>BUY NOW</button>
       </section>
-      …
     </section>
+    
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
 
  <img src="./img/flex-layout-case-1.png" style="max-height:400px;">
 
