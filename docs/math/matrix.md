@@ -1,5 +1,7 @@
 # matrix
 
+> 计算机的视角
+
 ## 矩阵
 
 <style type="text/css">
@@ -25,3 +27,150 @@ a_{m1} \quad a_{m2} \quad ... \quad a_{mn}
 \end{bmatrix} 
 </script>
 
+<script type="math/tex"> 其中，
+( a_{i1}, a_{i2}, \dotsb, a_{in} ) 
+被称为第
+i(1\le i \le n)
+个行向量，
+( a_{1j}, a_{2j}, ..., a_{mj} )^T
+被称为第
+j(1\le j \le m)
+个列向量。
+</script>
+
+### 矩阵加法
+
+> 只有两个矩阵的`行数和列数都相同`时才能进行加法运算。
+
+<script type="math/tex">
+设两个矩阵A和B都是m\times n，把他们对应位置的元素相加而得到的矩阵叫做A、B的和，记为A+B，即
+</script>
+
+<script type="math/tex; mode=display">
+A+B = \begin{bmatrix}
+a_{11}+b_{11} \quad a_{12}+b_{12} \quad ... \quad a_{1n}+b_{1n} \\
+a_{21}+b_{21} \quad a_{22}+b_{22} \quad ... \quad a_{2n}+b_{2n} \\
+\vdots \qquad \qquad \vdots \qquad \qquad \qquad \vdots  \\
+a_{m1}+b_{m1} \quad a_{m2}+b{m2} \quad ... \quad a_{mn}+b_{mn}
+\end{bmatrix} 
+</script>
+
+
+
+### 数乘矩阵
+
+<script type="math/tex">
+用数k乘矩阵A的每一个元素而得的矩阵叫做k与A之积，记为kA，即
+</script>
+
+<script type="math/tex; mode=display">
+kA = \begin{bmatrix}
+ka_{11} \quad ka_{12} \quad ... \quad ka_{1n} \\
+ka_{21} \quad ka_{22} \quad ... \quad ka_{2n} \\
+\vdots \qquad \vdots \qquad \qquad \vdots  \\
+ka_{m1} \quad ka_{m2} \quad ... \quad ka_{mn}
+\end{bmatrix} 
+</script>
+
+
+### 矩阵的乘法运算
+
+只有当`前`一矩阵的`列数`等于`后`一矩阵的`行数`时，两个矩阵才能相乘，即
+
+<script type="math/tex; mode=display">
+C_{m\times n} = A_{m\times p} \cdot B_{p\times n}
+</script>
+
+<script type="math/tex">
+矩阵C中的每一个元素c_{ij}=\sum_{k=1}^p{a_{ik}b_{kj}}
+下面用一个简单的例子来说明。设A为2\times 3的矩阵，B为3\times 2的矩阵，则两者的乘积为
+</script>
+
+<script type="math/tex; mode=display">
+\begin{split}
+C_{m\times n} &= A\cdot B \\
+      &= \begin{bmatrix}
+            a_{11} \quad a_{12} \quad a_{13} \\
+            a_{21} \quad a_{22} \quad a_{23}
+            \end{bmatrix}
+            \begin{bmatrix}
+            b_{11} \quad b_{12} \\
+            b_{21} \quad b_{22} \\
+            b_{31} \quad b_{32}
+            \end{bmatrix} \\
+      &= \begin{bmatrix}
+            a_{11}b_{11}+a_{12}b_{21}+a_{13}b_{31} \quad a_{11}b_{12}+a_{12}b_{22}+a_{13}b_{32} \\
+            a_{21}b_{11}+a_{22}b_{21}+a_{23}b_{31} \quad a_{21}b_{12}+a_{22}b_{22}+a_{23}b_{32} \\
+            \end{bmatrix}
+\end{split}
+</script>
+
+
+
+### 单位矩阵
+
+<script type="math/tex">
+对于一个n\times n的矩阵，如果它的主对角线上各个元素均为1，其余元素都为0，则该矩阵称为单位阵，记为I_n。
+</script>
+
+<script type="math/tex; mode=display">
+I_n = \begin{bmatrix}
+1 \qquad \qquad \qquad \qquad \\
+\qquad 1 \qquad \qquad \qquad \\
+\qquad \qquad 1 \qquad \qquad \\
+\qquad \qquad \qquad \ddots \qquad \\
+\qquad \qquad \qquad \qquad 1 
+\end{bmatrix}
+</script>
+
+<script type="math/tex">
+对于任意m\times n的矩阵，恒有
+</script>
+
+<script type="math/tex; mode=display">
+A_{m\times n}\cdot I_n = A_{m\times n} \\
+I_n\cdot A_{m\times n} = A_{m\times n}
+</script>
+
+
+* 单位矩阵是`方阵`
+* 主对角线是`从左上到右下`的方向
+
+
+
+### 矩阵的转置
+
+<script type="math/tex">
+交换一个矩阵A_{m\times n}的所有行列元素，那么所得到的n\times m的矩阵被称为原有矩阵的转置，记为A^T，即
+</script>
+
+<script type="math/tex; mode=display">
+A^T=\begin{bmatrix}
+a_{11} \quad a_{21} \quad \dotsm \quad a_{m1} \\
+a_{12} \quad a_{22} \quad \dotsm \quad a_{m2} \\
+\vdots \qquad \vdots  \qquad \qquad \vdots \\
+a_{1n} \quad a_{2nn} \quad \dotsm \quad a_{mn}
+\end{bmatrix}
+</script>
+
+常用矩阵转置运算，矩阵的积比较特殊，需要注意。
+
+<script type="math/tex; mode=display">
+\begin{split}
+( A^T )^T &= A \\
+( A + B )^T &= A^T + B^T \\
+( kA )^T &= kA^T \\
+( A \cdot B )^T &= B^T \cdot A^T
+\end{split}
+</script>
+
+
+#### 对称矩阵和反对称矩阵
+
+
+
+### 矩阵的逆
+
+### 矩阵运算的基本性质
+
+### 齐次坐标
