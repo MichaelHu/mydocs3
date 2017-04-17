@@ -1,14 +1,14 @@
 # git
 
 
-2017-02-04,
-2017-01-19,
-2017-01-18,
-2017-01-11,
-2016-12-02,
-2016-11-05,
-2016-07-28,
-2016-03,
+170204,
+170119,
+170118,
+170111,
+161202,
+161105,
+160728,
+16-03,
 2015,
 2014,
 2013,
@@ -25,7 +25,7 @@
 
 ## Tips
 
-* 使用`git rebase -i`或`git cherry-pick`，交换commit的顺序
+* 使用`git rebase -i`或`git cherry-pick`，`交换`commit的`顺序`
 * 使用`git branch -f`强制修改分支的指向
 * `git reset <reset-to-target>`与`git revert <reverted-commit>`的区别之一，后者有log
 * `origin/master`分支，仅在`远端master`分支更新时才会更新，`不作为本地的一个可更新分支`，本地checkout出来，只作为普通commit看待，HEAD指向`origin/master`时，处于`detached HEAD`状态。
@@ -173,6 +173,10 @@
 
     # 将working dir下的package.json文件替换成master分支下的版本
     git checkout --theirs master package.json
+
+    # 直接checkout远程分支
+    git checkout -b branch-a origin/branch-a
+
 
 todo:
 
@@ -345,6 +349,8 @@ todo: `git config --set push.default ...`
 
 ## git reset
 
+> `回退至`指定commit，指定commit作为新HEAD`保留`，不保留log
+
 * 适用于本地分支的重置，可以重写本地历史，但`不能`记录到`log`中。
 * 分支参数指定的是reset后的`新目标分支`
 
@@ -406,7 +412,7 @@ other目录下的object对象`全都是blob类型`的，但可能对应真实的
 
 ## git revert
 
-回退`指定commit`，需要确保`当前工作目录是干净的`。
+`回滚`指定commit，`放弃`指定commit，需要确保`当前工作目录是干净的`。
 
 > 分支参数指定的是需要`被revert的commit`。
 
@@ -436,6 +442,30 @@ other目录下的object对象`全都是blob类型`的，但可能对应真实的
 	Date:   Wed Jan 18 15:41:36 2017 +0800
 
 		feature: update package.json
+
+### git revert 应用
+
+团队远程主分支不小心提交了两个`dirty commit`，分别为c1, c2，并且其他团队成员已经将这两个commit通过git pull合并到他们的本地分支，并且继续开发。如何清理这两个dirty commit呢？
+
+#### 最优雅的方式
+
+优雅的方式就是将dirty commit通过`git revert`回滚掉。dirty commit同样保留在log里，不影响团队其他同学的代码提交与合并。
+
+    git revert c1 c2
+    git push
+
+
+#### 行得通但不够优雅的方式
+
+* 使用c2前的可用commit覆盖当前HEAD，并提交。
+* 再执行`git cherry-pick`，将需要的commit pick回来。
+
+#### 行不通的方式
+
+使用`git reset`，再`git push --force`的方式，整个过程`不包含实质的人工代码覆盖或修改`，是行不通的：
+1. 可能覆盖团队内其他同学的最新提交
+2. 即使通过`--force`提交后，团队内其他同学再行pull的时候，c1, c2仍然会merge回去
+
 
 
 

@@ -11,6 +11,8 @@
 * 一个国人产出的UI组件库：`iview` <https://github.com/iview/iview> <https://www.iviewui.com>
 * 滴滴2017年1月份上线vue重构后的webapp
 * 滴滴 webapp 5.0 Vue 2.0 重构经验分享: <https://github.com/DDFE/DDFE-blog/issues/13>
+* 170111 Vue单元测试case写法 <http://marxjiao.com/2017/01/11/write-vue-unit-test-case/> 使用karma + jasmine
+
 
 
 

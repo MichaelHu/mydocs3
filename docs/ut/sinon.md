@@ -8,6 +8,13 @@
 * website: <http://sinonjs.org>
 * docs: <http://sinonjs.org/docs/>
 
+
+## Installations
+
+    npm install sinon
+    npm install --save-dev sinon
+
+
 ## Start
 
     sinon.spy()

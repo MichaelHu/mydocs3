@@ -19,6 +19,7 @@
     * Monospaced: `Courier New`
 * List of typefaces included with Microsoft Windows: <https://en.wikipedia.org/wiki/List_of_typefaces_included_with_Microsoft_Windows>
 * `Icon-font`图标字体的四类制作方法 <http://www.jianshu.com/p/095eb298ed18>
+* `百度图标库` <http://fontstore.baidu.com>
 * 阿里妈妈矢量图标库 <http://www.iconfont.cn/plus>
 * 170403 消灭豆腐块！谷歌联合Adobe发布全新开源汉字字体 <https://github.com/googlei18n/noto-fonts>
 

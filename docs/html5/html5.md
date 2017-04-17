@@ -1,5 +1,13 @@
 # html5
 
+> 广义上，html5是`新一代Web技术`的`统称`，包括HTML5、CSS3、New JS APIs。
+
+
+<style type="text/css">
+@import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
+</style>
+<script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
+
 
 ## Overview
 
@@ -120,13 +128,29 @@ The `WAI-ARIA role` that an HTML element has assigned to it is `the first non-ab
 相关标准文档在：<https://www.w3.org/TR/2015/NOTE-html-json-forms-20150929/>
 
 
+
+
+
+
 ## CORS 
 
 > Cross-Origin Resource Sharing，跨域（跨源）资源共享。
 
-* REC文档：<http://www.w3.org/TR/cors/>
-* `2014-01-16`成为`REC`文档
+* `同源策略`，限制`脚本`发起的请求，比如XMLHttpRequest、Fetch请求
 * 定义一种使`客户端`可以`跨域`请求的机制
+* W3 REC文档：<http://www.w3.org/TR/cors/>
+* `2014-01-16`成为`REC`文档
+* MDN文档：HTTP访问控制（CORS）<https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS>
+
+
+### 场景
+
+* XMLHttpRequest/Fetch跨域请求
+* web字体，通过`@font-face`使用跨域字体资源
+* `WebGL`贴图
+* 使用`drawImage`将images/video绘制到canvas
+* 样式表（CSSOM）
+* Scripts（未处理的异常）
 
 
 ### 原理简介
@@ -229,4 +253,141 @@ The `WAI-ARIA role` that an HTML element has assigned to it is `the first non-ab
 * Origin
 * Access-Control-Request-Method
 * Access-Control-Request-Headers
+
+
+
+### 服务器支持CORS
+
+MDN: <https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Server-Side_Access_Control>
+
+
+
+
+
+
+
+
+## Fetch API
+
+> 引入两个更通用的概念：Request, Response。
+
+Support: Chrome 42+, Safari 10.1+
+
+<div id="test_PH" class="test">
+<div class="test-container">
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_PH');
+        s.show( '检测fetch API...' );
+
+        if ( !window.fetch ) {
+            s.append_show( 'fetch API尚不支持' );
+            return;
+        }
+
+        fetch( 'http://258i.com/phpapp/cors.php' )
+            .then( function( resp ) {
+                resp.body.getReader()
+                    .read()
+                    .then( function ( result ) {
+                        // A gbk-encoded stream
+                        var uint8arr = result.value;
+                        s.append_show( new TextDecoder( 'gb2312' ).decode( uint8arr ) );
+                    } )
+                    ;
+                // console.log( resp.body );
+            } );
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+
+
+## Base64 Utils
+
+> atob(), btoa()
+
+todo: `escape, unescape`
+
+* <https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/btoa>
+* <https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/atob>
+* 编码只针对`字节流`字符串
+
+1. The `WindowOrWorkerGlobalScope.btoa()` method creates a base-64 encoded ASCII string `from a String object in which each character in the string is treated as a byte of binary data`.
+2. The `WindowOrWorkerGlobalScope.atob()` function decodes a string of data which has been encoded using base-64 encoding. You can use the btoa() method to encode and transmit data which may otherwise cause communication problems, then transmit it and use the atob() method to decode the data again.
+3. In most browsers, `calling btoa() on a Unicode string` will cause an `InvalidCharacterError` exception. One option is to `escape any extended characters` so that the string you actually encode is an ASCII representation of the original. -- 比如unicode字符串需要特殊处理
+
+
+<div id="test_base64" class="test">
+<div class="test-container">
+<input type="file"><button>get</button>
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_base64');
+        var str = 'Hello';
+        var encodeStr = btoa( str );
+
+        s.show( 'encode ascii...' );
+        s.append_show( encodeStr );
+        s.append_show( 'decode to ascii ...' );
+        s.append_show( atob( encodeStr ) );
+
+        var ustr = 'Hello, 胡大民';
+        var encodeUStr = utoa( ustr );
+
+        s.append_show( 'encode unicode ...' );
+        s.append_show( encodeUStr );
+        s.append_show( 'decode to unicode ...' );
+        s.append_show( atou( encodeUStr ) );
+
+        $( '#test_base64 button' ).on( 'click', function( e ) {
+            var file = $( '#test_base64 input[type="file"]' )[ 0 ].files[ 0 ];
+            if ( file ) {
+                s.append_show( btoa ( file ) );
+            }
+        } );
+
+        function utoa ( str ) {
+            return btoa( unescape( encodeURIComponent( str ) ) );
+        }
+
+        function atou ( str ) {
+            return decodeURIComponent( escape( atob( str ) ) );
+        }
+
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+
+
+## Blob
+
+
+
+
+
+## service workers
+todo
+
+
+
+## Cache API
+todo
 

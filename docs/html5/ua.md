@@ -10,6 +10,8 @@
 win7旗舰版的UA同上。也即通过ua无办法区分win7和wes7。
 
 
+
+
 ## 微信UA
 
 Mozilla/5.0 (iPhone; CPU iPhone OS 9_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13C75 MicroMessenger/6.3.9 NetType/WIFI Language/zh_CN
@@ -53,13 +55,14 @@ sony原生：
 
     Mozilla/5.0 (Linux; U; Android 2.3.6; zh-cn; GT-S5830i Build/GINGERBREAD) UC AppleWebKit/534.31 (KHTML, like Gecko) Mobile Safari/534.31
 
-iPone4S原生：
+iPhone4S原生：
 
     Mozilla/5.0 (iPhone; CPU iPhone OS 8_1_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B435 Safari/600.1.4
 
 iPhone4S百度App：
     
     Mozilla/5.0 (iPhone; CPU iPhone OS 8_1_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12B435 baiduboxapp/0_0.2.0.6_enohpi_069_046/1.1.8_1C2%254enohPi/1099a/04DE20B136DB7F505C46DB53D675F6673F5A8C0C1FCOOBOHRGP/1
+
 
 ## 其他UA
 

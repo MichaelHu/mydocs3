@@ -6,11 +6,45 @@
 
 * 主页：<http://www.w3.org>
 * W3C中国：<http://www.chinaw3c.org>
+* Web标准：<http://www.w3.org/standards/>
 * 如何阅读W3C规范：<http://www.chinaw3c.org/how-to-read-spec-gb.html>
 
 
+## W3C标准文档
 
-## Web标准
+* WebIDL Level 1 <https://www.w3.org/TR/WebIDL-1/> `Interface definition language, ECMAScript binding`，DOMString
+* HTML5 <https://www.w3.org/TR/html/>
+* CSS3 <https://www.w3.org/TR/CSS/>
+* Encoding <https://encoding.spec.whatwg.org> `TextEncoder, TextEncoder`
+* File API <https://www.w3.org/TR/FileAPI/> `FileList, Blob, File, FileReader, FileReaderSync, Blob URL`
+* Streams API `RedableStream, WritableStream, TransformStream` -- Low-level APIs
+    * Living: <https://streams.spec.whatwg.org/>
+    * Retired: <https://www.w3.org/TR/streams-api/> 
+    * local ref: <ref://./streams-api.md.html>
+
+
+## W3C文档状态
+
+* Group Note: 文档前缀`NOTE`
+* Working Draft / Nightly Draft: 文档前缀`WD`
+* Recommendation: 文档前缀`REC`
+* Candidate Recommendation: 文档前缀`CR`
+* Retired
+
+
+## W3C文档列表
+
+* 按技术专题： <http://www.w3.org/TR/>
+* 按文档状态： <http://www.w3.org/TR/tr-status-all>
+* 按日期：<http://www.w3.org/TR/tr-date-all>
+* 按`标题`（查找方便）：<http://www.w3.org/TR/tr-title-all>
+* 按工作组：<http://www.w3.org/TR/tr-groups-all>
+
+
+
+
+
+## Web标准跟踪
 
 <http://www.w3.org/standards/>
 
@@ -409,27 +443,6 @@ XML, XML Namespaces, XML Schema, XSLT, Efficient XML Interchange (EXI)
 
 
 #### Browsers and Authoring Tools
-
-
-
-### W3C文档状态
-
-* Group Note: 文档前缀`NOTE`
-* Working Draft / Nightly Draft: 文档前缀`WD`
-* Recommendation: 文档前缀`REC`
-* Candidate Recommendation: 文档前缀`CR`
-* Retired
-
-
-
-### W3C文档列表
-
-* 按技术专题： <http://www.w3.org/TR/>
-* 按文档状态： <http://www.w3.org/TR/tr-status-all>
-* 按日期：<http://www.w3.org/TR/tr-date-all>
-* 按`标题`（查找方便）：<http://www.w3.org/TR/tr-title-all>
-* 按工作组：<http://www.w3.org/TR/tr-groups-all>
-
 
 
 

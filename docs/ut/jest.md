@@ -166,34 +166,57 @@ __tests__目录
     };
 
 
+
+#### expect
+
+> `expect` gives you access to a number of "matchers" that let you validate different things.
+
+    expect( value )
+    expect.extend( matchers )
+    expect.anything()
+    expect.any( constructor )
+    expect.arrayContaining( array )
+    expect.assertions( number )
+    expect.objectContaining( object )
+    expect.stringContaining( string )
+    expect.stringMatching( regexp )
+    expect.addSnapshotSerializer( serializer )
+    .not
+    .resolves
+    .rejects
+
+
+
 #### matcher functions
 
-    toBe( value )
-    toBeCloseTo()
-    toBeDefined()
-    toBeFalsy(): false, 0, '', null, undefined, NaN
-    toBeGreaterThan( number )
-    toBeGreaterThanOrEqual( number )
-    toBeLessThan( number )
-    toBeLessThanOrEqual( number )
-    toBeInstanceOf( Class )
-    toBeNull()
-    toBeTruthy()
-    toBeUndefined()
-    toContain( item )
-    toContainEqual( item )
-    toEqual( value )
-    toHaveLength( number )
-    toMatch( regexpOrString )
-    toMatchObject( object )
-    toMatchSnapshot( optionalString )
-    toThrow( error )
-    toThrowError()
-    toThrowErrorMatchingSnapshot()
-    toHaveBeenCalled()
-    toHaveBeenCalledTimes()
-    toHaveBeenCalledWith( arg1, arg2, ... )
-    toHaveBeenLastCalledWith( arg1, arg2, ... )
+> 以下`matchers`可以跟在`expect()`后面，比如`expect( value ).toBe( ... )`, `expect( value ).not.toBe( ... )`
+
+    .toBe( value )
+    .toBeCloseTo()
+    .toBeDefined()
+    .toBeFalsy(): false, 0, '', null, undefined, NaN
+    .toBeGreaterThan( number )
+    .toBeGreaterThanOrEqual( number )
+    .toBeLessThan( number )
+    .toBeLessThanOrEqual( number )
+    .toBeInstanceOf( Class )
+    .toBeNull()
+    .toBeTruthy()
+    .toBeUndefined()
+    .toContain( item )
+    .toContainEqual( item )
+    .toEqual( value )
+    .toHaveLength( number )
+    .toMatch( regexpOrString )
+    .toMatchObject( object )
+    .toMatchSnapshot( optionalString )
+    .toThrow( error )
+    .toThrowError()
+    .toThrowErrorMatchingSnapshot()
+    .toHaveBeenCalled()
+    .toHaveBeenCalledTimes()
+    .toHaveBeenCalledWith( arg1, arg2, ... )
+    .toHaveBeenLastCalledWith( arg1, arg2, ... )
 
 
 

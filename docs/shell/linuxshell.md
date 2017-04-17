@@ -838,9 +838,7 @@ todo
 
 ## grep
 
-
-文件查找
-
+> 文件内容查找
 
 查找文件内包含文本`hello`的行：
 
@@ -856,7 +854,7 @@ todo
 
     $ grep -irE 'mongodb' --color=auto . # Mac版本
 
-跳过二进制文件的匹配:
+`跳过二进制`文件的匹配:
 
     $ grep -I 'hello' file
     $ grep --binary-file=without-match 'hello' file
@@ -869,8 +867,9 @@ todo
 仅查找特定文件：
 
     $ grep --include=GLOB 'hello'
+    $ grep --include=*.md -r 'cors'
 
-递归目录树查找：
+`递归目录树`查找：
 
     $ grep -r recursive 'hello' .
     $ grep -R recursive 'hello' .
