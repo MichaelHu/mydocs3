@@ -1,19 +1,18 @@
 # vue.js
 
+> A progressive javascript framework
+
 * <http://vuejs.org> <img src="./img/vuejs-logo.png" height="30"> 
 * github:  <https://github.com/vuejs/vue>
 
 
-
 ## features
 
-* lightweight
+* lightweight 18kB( minimized-gziped )
 * 一个国人产出的UI组件库：`iview` <https://github.com/iview/iview> <https://www.iviewui.com>
 * 滴滴2017年1月份上线vue重构后的webapp
 * 滴滴 webapp 5.0 Vue 2.0 重构经验分享: <https://github.com/DDFE/DDFE-blog/issues/13>
-* 170111 Vue单元测试case写法 <http://marxjiao.com/2017/01/11/write-vue-unit-test-case/> 使用karma + jasmine
-
-
+* [ 170111 ] Vue`单元测试`case写法 <http://marxjiao.com/2017/01/11/write-vue-unit-test-case/> 使用`karma + jasmine`
 
 
 
@@ -133,3 +132,14 @@
 <div class="test-panel">
 </div>
 </div>
+
+
+## vue APIs
+
+plugin system: <https://github.com/vuejs/vue/blob/dev/src/core/global-api/use.js#L6>
+    Vue.use( plugin )
+
+
+
+
+

@@ -11,21 +11,28 @@
     // Make sure we trim BOM and NBSP
     rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g
 
-模式匹配串引用：`$0-$9`
+模式串引用：`$0-$9`
 
     if ( /[?&]name=([^&]*)/.test( location.href ) ) {
         return {
-                key: 'name'  
-            }; 
+            key: RegExp.$1
+        }; 
     }
 
-模式引用：
+模式引用：`$&, $1-$9`
 
 
 ### js escape
 
-    console.log( escape( '百度' ) );
-    %u767E%u5EA6
+    console.log( escape( 'a百度' ) );
+    %61%u767E%u5EA6
+
+* ecma-262: <https://tc39.github.io/ecma262/#sec-escape-string>
+* 生成新版本的`十六进制`表示的转义字符串，输入也是一个字符串
+* 码点`不大于0xFF`的，使用`%xx`；码点`大于0xFF`的，使用`%uxxxx`
+* 默认string的内部表示为`Unicode`
+
+
 
 ### js encodeURI
 
@@ -34,6 +41,7 @@
     console.log( encodeURIComponent( '百度' ) );
     %E7%99%BE%E5%BA%A6
 
+* 使用`utf-8`编码
 
 
 

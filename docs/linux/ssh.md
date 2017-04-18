@@ -51,7 +51,21 @@
 
 ## config文件
 
-todo
+    vim ~/.ssh/config
+
+    Host git.dispatch.258i.com
+    User git
+    IdentityFile /home/rice/.ssh/michael_rsa_258i
+
+    Host git.web.258i.com
+    HostName git.258i.web.258i.com
+    User git
+    IdentityFile /home/rice/.ssh/hdm_rsa_258i
+
+    Host git.img.258i.com
+    HostName git.258i.img.258i.com
+    User git
+    IdentityFile /home/rice/.ssh/hyy_rsa_258i
 
 
 

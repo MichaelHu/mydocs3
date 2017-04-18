@@ -171,6 +171,36 @@ a_{1n} \quad a_{2nn} \quad \dotsm \quad a_{mn}
 
 ### 矩阵的逆
 
+<script type="math/tex">
+对于一个n\times n的方阵A，如果存在一个n\times n的方阵B，使得A \cdot B = B \cdot A = I_n，则称B为A的逆，记为B=A^{-1}。
+</script>
+
+<script type="math/tex">
+同时A被称为非奇异矩阵。
+</script>
+
+
+<script type="math/tex">
+矩阵的逆是相互的，若A是B的逆，同样A也可记为A=B^{-1}，B也是一个非奇异矩阵。
+</script>
+
+任何非奇异矩阵`有且只有一个`逆矩阵。
+
+
+
 ### 矩阵运算的基本性质
 
+矩阵加法适合交换律和结合律。
+
+<script type="math/tex; mode=display">
+\begin{split}
+A + B  &= B + A \\
+A + ( B + C )  &= ( A + B ) + C
+\end{split}
+</script>
+
+
 ### 齐次坐标
+
+
+

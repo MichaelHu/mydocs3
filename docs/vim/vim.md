@@ -770,9 +770,7 @@ idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文
     
     autocmd vimenter * NERDTree | <Esc><C-w>j
 
-因为这时需要的是一个
-`Command-line command`，而不是
-`Normal mode command`。
+因为这时需要的是一个`Command-line command`，而不是`Normal mode command`。
 更复杂的，比如不希望从标准输入读取时也打开NERDTree，可以如下写法：
 
     autocmd StdinReadPre * let s:std_in=1
@@ -823,6 +821,10 @@ idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文
 
 ## Automatic Commands
 
+syntax:
+
+    :au [group] {event} {pat} [nested] {cmd}
+
 比较有用的比如：`:au, :au {event}, :au {event} {pat}`
 
     :rv[iminfo] [file]
@@ -842,6 +844,7 @@ idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文
     " enter new autocommands for {event} with {pat}
     :au {event} {pat} {cmd}
 
+
     " do removement
     :au!
     :au! {event}
@@ -849,11 +852,22 @@ idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文
     :au! {event} {pat}
     :au! {event} {pat} {cmd}
 
-`Examples:`
+    " autocmd group
+    :aug[roup] {name}   " define the autocmd group name for the following ":autocmd" commands
 
-    :au filetypedetect
-    :au filetypedetect BufEnter
-    :au filetypedetect BufNewFile
+    :au filetypedetect  " define filetypedetect group
+    :au filetypedetect BufEnter     " list autocommands for BufEnter event in filetypedetect group 
+    :au filetypedetect BufNewFile   " list autocommands for BufNewFile event in filetypedetect group 
+
+### 自动设置文件类型
+
+设置`*.vue`文件的`filetype`为`html`，可用如下autocommand：
+
+    :au BufNewFile,BufRead *.vue setf html
+
+
+
+
 
 
 

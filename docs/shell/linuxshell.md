@@ -1020,11 +1020,26 @@ sed的正则接近`perl`的正则，比如反向引用`&`：
 
 ## find
 
+> 目录、文件查找
+
     find . -type f
     find . -type f -name ".*.swp" -exec rm {} \;
     find . -inum 35806669 -exec rm {} \;
 
 `windows`下的对应命令是`dir /b /s <file>`
+
+找出当前目录下`修改时间为24小时之内`的文件：
+
+    find . -type f -mtime 0
+
+找出当前目录下`修改时间大于30天`的文件：
+
+    for (( d=30; d<1000; d++ )); do find . -type f -mtime $d; done
+
+通过`inode值`删除文件，适用于无法输入中文的情况：
+
+    ls -i                                   # 找到对应文件的inode值
+    find . -inum xxxxxxx -exec rm {} \;     # 通过inode删除
 
 
 
