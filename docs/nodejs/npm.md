@@ -9,7 +9,7 @@
 
 ### 通过nodejs pkg安装
 
-通过安装新版本的`nodejs`，自动包含`npm`的安装（查看nodejs的安装）。
+通过安装新版本的`nodejs`，自动包含`npm`的安装（查看nodejs的安装<ref://./node-install.md.html>）。
 
 自动检测`nodejs`的最新版本（mac适用）：
 

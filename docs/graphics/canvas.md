@@ -2,7 +2,7 @@
 
 > The HTML5 `<canvas>` tag is used to draw graphics, on the fly, via scripting (usually JavaScript). 
 
-* `W3C HTML5`: <https://www.w3.org/TR/2014/REC-html5-20141028/scripting-1.html#the-canvas-element>
+* `W3C HTML5`: <https://www.w3.org/TR/html5/scripting-1.html#the-canvas-element>
 * `W3C Docs about 2d context`: <http://www.w3.org/TR/2dcontext/>
 * `W3C Schools Ref:` <http://www.w3schools.com/tags/ref_canvas.asp>
 * `2015-11-19`成为推荐标准
@@ -26,7 +26,7 @@
 
 > `HTML5`定义的canvas元素，也即`HTMLCanvasElement`支持的接口
 
-* standards: <https://www.w3.org/TR/2014/REC-html5-20141028/scripting-1.html#the-canvas-element>
+* standards: <https://www.w3.org/TR/html5/scripting-1.html#the-canvas-element>
 
 
 ### IDL

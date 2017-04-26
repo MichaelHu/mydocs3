@@ -131,30 +131,35 @@
 
 ## 问题
 
-* `this`为undefined，由`箭头函数`导致，本质原因是`babel-preset-react`对以下写法的不兼容，所以要避免以下写法。
+### this -> undefined
 
-        var ArticleList = React.createClass( {
+由`箭头函数`导致，本质原因是`babel-preset-react`对以下写法的不兼容，所以要避免以下写法。
 
-            ...
-         
-            , render: () => {           // render: function render() {
-                console.log( this );    //    console.log( undefined ); // 被解析成了字符串undefined
-                return (
-                    <ul>
-                    {
-                        this.state.items.map( function( item) {
-                            return <li>{item.title}</li>;
-                        } )
-                    }
-                    </ul>
-                );
-            }
+    var ArticleList = React.createClass( {
 
-            ...
+        ...
+     
+        , render: () => {           // render: function render() {
+            console.log( this );    //    console.log( undefined ); // 被解析成了字符串undefined
+            return (
+                <ul>
+                {
+                    this.state.items.map( function( item) {
+                        return <li>{item.title}</li>;
+                    } )
+                }
+                </ul>
+            );
+        }
 
-        } );
+        ...
 
-* Warning: getInitialState was defined on IndexPage, a plain JavaScript class. This is only supported for classes created using React.createClass. Did you mean to define a state property instead?
+    } );
+
+
+### getInitialState()
+
+> Warning: getInitialState was defined on IndexPage, a plain JavaScript class. This is only supported for classes created using React.createClass. Did you mean to define a state property instead?
 
     带有`getInitialState`方法的React类，不要使用`class`关键字来定义
 
@@ -173,6 +178,11 @@
 	  11 |     render() {
 
 `constructor`构造函数，必须调用`super()`来调用父类构造函数，否则编译报错。
+
+
+### shouldComponentUpdate()
+
+如果重写，`必须返回`true或false。
 
 
 

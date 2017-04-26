@@ -1,6 +1,6 @@
 # matrix
 
-> 计算机的视角
+> 从计算机的视角来解决数学问题
 
 ## 矩阵
 
@@ -38,6 +38,10 @@ j(1\le j \le m)
 个列向量。
 </script>
 
+
+
+
+
 ### 矩阵加法
 
 > 只有两个矩阵的`行数和列数都相同`时才能进行加法运算。
@@ -54,6 +58,8 @@ a_{21}+b_{21} \quad a_{22}+b_{22} \quad ... \quad a_{2n}+b_{2n} \\
 a_{m1}+b_{m1} \quad a_{m2}+b{m2} \quad ... \quad a_{mn}+b_{mn}
 \end{bmatrix} 
 </script>
+
+
 
 
 
@@ -107,6 +113,8 @@ C_{m\times n} &= A\cdot B \\
 
 
 
+
+
 ### 单位矩阵
 
 <script type="math/tex">
@@ -129,7 +137,7 @@ I_n = \begin{bmatrix}
 
 <script type="math/tex; mode=display">
 A_{m\times n}\cdot I_n = A_{m\times n} \\
-I_n\cdot A_{m\times n} = A_{m\times n}
+I_m\cdot A_{m\times n} = A_{m\times n}
 </script>
 
 

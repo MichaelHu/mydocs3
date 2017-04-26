@@ -1,9 +1,11 @@
 # webpack
 
-> <img src="./img/webpack-logo.png" height="40"> CommonJS Module Bundler。智能的模块打包器。但不仅仅是一个打包器。
+> <img src="./img/webpack-logo.png" height="40"> CommonJS Module Bundler。智能的`模块打包器`。但不仅仅是一个打包器。
 
 
-对`SPA`有`天生`很好的支持，但是也支持`AMD`。通过复用模块拆分，也能很好的支持`MP`。
+`天生`对`SPA`有很好的支持，但是也支持`AMD`。通过复用模块拆分，也能很好的支持`MP`。
+
+> 注：编写此篇文档的时候，`webpack 2`尚未正式发布。`webpack 2`相关内容移步<ref://./webpack2.md.html>
 
 
 * site: <https://webpack.github.io>
@@ -31,6 +33,9 @@
 * webpack对inline require的解析是`右结合`的，你会在输出中看到`__webpack_require( N )`的形式
 
  <img src="./img/what-is-webpack.png" height="360">
+
+最基本的使用方式——`pack(打包)`：
+ <img src="./img/webpack-basic-usage.png" style="max-height:500px">
 
 
 
@@ -268,9 +273,9 @@ github: <https://github.com/kevlened/copy-webpack-plugin>
     然后在config代码中使用`process.env.*`获取状态。
 
 
-2. 样式文件是否需要抽取成单独文件
-3. html文件自动引用样式文件和脚本文件
-4. 多个html文件自动引用样式文件和脚本文件
+2. `样式`文件是否需要抽取成单独文件
+3. html文件`自动引用`样式文件和脚本文件
+4. `多个html文件`自动引用样式文件和脚本文件
 
 
 待续
@@ -278,7 +283,19 @@ github: <https://github.com/kevlened/copy-webpack-plugin>
 
 ### 配置文件
 
-配置文件默认为`webpack.config.js`。以下为一个例子：
+配置文件默认为`webpack.config.js`。
+
+最基本的配置文件，只配置了`单文件`的输入输出，举例如下：
+
+    module.exports = {
+        entry: './src/app.js'
+        , output: {
+            filename: './src/bundle.js'
+        }
+    };
+
+
+以下为复杂一点的配置，`多文件、使用loader及plugin`，例子：
 
 
     var dir = __dirname;

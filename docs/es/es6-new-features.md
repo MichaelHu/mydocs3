@@ -17,6 +17,7 @@
     import { sex, echo } from './a';
     import * as utils from './a';
     import { sex, echo as ECHO } from './a';
+    import React, {Component, PropTypes} from 'react';
     export { sex, echo };
     export function echo( ... ) { ... };
     export default sex;
@@ -66,34 +67,43 @@ import.js:
 
 ## 类支持
 
-    //类的定义
+> `class, extends, super`关键字
+
+    // 类的定义
     class Animal {
-        //ES6中新型构造器
+        // ES6中新型构造器
         constructor(name) {
             this.name = name;
         }
-        //实例方法
+        // 实例方法
         sayName() {
             console.log('My name is '+this.name);
         }
     }
-    //类的继承
+    // 类的继承
     class Programmer extends Animal {
         constructor(name) {
-            //直接调用父类构造器进行初始化
+            // 直接调用父类构造器进行初始化
             super(name);
         }
         program() {
             console.log("I'm coding...");
         }
+        sayName() {
+            // 调用父类实例方法
+            super.sayName();
+            console.log( 'I am a programmer'  );
+        }
     }
-    //测试我们的类
+    // 测试我们的类
     var animal=new Animal('dummy'),
     wayou=new Programmer('wayou');
-    animal.sayName();//输出 ‘My name is dummy’
-    wayou.sayName();//输出 ‘My name is wayou’
-    wayou.program();//输出 ‘I'm coding...’
+    animal.sayName();// 输出 ‘My name is dummy’
+    wayou.sayName();// 输出 ‘My name is wayou’
+    wayou.program();// 输出 ‘I'm coding...’
 
+
+* 浅谈ES6中super关键字 <http://www.cnblogs.com/liutie1030/p/5997446.html>
 
 
 

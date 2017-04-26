@@ -1,9 +1,9 @@
 # js coding style
 
+> changelog: 170426, 160730, 160723
 
 
-
-## var
+## var, let
 
 ### 单行
 
@@ -17,6 +17,7 @@
         , e, f
         ;
 
+let同var，不再赘述。
 
 
 
@@ -52,7 +53,9 @@
 
 
 
-## boolean
+## logical expression
+
+> changelog: 170426
 
     if ( a >= b && a <= c ) {
         ...
@@ -90,12 +93,23 @@
         ...
     }
 
+    for ( var k in obj ) {
+        console.log( obj[ k ] );
+    }
+
+
 
 ## while
 
     while ( i < len ) {
         ...
     }
+
+    do {
+        ...
+    } while ( ... );
+
+
 
 
 

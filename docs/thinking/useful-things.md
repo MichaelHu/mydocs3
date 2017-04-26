@@ -50,7 +50,7 @@ Chrome出了个小bug：论如何在Chrome下劫持原生只读对象: <https://
 		cd PATH/TO/DOCROOT
 		anywhere
 
-    [ 1223 ]详细内容请移步 `webserver/anywhere.md`
+    [ 1223 ]详细内容请移步 <ref://../webserver/anywhere.md.html>
 
 * doxmate <https://github.com/JacksonTian/doxmate>
     文档伴侣
@@ -138,6 +138,8 @@ Chrome出了个小bug：论如何在Chrome下劫持原生只读对象: <https://
 
 ## 16-03-22
 
+> changelog: 170426
+
 启动本地简单服务器的方式：
 
     python -m SimpleHTTPServer 8888 &
@@ -146,13 +148,19 @@ or for Python 3+
 
     python3 -m http.server 8888 &
 
-If you have PHP installed you could try
+If you have `PHP` installed you could try
 
     php -S localhost:8888
 
 or if you are running Ruby you can use
 
     ruby -run -e httpd . -p 8888
+
+or if you have `anywhere` installed on your machine, you can use
+
+    anywhere
+    anywhere -p 8888
+    anywhere -p 8888 docroot
 
 
 
@@ -432,8 +440,8 @@ PC下移除a标签等元素点击时的虚线框：
 
 ## 15-03-30
 
-* 移动：2G采用GPRS以及EDGE，后者是被称作2.75G的技术；3G使用TD-SCDMA；4G使用TD-LTE/FDD-LTE混合组网，相比之下主要以TD-LTE为主
-* 联通：2G同移动；3G采用WCDMA；4G同样是TD-LTE/FDD-LTE混合组网，但以FDD-LTE为主
+* 移动：2G采用GPRS以及EDGE，后者是被称作2.75G的技术；3G使用`TD-SCDMA`；4G使用TD-LTE/FDD-LTE混合组网，相比之下主要以`TD-LTE为主`
+* 联通：2G同移动；3G采用`WCDMA`；4G同样是TD-LTE/FDD-LTE混合组网，但以`FDD-LTE为主`
 * 电信：2G使用CDMA 1X；3G采用CDMA 2000；4G同联通
 * 全网通：支持移动、联通、电信三家运营商的全部网络。包括GSM, CDMA, WCDMA, TD-SCDMA, CDMA 2000, TD-LTE, FDD-LTE
 
@@ -456,10 +464,14 @@ PC下移除a标签等元素点击时的虚线框：
 
 ## 15-03-05
 
-* http://font.baidu.com/editor/
+> changelog: 170426
+
+* <http://font.baidu.com/editor/> 更改为 <http://fontstore.baidu.com/static/editor/index.html>
 
     EcomFE新作，对字体文件进行编辑、制作、导入&导出。其中使用Canvas进行icon的编辑
     ，还支持路径拖动等操作，感觉还是挺震撼的。
 
+* 百度图标库 <http://fontstore.baidu.com/store#!/>
+* 字体相关可参考 <ref://../html5/css-fonts.md.html>
 
 

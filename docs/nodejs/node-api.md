@@ -81,6 +81,14 @@ Changelog: <https://github.com/nodejs/node/blob/v4.4.5/CHANGELOG.md>
 ## Net
 ## OS
 ## Path
+> <https://nodejs.org/api/path.html>
+
+标准化路径，解析`//, .., .`等
+    path.normalize( path )
+
+解析成标准化的`绝对路径`，包含标准化的过程
+    path.resolve( [...paths] )
+
 ## Process
 
 > The process object is a `global` that provides information about, and control over, the current Node.js process.

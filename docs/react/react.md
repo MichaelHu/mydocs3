@@ -752,7 +752,7 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
 
     componentWillReceiveProps( nextProps )
 
-当组件接收到新的属性（但旧属性`尚未改变`）时被调用。注：在初始渲染时不调用。
+当组件`即将`接收到新的属性（但旧属性`尚未改变`）时被调用。注：在初始渲染时不调用。
 
 该方法提供一个时机用于`更新state`，旧属性可以通过`this.props`获得，新属性通过`nextProps`传入，所以可以
 计算好新state，并通过`this.setState()`设置新状态。
@@ -784,7 +784,7 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
 
     componentWillUpdate( nextProps, nextState )
 
-当组件接收到新的属性且属性已经发生改变时被调用。注：在初始渲染时不调用。
+当组件`已经接收`到新的属性或新的状态（但属性或状态`仍未改变`）时被调用。注：在初始渲染时不调用。
 提供时机为渲染做最后准备。
 
 不能在此处调用`this.setState()`，如果需要，在 componentWillReceiveProps() 中调用。
@@ -796,7 +796,7 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
 
     componentDidUpdate( prevProps, prevState )
 
-当组件的变化已经更新到DOM上以后调用。注：在初始渲染时不调用。
+当组件的变化已经更新到DOM上以后（属性或状态`已经发生变化`）调用。注：在初始渲染时不调用。
 
 提供时机对DOM进行操作。
 
@@ -957,3 +957,10 @@ React.createElement()
 * `Profiling Components with Chrome Timeline`: <https://facebook.github.io/react/blog/2016/11/16/react-v15.4.0.html#profiling-components-with-chrome-timeline>
 
 	`?react_perf`开启性能监控: <http://localhost:3000/?react_perf>
+
+
+
+
+## React vs SVG
+
+<http://stackoverflow.com/questions/23402542/embedding-svg-into-reactjs>

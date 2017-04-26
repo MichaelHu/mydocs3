@@ -7,6 +7,12 @@
 > `标识符`的选择应做到“见名知义”、“常用取简”、“专用取繁”
 
 
+
+## 我的js编码规范 
+
+个人总结的编码规范 <ref://../es/js-coding-style.md.html>
+
+
 ## Primer
 
 > HTML&CSS等的编码规范
@@ -149,7 +155,7 @@ Good:
     <title>HTML5 Syntax Coding Style</title>
 
 #### lang与charset
-> 确保顺利解析，以及正确的搜索引擎索引，尽可能早的设置`lang`与`charset`
+> 确保`顺利解析`，以及正确的搜索引擎索引，尽可能早的设置`lang`与`charset`
     <!DOCTYPE html>
     <html lang="zh-CN">
     <head>

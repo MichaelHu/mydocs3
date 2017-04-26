@@ -226,7 +226,7 @@ Redux提供了一个`combineReducers`的方法，以上步骤可以写成：
 
     const todoApp = combineReducers(reducers);
 
-这样就形成了`顶级reducer`。
+这样就形成了`顶级reducer`。顶级reducer返回`整个`应用的`状态树`。
 
 
 
@@ -245,7 +245,7 @@ Redux提供了一个`combineReducers`的方法，以上步骤可以写成：
 * 提供`getState()`获取状态
 * 提供`dispatch(action)`更新状态
 * 通过`subscribe(listener)`注册监听器
-* 通过`subscribe(listener)`的`返回值`解注册监听器
+* 通过`subscribe(listener)`的`返回值`用于解绑监听器
 
 有了`顶级Reducer`以后，创建Store就很简单了：
 
@@ -452,6 +452,8 @@ enhancer可以是一个函数对象，称为`Store增强器`。可选参数。Re
 `可组合性`是middleware的`关键`特性。多个middleware可以组合到一起，而任何一个被组合的middleware`不知道`（不关注）其`上游`或者`下游`的middleware的信息。
 
     applyMiddleware(...middlewares)
+
+> 消化好`js运行在其所定义的上下文`，有助于理解middleware。
 
 middlewares符合以下格式：
 

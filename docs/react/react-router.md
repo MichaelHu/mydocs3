@@ -1,12 +1,13 @@
 # react-router
 
-> Keeps your UI in sync with the URL.
+> Keeps your `UI` in sync with the `URL`.
 
     npm install --save react-router
 
 
-* 文档： <https://github.com/reactjs/react-router/tree/master/docs>
+* github： <https://github.com/reactjs/react-router>
 * react-router-redux: <https://github.com/reactjs/react-router-redux>
+* history: <https://github.com/ReactTraining/history>
 
 
 
@@ -19,52 +20,52 @@
     import { Router, Route, Link, browserHistory } from 'react-router'
 
     const App = React.createClass({
-      render() {
-        return (
-          <div>
-            <h1>App</h1>
-            <ul>
-              <li><Link to="/about">About</Link></li>
-              <li><Link to="/inbox">Inbox</Link></li>
-            </ul>
-            {this.props.children}
-          </div>
-        )
-      }
+        render() {
+            return (
+                <div>
+                    <h1>App</h1>
+                    <ul>
+                        <li><Link to="/about">About</Link></li>
+                        <li><Link to="/inbox">Inbox</Link></li>
+                    </ul>
+                    {this.props.children}
+                </div>
+            )
+        }
     })
 
     const About = React.createClass({
-      render() {
-        return <h3>About</h3>
-      }
+        render() {
+            return <h3>About</h3>
+        }
     })
 
     const Inbox = React.createClass({
-      render() {
-        return (
-          <div>
-            <h2>Inbox</h2>
-            {this.props.children || "Welcome to your Inbox"}
-          </div>
-        )
-      }
+        render() {
+            return (
+                <div>
+                    <h2>Inbox</h2>
+                    {this.props.children || "Welcome to your Inbox"}
+                </div>
+            )
+        }
     })
 
     const Message = React.createClass({
-      render() {
-        return <h3>Message {this.props.params.id}</h3>
-      }
+        render() {
+            return <h3>Message {this.props.params.id}</h3>
+        }
     })
 
     render((
-      <Router history={browserHistory}>
-        <Route path="/" component={App}>
-          <Route path="about" component={About} />
-          <Route path="inbox" component={Inbox}>
-            <Route path="messages/:id" component={Message} />
-          </Route>
-        </Route>
-      </Router>
+        <Router history={browserHistory}>
+            <Route path="/" component={App}>
+                <Route path="about" component={About} />
+                <Route path="inbox" component={Inbox}>
+                    <Route path="messages/:id" component={Message} />
+                </Route>
+            </Route>
+        </Router>
     ), document.body)
 
 
@@ -73,7 +74,6 @@
 
 
 ## 基础部分
-
 
 ### 特征
 
@@ -90,26 +90,26 @@
 #### jsx写法
 
     render((
-      <Router history={hashHistory}>
-        <Route path="/" component={App}>
-          <IndexRoute component={Home} />
-          <Route path="about" component={About} />
-          <Route path="inbox" component={Inbox} />
-        </Route>
-      </Router>
+        <Router history={hashHistory}>
+            <Route path="/" component={App}>
+                <IndexRoute component={Home} />
+                <Route path="about" component={About} />
+                <Route path="inbox" component={Inbox} />
+            </Route>
+        </Router>
     ), document.body)
 
 
 #### 配置项写法
 
     const routes = {
-      path: '/',
-      component: App,
-      indexRoute: { component: Home },
-      childRoutes: [
-        { path: 'about', component: About },
-        { path: 'inbox', component: Inbox },
-      ]
+        path: '/',
+        component: App,
+        indexRoute: { component: Home },
+        childRoutes: [
+            { path: 'about', component: About },
+            { path: 'inbox', component: Inbox },
+        ]
     }
 
     render(<Router history={history} routes={routes} />, document.body)
@@ -123,18 +123,18 @@
 `绝对`路径使用，在`简化`路径的同时能`保留`UI的嵌套信息。
 
     render((
-      <Router>
-        <Route path="/" component={App}>
-          <IndexRoute component={Dashboard} />
-          <Route path="about" component={About} />
-          <Route path="inbox" component={Inbox} />
+        <Router>
+            <Route path="/" component={App}>
+                <IndexRoute component={Dashboard} />
+                <Route path="about" component={About} />
+                <Route path="inbox" component={Inbox} />
 
-          {/* Use /messages/:id instead of /inbox/messages/:id */}
-          <Route component={Inbox}>
-            <Route path="messages/:id" component={Message} />
-          </Route>
-        </Route>
-      </Router>
+                {/* Use /messages/:id instead of /inbox/messages/:id */}
+                <Route component={Inbox}>
+                    <Route path="messages/:id" component={Message} />
+                </Route>
+            </Route>
+        </Router>
     ), document.body)
 
 
@@ -151,21 +151,21 @@
     import { Redirect } from 'react-router'
 
     render((
-      <Router>
-        <Route path="/" component={App}>
-          <IndexRoute component={Dashboard} />
-          <Route path="about" component={About} />
+        <Router>
+            <Route path="/" component={App}>
+                <IndexRoute component={Dashboard} />
+                <Route path="about" component={About} />
 
-          <Route path="inbox" component={Inbox}>
-            {/* Redirect /inbox/messages/:id to /messages/:id */}
-            <Redirect from="messages/:id" to="/messages/:id" />
-          </Route>
+                <Route path="inbox" component={Inbox}>
+                    {/* Redirect /inbox/messages/:id to /messages/:id */}
+                    <Redirect from="messages/:id" to="/messages/:id" />
+                </Route>
 
-          <Route component={Inbox}>
-            <Route path="messages/:id" component={Message} />
-          </Route>
-        </Route>
-      </Router>
+                <Route component={Inbox}>
+                    <Route path="messages/:id" component={Message} />
+                </Route>
+            </Route>
+        </Router>
     ), document.body)
 
 
@@ -193,26 +193,26 @@
 路由还可以使用路由配置对象，但有一点需要注意，配置对象中无对应`Redirect`的配置项，需要使用`onEnter` hooks来解决。
 
     const routes = {
-      path: '/',
-      component: App,
-      indexRoute: { component: Dashboard },
-      childRoutes: [
-        { path: 'about', component: About },
-        {
-          path: 'inbox',
-          component: Inbox,
-          childRoutes: [{
-            path: 'messages/:id',
-            onEnter: ({ params }, replace) => replace(`/messages/${params.id}`)
-          }]
-        },
-        {
-          component: Inbox,
-          childRoutes: [{
-            path: 'messages/:id', component: Message
-          }]
-        }
-      ]
+        path: '/',
+        component: App,
+        indexRoute: { component: Dashboard },
+        childRoutes: [
+            { path: 'about', component: About },
+            {
+                path: 'inbox',
+                component: Inbox,
+                childRoutes: [{
+                    path: 'messages/:id',
+                    onEnter: ({ params }, replace) => replace(`/messages/${params.id}`)
+                }]
+            },
+            {
+                component: Inbox,
+                childRoutes: [{
+                    path: 'messages/:id', component: Message
+                }]
+            }
+        ]
     }
 
     render(<Router routes={routes} />, document.body)
@@ -499,45 +499,45 @@ fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f64c.png
 `命名`组件。若一个Route有一或多个命名组件，那么孩子元素可以通过`this.props.xxx`获取到。这种情况下，`this.props.children`为未定义。
 
     render((
-      <Router>
-        <Route path="/" component={App}>
-          <Route path="groups" components={{main: Groups, sidebar: GroupsSidebar}} />
-          <Route path="users" components={{main: Users, sidebar: UsersSidebar}}>
-            <Route path="users/:userId" component={Profile} />
-          </Route>
-        </Route>
-      </Router>
+        <Router>
+            <Route path="/" component={App}>
+                <Route path="groups" components={{main: Groups, sidebar: GroupsSidebar}} />
+                <Route path="users" components={{main: Users, sidebar: UsersSidebar}}>
+                    <Route path="users/:userId" component={Profile} />
+                </Route>
+            </Route>
+        </Router>
     ), node)
 
     class App extends React.Component {
-      render() {
-        // the matched child route components become props in the parent
-        return (
-          <div>
-            <div className="Main">
-              {/* this will either be <Groups> or <Users> */}
-              {this.props.main}
-            </div>
-            <div className="Sidebar">
-              {/* this will either be <GroupsSidebar> or <UsersSidebar> */}
-              {this.props.sidebar}
-            </div>
-          </div>
-        )
-      }
+        render() {
+            // the matched child route components become props in the parent
+            return (
+                <div>
+                    <div className="Main">
+                        {/* this will either be <Groups> or <Users> */}
+                        {this.props.main}
+                    </div>
+                    <div className="Sidebar">
+                        {/* this will either be <GroupsSidebar> or <UsersSidebar> */}
+                        {this.props.sidebar}
+                    </div>
+                </div>
+            )
+        }
     }
 
     class Users extends React.Component {
-      render() {
-        return (
-          <div>
-            {/* if at "/users/123" this will be <Profile> */}
-            {/* UsersSidebar will also get <Profile> as this.props.children.
-                You can pick where it renders */}
-            {this.props.children}
-          </div>
-        )
-      }
+        render() {
+            return (
+                <div>
+                    {/* if at "/users/123" this will be <Profile> */}
+                    {/* UsersSidebar will also get <Profile> as this.props.children.
+                            You can pick where it renders */}
+                    {this.props.children}
+                </div>
+            )
+        }
     }
 
 
@@ -561,38 +561,38 @@ history + store ( redux ) `->` react-router-redux `->` enhanced history `->` rea
 
 ### Examples
 
-	import React from 'react'
-	import ReactDOM from 'react-dom'
-	import { createStore, combineReducers } from 'redux'
-	import { Provider } from 'react-redux'
-	import { Router, Route, browserHistory } from 'react-router'
-	import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
+    import React from 'react'
+    import ReactDOM from 'react-dom'
+    import { createStore, combineReducers } from 'redux'
+    import { Provider } from 'react-redux'
+    import { Router, Route, browserHistory } from 'react-router'
+    import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 
-	import reducers from '<project-path>/reducers'
+    import reducers from '<project-path>/reducers'
 
-	// Add the reducer to your store on the `routing` key
-	const store = createStore(
-	  combineReducers({
-		...reducers,
-		routing: routerReducer
-	  })
-	)
+    // Add the reducer to your store on the `routing` key
+    const store = createStore(
+        combineReducers({
+            ...reducers,
+            routing: routerReducer
+        })
+    )
 
-	// Create an enhanced history that syncs navigation events with the store
-	const history = syncHistoryWithStore(browserHistory, store)
+    // Create an enhanced history that syncs navigation events with the store
+    const history = syncHistoryWithStore(browserHistory, store)
 
-	ReactDOM.render(
-	  <Provider store={store}>
-		{ /* Tell the Router to use our enhanced history */ }
-		<Router history={history}>
-		  <Route path="/" component={App}>
-			<Route path="foo" component={Foo}/>
-			<Route path="bar" component={Bar}/>
-		  </Route>
-		</Router>
-	  </Provider>,
-	  document.getElementById('mount')
-	)
+    ReactDOM.render(
+        <Provider store={store}>
+            { /* Tell the Router to use our enhanced history */ }
+            <Router history={history}>
+                <Route path="/" component={App}>
+                    <Route path="foo" component={Foo}/>
+                    <Route path="bar" component={Bar}/>
+                </Route>
+            </Router>
+        </Provider>,
+        document.getElementById('mount')
+    )
 
 > Now any time you navigate, which can come from pressing browser buttons or navigating in your application code, the enhanced history will first pass the new location through the Redux store and then on to React Router to update the component tree. If you time travel, it will also pass the new state to React Router to update the component tree again.
 
