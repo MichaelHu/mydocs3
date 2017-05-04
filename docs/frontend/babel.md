@@ -67,3 +67,14 @@
 
 
 
+
+## babel-node
+
+> 按某种方式先编译再执行。
+
+    babel-node --preset es2015 script.js
+
+
+
+
+

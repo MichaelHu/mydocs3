@@ -128,6 +128,8 @@
     * 无法阻止对前者的调用，但可以通过shouldComponentUpdate返回false阻止对后者的调用
     * `组件内部`来讲，`setState`会触发后者，但不触发前者
 1. react程序`规范`，目录规范、编码规范等
+1. `componentWillReceiveProps`的派发，在`redux`体系下，`只派发`给那些关心的`数据发生`变化了的component
+1. redux数据流做了优化，`多个action`引发的动作可能会`合并`
 
 
 

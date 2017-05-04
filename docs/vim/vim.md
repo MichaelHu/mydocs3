@@ -780,12 +780,24 @@ idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文
 
 ## VimGrep
 
+> 全文检索，`:vimgrep`，简写`:vim`
+
     :vimgrep /<script.\+>/ **/*.md
     :cw
 
     " % stands for current file?
     :vimgrep /^##/ %
     :cw
+
+    " :vim for short; `\c` is for case-insensitive
+    :vim /\cquickview/ */components/**/*.js
+    :vim /\cquickview/ **/components/**/*.js
+    :cw
+
+`Terminal`与`iTerm2`运行vim的区别，命令`:vimgrep`的起始目录处理不一样，Terminal中可以通过NERDTree中使用cd命令改变全局搜索起始目录，iTerm2只是改变了NERDTree的目录，编辑窗口的搜索起始目录仍未变。
+
+`iTerm2`下的处理办法，就是在编辑窗口下，运行`:cd`命令，显式改变编辑窗口的搜索起始目录。
+
 
 ## Files and Buffers
 

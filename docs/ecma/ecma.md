@@ -17,7 +17,7 @@ History: <http://www.ecma-international.org/memento/history.htm>
 
 > ecma-262 standards
 
-* more local: <ref://./ecma-262.md>
+* more local: <ref://./ecma-262.md.html>
 
 
 

@@ -2,6 +2,8 @@
 
 ## notes2
 
+> 定位于`支持CORS`的`独立`的web-service， todo
+
 ### 获取文章列表
 
 `接口`
