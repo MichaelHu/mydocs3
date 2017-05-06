@@ -676,7 +676,8 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
 
 ## 组件APIs
 
-<https://facebook.github.io/react/docs/component-specs.html>
+* `component-specs`: <https://facebook.github.io/react/docs/component-specs.html>
+* `react-component`: <https://facebook.github.io/react/docs/react-component.html>
 
 组件定义过程，需要提供一个类描述对象，由对象提供一些接口方法和属性，包含以下内容：
 

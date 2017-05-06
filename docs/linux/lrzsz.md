@@ -8,7 +8,7 @@
 
 * 文件传输协议，提供`Xmodem`, `Ymodem`, `Zmodem`三种文件传输协议
 * 高达`8KB`的传输块
-* 传输奔溃恢复，校验功能
+* 传输`奔溃恢复`，`校验`功能
 * 高性能 
 
 
@@ -35,6 +35,7 @@
     $ yum list lrzsz
     $ sudo yum install lrzsz
 
+编译好以后的文件默认在`/usr/bin`目录下，分别为`rz, sz`命令，比较独立，其他同类型平台可以复制这两个文件过去，直接可用。
 
 
 ## Recent changes

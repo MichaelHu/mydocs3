@@ -9,11 +9,11 @@
 
 ## 四个关键概念
 
-> 理解以下四个关键概念，有助于理解webpack的运行机制
+> 理解以下`四个关键概念`，有助于理解webpack的运行机制
 
 * entry
 * output
-* leaders
+* loaders
 * plugins
 
 下面分别介绍。
@@ -90,7 +90,7 @@ MPA中`按页面`拆分为不同entry。
         }
     }
 
-> 不管单入口还是对象语法，都可以使用`CommonsChunkPlugin`插件抽取公共代码，通过`自动或者显式`方式打成公共包。具体可查看<ref://./webpak.md.html>中关于`CommonsChunkPlugin`的部分。
+> 不管单入口还是对象语法，都可以使用`CommonsChunkPlugin`插件抽取公共代码，通过`自动或者显式`方式打成公共包。具体可查看<ref://./webpack.md.html>中关于`CommonsChunkPlugin`的部分。
 
 
 

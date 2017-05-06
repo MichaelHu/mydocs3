@@ -1344,6 +1344,19 @@ AMD风格。
     Time: 81617ms
 
 
+
+### webpack-bundle-analyzer 
+
+Webpack plugin and CLI utility that represents bundle content as convenient interactive zoomable `treemap`
+
+<https://www.npmjs.com/package/webpack-bundle-analyzer>
+
+todo
+
+
+
+
+
 ## 开发服务器
 
 > Serves a webpack app. Updates the browser on changes.
@@ -1386,23 +1399,35 @@ AMD风格。
     open    # 2.0开始支持，能在默认浏览器中打开链接
     ...
 
+
+### 配置项
+
+使用`devServer`配置项引入webpack-dev-server的配置。
+
+    module.exports = {
+        devServer: {
+            ...
+        }
+    };
+
+
 ### proxy选项
 
-{
-    ...
-    proxy: {
-        "/api": {
-            "target": {
-                "host": "action-js.dev"
-                , "protocol": "http:"
-                , "port": 80
+    {
+        ...
+        proxy: {
+            "/api": {
+                "target": {
+                    "host": "action-js.dev"
+                    , "protocol": "http:"
+                    , "port": 80
+                }
+                , ignorePath: true
+                , changePrigin: true
+                , secure: false
             }
-            , ignorePath: true
-            , changePrigin: true
-            , secure: false
         }
     }
-}
 
 
 

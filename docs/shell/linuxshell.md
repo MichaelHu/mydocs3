@@ -896,6 +896,17 @@ todo
     EOF
 
 
+## lsof
+
+> list open files
+
+todo
+
+    lsof -i TCP:9000
+
+
+
+
 ## lsbom
 
 for `MAC`
