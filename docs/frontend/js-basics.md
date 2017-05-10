@@ -212,6 +212,28 @@
 
 
 
+## try-catch性能
+
+* <https://jsperf.com/try-catch-performance-overhead>
+* <https://jsperf.com/try-catch-performance-jls/1>
+* <https://jsperf.com/try-catch-performance-jls/2> `提前判断错误性能优于捕获错误`
+
+
+
+
+## window.onerror
+
+处理`未被捕获`的异常，通过它可以设置一个异常处理函数。该函数接收三个字符串类型的参数。
+
+    window.onerror = function( msg, url, line ) {
+        console.log( 'ERROR: ' + msg + '\n' + url + ':" + line );
+        return false;
+    }
+
+`return false`告知浏览器已经处理完异常；但firefox是`return true`
+
+
+
 ## 绝对等式
 
     typeof null === 'object'

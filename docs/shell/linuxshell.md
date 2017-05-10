@@ -3,7 +3,11 @@
 
 > 简单是终极的复杂。 —— 达芬奇
 
-2017-1
+> No programming language is perfect. There is not even a single best language; there are only languages well suited or perhaps poorly suited for particular purposes.   -- Herbert Mayer
+
+2017-5
+, 2017-4
+, 2017-1
 , 2016-11
 , 2016 , 2015
 , 2014 hudamin
@@ -15,25 +19,49 @@
 * `.bash_profile`与`登录`相关，用户登录后会执行一次.bash_profile
 
 
-## stat命令
+## $相关 
+
+    $0, $1, $2, etc.    # 位置参数
+    $#                  # 参数列表的参数个数
+    $*                  # 参数列表本身，作为一个字符串看待
+    $@                  # 同$*，但每个参数都是一个字符串，作为多个字符串看待，传递过程中不会进行解析和扩展
+
+    ${}
+    $?                  # exit status，可能是命令、函数或脚本本身的exit status
+    $$                  # 当前脚本的pid
+    $!                  # 上一后台运行的任务的pid
+
+
+## 内部变量
 
 > todo
 
-    # linux
-    stat <file>
+    $BASH
+    $BASH_ENV
+    $BASH_SUBSHELL
+    $BASH_VERSINFO
+    $BSSH_VERSION
+    ...
+    $LC_LOCALE
+    $LC_CTYPE
+    $LC_ALL
+    ...
+    $LINENO
+    
+    $MACHTYPE           # 系统硬件
+    $OLDPWD
+    $OSTYPE             # OS类型
+    $PATH
 
-	MyBookLive:~# stat reset-locale.sh 
-	  File: `reset-locale.sh'
-	  Size: 39            Blocks: 8          IO Block: 4096   regular file
-	Device: 900h/2304d    Inode: 102390      Links: 1
-	Access: (0666/-rw-rw-rw-)  Uid: (    0/    root)   Gid: (    0/    root)
-	Access: 2017-02-07 11:51:41.000000000 +0800
-	Modify: 2017-02-07 11:51:41.000000000 +0800
-	Change: 2017-02-07 11:51:41.000000000 +0800
+    $PPID               # 父进程的pid
+    
+    $PWD                # 当前工作目录
 
-    # mac
-    stat -x <file>
+    $SECONDS            # 脚本已经运行的秒数
 
+    $TMOUT              # 提示输入超时时间
+
+    $UID                # uid
 
 
 
@@ -115,7 +143,7 @@
     else
         echo 'yes'
     fi
-    no
+    yes
     
 
     (( 0 ))
@@ -136,6 +164,19 @@
     for i in `cat file.lst`; do
         wc -l $i
     done
+
+    for i in abc "b c d"; do echo $i; done
+
+    for i in "/path/to/file1
+    /path/to/file2
+    /path/to/file3
+    /path/to/file4"; do echo $i; done
+
+    FILES="/path/to/file1
+    /path/to/file2
+    /path/to/file3
+    /path/to/file4"
+    for i in $FILES; do echo $i; done
 
 
 ### 空白字符作为列表分割
@@ -279,6 +320,27 @@ todo
 
 
 
+## stat命令
+
+> todo
+
+    # linux
+    stat <file>
+
+	MyBookLive:~# stat reset-locale.sh 
+	  File: `reset-locale.sh'
+	  Size: 39            Blocks: 8          IO Block: 4096   regular file
+	Device: 900h/2304d    Inode: 102390      Links: 1
+	Access: (0666/-rw-rw-rw-)  Uid: (    0/    root)   Gid: (    0/    root)
+	Access: 2017-02-07 11:51:41.000000000 +0800
+	Modify: 2017-02-07 11:51:41.000000000 +0800
+	Change: 2017-02-07 11:51:41.000000000 +0800
+
+    # mac
+    stat -x <file>
+
+
+
 
 
 ## scp
@@ -333,6 +395,23 @@ todo
 
     # 删除`-`开头的文件
     rm -rf -- -abc.*
+
+
+
+## alias
+
+    $ alias
+    alias cp='cp -i'
+    alias rm='rm -i'
+    alias mv='mv -i'
+
+> 如何绕过`cp -r src/* dest`不断提示覆盖确认？
+
+    $ which cp
+    alias cp='cp -i'
+    /user/bin/cp
+    $ /usr/bin/cp -r src/* dest
+    $ \cp -r src/* dest
 
 
 
@@ -666,6 +745,79 @@ todo
 
 
 
+## 性能监测命令
+
+> 参考：<http://os.51cto.com/art/201005/200714.htm>，todo
+
+### top
+> 提供一个当前运行系统实时动态的视图，也就是正在运行进程
+
+### iostat
+
+### free
+
+    $ free
+
+### vmstat
+> 显示关于进程、内存、内存分页、堵塞IO、traps及CPU活动的信息 
+
+    $ vmstat -a
+
+### w
+
+> 显示系统当前用户机器运行进程的信息。
+
+    $ w username
+     21:06:23 up 18 days,  3:10,  6 users,  load average: 0.00, 0.01, 0.05
+    USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+    fe       pts/0    172.22.128.65    17:14    7.00s  0.13s  0.00s w fe
+    fe       pts/1    172.22.128.86    17:46   18:47   2:41   0.17s -bash
+    fe       pts/4    172.22.128.65    15:03   10:31   2:03   0.13s -bash
+    fe       pts/5    172.22.128.65    19:24   11:59   0.02s  0.02s -bash
+
+### uptime
+
+### ps
+
+### sar
+
+> 搜集、报告和储存系统活动信息
+
+    $ sar -n DEV | more
+    $ sar -n DEV -f /var/log/sa/sa24 | more
+
+### mpstat
+> 显示所有可用处理器的使用情况，处理器编号从0开始。
+
+    $ mpstat -P ALL
+
+### pmap
+> 可以显示进程的内存映射，使用这个命令可以找出造成内存瓶颈的原因
+
+    pmap -d PID
+
+### netstat & ss
+
+### iptraf
+> 交互式的IP网络监控工具
+
+
+### tcpdump
+> 一个简单网络流量转储工具，然而要使用好需要对TCP/IP协议非常熟悉
+
+    $ tcpdump -i eth1 'udp port 53'
+
+### strace
+> 追踪系统调用和型号，这对于调试Web服务器和其他服务器非常有用
+
+### /proc文件系统
+> 该目录下文件提供了很多不同硬件设备和内核的详细信息
+    $ cat /proc/cpuinfo
+    $ cat /proc/meminfo
+    $ cat /proc/zoneinfo
+    $ cat /proc/mounts
+
+
 
 ## pbcopy & pbpaste
 
@@ -896,6 +1048,20 @@ todo
     EOF
 
 
+
+## netstat
+
+    netstat -r
+    Kernel IP routing table
+    Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
+    default         gateway         0.0.0.0         UG        0 0          0 eth0
+    172.18.0.0      0.0.0.0         255.255.0.0     U         0 0          0 docker0
+    172.22.2.0      0.0.0.0         255.255.255.0   U         0 0          0 eth0
+
+    netstat -lpn
+
+
+
 ## lsof
 
 > list open files
@@ -922,31 +1088,6 @@ for `MAC`
     sudo rm -rf /usr/local/lib/node \
          /usr/local/lib/node_modules \
          /var/db/receipts/org.nodejs.*
-
-
-
-## 清空文件
-
-
-几种快速清空文件内容的方法：
-
-    $ : > filename              # 其中的`:`是一个占位符, 不产生任何输出.
-    $ > filename
-    $ echo "" > filename
-    $ echo /dev/null > filename
-    $ echo > filename
-    $ cat /dev/null > filename
-
-
-
-## 使用inode删除文件
-
-> 对于一些名称包含特殊字符的文件，在命令行里很难敲出来。这是可以使用inode的方式来删除。
-
-    $ ls -i
-    35806669 ~.@ 包含特殊字符的文件名.docx
-    $ rm `find . -inum 35806669`            # 不支持包含空格的文件名
-    $ find . -inum 35806669 -exec rm {} \;  # 终极方案，支持文件包含空格
 
 
 
@@ -1077,6 +1218,32 @@ sed的正则接近`perl`的正则，比如反向引用`&`：
 
 
 ## 实用例子
+
+### 清空文件
+
+
+几种快速清空文件内容的方法：
+
+    $ : > filename              # 其中的`:`是一个占位符, 不产生任何输出.
+    $ > filename
+    $ echo "" > filename
+    $ echo /dev/null > filename
+    $ echo > filename
+    $ cat /dev/null > filename
+
+
+
+### 使用inode删除文件
+
+> 对于一些名称包含特殊字符的文件，在命令行里很难敲出来。这是可以使用inode的方式来删除。
+
+    $ ls -i
+    35806669 ~.@ 包含特殊字符的文件名.docx
+    $ rm `find . -inum 35806669`            # 不支持包含空格的文件名
+    $ find . -inum 35806669 -exec rm {} \;  # 终极方案，支持文件包含空格
+
+
+
 
 ### 批量进行文件改名 
 
