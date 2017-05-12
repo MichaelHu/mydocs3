@@ -255,7 +255,7 @@ load(resources, callback);
     * release()
 
 * Q.Sprite
-    * this._super()
+    * `this._super()`
         调用父类同名函数
     * this.add()
         添加component
@@ -322,7 +322,7 @@ load(resources, callback);
 ## Crafty
 
 * 官网：<http://craftyjs.com>，不太容易打开
-* GIT: <https://github.com/craftyjs/Crafty>
+* github: <https://github.com/craftyjs/Crafty>
 
  
 
@@ -331,3 +331,14 @@ load(resources, callback);
 TypeScript编写
 
 围住神经猫
+
+
+## QICI engine
+
+> 青瓷游戏引擎，hightopo出品，用的人不算多
+
+* github: <https://github.com/qiciengine/qiciengine>
+* site: <http://engine.qiciengine.com/demo/>
+
+
+
