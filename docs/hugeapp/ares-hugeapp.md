@@ -61,6 +61,8 @@
     npm install --save-dev babel-core babel-preset-react babel-preset-es2015
     npm install --save-dev webpack webpack-dev-server
     npm install --save-dev babel-loader
+    npm install --save-dev node-sass sass-loader css-loader style-loader
+    npm install --save-dev file-loader url-loader
 
 
 ### 验证基础功能
@@ -134,7 +136,11 @@
 
 
 
-## 子项目2 
+## 子项目2 大数据图谱
+
+* props向下传递是全量传递还是按需传递？
+* 是否允许container嵌套？
+* 箭头函数使用的场景，不能完全等同与匿名函数
 
 
 

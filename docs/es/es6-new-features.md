@@ -16,11 +16,17 @@
 
     import { sex, echo } from './a';
     import * as utils from './a';
+    import utils from './a';
     import { sex, echo as ECHO } from './a';
     import React, {Component, PropTypes} from 'react';
     export { sex, echo };
     export function echo( ... ) { ... };
     export default sex;
+
+* `from`后的`路径描述`，不以`./`或`../`开头的，默认从`node_modules`查找路径中查找
+* `import utils from './a';`，utils等同于`exports.default`
+* `import * as utils from './a';`，utils等同于`exports`
+
 
 错误写法：
 

@@ -349,6 +349,70 @@ IE9以下，`hasEnumBug`
     10              [object Number]
 
 
+## Object.assign
+
+<https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/assign>
+
+    Object.assign( target, ...sources )
+
+* 浅拷贝
+* 可能会有TypeError错误，比如目标对象同名属性是只读的
+
+
+## Object.defineProperty
+
+<https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty>
+
+    Object.defineProperty( obj, prop, descriptor )
+
+### 数据描述符与存取描述符
+
+    公共：
+    configurable
+    enumerable
+
+    数据描述符独有：
+    value
+    writable
+
+    存取描述符独有：
+    get
+    set
+
+
+### 例子
+
+	var o = {}; // 创建一个新对象
+
+	// Example of an object property added with defineProperty with a data property descriptor
+	Object.defineProperty(o, "a", {
+	  value : 37,
+	  writable : true,
+	  enumerable : true,
+	  configurable : true
+	});
+
+	// 对象o拥有了属性a，值为37
+
+	// Example of an object property added with defineProperty with an accessor property descriptor
+	var bValue;
+	Object.defineProperty(o, "b", {
+	  get : function(){
+		return bValue;
+	  },
+	  set : function(newValue){
+		bValue = newValue;
+	  },
+	  enumerable : true,
+	  configurable : true
+	});
+
+	Object.defineProperty(o, "a", { value : 37,
+									writable : false });
+
+	console.log(o.a); // 打印 37
+	o.a = 25; // 没有错误抛出（在严格模式下会抛出，即使之前已经有相同的值）
+	console.log(o.a); // 打印 37， 赋值不起作用。
 
 ## 匿名函数
 
