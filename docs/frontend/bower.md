@@ -61,3 +61,5 @@ Web sites are made of lots of things -- frameworks, libraries, assets, and utili
 所以，更新bower新版本只需要：
 
     sudo npm install -g bower
+
+

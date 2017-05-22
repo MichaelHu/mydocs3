@@ -12,7 +12,7 @@
 `ref`: <https://tools.ietf.org/html/rfc6265#section-6.1>
 
 rfc对浏览器对`最低要求`：
-* 每个cookie `4096`字节（包含name，value以及属性）
+* 每个cookie `4096`字节（`包含name，value以及属性`）
 * 每个域名至少支持`50个`cookie
 * 总共支持至少`3000`个cookie
 具体浏览器的支持程度因厂商而异。
@@ -50,12 +50,22 @@ cookie串由`'; '`分隔每个cookie，每个cookie按`name=value`的方式保�
 
 
 
+### host-only-flag
+
+以下情况之一满足时，`http-only-flag`被设置为true
+* HttpOnly属性为true时
+* domain属性为空、或者domain属性不合法时
+由于`host-only-flag`的不同值，可能出来多个同名cookie，需要注意。
+
+
+
 ### 属性默认值
 
-* `domain`，默认为`location.hostname`，而不是location.host
+* `domain`，默认为`location.hostname`，而不是location.host，也即`默认不包含端口号`
 * `path`，默认为当前路径，比如当前为`/static/abc/d.html`，则path为`/static/abc`。路径不存在，cookie设置不成功
 * `expires`，默认为当前session有效
 
+> 关于domain属性前导点号的解释：<https://tools.ietf.org/html/rfc6265#section-5.2.3>，处理过程中会`忽略前导点号`。
 
 
 
