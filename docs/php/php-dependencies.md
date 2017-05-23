@@ -6,9 +6,7 @@
 
 ## 关于gnu的anonymous ftp
 
-1. 浏览器访问，地址栏输入
-    `http://ftp.gnu.org`
-    即可访问。里面包含各类由GNU维护的开源软件源代码。
+1. 浏览器访问，地址栏输入<http://ftp.gnu.org>即可访问。里面包含各类由GNU维护的开源软件源代码。
 
 2. 命令行ftp
 
@@ -55,7 +53,7 @@
 
 ## GNU: libiconv
 
-`官网：`https://savannah.gnu.org/projects/libiconv/
+`官网：`<https://savannah.gnu.org/projects/libiconv/>
 
 持续更新项目地址：
 
@@ -81,7 +79,7 @@ stable release：
 
 ## libcurl
 
-`官网：`http://curl.haxx.se
+`官网：`<http://curl.haxx.se>
 
 <img src="./img/libcurl.png">
 
@@ -96,7 +94,7 @@ stable release：
 
 > This module enables you to read and write `gzip (.gz)` compressed files.
 
-`官网：`http://www.zlib.net
+`官网：`<http://www.zlib.net>
 
 <img src="./img/zlib.png">
 

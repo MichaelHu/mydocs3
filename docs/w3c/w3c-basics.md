@@ -21,6 +21,9 @@
     * Living: <https://streams.spec.whatwg.org/>
     * Retired: <https://www.w3.org/TR/streams-api/> 
     * local ref: <ref://./streams-api.md.html>
+* XMLHttpRequest: The specification defines an API that provides scripted client functionality for transferring data between a client and a server.
+    * Living: <https://xhr.spec.whatwg.org>
+    * Retired: <https://www.w3.org/TR/XMLHttpRequest/>
 
 
 ## W3C文档状态
