@@ -1,5 +1,22 @@
-# httpd-conf
+# apache
 
+> httpd
+
+## 配置说明
+
+> todo
+
+
+
+
+## MaxRequestLen
+
+最大请求长度，`Apache 2.3.6`开始，`MaxRequestLen`这个参数的默认值从之前的`1GB`调整到了`131072字节`（128KB）。于是上传128KB以下的文件不会出问题，但是超过这个值就会报`500`错误了。 
+打开Apache的`httpd.conf`配置文件，增加`全局`配置：
+
+    MatRequestLen 10240000
+
+单位是`字节`，以上配置最大请求长度为`10MB`。配置完成后重启Apache即可。
 
 
 ## 2.2到2.4升级备忘

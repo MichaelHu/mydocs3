@@ -132,7 +132,7 @@ or
         s.append_show( 'decompressed', decompressed );
         s.append_show( 'compress ratio'
             , compressed.length 
-                / content.length 
+                / content.replace( /[^\u0000-\u00ff]/g, 'aa' ).length 
         );
 
     })();

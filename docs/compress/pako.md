@@ -241,6 +241,10 @@
         var s = fly.createShow('#test_server');
         var content = window.mixed_repeated;
         var content = window.json_90k;
+        content += content;
+        content += content;
+        content += content;
+        content += content;
         var compressedRaw = pako.deflateRaw( content );
         var compressedDeflate = pako.deflate( content );
         var compressedGzip = pako.gzip( content );
@@ -256,7 +260,7 @@
             xhr.onreadystatechange = function() {
                 switch( xhr.readyState ) {
                     case 4: 
-                        s.append_show( 'response'
+                        s.append_show( encoding + ' response'
                             , xhr.responseText.length > 500 
                                 ? xhr.responseText.substr( 0, 50 ) 
                                     + ' ... '
