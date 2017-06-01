@@ -6,9 +6,9 @@
 
 ## 数据端
 
-> notes2_data
+> `notes2_data`
 
-使用`MongoDB`进行数据存储，将`*.md`文件进行`按行存储`，同时解析每个文件的档案信息，包括标题等
+使用`MongoDB`进行数据存储，将`*.md`文件进行`按行存储`，同时解析每个文件的档案信息，包括标题等；能获取`svn`仓库提交时间，作为入库时间。
 
     git clone https://github.com/MichaelHu/notes2_data.git
     cd notes2_data
@@ -21,7 +21,7 @@
 
 ## Server端
 
-> notes2
+> `notes2`
 
 提供数据接口，支持`文档列表、全文检索`等通用数据接口
 

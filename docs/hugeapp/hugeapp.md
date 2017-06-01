@@ -1,10 +1,10 @@
 # hugeapp
 
 ## 变迁历史
-* rocket_apps，百度时期
-* super-webapp，滴滴时期
-* inspire，绿湾1期
-* hugeapp系列，绿湾2期，170419
+* `rocket_apps`，百度时期
+* `super-webapp`，滴滴时期
+* `inspire`，绿湾1期
+* `hugeapp系列`，绿湾2期，170419
 
 
 ## hugeapp系列

@@ -1,7 +1,7 @@
 # MongoDB Memo
 
 > Agility, scalability, performance. Pick three.
-> 敏捷，扩展性，性能。三者皆得。
+> `敏捷，扩展性，性能`。三者皆得。
 
 * Main: <https://www.mongodb.org>
 * Install: <http://docs.mongodb.org/manual/installation/>
@@ -27,7 +27,7 @@ MongoDB是一个`面向文档`的数据库，目前由`10gen`开发并维护，�
 
 ## 特点介绍
 
-* `JSON`风格语法，MongoDB中的JSON文档称其为`BSON`，是JSON的二进制表达方式。
+* `JSON`风格语法，MongoDB中的JSON文档称其为`BSON`，是JSON的`二进制`表达方式。
 * `面向文档`：`Documents`类似于编程语言中的`结构体`，保存`key-value` pairs。
 * `Collection`：集合，包含多个Document，类似于Table
 
@@ -92,12 +92,12 @@ MongoDB是一个`面向文档`的数据库，目前由`10gen`开发并维护，�
 
         $ mongod --port 27017
 
-    监听27017端口可能不一定能成功，比如该端口已被占用，
+    监听`27017端口`可能不一定能成功，比如该端口已被占用，
     这时需要通过`--port`选项，设置新的端口。
 
         $ mongod --dbpath=./data --fork --syslog --port 8345
 
-    启动server进程，使用`--fork --syslog`选项。使用`nohup`和`&`无效。
+    启动`server进程`，使用`--fork --syslog`选项。使用`nohup`和`&`无效。
 
 
 4. 交互命令行
@@ -108,7 +108,7 @@ MongoDB是一个`面向文档`的数据库，目前由`10gen`开发并维护，�
 
 ## CRUD操作
 
-查看<a href="./mongodb-curd.md.html">MongoDB CURDs</a>
+查看`MongoDB CURDs`: <ref://./mongodb-curd.md.html>
 
 
 ## Operators操作符
@@ -140,7 +140,7 @@ DOCs: <http://docs.mongodb.org/manual/reference/operator/>
 
 ## MongoDB Shell
 
-<a href="./mongodb-shell.md.html">MongoDB Shell Memo</a>
+`MongoDB Shell Memo`: <ref://./mongodb-shell.md.html>
 
 
 
@@ -180,11 +180,10 @@ MongoDB默认在创建collection时添加`_id`索引字段
 
 ## BSON Types
 
-> BSON是存储文档和RPC时使用的`二进制序列`化格式。MongoDB BSON provides support for additional data types than JSON.
+> `BSON`是存储文档和RPC时使用的`二进制序列`化格式。MongoDB BSON provides support for additional data types than JSON.
 
+* `BSON Types`: <http://docs.mongodb.org/manual/reference/bson-types>
 
-
-* `BSON Types`: http://docs.mongodb.org/manual/reference/bson-types
 
 ### 支持的BSON数据类型
 
@@ -213,7 +212,6 @@ MongoDB默认在创建collection时添加`_id`索引字段
 
 
 ### 连接数据库
-
 
 使用`MongoClient`：
 

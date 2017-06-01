@@ -19,10 +19,11 @@ w3c html5 标准文档: <https://www.w3.org/TR/html/>
 
 ## ARIA Role attribute
 
-> Accessible Rich Internet Applications ( WAI-ARIA )
+> Web Accessibility Initiative - Accessible Rich Internet Applications ( WAI-ARIA )
 
     <li role="menuitem">Open file…</li>
 
+* Overview: <https://www.w3.org/WAI/intro/aria>
 * wai-aria: <https://www.w3.org/TR/wai-aria/>
 * role attribute: <https://www.w3.org/TR/2011/WD-role-attribute-20110113/>
 * HTML allowed roles: <https://www.w3.org/TR/2016/REC-html51-20161101/dom.html#allowed-aria-roles-states-and-properties>

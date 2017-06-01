@@ -91,9 +91,14 @@
     ]
 
 
-## CORS
 
+
+
+
+## CORS
 > 支持`CORS`的服务器接口
+
+### cors.php
 
 `接口`
     GET http://258i.com/phpapp/cors.php 
@@ -104,5 +109,21 @@
     {
         "name": "胡大民"
     }
+
+### compressed-request.php
+
+`接口`
+    POST http://258i.com/phpapp/compressed-request.php
+
+`示例`
+    POST http://258i.com/phpapp/compressed-request.php
+    data: pako.deflate( 'Hello, World!' )
+    header: Content-Encoding: deflate
+
+    Hello, world!
+    raw-body-length: 21
+    real-body-length: 13
+    compress-ratio: 1.6153846153846
+
 
 
