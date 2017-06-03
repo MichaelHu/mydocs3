@@ -1,19 +1,16 @@
 # sigmajs
 
 
-> 致力于在网页中绘制`网状图形`，提供交互接口。图形技术支持Canvas、WebGL和SVG。
+> 致力于在网页中绘制`网状图形`，提供交互接口。图形技术支持`Canvas`、`WebGL`和`SVG`。
 
 
-## 初识
+## 概览
 
-* latest version: `1.2.0`
 * site: <http://sigmajs.org>
 * github: <https://github.com/jacomyal/sigma.js/wiki>
+* latest version: `1.2.0`
 * 需要注意并理解其`插件机制`，有些时候配置了，没有效果，甚至代码报错，可能是插件没有加载
 * 显示`边的label`，必须注意其`类型`必须为`string`，否则不展示 
-
-
-
 
 
 <style type="text/css">
@@ -22,9 +19,6 @@
 <script src="http://258i.com/static/build/sigma/sigma.js"></script>
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <script src="../algorithm/js/graph-layout/utils.js"></script>
-
-
-
 
 
 

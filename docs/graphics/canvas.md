@@ -98,7 +98,7 @@
 
 <http://fex.baidu.com/blog/2015/11/convert-svg-to-png-at-frontend/>
 
-Canvas 的 W3C 的标准上没有提及 canvas 的最大高/宽度和面积，但是每个厂商的浏览器出于浏览器性能的考虑，在不同的平台上设置了最大的高/宽度或者是渲染面积，超过了这个阈值渲染的结果会是空白。测试了几种浏览器的 canvas 性能如下：
+Canvas 的 W3C 的标准上没有提及 canvas 的`最大高/宽度和面积`，但是每个厂商的浏览器出于浏览器性能的考虑，在不同的平台上设置了最大的高/宽度或者是渲染面积，超过了这个阈值渲染的结果会是`空白`。测试了几种浏览器的 canvas 性能如下：
 
 * chrome (版本 46.0.2490.80 (64-bit))
     * 最大面积：268, 435, 456 px^2 = 16, 384 px * 16, 384 px
@@ -138,24 +138,13 @@ context维护一个绘制`状态栈`，该状态栈包含：
 
 1. 当前`变换矩阵`(tranforming matrix)
 2. 当前`剪辑区`(clipping region)
-3. 以下`属性`(attributes)的当前值：
-    * strokeStyle
-    * fillStyle
-    * globalAlpha
-    * lineWidth
-    * lineCap
-    * lineJoin
-    * miterLimit
-    * shadowOffsetX
-    * shadowOffsetY
-    * shadowBlur
-    * shadowColor
-    * globalCompositeOperation
-    * font
-    * textAlign
-    * textBaseline
+3. 以下`15个属性`(attributes)的当前值：
 
-注意，`path`和`bitmap`不属于绘制状态栈的一部分。
+        1.  strokeStyle fillStyle globalAlpha lineWidth lineCap 
+        6.  lineJoin miterLimit shadowOffsetX shadowOffsetY shadowBlur 
+        11. shadowColor globalCompositeOperation font textAlign textBaseline
+
+> 注意，`path`和`bitmap`不属于绘制状态栈的一部分。
 * `path`只能通过`beginPath()`来重置；
 * `bitmap`是属于`canvas`的一个property，而不属于context。
 
@@ -802,6 +791,8 @@ android 2.3.3的原生浏览器是不支持的，虽然该函数可以正常调�
 
 * `scale`: function(scaleWidth, scaleHeight)
 
+    实为`坐标放大`。
+
     <img src="./img/canvas_scale.png">
 
     `例子：`绘制一个矩形；放大到 200%，再次绘制矩形；放大到 200%，
@@ -848,7 +839,7 @@ android 2.3.3的原生浏览器是不支持的，虽然该函数可以正常调�
 
 * `translate`: function(tx, ty)
     
-    平移
+    `坐标系平移`
 
 * `transform`: function(a, b, c, d, e, f)
     ，见`变换矩阵( transform matrix )`部分。
@@ -898,18 +889,9 @@ android 2.3.3的原生浏览器是不支持的，虽然该函数可以正常调�
 
     `refer`: <https://www.w3.org/TR/2dcontext/#compositing>，11种类型，外加一种扩展类型。
 
-    * source-atop
-    * source-in
-    * srouce-out
-    * source-over ( default )
-    * destination-atop
-    * destination-in
-    * destination-out
-    * destination-over
-    * lighter
-    * copy
-    * xor
-    * vendorName-operationName
+        1.  source-atop source-in srouce-out source-over ( default ) destination-atop 
+        6.  destination-in destination-out destination-over lighter copy 
+        11. xor vendorName-operationName
 
 * `save`: function()
 * `restore`: function()
@@ -933,9 +915,10 @@ android 2.3.3的原生浏览器是不支持的，虽然该函数可以正常调�
 
 的其次坐标表示为：
 
-    [ hx1, hx2, hx3, ..., hxn ]
+    [ hx1, hx2, hx3, ..., hxn, h ]
 
-其中`h`是一个实数。
+其中`h`是一个实数。一个向量的齐次表示不是唯一的，齐次坐标中的`h`取`不同`的值都`表示`的是`同一个点`。
+例如，齐次坐标`[8, 4, 2]`与`[4, 2, 1]`表示的都是二维点`[2, 1]`。
 
 `todo`：二维齐次坐标变换。
 

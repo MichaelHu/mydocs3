@@ -58,7 +58,9 @@ import.js:
 
 
 
-## 箭头操作符
+## 箭头函数
+
+> 参考：<http://www.ecma-international.org/ecma-262/6.0/index.html#sec-arrow-function-definitions>
 
     var array = [1, 2, 3];
     //传统写法
@@ -68,6 +70,7 @@ import.js:
     //ES6
     array.forEach(v => console.log(v));
 
+* 参数部分与`=>`之间不能有换行
 
 
 

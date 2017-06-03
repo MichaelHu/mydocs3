@@ -1,8 +1,6 @@
 # WebGL
 
-> Web Graphics Library
-
- <img src="./img/WebGL-Logo.png" height="45">
+> Web Graphics Library  <img src="./img/WebGL-Logo.png" height="45">
 
 ## Overview
 
@@ -10,6 +8,7 @@
 * <https://www.khronos.org/registry/webgl/specs/latest/>
 * <https://www.khronos.org/registry/webgl/specs/latest/1.0/>
 * <https://www.khronos.org/registry/webgl/specs/latest/2.0/>
+* 并不是`w3c`出specs，也可以理解，毕竟WebGL来自`OpenGL`
 
 
 <style type="text/css">
@@ -25,6 +24,9 @@
 ## WebGLRenderingContext
 
 ## WebGL Viewport
+
+* canvas的3d context
+* contextId为`webgl`
 
 <div id="test_viewport" class="test">
 <div class="canvas-cont"><canvas></canvas></div>

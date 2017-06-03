@@ -9,6 +9,7 @@
 
 * site: <https://www.python.org>
 * Python 3提供许多新特性
+* 第一个使用scrapy爬虫项目：<http://cuiqingcai.com/990.html> todo
 
 ### CLI
 

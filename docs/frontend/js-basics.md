@@ -355,7 +355,7 @@ IE9以下，`hasEnumBug`
 
     Object.assign( target, ...sources )
 
-* 浅拷贝
+* `浅拷贝`
 * 可能会有TypeError错误，比如目标对象同名属性是只读的
 
 
@@ -368,51 +368,67 @@ IE9以下，`hasEnumBug`
 ### 数据描述符与存取描述符
 
     公共：
-    configurable
-    enumerable
+    configurable enumerable
 
     数据描述符独有：
-    value
-    writable
+    value writable
 
     存取描述符独有：
-    get
-    set
+    get set
+
+### 示例 
+
+* 设置`只读属性`的值，`非严格模式`下不会抛出异常，`严格模式`下则抛出异常
+
+<div id="test_defineProperty" class="test">
+<div class="test-container">
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_defineProperty');
+        var obj = {};
+
+        s.show( 'testing defineProperty ...' );
+
+        Object.defineProperty( obj, 'id', { value: 37 } );
+        s.append_show( '获取属性id', obj.id );
+        obj.id = 2;
+        s.append_show( '只读属性id不可改变，只能获取属性id的原值', obj.id );
+
+        Object.defineProperty( obj, 'name', { value: 'Michael', writable: true } );
+        s.append_show( '\n获取属性name', obj.name );
+        obj.name = 'Even';
+        s.append_show( '可写属性name可改变，获取到新值', obj.name );
+
+        obj._age = 0;
+        Object.defineProperty( obj, 'age', { 
+            set: function( age ) {
+                if ( age >=0 && age <= 150 ) {
+                    this._age = age;
+                }
+            }
+            , get: function( age ) {
+                return this._age;
+            }
+        } );
+        s.append_show( '\n获取属性age值', obj.age );
+        obj.age = 35;
+        s.append_show( '设置一个合理的值，获取属性age的新值', obj.age );
+        obj.age = 350;
+        s.append_show( '设置一个不合理的值，只能获取属性age的原值', obj.age );
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
 
 
-### 例子
 
-	var o = {}; // 创建一个新对象
 
-	// Example of an object property added with defineProperty with a data property descriptor
-	Object.defineProperty(o, "a", {
-	  value : 37,
-	  writable : true,
-	  enumerable : true,
-	  configurable : true
-	});
 
-	// 对象o拥有了属性a，值为37
-
-	// Example of an object property added with defineProperty with an accessor property descriptor
-	var bValue;
-	Object.defineProperty(o, "b", {
-	  get : function(){
-		return bValue;
-	  },
-	  set : function(newValue){
-		bValue = newValue;
-	  },
-	  enumerable : true,
-	  configurable : true
-	});
-
-	Object.defineProperty(o, "a", { value : 37,
-									writable : false });
-
-	console.log(o.a); // 打印 37
-	o.a = 25; // 没有错误抛出（在严格模式下会抛出，即使之前已经有相同的值）
-	console.log(o.a); // 打印 37， 赋值不起作用。
 
 ## 匿名函数
 
@@ -463,10 +479,11 @@ IE9以下，`hasEnumBug`
 
 
 ## 正则表达式之转义序列
+> 详细查看：<ref://../encoding/character-escape.md.html>
 
-1. `\xxx`: 八进制数xxx规定的字符
-2. `\xdd`: 十六进制数dd规定的字符
-3. `\uxxxx`:十六进制数xxxx规定的Unicode字符
+1. `\ooo`: 八进制数ooo规定的字符
+2. `\xhh`: 十六进制数hh规定的字符
+3. `\uhhhh`:十六进制数hhhh规定的Unicode字符
 
 
 
@@ -504,7 +521,6 @@ IE9以下，`hasEnumBug`
 8. [viewport scrolling] window.scroll() 
 9. [viewport scrolling] window.scrollTo() 
 10. [viewport scrolling] window.scrollBy() 
-
 
 
 ### element扩展
@@ -802,6 +818,9 @@ The production RelationalExpression : RelationalExpression in ShiftExpression is
 
 
 ## blob
+
+    RenderingContext.toBlob()
+    FileAPI
 
 ## Float32Array
 
