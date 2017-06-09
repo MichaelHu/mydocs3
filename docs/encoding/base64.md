@@ -2,7 +2,7 @@
 
 > 基于`64个可打印字符`来表示`二进制数据`的表示方法。
 
-比如可以将二进制数据进行base64编码，从而可以在`URL`中传输。
+比如可以将`二进制`数据进行base64编码，从而可以在`URL`中传输。
 
 * wikipedia: Base64 <https://en.wikipedia.org/wiki/Base64>
 * 百度百科: Base64 <http://baike.baidu.com/link?url=5ic0OiXxTO5VgT0gRbw0VcDEj9NmNu6L4Ip1mEvmvAR24u1Fc1d4JHhSJsT9bOD1xdiwJznICl6FUtYLckU5jK>

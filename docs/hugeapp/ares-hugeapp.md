@@ -23,7 +23,7 @@
 
 ### 目录搭建
 
-使用适合大型项目团队适用的fractal结构，依照特性而不是文件类型分组。参考 
+使用适合大型项目团队使用的`fractal`结构，依照`特性`而不是文件类型分组。参考 
 * <https://github.com/asd0102433/blog/blob/master/前端/file_structure_for_react.md>
 * <https://github.com/bodyno/react-starter-kit>
 

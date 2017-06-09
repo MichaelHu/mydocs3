@@ -6,6 +6,14 @@
 * docs: <https://docs.npmjs.com>
 
 
+## 资讯
+
+* 170602 npm 5.0增强了常规性能，据说5倍之快 <https://www.infoq.com/news/2017/05/npm-5-released>
+        强化了缓存的作用，提升性能
+        --no-save开关，默认会进行save
+        可以通过 npm install npm@latest -g 升级到最新版
+
+
 
 ## 安装方式
 
