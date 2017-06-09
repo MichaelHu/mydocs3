@@ -180,19 +180,33 @@ a_{1n} \quad a_{2nn} \quad \dotsm \quad a_{mn}
 ### 矩阵的逆
 
 <script type="math/tex">
-对于一个n\times n的方阵A，如果存在一个n\times n的方阵B，使得A \cdot B = B \cdot A = I_n，则称B为A的逆，记为B=A^{-1}。
+对于一个n\times n的方阵A，如果存在一个n\times n的方阵B，使得
 </script>
-
-<script type="math/tex">
-同时A被称为非奇异矩阵。
+<script type="math/tex; mode=display">
+        A \cdot B = B \cdot A = I_n \\
 </script>
-
-
 <script type="math/tex">
+则称B为A的逆，记为B=A^{-1}。同时A被称为非奇异矩阵。\\
 矩阵的逆是相互的，若A是B的逆，同样A也可记为A=B^{-1}，B也是一个非奇异矩阵。
 </script>
 
-任何非奇异矩阵`有且只有一个`逆矩阵。
+
+#### 定理1
+任何非奇异矩阵`有且只有一个`逆矩阵
+
+#### 定理2
+<script type="math/tex">
+矩阵A可逆的充要条件是其行列式|A| \neq 0，且
+</script>
+
+<script type="math/tex; mode=display">
+A^{-1} = \frac{1}{|A|} A^{*}
+</script>
+
+<script type="math/tex">
+其中A^{*}为矩阵A的伴随矩阵，也记作adjA。
+</script>
+
 
 
 
@@ -213,6 +227,22 @@ A + ( B + C )  &= ( A + B ) + C
 
 todo
 ## 行列式
+
+二阶行列式、三阶行列式
+
+代数余子式
+
+### 性质
+* 行列式`行列互换`，其值相等
+* 行列式`可按行展开`
+
+
+## 代数余子式矩阵及伴随矩阵 
+> 见p64
+<script type="math/tex">
+cofA为矩阵A的代数余子式矩阵，cofA的转置矩阵记作A^{*}，称为矩阵A的伴随矩阵，也记作adjA。
+</script>
+
 
 ## 分块矩阵
 

@@ -1,7 +1,9 @@
 # npm
 
 > @[style="color:green;font-size:18px"]Node Packaged Modules. 
-> <http://www.npmjs.org>
+
+* site: <http://www.npmjs.org>
+* docs: <https://docs.npmjs.com>
 
 
 
@@ -316,7 +318,7 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
 
 一定要确保通过安装且工作正常，再进行发布。
 
-1. 测试全局安装：
+1. 测试`全局安装`：
 
         npm install . -g
 
@@ -326,7 +328,7 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
 
     创建全局可用的包的符号链接。然后用`npm ls -g`查看是否存在。
 
-2. 测试本地安装：
+2. 测试`本地安装`：
 
         cd ../some-other-folder
         npm install ../my-package
@@ -376,7 +378,7 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
     npm install -g
     npm install . -g
 
-安装指定目录下的包：
+安装指定目录下的包至当前目录：
 
     npm install ../node-redis
 

@@ -320,11 +320,27 @@
 
 ## Nunjucks
 
-* `mozilla`出品，语法参考了`Jinja2`
+* `mozilla`出品，语法参考了`Jinja2`，官方站点：<http://mozilla.github.io/nunjucks/>
 * 开源项目`gitbook`使用的模板解决方案
 * `github`: <https://github.com/mozilla/nunjucks>
 * `node`: `$ npm install numjucks`
 * `browser`: <https://mozilla.github.io/nunjucks/files/nunjucks.js> or <https://mozilla.github.io/nunjucks/files/nunjucks-slim.js>
+
+例子：
+
+    {% extends "base.html" %}
+
+    {% block header %}
+    <h1>{{ title }}</h1>
+    {% endblock %}
+
+    {% block content %}
+    <ul>
+      {% for name, item in items %}
+      <li>{{ name }}: {{ item }}</li>
+      {% endfor %}
+    </ul>
+    {% endblock %}
 
 
 ## Jinja2

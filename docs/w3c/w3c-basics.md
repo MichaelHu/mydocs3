@@ -16,7 +16,7 @@
 * HTML5 <https://www.w3.org/TR/html/>
 * DOM <https://www.w3.org/TR/dom/>
 * CSS3 <https://www.w3.org/TR/CSS/>
-* Encoding <https://encoding.spec.whatwg.org> `TextEncoder, TextEncoder`
+* Encoding <https://encoding.spec.whatwg.org> `TextEncoder, TextDecoder`
 * File API <https://www.w3.org/TR/FileAPI/> `FileList, Blob, File, FileReader, FileReaderSync, Blob URL`
 * Streams API `RedableStream, WritableStream, TransformStream` -- Low-level APIs
     * Living: <https://streams.spec.whatwg.org/>
@@ -25,6 +25,7 @@
 * XMLHttpRequest: The specification defines an API that provides scripted client functionality for transferring data between a client and a server.
     * Living: <https://xhr.spec.whatwg.org>
     * Retired: <https://www.w3.org/TR/XMLHttpRequest/>
+* Network Error Logging <https://www.w3.org/TR/network-error-logging/> `NEL` Header
 
 
 ## W3C文档状态

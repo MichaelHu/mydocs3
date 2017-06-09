@@ -1,22 +1,24 @@
 # gitbook
 
-> Modern documentation format and toolchain using Git and Markdown
+> Modern documentation format and toolchain using `Git` and `Markdown`
 
 > GitBook helps your team write, collaborate and publish content online.
 
 * site: <https://www.gitbook.com>
-* github: <https://github.com/GitbookIO/gitbook>
+* gitbook-cli: <https://github.com/GitbookIO/gitbook-cli>
+* gitbook: <https://github.com/GitbookIO/gitbook>
 
 
 ## Features
 
 * 查看开源文档：<https://www.gitbook.com/explore>
 * 帮助团队编写文档、协作以及`发布在线内容`
-* 案例：Redux文档
+* 案例：Redux文档 <http://redux.js.org/index.html>
 * 工具链：GitBook editor (web版及客户端版), ...
 * 可以在gitbook站点编写自己的在线书籍、API文档、帮助手册等
 * 也可以离线安装，用于本地撰写和发布，适合于团队协作编写文档
 * 有一些免费书籍可查看
+* 使用`gitbook-cli + versions`架构，cli与engines分离，可以使用不同版本的引擎编译不同书籍。根据书籍配置，采用适合的引擎。versions目录在`~/.gitbook/versions`目录下。
 
 
 ## 参考资料
@@ -253,21 +255,39 @@ editor本地book的目录存放在`~/GitBook/Library/Import/`目录下，假如�
 
 ### Features
 
-* 可以引入资源，包括`js`，`css`文件
+* 通过`入口文件`配置插件功能
+* 可以引入资源，包括`js`，`css`文件，通常使用`assets`目录存放
 * 可以扩展模板`block`， `filters`以及`hooks`
+* 是一个npm package，命名规范遵循以`gitbook-plugin-`为前缀
+* gitbook使用的模板引擎是`nunjunks`，可参考<http://mozilla.github.io/nunjucks/>
 
 ### 插件参考模板
 1. sample: <https://github.com/GitbookIO/plugin>
 2. plugin-highlight: <https://github.com/GitbookIO/plugin-highlight>
 
-### APIs
+### 入口文件格式
 
 > 主要是`3.x.x`版，4.x版本开始，变化很大，后续再研究
 
 * `plugin`类：<https://github.com/GitbookIO/gitbook/blob/3.2.2/lib/models/plugin.js>
 
 		module.exports = {
-			book: {},
+            // 旧版本使用book
+			website: {
+                assets: './book',
+                js: [ 'test.js', './path/to/test2.js' ],
+                css: [ 'test.css' ],
+                html: {
+                    'html:start': function() {
+                        return '<!-- Start book ' + this.options.title + ' -->';
+                    },
+                    'html:end': ...,
+                    'head:start': ...,
+                    'head:end': ...,
+                    'body:start': ...,
+                    'body:end': ...
+                }
+            },
 			ebook: {},
 			filters: {},
 			hooks: {},
