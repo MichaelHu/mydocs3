@@ -104,3 +104,53 @@
 	comments      : false, // output comments?
 	semicolons    : true,  // use semicolons to separate statements? (otherwise, newlines)
 
+
+## webpack插件
+
+webpack`内建`插件，`webpack-optimize-UglifyJsPlugin`: <https://github.com/webpack/webpack/blob/master/lib/optimize/UglifyJsPlugin.js>
+可以以该插件为范本，编写扩展功能的webpack插件。
+
+
+## 深入UglifyJS
+
+> JS编写的JS压缩器
+
+`7个`重要概念：
+* parser
+
+        // 1. simple
+        var ast = UglifyJS.parse( 'function sum( x, y ) { return x + y; }' );
+
+        // 2. multiple files
+        var ast = UglifyJS.parse(
+                code
+                , {
+                    strict: true
+                    , filename: 'input file name'
+                    , toplevel: ast
+                }
+            );
+
+        // 3. multiple files
+        var ast = UglifyJS.parse( file1_content, { filename: 'file1.js' } );
+        ast = UglifyJS.parse( file2_content, { filename: 'file2.js', toplevel: ast } );
+        ast = UglifyJS.parse( file3_content, { filename: 'file3.js', toplevel: ast } );
+
+        // 4. multiple files
+        var ast = null;
+        files.forEach( function( file ) {
+            var code = fs.readFileSync( file, 'utf8' );
+            ast = UglifyJS.parse( code, { filename: file, ast: ast } );
+        } );
+
+
+* code generator
+* compressor ( optimizer )
+* mangler
+* scope analyzer
+* tree walker
+* tree transformer
+
+
+
+

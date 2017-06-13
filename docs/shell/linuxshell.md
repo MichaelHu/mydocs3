@@ -1093,10 +1093,29 @@ for `MAC`
 
 ## sed
 
-> 需要弄清楚`hold space`和`pattern space`的概念。尚未弄明白（todo）
+> sed是一个`流编辑`工具。
+
+### 理解两个spaces
+
+需要弄清楚`hold space`和`pattern space`的概念。可参考<http://www.lai18.com/content/1404242.html>
+
+`Pattern Space`相当于`车间`，也称为`临时缓存区`，sed把流内容在这里进行处理，而不改变原文件的内容，`Hold Space`相当于`仓库`，加工的`半成品`在这里进行临时存储。
+
+由于各种原因，比如用户希望在某个条件下脚本中的某个命令被执行，或者希望模式空间得到保存以便下一次处理，都有可能使得sed在处理文件的时候不按照正常的流程来进行。这个时候，sed设置了一些`高级命令`来满足用户的要求。
+
+ <img src="./img/sed-flow.png">
+
+    g: 将hold space中的内容拷贝到pattern space中，原来pattern space里的内容被覆盖
+    G：将hold space中的内容append到pattern space\n后
+    h: 将pattern space中的内容拷贝到hold space中，原来hold space里的内容被覆盖
+    H: 将pattern space中的内容append到hold space\n后
+    d: 删除pattern中的所有行，并读入下一新行到pattern中
+    D: 删除multiline pattern中的第一行，不读入下一行
 
 
-`流编辑`工具。举个例子，以下为从path中获取`filename`：
+### 示例
+
+举个例子，以下为从path中获取`filename`：
 
     $ echo http://258i.com/docs/markdown_res/js/scrollspy.js | sed -e 's/^.*\/\([^\/]*\)$/\1/g'
     scrollspy.js
@@ -1108,11 +1127,9 @@ for `MAC`
 所以以上命令不能将文件的换行符改成其他字符。
 
 
-
 用`表意标记`将不可见字符输出到标准输出：
 
     sed -e 'l'
-
 
 `合并`行：
 
@@ -1127,17 +1144,42 @@ for `MAC`
 
     b
 
-sed的正则接近`perl`的正则，比如反向引用`&`：
+sed的`正则（使用-E( mac )或-r( linux )）`接近`perl`的正则，比如反向引用`&`：
 
-    find ./pdf | sed -e 's/^.*$/<&>/g' 
+    find ./pdf | sed -Ee 's/^.*$/<&>/g' 
+    find ./pdf | sed -re 's/^.*$/<&>/g' 
+
+不启用正则模式，匹配方式接近vim的`magic`方式。
 
 以上代码将输出：
 
     <./pdf/a.pdf>
     <./pdf/c/d.pdf>
 
+将文件`按行逆序`输出，比如原文件为：
+
+    111
+    222
+    333
+
+输出为：
+
+    333
+    222
+    111
+
+使用`sed`命令来实现：
+
+    sed '1!G;h;$!d' file
+
+当然，还有另外的办法，但这个办法是`比较简单`的。
 
 
+
+
+## tac, rev
+
+> 按字符操作，todo
 
 
 
@@ -1151,6 +1193,8 @@ sed的正则接近`perl`的正则，比如反向引用`&`：
 	# 格式化输出
 	awk '/pattern/{printf "..%s..%s..", $2, $1}' file
 	
+    # 为每一行添加行号
+    awk 'BEGIN{k=1}{printf("%d %s\n",k,$0)}' file
 
 
 ### 各类函数
@@ -1563,6 +1607,14 @@ output：
     cd `dirname \`which node\``
 
 1. `\``的`嵌套`使用
+
+
+### 将文件按行逆序输出
+
+    # 假设文件file少于10000行
+    awk 'BEGIN{ i=10000 }{printf("%d %s\n", i, $0); i++}' file \
+    | sort --reverse \
+    | sed 's/^[0-9]{5} //g'
 
 
 

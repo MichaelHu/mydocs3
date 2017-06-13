@@ -221,19 +221,37 @@ todo:
 常用命令：
 
     # 最近n次修改日志
-    git log -n <file>
+    git log -n -- <file>
 
     # 详细修改日志
-    git log -p <file>
+    git log -p -- <file>
 
     # 包括文件更名情况下的日志 
-    git log --follow <single-file>
+    git log --follow -- <single-file>
 
     # 最近n次详细修改日志
-    git log -p -n <file>
+    git log -p -n -- <file>
 
     # 修改日志统计信息，包含文件名和概要
-    git log --stat <file>
+    git log --stat -- <file>
+
+    # src/index.js文件的修改日志
+    git log -p -n -- src/index.js
+
+    # 时间范围
+    git log --since="2 weeks ago" 
+    git log --since="2017-05-01 12:30:30"
+
+    # 限定提交人
+    git log --author="hudamin"
+
+    # 限定合并分支
+    git log --merges
+
+    # 限定不包含合并分支
+    git log --no-merges
+
+
 
 `commit log`按时间先后逆序排布，但是最近的commit不一定比较远的commit对应的代码包新，比如下图，`hangzhou1229-newlogo`分支是第二个commit，但是该分支是基于半个月前的master分支进行的一个patch。
 
