@@ -201,11 +201,17 @@
     ./shared
     videos/170101/IMG_45.MOV
 
-一种hack的方式就是将路径中包含的空白字符先做预处理，处理完后恢复回去。
+一种`hack的方式`就是将路径中包含的空白字符先做预处理，处理完后恢复回去。
 
     for i in `cat a.lst | sed -e 's/ /@__@/g'; do
         echo $i
     done
+
+另一种方式，可以使用`awk`命令：
+
+    awk '{print $0}' a.list
+    awk '{printf("-%s-\n", $0)}' a.list
+    awk '{printf("echo -%s-\n", $0)}' a.list | sh -x
 
 
 

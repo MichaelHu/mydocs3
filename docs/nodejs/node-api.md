@@ -1,14 +1,18 @@
 # node api 
 
-
 <http://nodeapi.ucdok.com/api/index.html>
-
 <https://nodejs.org/api/>
 
-Changelog: <https://github.com/nodejs/node/blob/v4.4.5/CHANGELOG.md>
+## Changelog 
+
+> <https://github.com/nodejs/node/blob/v8.1.1/CHANGELOG.md> 
+
+* 2017-06-13 Version 8.1.1 Stable
 * 2015-10-05 Version 4.1.2 Stable
 * 2015-09-08 Version 4.0.0 Stable
 * 2015-07-09 Version 0.12.7 Stable ， 对应 npm 2.11.3
+
+
 
 
 ## Assertion Testing
@@ -74,7 +78,28 @@ Changelog: <https://github.com/nodejs/node/blob/v4.4.5/CHANGELOG.md>
 ## Domain
 ## Events
 ## File System
+
 ## Globals
+
+    Class:Buffer        // Used to handle binary data
+    __dirname
+    __filename
+    clearImmediate( immediateObject )
+    clearInterval( intervalObject )
+    clearTimeout( timeoutObject )
+    console
+    exports
+    global
+    module
+    process
+    require()
+        require.cache
+        require.resolve()
+    setImmediate( callback[, ...args] )
+    setInterval( callback, delay[, ...args] )
+    setTimeout( callback, delay[, ...args] )
+
+
 ## HTTP
 ## HTTPS
 ## Modules

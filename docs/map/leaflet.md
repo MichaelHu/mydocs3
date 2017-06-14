@@ -1,9 +1,9 @@
 # leaflet
 
 
-20161219
-, 201609
-, 201607
+161219
+, 16-09
+, 16-07
 
 
 * 官网: <http://leafletjs.com>
@@ -19,6 +19,7 @@
 
 * 2016-09-27, `1.0`
 * 2016-10-21, `1.0.2`, bugfix
+* 2017-01-23, `1.0.3`, bugfix
 
 
 <style type="text/css">
@@ -45,7 +46,6 @@ Desktop: Chrome, Firefox, Safari 5+, Opera 12+, `IE7+`
 Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
 
 
-
 ### 支持的Layer
 
 * Tile Layers, WMS
@@ -53,7 +53,6 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
 * Vector layers: polylines, polygons, circles, rectangles
 * Image overlays
 * GeoJSON
-
 
 
 ### 支持的交互
