@@ -11,6 +11,7 @@
 * API Refs: <https://github.com/mishoo/UglifyJS2#api-reference>
 * 可运行于`node`，也可运行于`browser`
 * `uglifyjs 3`是精简API版本，并`不向后兼容`版本2和版本1，`慎用!`
+* `TreeTransformer`在`v2.6.2开始`有一个较大变化，不进行隐式节点clone
 
 
 ## install
@@ -318,7 +319,11 @@ webpack`内建`插件，`webpack-optimize-UglifyJsPlugin`: <https://github.com/w
 
 ## TreeWalker
 
-`UglifyJS.TreeWalker`类提供一种对ast进行遍历的方案，该类的构造器接收一个叫作`visitor`的函数作为参数。
+`UglifyJS.TreeWalker`类提供一种对ast进行遍历的方案，该类的构造器接收一个叫作`visitor`的函数作为参数。使用AST节点的`walk()`方法。
+
+    function visitor( node, descend ) { ... }
+    var walker = new UglifyJS.TreeWalker( visitor );
+    ast.walk( walker );
 
 ### visitor访问器
 
@@ -328,7 +333,7 @@ webpack`内建`插件，`webpack-optimize-UglifyJsPlugin`: <https://github.com/w
     }
 
 * `node`: 当前访问的节点
-* `descend`：是传入的一个访问器，用于对当前节点进行手工向下访问时调用，调用descend以后，visitor通常需要返回true来阻止继续向下遍历
+* `descend`：是传入的一个访问器，不接收参数，用于对`当前节点`进行手工向下访问时调用，调用descend以后，visitor通常需要返回true来阻止继续向下遍历
 * `return value`：如果返回true，TreeWalker本身将不再对node节点进行向下访问
 
 
@@ -432,7 +437,7 @@ webpack`内建`插件，`webpack-optimize-UglifyJsPlugin`: <https://github.com/w
     });
     toplevel.walk( walker );
 
-这是的输出变为：
+这时的输出变为：
 
     Found string: a at 4,10
     Found string: b at 4,15
@@ -445,9 +450,138 @@ webpack`内建`插件，`webpack-optimize-UglifyJsPlugin`: <https://github.com/w
 
 ## TreeTransformer
 
+> 是`TreeWalker`的一种特殊形式。使用AST节点的`transform()`方法。
+
+### visitor访问器
+
     function before( node, descend ) { ... };
     function after( node ) { ... };
     var tt = new UglifyJS.TreeTransformer( before, after );
     var new_ast = ast.transform( tt );
+
+* `before`访问器在节点的孩子节点被访问前执行，接收两个参数，`当前节点node`以及`descend函数`。
+* `after`访问器接收一个参数，若`after`返回一个`非undefined`的值，则该值将用于取代当前节点
+* `before`与`after`都是`可选参数`，但任何时刻都必须`至少提供一个`参数
+* `descend`访问器函数接收两个参数，要访问的节点node以及`TreeWalker实例`
+
+### before & after
+
+情况1，如果`before访问器`返回一个`定义的值（新节点）`，则当前节点将被替换成该新节点，当前节点的孩子节点将不会再被处理，此时`after访问器`也不会被调用，有无定义after访问器都一样。
+
+
+情况2，如果`before访问器`返回`undefined`或未提供（也即`null`），此时，分两种情况：
+1. `after访问器存在`，根据uglify的版本，有两种情况：
+    * `< 2.6.2`，将为当前节点`clone`一个新节点，遍历处理新节点的孩子节点，然后用`新节点`作为参数`调用after访问器`
+    * `>= 2.6.2`，遍历处理当前节点的孩子节点，将当前节点作为参数`调用after访问器`，改变在于不再隐式进行clone
+    代码变化具体参考，`去除隐式clone`，应该是使代码更容易理解：
+    * <https://github.com/mishoo/UglifyJS2/blob/v2.6.1/lib/transform.js#L67>
+    * <https://github.com/mishoo/UglifyJS2/blob/v2.6.2/lib/transform.js#L67>
+2. `after访问器不存在`，将直接处理当前节点的孩子节点，而不clone之。
+
+
+
+
+
+### 示例
+
+#### clone ast
+
+> 对`ast`进行`克隆`，获得新的ast
+
+    var ast = UglifyJS.parse( "a = 1 + 2" );
+    var deep_clone = new UglifyJS.TreeTransformer( function( node, descend ) {
+            node = node.clone();
+            // the descend function expects two arguments:
+            // the node to dive into, and the tree walker
+            // `this` here is the tree walker (=== deep_clone).
+            // by descending into the *cloned* node, we keep the original intact
+            descend( node, this );
+            return node;
+        });
+
+    var ast2 = ast.transform( deep_clone );
+    ast.body[ 0 ].body.left.name = "CHANGED";
+
+    console.log( ast.print_to_string( { beautify: true } ) );
+    console.log( ast2.print_to_string( { beautify: true } ) );
+
+* 显式使用`node.clone()`以及`node.print_to_string()`
+* `descend`方法的第二个参数，使用`this`代表walker示例本身
+
+clone`方案二`，从上方before与after的关系可知，before未提供、after存在的情况下，会自动进行clone（`仅适用于v2.6.1及以下`版本）：
+
+    ast.transform( new UglifyJS.TreeTransformer( null, function() {} ) );
+
+
+
+
+#### 字符串复用
+
+> 注：以下代码只适用于uglify-js v2.6.1及以下版本，新版本`不会隐式`进行`节点clone`。
+
+    // in this hash we will map string to a variable name
+    var strings = {};
+
+    // here's the transformer:
+    var consolidate = new UglifyJS.TreeTransformer( null, function( node ) {
+        if ( node instanceof UglifyJS.AST_Toplevel ) {
+            // since we get here after the toplevel node was processed,
+            // that means at the end, we'll just create the var definition,
+            // or better yet, "const", and insert it as the first statement.
+            var defs = new UglifyJS.AST_Const( {
+                definitions: Object.keys(strings).map(function(key){
+                    var x = strings[ key ];
+                    return new UglifyJS.AST_VarDef( {
+                        name  : new UglifyJS.AST_SymbolConst( { name: x.name } ),
+                        value : x.node, // the original AST_String
+                    } );
+                })
+            });
+            node.body.unshift( defs );
+            return node;
+        }
+        if ( node instanceof UglifyJS.AST_String ) {
+            // when we encounter a string, we give it an unique
+            // variable name (see the getStringName function below)
+            // and return a symbol reference instead.
+            return new UglifyJS.AST_SymbolRef( {
+                start : node.start,
+                end   : node.end,
+                name  : getStringName(node).name,
+            } );
+        }
+    } );
+
+    var count = 0;
+    function getStringName( node ) {
+        var str = node.getValue(); // node is AST_String
+        if ( strings.hasOwnProperty( str ) ) return strings[ str ];
+        var name = "_" + ( ++count );
+        return strings[ str ] = { name: name, node: node };
+    }
+
+    // now let's try it.
+    var ast = UglifyJS.parse( function foo() {
+        console.log( "This is a string" );
+        console.log( "Another string" );
+        console.log( "Now repeat" );
+        var x = "This is a string", y = "Another string";
+        var x = x + y + "Now repeat";
+        alert( "Now repeat".length );
+        alert( "Another string".length );
+        alert( "This is a string".length );
+    }.toString() );
+
+    // transform and print
+    var ast2 = ast.transform( consolidate );
+    console.log( ast2.print_to_string( { beautify: true } ) );
+
+    // also, the change is non-destructive; the original AST remains the same:
+    console.log( "Original:" );
+    console.log( ast.print_to_string( { beautify: true } ) );
+
+
+
+    
 
 

@@ -7,23 +7,21 @@
 
 ### OmniGraffle
 
-作图工具
-
-600+rmb
+`RMB600+`，
+快速作图工具、模板丰富。
 
 
 ### SimpleMind
 
+`RMB300`，
 脑图工具，支持多root、连线创建等
-
-300rmb
 
 
 ### ColorSnapper
 
+`RMB68`，
 Mac下一款功能强大的`取色器`
 
-68rmb
 
 
 ### SecureCRT
@@ -31,6 +29,16 @@ Mac下一款功能强大的`取色器`
 <https://www.vandyke.com>
 
 `$99`，而且只能1年的更新，暂时不买了。目前( 2017-03-16)`8.x版本`也有破解版本可用，可以参考<ref://../tools/securecrt.md.html>
+
+
+### Sketch
+
+UE效果图制作，通常用于查看UE输出稿。
+
+`$99`只能购买一年的免费更新，使用频率不算高，购买不太经济。但有`破解版`可用。
+
+* `Version 40.2 (33826)` <http://www.jianshu.com/p/3590f089e500>
+* `Version 44.1 (41455)` 是一个`Ked by The Shark`破解版，加压后直接可用，见我的百度网盘
 
 
 
@@ -49,13 +57,6 @@ Mac下一款功能强大的`取色器`
 
 > 视频转码软件，目前试用过转换效果最好的软件。特别是转高质量mp4能力强。
 
-
-
-### Sketch
-
-UE效果图制作，通常用于查看UE输出稿。
-
-是收费软件，但有`破解版`可用。`Version 40.2 (33826)` <http://www.jianshu.com/p/3590f089e500>
 
 
 ### git

@@ -5,6 +5,7 @@
 
 ## Why
 
+* `Logon Actions`，支持登录事件自动填充命令，提高登录效率
 * `rz/sz`功能是一大选择理由，和服务器进行简单的文件传输非常方便
 * `session clone`功能，以及`logon action配置`功能，能够快速复制session，是另一个重要选择理由
 
