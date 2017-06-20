@@ -9,6 +9,7 @@
 * github1: <https://github.com/mishoo/UglifyJS>
 * github2: <https://github.com/mishoo/UglifyJS2>
 * API Refs: <https://github.com/mishoo/UglifyJS2#api-reference>
+* API Refs Advanced: <http://lisperator.net/uglifyjs/>
 * 可运行于`node`，也可运行于`browser`
 * `uglifyjs 3`是精简API版本，并`不向后兼容`版本2和版本1，`慎用!`
 * `TreeTransformer`在`v2.6.2开始`有一个较大变化，不进行隐式节点clone
@@ -110,12 +111,6 @@
 	semicolons    : true,  // use semicolons to separate statements? (otherwise, newlines)
 
 
-## webpack插件
-
-webpack`内建`插件，`webpack-optimize-UglifyJsPlugin`: <https://github.com/webpack/webpack/blob/master/lib/optimize/UglifyJsPlugin.js>
-可以以该插件为范本，编写扩展功能的webpack插件。
-
-
 ## 深入uglifyjs
 
 > JS编写的JS压缩器
@@ -205,6 +200,15 @@ webpack`内建`插件，`webpack-optimize-UglifyJsPlugin`: <https://github.com/w
         endpos
         nlb                     // short for "newline before"
         comments_before
+* 内部`默认`使用`uglifyjs自家`的AST结构，但可以`兼容spidermonkey`的ast结构
+* 输出ast的json表达形式：
+        var ast = UglifyJS.parse( code );
+        JSON.stringify( ast );
+
+* `命令行`输出`json`描述的`spidermonkey ast`：
+        ./node_modules/.bin/uglifyjs --dump-spidermonkey-ast file
+    `tip`：将输出的ast json放入json查看器中，可以详细查看ast的结构。
+
 
 
 ### 类层次图
@@ -316,6 +320,48 @@ webpack`内建`插件，`webpack-optimize-UglifyJsPlugin`: <https://github.com/w
         }
     }
 
+### AST类的理解
+
+* 类层次图表明的是类的`继承结构`，而`不是`抽象语法树的`父子`关系
+* `AST_Node`是所有AST类的`基类`
+* `AST_Defun`节点的属性为：
+    
+        // 继承自AST_Node
+        start, end
+            
+        // 继承自AST_Block
+        body
+
+        // 继承自AST_Scope
+        directives, variables, functions, uses_with
+        , uses_eval parent_scope enclosed cname 
+
+        // 继承自AST_Lambda
+        name, argnames, uses_arguments
+
+    需要注意的是，其中的`name`属性，并`不是string类型`，而是`AST_Token`类型
+* json ast中，每个节点有一个type字段，是一个字符串类型，比如：
+        
+        Program
+        ExpressionStatement
+        BlockStatement
+
+    在编程中，除了使用`a instanceof Uglify.AST_xxx`之外，或许还可以用`type字段`。
+
+### AST例子
+
+    try {} catch( e ) { throw Error(e); }
+
+的`ast`结构：
+
+ <img src="./img/try-catch-ast.png">
+
+也即`访问try的body的路径`为：
+
+    ast.body[ 0 ].body
+
+
+
 
 ## TreeWalker
 
@@ -339,7 +385,7 @@ webpack`内建`插件，`webpack-optimize-UglifyJsPlugin`: <https://github.com/w
 
 ### walker APIs
 
-    walker.parent( n )
+    walker.parent( n )              // n = 0, 1, 2, ... n=0，表示第一个父亲
     walker.stack
     walker.find_parent( constructor )
     walker.in_boolean_context()
@@ -450,7 +496,7 @@ webpack`内建`插件，`webpack-optimize-UglifyJsPlugin`: <https://github.com/w
 
 ## TreeTransformer
 
-> 是`TreeWalker`的一种特殊形式。使用AST节点的`transform()`方法。
+> 是`TreeWalker`的一种特殊形式，代码上`继承`了`TreeWalker`。使用AST节点的`transform()`方法。
 
 ### visitor访问器
 
@@ -463,6 +509,7 @@ webpack`内建`插件，`webpack-optimize-UglifyJsPlugin`: <https://github.com/w
 * `after`访问器接收一个参数，若`after`返回一个`非undefined`的值，则该值将用于取代当前节点
 * `before`与`after`都是`可选参数`，但任何时刻都必须`至少提供一个`参数
 * `descend`访问器函数接收两个参数，要访问的节点node以及`TreeWalker实例`
+
 
 ### before & after
 
@@ -583,5 +630,38 @@ clone`方案二`，从上方before与after的关系可知，before未提供、af
 
 
     
+
+## uglify-webpack插件
+
+webpack`内建`插件，`webpack-optimize-UglifyJsPlugin`: <https://github.com/webpack/webpack/blob/master/lib/optimize/UglifyJsPlugin.js>
+
+以该插件为范本，编写扩展功能的webpack插件。
+
+
+### bad cases
+
+> 将`eval( ... )` 语句使用`try-catch`包围，或`外加闭包的try-catch`包围，会存在bad case
+
+    var aa = eval( '12345;' ) || 1;
+
+    =>
+
+    // 赋值语句或key-value赋值等，直接try-catch，导致不合法
+    var aa = try {
+            eval("12345;")
+        } catch (e) {
+            throw Error(e);
+        } || 1;
+
+    =>
+
+    // 使用外加闭包，末尾会多一个分号，导致报错
+    var aa = (function() {
+        try {
+            eval("12345;")
+        } catch (e) {
+            throw Error(e);
+        }
+    })(); || 1;
 
 

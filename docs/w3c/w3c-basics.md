@@ -26,6 +26,7 @@
     * Living: <https://xhr.spec.whatwg.org>
     * Retired: <https://www.w3.org/TR/XMLHttpRequest/>
 * Network Error Logging <https://www.w3.org/TR/network-error-logging/> `NEL` Header
+* IndexedDB: <https://w3c.github.io/IndexedDB/>
 
 
 ## W3C文档状态
