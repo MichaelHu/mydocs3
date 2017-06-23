@@ -1,5 +1,13 @@
 # vim8
 
+> changelog: 1706, 1703, 1612, 1610
+
+## Resources
+
+* github: <https://github.com/vim/vim>
+* latest version: `v8.0.0651`
+
+
 
 ## 新特性
 

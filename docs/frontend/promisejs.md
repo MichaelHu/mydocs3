@@ -1,9 +1,11 @@
-# Promisejs
+# promise
 
-2016-12-14, 
-2016-07-06, 2014-03-06
+> 新型`异步编程`模型
 
-> 新型异步编程模型
+> changelog: 1706, 1612, 1607, 1403
+
+
+## Overview
 
 * 在`ES6`中已经作为语言的原生支持的特性
 * `node 4.0+`版本，已经默认支持ES6新特性
@@ -20,16 +22,12 @@
 
 ## Syntax
 
-> MDN: The Promise object is used for `asynchronous computations`. A Promise represents a value which may be available now, or in the future, or never.
-
-<https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise>
+> `MDN`: The Promise object is used for `asynchronous computations`. A Promise `represents a value` which may be available now, or in the future, or never. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promis>
 
     new Promise( /* executor */ function( resolve, reject ) { ... } );
 
 * 为`异步计算`而生。
-* `简介优雅`的异步编程方式，看似同步的方式来实现异步的功能，`减少`回调函数的多层`嵌套`
-
-
+* `简洁优雅`的异步编程方式，看似同步的方式来实现异步的功能，`减少`回调函数的多层`嵌套`
 
 
 
@@ -72,48 +70,37 @@
     @[data-script="javascript"](function(){
 
 		'use strict';
+        var s = fly.createShow( '#test_promise_create' );
 		var promiseCount = 0;
 
 		function testPromise() {
 			var thisPromiseCount = ++promiseCount;
+            s.append_show( thisPromiseCount + '. Started ( sync code started )' );
 
-			// var log = document.getElementById('log');
-			var log = $( '#test_promise_create .test-console' ).get( 0 );
-			log.insertAdjacentHTML('beforeend', thisPromiseCount +
-				') Started (<small>Sync code started</small>)<br/>');
-
-			// We make a new promise: we promise a numeric count of this promise, starting from 1 (after waiting 3s)
 			var p1 = new Promise(
-				// The resolver function is called with the ability to resolve or
-				// reject the promise
-				function(resolve, reject) {
-					log.insertAdjacentHTML('beforeend', thisPromiseCount +
-						') Promise started (<small>Async code started</small>)<br/>');
-					// This is only an example to create asynchronism
-					window.setTimeout(
-						function() {
-							// We fulfill the promise !
-							resolve(thisPromiseCount);
-						}, Math.random() * 2000 + 1000);
-				}
-			);
+                    function( resolve, reject ) {
+                        s.append_show( thisPromiseCount + '. Promise started ( Async code started )' );
+                        window.setTimeout(
+                            function() {
+                                resolve( thisPromiseCount );
+                            }
+                            , Math.random() * 2000 + 1000
+                        );
+                    }
+                );
 
-			// We define what to do when the promise is resolved/fulfilled with the then() call,
-			// and the catch() method defines what to do if the promise is rejected.
 			p1.then(
-				// Log the fulfillment value
-				function(val) {
-					log.insertAdjacentHTML('beforeend', val +
-						') Promise fulfilled (<small>Async code terminated</small>)<br/>');
-				})
-			.catch(
-				// Log the rejection reason
-				function(reason) {
-					console.log('Handle rejected promise ('+reason+') here.');
-				});
+                    function( val ) {
+                        s.append_show( val + '. Promise fulfilled ( Async code terminated )' );
+                    }
+                )
+                .catch(
+                    function( reason ) {
+                        s.append_show( 'Handle rejected promise (' + reason + ') here.' );
+                    }
+                );
 
-			log.insertAdjacentHTML('beforeend', thisPromiseCount +
-				') Promise made (<small>Sync code terminated</small>)<br/>');
+            s.append_show( thisPromiseCount + '. Promise made ( Sync code terminated )' );
 		}
 
 		$( '#test_promise_create button' ).on( 'click', function() {
@@ -206,15 +193,15 @@
 
 ## Promise.resolve()
 
-`Promise.resolve()`可将现有对象转换成Promise对象，比如将jQuery的`deferred`对象转换成Promise对象：
+`Promise.resolve()`可将现有对象`转换成Promise对象`，比如将jQuery的`deferred`对象转换成Promise对象：
 
-    var jsPromise = Promise.resolve($.ajax('/whatever.json'));
+    var jsPromise = Promise.resolve( $.ajax( '/whatever.json' ) );
 
 如果该方法的参数`不是`具有`then()方法`的对象，则返回一个新Promise对象，且它的状态为resolved。
 
-    Promise.resolve('Hello')
-        .then(function(s){
-            console.log(s);
+    Promise.resolve( 'Hello' )
+        .then( function( s ) {
+            console.log( s );
         });
 
 上面代码会生成一个新的`Promise`对象，它的状态为`fulfilled`，所以回调函数会`立即`执行，

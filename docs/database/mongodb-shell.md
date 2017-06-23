@@ -1,12 +1,12 @@
-# MongoDB Shell
+# mongodb-shell
 
 > The mongo shell is an `interactive JavaScript interface` to MongoDB and is a component of the MongoDB package. You can use the mongo shell to query and update data as well as perform administrative operations.
 
 
 ## Common Shell
 
-* `Shell Help`: http://docs.mongodb.org/manual/tutorial/access-mongo-shell-help/
-* `URI`: https://docs.mongodb.org/getting-started/shell/client/
+* `Shell Help`: <http://docs.mongodb.org/manual/tutorial/access-mongo-shell-help/>
+* `URI`: <https://docs.mongodb.org/getting-started/shell/client/>
 
 
 mongo命令帮助：
@@ -201,7 +201,7 @@ rc文件，$HOME目录下，如果存在`.mongorc.js`文件，则在第一次显
 
 ## Shell Scripts
 
-* `Shell Scripts`: http://docs.mongodb.org/manual/tutorial/write-scripts-for-the-mongo-shell/
+* `Shell Scripts`: <http://docs.mongodb.org/manual/tutorial/write-scripts-for-the-mongo-shell/>
 
 
 Shell和Shell Scripts在写法上的区别：
@@ -260,7 +260,7 @@ Shell和Shell Scripts在写法上的区别：
 
 > Mongo Shell支持的一些数据类型，是BSON提供的额外的比JSON多的数据类型
 
-`Shell Types`: http://docs.mongodb.org/manual/core/shell-types/
+`Shell Types`: <http://docs.mongodb.org/manual/core/shell-types/>
 
 * Date
 * ISODate

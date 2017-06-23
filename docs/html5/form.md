@@ -1,6 +1,6 @@
 # form
 
-`ref`: <https://www.w3.org/TR/html/sec-forms.html>
+> `ref`: <https://www.w3.org/TR/html/sec-forms.html>
 
 
 <style type="text/css">
@@ -22,7 +22,7 @@
 
 ## input types
 
-### 22种type
+### 22 种type
 
     1.  hidden text checkbox radio file 
     6.  button search tel url email
@@ -170,7 +170,7 @@
 <div id="test_select" class="test">
 <div class="test-container">
 
-    @[data-script="html"]<form id="test_select_form" method="post" 
+    @[data-script="html editable"]<form id="test_select_form" method="post" 
             action="http://258i.com/phpapp/form-enctype.php" target="test_select_iframe">
         <select name="participants[]" multiple>
             <option selected>Michael</option> 
@@ -196,7 +196,7 @@
 <div id="test_fieldset" class="test">
 <div class="test-container">
 
-    @[data-script="html"]<form id="test_fieldset_form" method="post" 
+    @[data-script="html editable"]<form id="test_fieldset_form" method="post" 
             action="http://258i.com/phpapp/form-enctype.php" target="test_fieldset_iframe">
         <fieldset>
             <input type="text" name="names[]" value="Michael">

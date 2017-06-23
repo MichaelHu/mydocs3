@@ -10,6 +10,7 @@
 
 ## references
 
+* ECMA-262: <ref://../ecma/ecma-262.md.html>
 * MDN: <https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide>
 
 
@@ -214,7 +215,7 @@
 
 ## try-catch性能
 
-> 循环测试，降低`6%-10%`的性能，并不会大幅拉低性能，所以某些场景下，还是大范围使用的
+> 循环测试，降低`6%-10%`的性能，并不会大幅拉低性能，所以某些场景下，还是值得大范围使用的
 
 * <https://jsperf.com/try-catch-performance-overhead>
 * <https://jsperf.com/try-catch-performance-jls/1>
@@ -232,10 +233,29 @@
         return false;
     }
 
+    // Mozilla firefox
+    window.onerror = function( messageOrEvent, source, lineno, colno, error ) {
+        ...
+    }
+
 `return false`告知浏览器已经处理完异常；但firefox是`return true`
 
 三个参数的接口是全兼容的接口形式，新型浏览器实际上可以支持五个参数，新增`col`和`error`参数。
 关于onerror的详细用法，可以参考<ref://./exception-report.md.html>
+
+
+### Error
+
+> ref: <http://www.ecma-international.org/ecma-262/6.0/index.html#sec-error-objects>
+
+    Error( message )
+        EvalError
+        RangeError
+        ReferenceError
+        SyntaxError
+        TypeError
+        URIError
+
 
 
 

@@ -1,12 +1,18 @@
 # mysql
 
-## Overview
+> changelog: 1703, 1509
+
+## Resources
 
 * site: <https://www.mysql.com>
-* 5.7 docs: <https://dev.mysql.com/doc/refman/5.7/en/>
+* `5.7` docs: <https://dev.mysql.com/doc/refman/5.7/en/>
 * community downloads: <https://dev.mysql.com/downloads/mysql/>
 * 详解MySQL的用户密码过期功能: <http://www.jb51.net/article/79347.htm>
 * 备份数据库：<https://dev.mysql.com/doc/refman/5.7/en/mysqldump-copying-database.html>
+
+
+## Versions
+
 
 
 ## Installation
@@ -37,7 +43,7 @@
         --datadir=$MYSQL/data \
         --log-error=$MYSQL/logs/mysqld.log
 
-会建立一个用户`root`，并且`密码在log文件中给出`。
+会`自动`建立一个用户`root`，并且`密码在log文件中给出`。
 
 
 ### start server

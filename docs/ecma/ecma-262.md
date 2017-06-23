@@ -6,9 +6,10 @@
 
 ## Publications
 
-* <http://www.ecma-international.org/publications/standards/Ecma-262.htm>
-* <http://www.ecma-international.org/ecma-262/6.0/index.html>
-* ECMAScript `2018` Language Specification: <https://tc39.github.io/ecma262/>
+* ES Home Page: <http://www.ecma-international.org/publications/standards/Ecma-262.htm>
+* ES2015: <http://www.ecma-international.org/ecma-262/6.0/index.html>
+* ES2016: <http://www.ecma-international.org/ecma-262/7.0/index.html>
+* ES`( latest )`: <https://tc39.github.io/ecma262/>
 
 
 ## TC39

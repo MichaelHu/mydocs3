@@ -1,9 +1,6 @@
 # DOM Events
 
-2016-07-28,
-2014-12
-
-
+> changelog: 1706, 1607, 1412
 
 <style type="text/css">
 @import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
@@ -32,10 +29,7 @@
 
 
 
-
-
 ## DOM Event Level 2
-
 1. <http://www.w3.org/TR/DOM-Level-2-Events/> 2000-11-13成为`REC`
 
 
@@ -664,7 +658,7 @@ The return value of `dispatchEvent` indicates whether any of the listeners which
 
     事件target，srcElement同target
 
-* _args
+* `_args`
 
 
 
@@ -690,6 +684,15 @@ The return value of `dispatchEvent` indicates whether any of the listeners which
 
 同touchstart事件
 
+
+
+## compositionstart事件
+> The compositionstart event is fired when the composition of a passage of text is prepared.
+todo <https://developer.mozilla.org/en-US/docs/Web/Events/compositionstart>
+
+    compositionstart
+    compositionend
+    compositionupdate
 
 
 

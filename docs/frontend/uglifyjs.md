@@ -638,6 +638,16 @@ webpack`内建`插件，`webpack-optimize-UglifyJsPlugin`: <https://github.com/w
 以该插件为范本，编写扩展功能的webpack插件。
 
 
+
+### webpack-dev模式错误捕获
+
+dev模式下每个chunk会打成一个js文件，该js文件包含多个js源文件，dev模式下会使用eval命令将chunk包内的代码执行一遍。一般情况下，这种方式，eval内部代码的运行时错误是无法捕获的，但实际情况下，webpack dev模式下，总能捕获详细错误，而且的错误stack中，能找到对应源文件和所在行。关键在于在打包是，文件末尾增加了以下信息：
+
+    //# sourceURL=webpack:///./~/core-js/modules/es6.function.name.js?
+
+
+
+
 ### bad cases
 
 > 将`eval( ... )` 语句使用`try-catch`包围，或`外加闭包的try-catch`包围，会存在bad case

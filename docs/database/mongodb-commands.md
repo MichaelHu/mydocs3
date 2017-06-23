@@ -1,13 +1,26 @@
-# MongoDB Commands
+# mongodb-commands
 
-> MongoDB内建命令，各类DB Driver实现的方法，内部调用的都是这些Commands
-
-docs: http://docs.mongodb.org/manual/reference/command/
+> mongodb内建命令，各类DB Driver实现的方法，内部调用的都是这些Commands
 
 
-以下命令，可以通过runCommand方法调用：
+`所有`数据库内建命令，都通过以下接口进行调用：
 
-    db.runCommand({...});
+    db.runCommand( { ... } );
+
+例如，`find`命令调用格式如下：
+
+    db.runCommand(
+        {
+            find: "restaurants",
+            filter: { rating: { $lt: 5 } },
+            readConcern: { level: "majority" }
+        }
+    )
+
+
+## Resources
+
+* docs: <http://docs.mongodb.org/manual/reference/command/>
 
 
 ## 1 用户命令

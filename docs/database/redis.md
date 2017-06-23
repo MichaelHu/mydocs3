@@ -1,6 +1,16 @@
 # redis
 
-site: <https://redis.io>
+## Resources
+
+* site: <https://redis.io>
+
+
+## Overview
+
+* 开源（BSD协议）的`内存型`数据存储，用于数据库、缓存等
+* 支持`多种类型数据结构`的存储：strings, hashes, lists, sets, sorted sets with range queries, bitmaps, hyperloglogs and geospatial indexes with radius queries.
+* 内建支持`lua脚本`
+
 
 ## Installation
 

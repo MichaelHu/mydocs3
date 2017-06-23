@@ -15,4 +15,14 @@
 
 ### hugeapp-ares
 > 第一个项目 —— 战神
+基于React + Redux + React-router + webpack
+
+
+### hugeapp-venus
+> 第二个项目 —— 爱神维纳斯，代表大爱，包容。
+
+* Nodejs + Koa + MongoDB
+* npm packages，支持npm install
+* 支持一键快速部署
+
 

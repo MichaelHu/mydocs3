@@ -1,9 +1,11 @@
-# Mongoose Memo
+# mongoose
 
-> An elegant mongodb object modeling for node.js
+> An `elegant` mongodb object modeling for node.js
 
 
-Mongoose provides a straight-forward, schema-based solution to model your application data. It includes built-in type casting, validation, query building, business logic hooks and more, out of the box.
+## Features
+
+> Mongoose provides a straight-forward, schema-based solution to model your application data. It includes built-in type casting, validation, query building, business logic hooks and more, out of the box.
 
 
     var mongoose = require('mongoose');

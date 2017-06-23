@@ -250,8 +250,7 @@ import.js:
 
 <http://www.ecma-international.org/ecma-262/6.0/#sec-symbol-objects>
 
-全局唯一、不可变，常用于对象`key`。
-`ES6`新的`内建`类型，JS的7大基本类型之一，Babel等语法转换工具不对它进行转换。
+`全局唯一、不可变`，常用于对象`key`。`ES6`新的`内建`类型，JS的`7大基本类型之一`，Babel等语法转换工具不对它进行转换。
 
 > Properties are identified using key values. A property key value is either an `ECMAScript String` value or a `Symbol value`. All String and Symbol values, including the `empty string`, are `valid` as property keys. A property `name` is a property key that is a `String value`.
 
@@ -271,7 +270,7 @@ Symbol构造函数，特殊之处在于`不使用``new`关键字来创建。
     // symbol
     typeof key
 
-Symbol不能赋值给let声明的变量：
+Symbol不能赋值给`let`声明的`变量`：
 
     // error
     let key = Symbol(123);
@@ -311,8 +310,9 @@ Symbol不能赋值给let声明的变量：
 
 ## Promises
 
+<ref://../frontend/promise.md.html>
 
-    //创建promise
+    // 创建promise
     var promise = new Promise(function(resolve, reject) {
         // 进行一些异步或耗时操作
         if ( /*如果成功 */ ) {
@@ -321,14 +321,15 @@ Symbol不能赋值给let声明的变量：
             reject(Error("It broke"));
         }
     });
-    //绑定处理程序
+
+    // 绑定处理程序
     promise.then(function(result) {
-        //promise成功的话会执行这里
+        // promise成功的话会执行这里
         console.log(result); // "Stuff worked!"
     }, function(err) {
-        //promise失败会执行这里
+        // promise失败会执行这里
         console.log(err); // Error: "It broke"
     });
 
 
-http://www.cnblogs.com/Wayou/p/es6_new_features.html
+<http://www.cnblogs.com/Wayou/p/es6_new_features.html>
