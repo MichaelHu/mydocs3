@@ -1,7 +1,6 @@
-# MongoDB CURDs
+# mongodb-curds
 
-
-> `collection`的CRUD操作
+> `collection`的CRUD操作 - Create, Update, Retrive, Delete
 
 
 ## 1 find

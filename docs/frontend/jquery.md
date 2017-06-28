@@ -4,6 +4,9 @@
 
  <img src="./img/jquery-logo.png" style="background-color:#333; border-radius:3px;"> A great js library.
 
+
+## Resorces
+
 * site: <https://jquery.com>
 * github: <https://github.com/jquery/jquery>
 * api: <https://api.jquery.com>
@@ -12,12 +15,18 @@
     * <http://www.css88.com/jqapi-1.9/>
 
 
-## versions
+## Versions
 
-jQuery 3.1.1
+latest: `3.2.1`
+
+* `3.x`
+* `2.x`
+* `1.x`
 
 
-## build
+
+
+## Build
 
 > All-in构建
 
@@ -27,7 +36,7 @@ jQuery 3.1.1
     npm run build # => npm install && grunt
 
 
-## custom build
+## Custom build
 
 > 自定义构建
 

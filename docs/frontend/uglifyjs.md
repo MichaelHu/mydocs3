@@ -9,10 +9,11 @@
 * github1: <https://github.com/mishoo/UglifyJS>
 * github2: <https://github.com/mishoo/UglifyJS2>
 * API Refs: <https://github.com/mishoo/UglifyJS2#api-reference>
-* API Refs Advanced: <http://lisperator.net/uglifyjs/>
+* API Refs `Advanced` - 关于AST等: <http://lisperator.net/uglifyjs/>
 * 可运行于`node`，也可运行于`browser`
 * `uglifyjs 3`是精简API版本，并`不向后兼容`版本2和版本1，`慎用!`
-* `TreeTransformer`在`v2.6.2开始`有一个较大变化，不进行隐式节点clone
+* `TreeTransformer`在`v2.6.2开始`有一个较大变化，不进行`隐式`节点clone
+* `parse`后得到的AST，可以通过`操作AST`方便的对程序结构进行调整，但是调整后，可能`syntax scope`已经发生混乱，这时，先将代码输出成文本（`ast.print_to_string()`），再次进行解析，能获得完整的scope（`toplevel.figure_out_scope()`），具体可参考`pro-uglifyjs`插件的实现。
 
 
 ## install
@@ -635,7 +636,7 @@ clone`方案二`，从上方before与after的关系可知，before未提供、af
 
 webpack`内建`插件，`webpack-optimize-UglifyJsPlugin`: <https://github.com/webpack/webpack/blob/master/lib/optimize/UglifyJsPlugin.js>
 
-以该插件为范本，编写扩展功能的webpack插件。
+以该插件为范本，编写扩展功能的webpack插件：<https://github.com/MichaelHu/pro-uglifyjs-webpack-plugin>
 
 
 

@@ -212,8 +212,47 @@
 </div>
 
 
+## try-catch
 
-## try-catch性能
+### 语法
+
+> <https://tc39.github.io/ecma262/#sec-try-statement>
+
+* `catch( e ) { ... }` 部分，类似`callback`定义，e闭包在catch块内的参数
+
+<div id="test_try_catch" class="test">
+<div class="test-container">
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_try_catch');
+
+        var e = 123;
+        try {
+            e = 456;
+            try {
+                a.c
+            }
+            catch( e ) {
+                s.append_show( 'inner error' );
+                throw e;
+            }
+        }
+        catch( e ) {
+            s.append_show( 'outter error' );
+        }
+        s.append_show( e );
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+### try-catch性能
 
 > 循环测试，降低`6%-10%`的性能，并不会大幅拉低性能，所以某些场景下，还是值得大范围使用的
 

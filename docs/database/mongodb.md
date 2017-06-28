@@ -74,91 +74,103 @@
 
 ## 启动数据库
 
-1. 建立数据文件目录： 
+### 建立数据文件目录 
 
-        $ mkdir -p /path/to/db/data
+`默认的`mongodb数据文件目录是`/data/db`，也可自行建立：
 
-    `默认的`mongodb数据文件目录是`/data/db`：
-
-        $ mkdir -p /data/db
-    
-    如果不是使用默认目录，则需要在启动时使用`--dbpath`选项传入，务必确保启动mongodb的用户对数据目录有`读写权限`。
-
-2. 使用`默认配置`启动数据库服务：
-
-        $ mongod
-
-    如果自定义数据目录，如上所述，`务必确保`目录读写`权限`：
-
-        $ mongod --dbpath /path/to/db/data
-
-    指定配置文件： 
-
-        $ mongod --config /usr/local/etc/mongod.conf
-
-    自定义端口：
-
-        $ mongod --port 27017
-
-    监听`27017端口`可能不一定能成功，比如该端口已被占用，这时需要通过`--port`选项，设置新的端口。
-
-        $ mongod --dbpath=./data --fork --syslog --port 8345
-
-    启动`server进程`，使用`--fork --syslog`选项。使用`nohup`和`&`无效。
-
-    `成功启动`mongodb服务器以后，命令行上会提示`warning`：
-
-        ** WARNING: Access control is not enabled for the database.
-        **          Read and write access to data and configuration is unrestricted .
-
-    该提示的原因是数据库没有启用`权限控制`，这时可以`匿名`访问数据库，并做任何操作，那样是`不安全`的；可以使用`--auth`选项开启：
-
-        $ mongod --auth --dbpath=./data --fork --syslog --port 8345
-
-    `! 注意`：不过，mongodb默认`没有`设置任何`账号`，所以`首次`启动全新数据库，不应添加`--auth`选项，待创建完账户后，再启动权限控制。
+    $ mkdir -p /path/to/db/data
 
 
-3. 交互命令行：
+如果不是使用默认目录，则需要在启动时使用`--dbpath`选项传入，务必确保启动mongodb的用户对数据目录有`读写权限`。
 
-        $ mongo
 
-    适用于`首次`连接数据库服务器，由于系统默认没有设置任何用户，数据库服务也没有使用`--auth`选项启动，这种情况下`匿名`用户就是`超级`用户。
+### 启动数据库
 
-    接下来需要尽快新建对应权限的`账号`，请参考<ref://./mongodb-user-role.md.html>，再用对应账号登录，比如超级用户root：
+使用`默认配置`启动数据库服务：
 
-       $ mongo -uroot -proot admin 
+    $ mongod
 
-    该命令默认情况下会连接`本地的27017端口`，连接成功的同时会显示`服务器版本`，以及`warning`信息：
+如果自定义数据目录，如上所述，`务必确保`目录读写`权限`：
 
-        $ mongo
-        MongoDB shell version v3.4.5
-        connecting to: mongodb://127.0.0.1:27017
-        MongoDB server version: 3.4.5
-        ...
-        > show dbs
-        admin  0.000GB
-        local  0.000GB
-        > db
-        test
-        > db.test
-        test.test
-        > use admin
-        switched to db admin
-        > db.test
-        admin.test
-        > show collections
-        system.version
-        > use local
-        switched to db local
-        > show collections
-        startup_log
-        > db.startup_log.find()
-        ....
-        > exit
+    $ mongod --dbpath /path/to/db/data
 
-    如果是`远程`连接，则通过`--host`, `--port`设置连接主机：
+指定配置文件： 
 
-        $ mongo -uroot -proot --host <HOST> --port <PORT> admin 
+    $ mongod --config /usr/local/etc/mongod.conf
+
+自定义端口：
+
+    $ mongod --port 27017
+
+监听`27017端口`可能不一定能成功，比如该端口已被占用，这时需要通过`--port`选项，设置新的端口。
+
+    $ mongod --dbpath=./data --fork --syslog --port 8345
+
+启动`server进程`，使用`--fork --syslog`选项。使用`nohup`和`&`无效。
+
+`成功启动`mongodb服务器以后，命令行上会提示`warning`：
+
+    ** WARNING: Access control is not enabled for the database.
+    **          Read and write access to data and configuration is unrestricted .
+
+该提示的原因是数据库没有启用`权限控制`，这时可以`匿名`访问数据库，并做任何操作，那样是`不安全`的；可以使用`--auth`选项开启：
+
+    $ mongod --auth --dbpath=./data --fork --syslog --port 8345
+
+`! 注意`：不过，mongodb默认`没有`设置任何`账号`，所以`首次`启动全新数据库，不应添加`--auth`选项，待创建完账户后，再启动权限控制。
+
+运维过程中，需要启动或停止服务器，由于`多实例`的存在，需要能`精确操作`特定实例，通过`--pidfilepath arg`选项，可以确切获知特定实例的`pid`：
+
+    $ mongod --auth --dbpath=./data --fork --syslog --port 8345 --pidfilepath /path/to/mongodb-pid
+
+`! 注意`：`--pidfilepath`后面的参数，需要是`绝对路径`，还有另外一个停止mongod的方法是使用`--shutdown`选项，只要在原命令后面添加即可，比如上面的命令：
+
+    $ mongod --auth --dbpath=./data --fork --syslog --port 8345 --pidfilepath /path/to/mongodb-pid --shutdown
+
+
+### 连接数据库
+
+交互命令行：
+
+    $ mongo
+
+适用于`首次`连接数据库服务器，由于系统默认没有设置任何用户，数据库服务也没有使用`--auth`选项启动，这种情况下`匿名`用户就是`超级`用户。
+
+接下来需要尽快新建对应权限的`账号`，请参考<ref://./mongodb-user-role.md.html>，再用对应账号登录，比如超级用户root：
+
+    $ mongo -uroot -proot admin 
+
+该命令默认情况下会连接`本地的27017端口`，连接成功的同时会显示`服务器版本`，以及`warning`信息：
+
+    $ mongo
+    MongoDB shell version v3.4.5
+    connecting to: mongodb://127.0.0.1:27017
+    MongoDB server version: 3.4.5
+    ...
+    > show dbs
+    admin  0.000GB
+    local  0.000GB
+    > db
+    test
+    > db.test
+    test.test
+    > use admin
+    switched to db admin
+    > db.test
+    admin.test
+    > show collections
+    system.version
+    > use local
+    switched to db local
+    > show collections
+    startup_log
+    > db.startup_log.find()
+    ....
+    > exit
+
+如果是`远程`连接，则通过`--host`, `--port`设置连接主机：
+
+    $ mongo -uroot -proot --host <HOST> --port <PORT> admin 
 
 
 * `db`是当前数据库的`别名`

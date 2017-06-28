@@ -51,5 +51,6 @@
     
     `Preference` -> <input type="checkbox">`Use Keychain`
 
+* Tip: 用`rz -b`代替`rz -be`，或许能解决上传报错问题
 
 

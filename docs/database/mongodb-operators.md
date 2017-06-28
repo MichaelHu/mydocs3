@@ -1,4 +1,4 @@
-# MongoDB Operators 
+# mongodb-operators 
 
 > 包含查询操作符与映射操作符
 

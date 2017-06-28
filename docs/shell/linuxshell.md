@@ -1178,7 +1178,9 @@ sed的`正则（使用-E( mac )或-r( linux )）`接近`perl`的正则，比如�
 
     sed '1!G;h;$!d' file
 
-当然，还有另外的办法，但这个办法是`比较简单`的。
+当然，还有另外的办法，但这个办法是`比较简单`的。（`理解`：对于n行文本，`前n-1行`输出为空，`最后一行`输出逆序行）。
+
+sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://../encoding/character-escape.md.html>
 
 
 
@@ -1617,12 +1619,29 @@ output：
 
 ### 将文件按行逆序输出
 
+#### 方法一
+
     # 假设文件file少于10000行
     awk 'BEGIN{ i=10000 }{printf("%d %s\n", i, $0); i++}' file \
     | sort --reverse \
     | sed 's/^[0-9]{5} //g'
 
 
+#### 方法二
+
+    sed -e '1!G;h;$!d' file
+
+
+### 批量更新node_modules
+
+`16个`目录`21000`-`21015`下的code目录下的`node_modules`更新成新版：
+
+    for ((i=0; i<=15; i++)); do \
+        ((k=21000+$i));\
+        echo $k; \
+        rm -rf $k/code/node_modules; \
+        cp -r node_modules_pro-uglifyjs-170628/node_modules $k/code; \
+    done
 
 
 
