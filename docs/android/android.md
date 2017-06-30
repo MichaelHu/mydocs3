@@ -27,3 +27,11 @@
 ## 架构
 
 * github: <https://github.com/googlesamples/android-architecture/tree/master>
+
+## 书摘
+<ref://./definitive-guide.md.html>
+
+
+
+
+

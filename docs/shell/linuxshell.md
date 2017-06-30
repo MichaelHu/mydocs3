@@ -1182,6 +1182,8 @@ sed的`正则（使用-E( mac )或-r( linux )）`接近`perl`的正则，比如�
 
 sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://../encoding/character-escape.md.html>
 
+更多例子，可以查看后面章节`实用例子`。
+
 
 
 

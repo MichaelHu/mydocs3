@@ -323,9 +323,59 @@ v-for
 
 ## Vue Components
 
-    Vue.component( 'my-component', {
-        template: '<p class="foo bar">Hi</p>'
-    } );
+    is attribute
+
+    注册全局组件
+
+        Vue.component( tagName, options )
+
+        // 实例化前
+        Vue.component( 'my-component', {
+            template: '<div>A cunstom component!</div>'
+        } );
+
+
+
+    局部组件
+
+        var Child = {
+                template: '<div> A cunstom component! </div>'
+            };
+
+        // 实例化时
+        new Vue( {
+            // ...
+            components: {
+                'my-component': Child
+            }
+        } );
+
+
+    DOM模板的附加说明
+
+        <table>
+            <my-row>...</my-row>
+        </table>
+
+        DOM模板中，以上形式是不行的。
+
+        DOM模板需要先经过浏览器解析并标准化，会不符合标准。它不同于字符串模板：
+            <script type="text/x-template">
+            js内联模板字符串
+            .vue组件
+
+        解决办法是is属性：
+        <table>
+            <tr is="my-row"></tr>
+        </table>
+
+    data字段必须是函数
+        避免所有组件实例都共享同一份数据
+
+
+    组合组件
+
+
 
 
 
