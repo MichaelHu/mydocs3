@@ -32,6 +32,49 @@
 <ref://./definitive-guide.md.html>
 
 
+## Native自动更新
+
+> android-auto-update <https://github.com/feicien/android-auto-update>
+
+    特征
+
+        软件版本检查
+        apk文件下载
+        软件安装
+        支持API 8+
+
+
+    使用：
+
+    1. library导入，两种方式添加:
+
+        Dialog方式：
+
+            UpdateChecker.checkForDialog( this );
+
+        Notification方式：
+
+            UpdateChecker.checkForNotification( this );
+
+
+    2. 添加权限 ( config.xml? )
+
+        网络
+        <uses-permission android:name="andorid.permission.INTERNET" />
+        
+        SDCard
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+
+    依赖：
+    风格化对话框： 
+        android-styled-dialogs
+        ActionBarSherlock
+        HoloEverywhere
+
+    google play checker:
+        UpdateChecker
+
 
 
 

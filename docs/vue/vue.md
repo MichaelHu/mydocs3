@@ -8,6 +8,7 @@
 * site: <http://vuejs.org> <img src="./img/vuejs-logo.png" height="30"> 
 * github:  <https://github.com/vuejs/vue>
 * docs: <http://vuejs.org/v2/guide/>
+* api: <http://vuejs.org/v2/api/>
 * Vue作者尤雨溪：Vue 2.0，渐进式前端解决方案 <http://dwz.cn/5ITKsD >
 
 
@@ -145,16 +146,93 @@
 
 ## vue APIs
 
+* <http://vuejs.org/v2/api/>
+
+Global API
+    Vue.extend
+        .nextTick
+        .set
+        .delete
+        .directive
+        .filter
+        .component
+        .use
+        .mixin
+        .compile
+        .version
+
 plugin system: <https://github.com/vuejs/vue/blob/dev/src/core/global-api/use.js#L6>
     Vue.use( plugin )
 
-options
+options列表
+    Data
+        data
+        props
+        propsData
+        computed
+        methods
+        watch
 
-    el: '#id'
-    , data: { ... }
-    , computed: { ... }
-    , methods: { ... }
-    , watch: { ... }
+    DOM
+        el: '#id'
+        template
+            string start with '#'
+            other string
+        render
+        renderError
+
+    Lifecycle Hooks
+        beforeCreate
+        created
+        beforeMount
+        mounted
+        beforeUpdate
+        updated
+        activated
+        deactivated
+        beforeDestroy
+        destroyed
+
+    Assets
+        ...
+
+    Composition
+        ...
+
+    Misc
+        ...
+
+Instance Properties
+
+    vm.$data
+        .$props
+        .$el
+        .$options
+        .$parent
+        .$root
+        .$children
+        .$slots
+        .$scopedSlots
+        .$refs
+        .$isServer
+
+Instance Methods / Data
+    ...
+
+Instance Methods / Events
+    vm.$on
+        .$once
+        .$off
+        .$emit
+
+...
+
+
+
+
+
+
+
 
 * data, computed, methods, watch等对象内部的field都可以通过`vm.xxx`获得，vm为vue实例
     
@@ -262,6 +340,7 @@ filters定义：
 ## Conditional Rendering
 
 * 和`element`绑定，作为`directive`存在
+* 不和element绑定的方式，就是使用`template`元素
 
 ### v-if
 
@@ -299,7 +378,7 @@ filters定义：
 
 ## List Rendering
 
-v-for
+> v-for
 
     <ul id="example-1">
         <li v-for-"item in items">
@@ -375,6 +454,45 @@ v-for
 
     组合组件
 
+        父子组件关系：props down, events up
+
+        one-way data flow，单向数据流，自组件避免直接修改父组件下传的属性，有两种解决办法，data function或computed属性
+
+        prop validation
+            props: {
+                propC: {
+                    type: String
+                    required: true
+                }
+            }
+    
+        自定义事件v-on
+            父组件只能通过创建子组件时传递的`v-on:eventName`来监听子组件派发的eventName事件
+            子组件可以通过 $emit( eventName ) 派发事件
+
+        原生事件 .native 修饰器
+            <my-component v-on:click.native="doTheThing"></my-component>
+
+        .sync修饰符
+            1.x的特性，2.0取消，2.3作为语法糖重新引入
+            <comp :foo.sync="bar"></comp>
+            <comp :foo="bar' @update:foo="val => bar = val"></comp>
+            this.$emit( 'update:foo', newValue );
+            
+
+        v-model
+            <input v-model="something">
+            是以下代码的语法糖：
+                <input
+                    v-bind:value="something"
+                    v-on:input="something = $event.target.value">
+
+            组件来说
+                <custom-input
+                    :value="something"
+                    @input="value => { something = value }">
+                </custom-input>
+                
 
 
 

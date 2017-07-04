@@ -26,3 +26,14 @@
     org.*
 
 
+### String
+
+    String.format()
+
+
+### Bundle
+
+    .putInt
+    .getInt
+
+

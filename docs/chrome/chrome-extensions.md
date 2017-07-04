@@ -2,6 +2,8 @@
 
 > `Extensions` are small software programs that can `modify and enhance` the functionality of the Chrome browser. You write them using web technologies such as `HTML, JavaScript, and CSS`. Extensions bundle all their files `into a single file` that the user downloads and installs.
 
+## Features
+
 * 浏览器的扩展小程序
 * `修改`或`增强`浏览器的功能，而不需要理解`native`代码的实现
 * 使用`HTML／CSS／JavaScript`技术
@@ -23,15 +25,15 @@
 
 
 
-> chrome插件开发
+## 插件开发相关
 
-.crx是一个压缩文件
+`.crx`是一个压缩文件
 
 扩展图标 & 地址栏图标
 
 Browser Actions & Page Actions
 
-Browser Actions: 包含popup，全部页面都可以使用
+Browser Actions: 包含`popup`，全部页面都可以使用
 
 Page Actions: 特定于某些页面
 
@@ -52,7 +54,7 @@ Background Pages: 后台运行
       }  
     }
 
-popup.html源码不使用html、header、body标签
+popup.html源码不使用`html、header、body`标签
 
 
 

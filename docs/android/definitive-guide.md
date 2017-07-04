@@ -52,6 +52,8 @@
 
         可以用预览工具预览
 
+        转义：\', \n等
+
         文件内容一览：
         <resources>
             <string name="app_name">GeoQuiz</string>
@@ -339,7 +341,15 @@ todo
 ### 新概念
 
     java增量编译
+    ABIs - Android设备的CPU类型
+        armeabiv-v7a
+        arm64-v8a
+        armeabi
+        x86
+        x86-64
     NDK
+        .so文件
+        如果项目中使用了NDK，它将会生成.so文件
     ANDROID_NDK_HOME
 
 
@@ -505,7 +515,7 @@ todo
     // 赋值成员变量
     mTrueButton = ( Button ) findViewById( R.id.true_button );
 
-    View.OnClickListener接口
+    View.OnClickListener监听器接口
 
     mTrueButton.setOnClickListener( new OnClickListener() {
         @override
@@ -700,8 +710,239 @@ didi/VirtualAPK
 
 
 
+## 开启USB调试模式
+    Android 4.0以前
+        设定 -> 应用项 -> 开发
+    Android 4.0/4.1
+        设定 -> 开发，勾选USB调试
+    Android 4.2以后
+        设定 -> 关于 -> 版本号（Build Number），点击7次
 
 
 
+## Android MVC Design Pattern
+
+    控制器通常是Activity / Fragment / Service的一个子类
+    按类来抽象，按MVC来分层设计
+    按层而不是一个个单独的类来考虑问题
+
+
+
+## 0703
+
+    Android Studio首选项 -> Editor -> Code Style -> Java Tab -> Code Generation -> Naming
+        Fields
+        Static Fields
+
+    自动生成getter和setter方法
+    Generate -> Getter and Setter
+
+
+
+    图标资源
+        app/src/main/src
+            drawable-ldpi
+            drawable-hdpi: 160dpi
+            drawable-mdpi: 240dpi
+            drawable-xhdpi: 320dpi
+            drawable-xxhdpi: 480dpi
+            drawable-xxxhdpi
+
+        drawable是一种资源类型，同string、color、style类似
+
+        控制app大小，可以只准备主流分辨率的图标，其他的由Android系统自行适配
+
+        .png, .jpg, .gif会自动获得资源ID，文件名必须全部小写，且不能包含空格
+
+        <Button
+            ...
+            android:drawableRight="@drawable/arrow_right"
+            android:drawablePadding="4dp"
+            />
+
+        快捷键旋转模拟器 Fn+Ctrl+F12 / Ctrl+F12
+
+        按钮 - Button -> TextView
+        图标按钮 - ImageButton -> ImageView
+            android:src="@drawable/arrow_right"
+            android:contentDescription="..."
+
+
+
+## Activity生命周期
+
+    四种状态：运行、暂停、停止；以及暂存状态
+
+
+                                        ----运行（可见&在前台）-----
+
+                                            |               | 
+
+                                        onResume()      离开前台
+
+                                        进入前台        onPause()
+
+                                            |               |
+
+              |<--------------------    --------暂停（可见）--------
+              |
+              |                             |               |
+              |        
+              |                          onStart()       不再可见
+              |
+              |                         对用户可见      onStop()
+              |
+                                            |               |
+     暂存状态 - stash( 
+     activity实例已销毁  <----------   -------停止（不可见）------
+     ，实例状态已保存） 
+              |                             |               |
+              |
+              | -------------------->   onCreate()      完成或销毁
+
+                                            启动        onDestroy()
+                                            
+                                            |               |
+
+                                        ----------不存在----------
+
+
+
+    onCreate( bundle )
+        setContentView( int )
+        引用已实例化的组件
+        为组件设置监听器 
+            new View.OnClickListener等
+        访问外部模型数据
+
+    禁止主动调用这些生命周期方法
+    6个生命周期函数，仅有onCreate是protected，其他5个都是public
+    仅有onCreate带参数，其他5个都不带参数
+    停止状态，不确切知道能保留多久，因为系统进行内存回收时，会首先销毁停止状态的activity
+
+
+
+
+## 0704
+
+    android.util.Log
+        系统级别的共享日志中心
+        public static int d( String tag, String msg )
+        public static int d( String tag, String msg, Throwable e )
+            tag - 类名
+            
+            public class QuizActivity extends AppCompatActivity {
+                private static final String TAG = 'QuizActivity';
+                ...
+
+                @Override
+                protected void onCreate( Bundle savedInstanceState ) {
+                    super.onCreate( savedInstanceState );
+                    Log.d( TAG, "onCreate( Bundle ) called" );
+                    setContentView( R.layout.activity_quiz );
+                }
+            }
+
+
+        @Override指示编译器确保当前类具有你要覆盖的方法，若无则发出警告。
+
+        使用LogCat查看日志，TAG过滤日志
+        其他：
+            Log.e
+            Log.w
+            Log.i
+            Log.d
+            Log.v
+
+
+    底排按钮：
+        后退键        主屏幕键        最近应用键
+
+        后退键会完全销毁activity及其所在进程，当然暂存状态也就销毁了
+
+
+
+
+
+    屏幕旋转与Activity生命周期
+
+        原Activity被销毁，重新创建一个新的Activity实例
+            onPause()
+            onStop()
+            onDestroy()
+            onCreate( Bundle )
+            onStart()
+            onResume()
+
+
+        设备配置
+            屏幕方向
+            屏幕密度
+            屏幕尺寸
+            键盘类型
+            底座模式
+            语言
+            等
+
+        旋转会改变设备配置
+        runtime configuration change，不同于dpi，方向的变化是运行时的
+
+        res目录 -> New -> Android resource directory
+            Orientation -> Landscape
+
+        Orientation是一种资源，添加Landscape会增加对应res/layout-land目录，下方存放layout文件，与activity_quiz.xml同名
+
+        FrameLayout取代LinearLayout，是最简单的ViewGroup组件，不以特定方式安排其子视图的位置
+            子视图位置取决与格子的android:layout_gravity属性
+            android:layout_gravity 
+                center_horizontal
+                center_vertical
+                bottom
+                right
+                top
+                left
+                center_horizontal |  center_vertical
+                bottom |  right
+                top |  left
+
+
+        设备旋转带来Activity的销毁，需要保存数据
+
+            // onPause, onStop, onDestroy之前都会
+            // 调用onSaveInstanceState，状态存入Bundle
+            onSaveInstanceState( Bundle )
+            // 创建时从Bundle中读回
+            onCreate( Bundle )
+
+        实现覆盖onSaveInstanceState( Bundle )
+
+            ...
+            private static final String KEY_INDEX = "index";
+
+            @Override 
+            public void onSaveInstanceState( Bundle savedInstanceState ) {
+                super.onSaveInstanceState( savedInstanceState );
+                Log.i( TAG, "onSaveInstanceState" );
+                savedInstanceState.pubInt( KEY_INDEX, mCurrentIndex );
+            }
+            ...
+
+
+        Bundle只支持基本数据类型，以及可以实现Serializable或Parcelable接口的对象。
+        不适合自定义对象，建议保存自定义类的引用。
+
+        activity暂存状态
+            Activity记录（Bundle），进程级存储，由OS操作，可以传递到下次Activity创建
+            后退键会销毁记录数据，重启或长时间不用activity，也会销毁记录数据
+
+        测试onSaveInstanceState
+            Settings -> Dont't keep activities
+
+
+
+
+## todo
+
+Android应用的调试
 
 

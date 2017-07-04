@@ -3,20 +3,20 @@
 > @[style="color:green;font-size:18px"]The most popular HTML, CSS, and JavaScript 
 > framework for developing responsive, mobile first projects on the web.
 
-`github`: <https://github.com/twbs/bootstrap>
-
-`docs`: <http://getbootstrap.com>
-
-
-
 > 为每一人每一处而设计
 
-CSS`预处理器`［Sass和less］；`一个框架任何设备`；拥有`各类特性`：文档、组件以及jQuery插件
+## Resources
+
+* `github`: <https://github.com/twbs/bootstrap>
+* `docs`: <http://getbootstrap.com>
 
 
+## Misc
 
-
-bootstrap 4 即将来临
+* CSS`预处理器`［Sass和less］；
+* `一个框架任何设备`；
+* 拥有`各类特性`：文档、组件以及jQuery插件
+* `bootstrap 4`正在预发布版：<https://v4-alpha.getbootstrap.com>
 
 
 
@@ -72,7 +72,7 @@ bootstrap 4 即将来临
 
 ### 栅格系统
 
-Bootstrap包含一套响应式、移动优先的流式栅格系统，随着设备或者视窗尺寸的增加适当地按比例增加到12列。
+Bootstrap包含一套响应式、移动优先的流式`栅格系统`，随着设备或者视窗尺寸的增加适当地按比例增加到12列。
 
 包含预定义CSS类，以及功能强大的mixin。
 
