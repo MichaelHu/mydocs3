@@ -30,9 +30,30 @@
         android:layout_height
             wrap_content
             match_parent
+            fill_parent
+
+        android:layout_weight="1"
+
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+
+        android:layout_above="@+id/btn"
+
+        android:layout_marginBottom="50dp"
+        android:layout_marginLeft="45dp"
+
+        android:background="#999"
 
         android:padding="24dp"
             dp: density-independent pixel，我理解类似css的逻辑像素
+
+        android:tag="help_title"
+
+        android:scaleType="centerCrop"
+            图片裁剪
 
         android:orientation
             特定LinearLayout
@@ -41,6 +62,19 @@
         android:text
             字符串资源的引用，而不是字符串
             使用字符串资源，方便应用本地化
+
+        android:textSize="12dp"
+        android:textStyle="bold"
+
+        android:divider="@null"
+        android:fadingEdge="vertical"
+        android:fadingEdgeLength="10dp"
+        android:listSelector="@android:color/transparent"
+        android:overScrollMode="never"
+        android:requiresFadingEdge="vertical"
+        android:lineSpacingExtra
+
+        android:onClick="onClick"
 
 
 ## 资源文件
@@ -223,7 +257,7 @@
 
         Total time: 1.078 secs
 
-    $ ./gradleww properties
+    $ ./gradlew properties
 
         ------------------------------------------------------------
         Root project
@@ -333,9 +367,44 @@
         settings.gradle
 
 
+### Gradle版本问题
+
+从`ant ADT`项目迁移至`Android Studio 2.3.2`，执行`./gradlew installDebug`不成功，报以下错误：
+
+    Installing APK 'app-debug.apk' on 'HUAWEI TIT-AL00 - 5.1' for app:debug
+    E/1908033842: Error while uploading app-debug.apk : Unknown failure ([CDS]close[0])
+
+解决办法，做以下`3处`更新，再执行`./gradlew installDebug`。
+
+    1. 
+    gradle-2.14.1-all.zip => gradle-3.3-all.zip
+
+    2. 
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.0'
+    }
+
+            | | |
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.2'
+    }
+
+    3. 
+    distributionUrl=https\://services.gradle.org/distributions/gradle-2.14.1-all.zip
+
+            | | |
+
+    distributionUrl=https\://services.gradle.org/distributions/gradle-3.3-all.zip
+
+* 项目迁移，默认生成的Gradle Script`不一定`和Android Studio`匹配`
+* 安装apk到连接的设备，`Android Studio`可以成功，`./gradlew installDebug`不一定成功
+* 更新`Gradle Wrapper`能解决安装不成功的问题
+
+
 ### Gradle语法
 
-todo
+<ref://../build-tools/gradle.md.html>
 
 
 ### 新概念
@@ -347,7 +416,8 @@ todo
         armeabi
         x86
         x86-64
-    NDK
+
+    NDK - Android SDK
         .so文件
         如果项目中使用了NDK，它将会生成.so文件
     ANDROID_NDK_HOME
@@ -673,12 +743,197 @@ todo
             jdk提供工具：Keytool, Jarsigner
         编译和优化APK
             Android SDK提供相关工具
-            Android Studio提供自动化工具，底层调用Gradl构建工具
+            Android Studio提供自动化工具，底层调用Gradle构建工具
             或单纯使用Gradle的命令行构建，方便自动化，参考配置Gradle构建 <https://developer.android.com/tools/building/configuring-gradle.html>
 
 
+### keytool
+
+> `jdk`提供的工具
+
+    hudamin@local demo $ keytool -help
+    密钥和证书管理工具
+
+    命令:
+
+     -certreq            生成证书请求
+     -changealias        更改条目的别名
+     -delete             删除条目
+     -exportcert         导出证书
+     -genkeypair         生成密钥对
+     -genkey             同-genkeypair
+     -genseckey          生成密钥
+     -gencert            根据证书请求生成证书
+     -importcert         导入证书或证书链
+     -importpass         导入口令
+     -importkeystore     从其他密钥库导入一个或所有条目
+     -keypasswd          更改条目的密钥口令
+     -list               列出密钥库中的条目
+     -printcert          打印证书内容
+     -printcertreq       打印证书请求的内容
+     -printcrl           打印 CRL 文件的内容
+     -storepasswd        更改密钥库的存储口令
+
+    使用 "keytool -command_name -help" 获取 command_name 的用法
+
+    hudamin@local demo $ keytool -genseckey -help
+    keytool -genseckey [OPTION]...
+
+    生成密钥
+
+    选项:
+
+     -alias <alias>                  要处理的条目的别名
+     -keypass <arg>                  密钥口令
+     -keyalg <keyalg>                密钥算法名称
+     -keysize <keysize>              密钥位大小
+     -keystore <keystore>            密钥库名称
+     -storepass <arg>                密钥库口令
+     -storetype <storetype>          密钥库类型
+     -providername <providername>    提供方名称
+     -providerclass <providerclass>  提供方类名
+     -providerarg <arg>              提供方参数
+     -providerpath <pathlist>        提供方类路径
+     -v                              详细输出
+     -protected                      通过受保护的机制的口令
+
+    hudamin@local keytool $ keytool -genkey -help
+    keytool -genkeypair [OPTION]...
+
+    生成密钥对
+
+    选项:
+
+     -alias <alias>                  要处理的条目的别名
+     -keyalg <keyalg>                密钥算法名称
+     -keysize <keysize>              密钥位大小
+     -sigalg <sigalg>                签名算法名称
+     -destalias <destalias>          目标别名
+     -dname <dname>                  唯一判别名
+     -startdate <startdate>          证书有效期开始日期/时间
+     -ext <value>                    X.509 扩展
+     -validity <valDays>             有效天数
+     -keypass <arg>                  密钥口令
+     -keystore <keystore>            密钥库名称
+     -storepass <arg>                密钥库口令
+     -storetype <storetype>          密钥库类型
+     -providername <providername>    提供方名称
+     -providerclass <providerclass>  提供方类名
+     -providerarg <arg>              提供方参数
+     -providerpath <pathlist>        提供方类路径
+     -v                              详细输出
+     -protected                      通过受保护的机制的口令
 
 
+`说明`：
+
+    -genkey 同 -genkeypair
+    默认`密钥库`文件：`~/.keystore`
+    默认口令有效天数90天
+
+
+
+### jarsigner
+
+    hudamin@local demo $ jarsigner
+    用法: jarsigner [选项] jar-file 别名
+           jarsigner -verify [选项] jar-file [别名...]
+
+    [-keystore <url>]           密钥库位置
+    [-storepass <口令>]         用于密钥库完整性的口令
+    [-storetype <类型>]         密钥库类型
+    [-keypass <口令>]           私有密钥的口令 (如果不同)
+    [-certchain <文件>]         替代证书链文件的名称
+    [-sigfile <文件>]           .SF/.DSA 文件的名称
+    [-signedjar <文件>]         已签名的 JAR 文件的名称
+    [-digestalg <算法>]        摘要算法的名称
+    [-sigalg <算法>]           签名算法的名称
+    [-verify]                   验证已签名的 JAR 文件
+    [-verbose[:suboptions]]     签名/验证时输出详细信息。
+                                子选项可以是 all, grouped 或 summary
+    [-certs]                    输出详细信息和验证时显示证书
+    [-tsa <url>]                时间戳颁发机构的位置
+    [-tsacert <别名>]           时间戳颁发机构的公共密钥证书
+    [-tsapolicyid <oid>]        时间戳颁发机构的 TSAPolicyID
+    [-altsigner <类>]           替代的签名机制的类名
+    [-altsignerpath <路径列表>] 替代的签名机制的位置
+    [-internalsf]               在签名块内包含 .SF 文件
+    [-sectionsonly]             不计算整个清单的散列
+    [-protected]                密钥库具有受保护验证路径
+    [-providerName <名称>]      提供方名称
+    [-providerClass <类>        加密服务提供方的名称
+      [-providerArg <参数>]]... 主类文件和构造器参数
+    [-strict]                   将警告视为错误
+
+
+### 命令行签名
+
+#### 生成密钥对
+
+    # 在密钥库test.keystore中生成密钥对k1
+    $ keytool -genkey \
+        -keystore test.keystore \
+        -keyalg RSA \
+        -storepass 123456 \
+        -keypass 654321 \
+        -validity 10000 \
+        -alias k1 
+
+    # 在密钥库test.keystore中生成密钥对k2
+    $ keytool -genkeypair \
+        -keystore test.keystore \
+        -keyalg RSA \
+        -storepass 123456 \
+        -keypass 333333 \
+        -validity 10000 \
+        -alias k2 
+
+    # 列出密钥库test.keystore中所有密钥
+    $ keytool -list \
+        -keystore test.keystore \
+        -storepass 123456
+
+    # 列出密钥库test.keystore中密钥对k2
+    $ keytool -list \
+        -keystore test.keystore \
+        -storepass 123456 \
+        -alias k2
+
+
+#### 生成密钥
+
+    # 在密钥库test.keystore中生成密钥k5
+    $ keytool -genkey \
+        -keystore test.keystore \
+        -keyalg RSA \
+        -storepass 123456 \
+        -keypass 654321 \
+        -alias k5 
+
+
+* 列出密钥库内的密钥，只需要提供`-storepass`，就可以列出所有密钥
+* `-keypass`主要在`签名`的时候使用，比如需要用某个key对文件进行签名时，如果-keypass`不同于`-storepass，则需需要提供
+
+
+#### 用密钥给文件签名
+
+> 以下例子给`jar`文件签名和验证，也可以直接给`apk`文件签名
+
+    # 用密钥库的密钥对k2对mockable-android-19.jar进行签名
+    $ jarsigner -verbose \
+        -keystore test.keystore \
+        -storepass 123456 \
+        -keypass 333333 \
+        mockable-android-19.jar \
+        k2
+
+    # 用密钥库的密钥对k2对已签名的mockable-android-19.jar进行签名验证
+    $ jarsigner -verify \
+        -keystore test.keystore \
+        -storepass 123456 \
+        mockable-android-19.jar \
+        k2
+    
 
 
 
@@ -893,7 +1148,7 @@ didi/VirtualAPK
         Orientation是一种资源，添加Landscape会增加对应res/layout-land目录，下方存放layout文件，与activity_quiz.xml同名
 
         FrameLayout取代LinearLayout，是最简单的ViewGroup组件，不以特定方式安排其子视图的位置
-            子视图位置取决与格子的android:layout_gravity属性
+            子视图位置取决于格子的android:layout_gravity属性
             android:layout_gravity 
                 center_horizontal
                 center_vertical
@@ -944,5 +1199,26 @@ didi/VirtualAPK
 ## todo
 
 Android应用的调试
+
+
+## 0705
+
+    .pom文档?
+    pom.xml
+    与Maven有关
+
+
+## 0708
+
+
+    ...
+    android {
+        lintOptions {
+            abortOnError false
+        }
+    }
+
+
+
 
 

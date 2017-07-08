@@ -337,6 +337,7 @@ todo:
 
     # 上传tags
     git push --tags
+    git push origin <tag-name>
 
     # 上传git push本身包含的内容之外，还包含tags
     git push --follow-tags
@@ -346,6 +347,7 @@ todo:
 
     # 镜像同步远程仓库，包括branch、tag等，
     # 本地存在、远程不存在的会上传；本地删除、远程存在的会在远程删除
+    # 团队内慎用
     git push --mirror
 
     # 设置upstream
@@ -1069,12 +1071,12 @@ When we start mixing branches and commits, we will see how these two features co
 
 ## git describe
 
-    git describe <ref>
+    git describe [<ref>]
 
 其中`<ref>`是任何能解析成commit的值。
 以上命令的输出是:
 
-    <tag>_<numCommits>_g<hash>
+    <tag>-<numCommits>-g<hash>
 
 * `<tag>`: 最近的祖先tag，如果当前`ref同时指向一个tag`，则返回`当前tag`
 * `<numCommits>`: 与那个tag相隔的commit数 

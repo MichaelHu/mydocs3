@@ -1,7 +1,10 @@
 # iTerm2
 
-* macos上取代Terminal的一个利器
-* Terminal上跑vim时存在严重性能问题，使用iTerm2能解决性能问题
+## Features
+
+* macos上取代`Terminal`的一个利器
+* Terminal上跑`vim`时存在严重`性能`问题，使用iTerm2能解决性能问题
+* 相比`oh my zsh`，更加简洁
 
 
 ## tips
@@ -11,6 +14,7 @@
 * mac下，按住`Command`点击文件，可以open之
 * 支持给tab设置颜色 
 * `Command + K`清理屏幕
+* `Command + D`分屏
 * `Option + Left`快速左移光标，默认不支持，需要如下设置。具体可以参考mac默认的Terminal的keys的配置。
     
     <img src="./img/iterm2-keys-option-left.png" height="380">

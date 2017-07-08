@@ -2,7 +2,7 @@
 
 > Web Graphics Library  <img src="./img/WebGL-Logo.png" height="45">
 
-## Overview
+## Resources
 
 * <https://en.wikipedia.org/wiki/WebGL>
 * <https://www.khronos.org/registry/webgl/specs/latest/>
@@ -22,6 +22,63 @@
 
 
 ## WebGLRenderingContext
+
+    var options = {
+            // alpha通道
+            alpha: true
+            // depth buffer of at least 16 bits
+            , depth: true
+            // 图案buffer，至少8位
+            , stencil: false
+            // 反锯齿
+            , antialias: true
+            // ?
+            , premultipliedAlpha: true
+            // ?
+            , preserveDrawingBuffer: false
+            // ?
+            , powerPreference: 'default'
+            // ?
+            , failIfMajorPerformanceCaveat: false
+        };
+    var glContext = canvas.getContext( 'webgl', options );
+
+
+    typedef ( ImageBitmap or
+            ImageData or
+            HTMLImageElement or
+            HTMLCanvasElement or
+            HTMLVideoElement ) TexImageSource;
+
+    interface WebGLRenderingContextBase {
+        const GLenum ...
+        readonly canvas;
+        readonly drawingBufferWidth;
+        readonly drawingBufferHeight;
+
+        isContextLost();
+        activeTexture( texture );
+        ...
+    }
+
+
+## Other GL Objects
+
+    WebGLObject                         基类
+    WebGLBuffer
+    WebGLFramebuffer    
+    WebGLPrograme
+    WebGLRenderbuffer
+    WebGLShader
+    WebGLTexture
+    WebGLUniformLocation
+    WebGLActiveInfo
+    WebGLShaderPrecisionFormat
+    ArrayBuffer and Typed Arrays
+
+
+
+
 
 ## WebGL Viewport
 

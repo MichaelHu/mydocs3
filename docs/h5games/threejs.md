@@ -1,19 +1,18 @@
 # three.js
 
-
-* site: <https://threejs.org>
-* github: <https://github.com/mrdoob/three.js/>
-* docs: <http://threejs.org/docs/index.html>
-* local examples: <a href="file:///Users/hudamin/projects/git/three.js/examples/index.html" target="_blank">Examples</a>
-
-
-
 <style type="text/css">
 @import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
 </style>
 
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <script src="http://258i.com/static/bower_components/three.js/build/three.min.js"></script>
+
+## Resources
+
+* site: <https://threejs.org>
+* github: <https://github.com/mrdoob/three.js/>
+* docs: <http://threejs.org/docs/index.html>
+* local examples: <a href="file:///Users/hudamin/projects/git/three.js/examples/index.html" target="_blank">Examples</a>
 
 
 
@@ -36,14 +35,13 @@ todo:
 * 游戏，赛车视角
 
 
-
-`PerspectiveCamera`
+## PerspectiveCamera
 
     PerspectiveCamera( fov, aspect, near, far )
 
-* `fov` — Camera frustum vertical field of view, from bottom to top of view, `in degrees`.
-* `aspect` — Camera frustum aspect ratio, window width divided by window height. 
-* `near` — Camera frustum near plane.
+* `fov` — Camera frustum(锥) vertical field of view, from bottom to top of view, `in degrees`.
+* `aspect` — Camera frustum `aspect ratio`(宽高比), window width divided by window height. 
+* `near` — Camera frustum near plane(平面).
 * `far` — Camera frustum far plane.
 
 <http://threejs.org/docs/scenes/geometry-browser.html>

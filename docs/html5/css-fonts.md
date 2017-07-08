@@ -9,7 +9,7 @@
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 
 
-## 相关资源
+## Resources
 
 * fonts.css: <http://zenozeng.github.io/fonts.css/>
 * fontmin: <http://ecomfe.github.io/fontmin/>
@@ -22,13 +22,33 @@
 * `百度图标库` <http://fontstore.baidu.com>
 * 阿里妈妈矢量图标库 <http://www.iconfont.cn/plus>
 * 170403 消灭豆腐块！谷歌联合Adobe发布全新开源汉字字体 <https://github.com/googlei18n/noto-fonts>
+* 170625 给自己的Fonts教程 <https://segmentfault.com/a/1190000009920615>
 
 
 ## tips
 
-* `font-family`兼容性写法，最大化兼容OS推荐的优化字体：
+* 字体选择
+    1. 先选择`字体风格`：`衬线字体／非衬线字体／cursive／fantasy`
+    2. `优先`声明`英文字体`，因为绝大部分中文字体都包含英文字母和数字，但是大多数中文字体中英文和数字部分都不是特别漂亮，所以先声明英文字体
+    3. 再列出中文字体
+* `font-family`兼容性写法
 
-        font-family: Arial, "Microsoft YaHei", SimSun, serif;
+    * 最安全：
+
+            font-family: arial, sans-serif;
+
+    * `加粗雅黑`，兼容PC各OS的一种优化字体（xp下黑体加粗效果不好，反而SimSun-宋体效果更好）：
+
+            font-family: Helvetica, Arial, "Microsoft YaHei", SimSun, sans-serif;
+
+    * PC端常用字体fallback的例子：
+
+            font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Microhei", sans-serif;
+
+    * 移动端常用字符fallback的例子：
+
+            font-family: "\5FAE\8F6F\96C5\9ED1", Helvetica; /* 手机腾讯 */
+            font-family: 'STHeiti','Microsoft YaHei',Helvetica,Arial,sans-serif; /* 手机网易 */
 
 * font-variant
 

@@ -1,6 +1,6 @@
 # Canvas
 
-> The HTML5 `<canvas>` tag is used to draw graphics, on the fly, via scripting (usually JavaScript). 
+> The HTML5 `<canvas>` tag is used to draw graphics, on the fly(动态地), via scripting (usually JavaScript). 
 
 * `W3C HTML5`: <https://www.w3.org/TR/html5/scripting-1.html#the-canvas-element>
 * `W3C Docs about 2d context`: <http://www.w3.org/TR/2dcontext/>

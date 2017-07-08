@@ -22,6 +22,8 @@
 * DOM-Level-3-Core <https://www.w3.org/TR/DOM-Level-3-Core/>
 * DOM-level-2-Events  <https://www.w3.org/TR/DOM-Level-2-Events/events.html>
 * UIEvents (可以理解为level-3-events) <https://www.w3.org/TR/uievents/>
+* SVG <https://www.w3.org/TR/SVG11/>
+* SMIL Animation: 定义`SVG动画` <https://www.w3.org/TR/SVG11/animate.html>
 * Encoding <https://encoding.spec.whatwg.org> `TextEncoder, TextDecoder`
 * File API <https://www.w3.org/TR/FileAPI/> `FileList, Blob, File, FileReader, FileReaderSync, Blob URL`
 * Streams API `RedableStream, WritableStream, TransformStream` -- Low-level APIs

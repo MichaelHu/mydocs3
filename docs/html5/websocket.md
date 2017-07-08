@@ -1,4 +1,4 @@
-# WebSocket调研
+# websocket
 
 
 W3C信息：`Web Applications Working Group`的草案，2012-09-20版的`The WebSocket API`。
@@ -7,7 +7,7 @@ W3C信息：`Web Applications Working Group`的草案，2012-09-20版的`The Web
 对HTTP协议的补充，支持全双工通信，减少HTTP请求Header的冗余信息。
 
 
-## 1. interface IDL
+## interface IDL
 
     [Constructor(DOMString url, optional (DOMString or DOMString[]) protocols)]
     interface WebSocket : EventTarget {
@@ -40,7 +40,7 @@ W3C信息：`Web Applications Working Group`的草案，2012-09-20版的`The Web
 
 
 
-## 2. 应用
+## 应用
 
 
 网页聊天室，`socket.io`是比较知名的封装。基于`nodejs`，启动支持websocket协议的server，
@@ -49,7 +49,7 @@ W3C信息：`Web Applications Working Group`的草案，2012-09-20版的`The Web
 
 
 
-### 2.1 独立运行
+### 独立运行
 
 
     var server = require('http').createServer();
@@ -64,7 +64,7 @@ W3C信息：`Web Applications Working Group`的草案，2012-09-20版的`The Web
 
 
 
-### 2.2 与Express配合
+### 与Express配合
 
     var app = require('express')();
     var server = require('http').createServer(app);
@@ -74,7 +74,7 @@ W3C信息：`Web Applications Working Group`的草案，2012-09-20版的`The Web
 
 
 
-### 2.3 快速使用example
+### 快速使用example
 
 安装node和npm，然后：
 
@@ -91,7 +91,7 @@ W3C信息：`Web Applications Working Group`的草案，2012-09-20版的`The Web
 
 
 
-## 3. 原生用法
+## 原生用法
 
 提供的API：
 
@@ -112,7 +112,7 @@ W3C信息：`Web Applications Working Group`的草案，2012-09-20版的`The Web
 
 
 
-## 4. Ping and Pong frames
+## Ping and Pong frames
 
 用于`keep-alive`， `hear-beats`， `network status probing`等。检测网络连接是否正常，显示连接延迟信息等。
 

@@ -1,9 +1,6 @@
 # SVG
 
-> SVG 意为可缩放矢量图形（Scalable Vector Graphics）。
-
-> <https://www.w3.org/TR/SVG11/Overview.html>
-
+> SVG 意为`可缩放矢量图形`（Scalable Vector Graphics）。
 
 
 <style type="text/css">
@@ -16,25 +13,31 @@
 
 
 
+## Resources
+
+* w3c: <https://www.w3.org/TR/SVG11/>
 
 
-## 前言
 
-SVG 于 2003 年 1 月 14 日成为 W3C 推荐标准。
+## Overview
 
-参与定义 SVG 的组织有：太阳微系统、Adobe、苹果公司、IBM 以及柯达。
+SVG于`2003年1月14日`成为W3C推荐标准。目前最新推荐标准为`2011年8月16日`的`SVG1.1`推荐标准。
 
-与其他图像格式相比，使用 SVG 的优势在于：
+参与定义 SVG 的组织有：`太阳微系统、Adobe、苹果公司、IBM 以及柯达`。
 
-* SVG 可被非常多的工具读取和修改（比如记事本）
-* SVG 与 JPEG 和 GIF 图像比起来，尺寸更小，且可压缩性更强。
-* SVG 是可伸缩的
-* SVG 图像可在任何的分辨率下被高质量地打印
-* SVG 可在图像质量不下降的情况下被放大
-* SVG 图像中的`文本是可选的`，同时`也是可搜索的`（很适合制作地图）
-* SVG 可以与 Java 技术一起运行
-* SVG 是开放的标准
-* SVG 文件是纯粹的 XML
+### 优势
+
+与其他图像格式相比，使用 SVG 的`优势`在于：
+
+* 可被非常多的工具读取和修改（比如记事本）
+* 与`JPEG`和`GIF`图像比起来，`尺寸`更小，且`可压缩性`更强。
+* 是`可伸缩`的
+* 图像可在任何的分辨率下被`高质量`地打印
+* 可在图像质量不下降的情况下被放大
+* 图像中的`文本是可选的`，同时`也是可搜索的`（很适合制作地图）
+* 是一种开放的标准
+* 文件是纯粹的`XML`
+* 可以与 Java 技术一起运行
 
 SVG 的主要竞争者是 Flash。
 与 Flash 相比，SVG 最大的优势是与其他标准（比如 XSL 和 DOM）相兼容。而 Flash 则是未开源的私有技术。
@@ -431,7 +434,7 @@ SVG 有一些预定义的形状元素，可被开发者使用和操作：
 关键属性：
 * textLength：文本长度
 * lengthAdjust属性取值：`spacing|spacingAndGlyphs`，以上Demo正是展示了两种的不同。
-* x, y： `(left, bottom)`的坐标
+* (x, y)： `(left, bottom)`的坐标，`y属性`是文字`基线`到容器顶部的像素值
 * dx, dy：偏移量
 
 svg的text标签没有以下类似的属性（<http://stackoverflow.com/questions/15500894/background-color-of-text-in-svg>）：
@@ -2089,5 +2092,78 @@ svg的text标签没有以下类似的属性（<http://stackoverflow.com/question
 
 
 
+## 动画
+
+    elements:
+        animate
+        set
+        animateMotion
+        animateColor - deprecated，完全可用animate替代
+
+    extensions:
+        animateTransform
+        path
+        mpath
+        keyPoints
+        rotate
+
+
+
+
+
+### animate
+
+案例：<http://dwz.cn/6gn0rq>
+
+### 短半径变化 
+
+> `点击椭圆`，启动动画
+
+    @[data-script="svg editable"]<svg width="100%" height="160">
+    <ellipse 
+        cx="100" cy="80" rx="70" ry="40">
+        <animate attributeName="ry"
+            begin="click" dur="3s" values="40; 20; 40" />
+    </ellipse>
+    </svg>
+
+
+### 动画序列
+
+* SVG animate: <https://www.w3.org/TR/SVG11/animate.html>
+* SMIL Animation: <https://www.w3.org/TR/smil-animation/>
+
+> 支持id`定义和引用`
+
+    <animate id="A" begin="10s" .../>
+    <animate id="B" begin="A.begin+5s" .../>
+    <animate id="C" begin="click" .../>
+    <animate id="D" begin="C.begin+5s" .../>
+
+双半径`依次`变化，两个动画形成`序列`：
+
+    @[data-script="svg editable"]<svg width="100%" height="160">
+    <ellipse 
+        cx="100" cy="80" rx="70" ry="40">
+        <animate id="ani_1" attributeName="ry"
+            begin="click" dur="1s" values="40; 20; 40" />
+        <animate id="ani_2" attributeName="rx"
+            begin="ani_1.end" dur="1s" values="70; 35; 70" />
+    </ellipse>
+    </svg>
+
+其他例子：
+
+    begin=" x.load "        : Begin when "load" is observed on "x"
+    begin="x.focus+3s"      : Begin 3 seconds after an "focus" event on "x"
+    begin="x.endEvent+1.5s" : Begin 1 and a half seconds after an "endEvent" event on "x"
+    begin="x.repeat"        : Begin each time a repeat event is observed on "x"
+
+
+### 其他
+
+> todo
+
+    to="two.png"
 
 
