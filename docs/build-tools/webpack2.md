@@ -187,6 +187,27 @@ webpack将每个文件（.css, .html, .scss, .jpg等）都作为一个module，�
 
 
 
+## Configurations
+
+### resolve
+
+> 配置如何解析module
+
+    Field           Value
+    ----------------------------------------------------------------------------
+    extensions      [ '.js', '.json', '.vue' ]
+    alias
+    modules         [ 'node_modules' ]
+                    [ path.resolve( __dirname, 'src' ), 'node_modules' ]
+    plugins         
+    symlinks        true|false
+    externals       { jquery: 'jQuery' }
+                    不打包jquery代码，而是作为外部文件引入，比如CDN资源引入
+                    支持：global（全局变量）, commonjs, commonjs2, amd等形式
+
+
+
+
 
 
 

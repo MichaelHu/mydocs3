@@ -3,6 +3,7 @@
 
 > A JAVASCRIPT LIBRARY FOR BUILDING USER INTERFACES <img src="./img/react_logo.svg" width="50"> 
 
+## Resources
 
 * Reactjs: <http://facebook.github.io/react/docs/getting-started.html>
 * Github: <https://github.com/facebook/react>

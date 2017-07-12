@@ -5,6 +5,12 @@
 > changelog: 1706, 1612, 1607, 1403
 
 
+## Resources
+
+* es6定义：<http://www.ecma-international.org/ecma-262/6.0/index.html#sec-promise-objects>
+
+
+
 ## Overview
 
 * 在`ES6`中已经作为语言的原生支持的特性
@@ -33,13 +39,13 @@
 
 ## Features & Demos
 
-* `Promise`对象能对函数进行封装，该函数（也即`executor`）接收两个参数，分别是`resolve`和`reject`。executor会在同步代码中`立即执行`，比如发起异步请求。
+* `Promise`对象能对`函数`进行封装，该函数（也即`executor`）接收两个参数，分别是`resolve`和`reject`。executor会在同步代码中`立即执行`，比如发起异步请求。
 
 * 通过`.then()`方法，自动生成新的`Promise`对象，形成`链式`调用
 
 * `resolve()`和`reject()`方法分别作为成功调用和发生错误情况时的处理函数，
     这两个回调函数可以通过`.then()`方法传递进去，如果不传，则使用`默认`处理函数。
-    `resolve()`会将Promise对象的状态从`pending`设置为`resolved`，
+    `resolve()`会将Promise对象的状态从`pending`设置为`fullfilled`，
     `reject()`则将Promise对象的状态从`pending`设置为`rejected`。
     成功或者失败由用户代码决定，也即什么情况下调用resolve()和reject()是由用户决定的，
     比如AJAX请求成功则调用resolve，失败则调用reject。
@@ -191,7 +197,7 @@
 
 
 
-## Promise.resolve()
+## Promise.resolve( x )
 
 `Promise.resolve()`可将现有对象`转换成Promise对象`，比如将jQuery的`deferred`对象转换成Promise对象：
 
@@ -206,6 +212,13 @@
 
 上面代码会生成一个新的`Promise`对象，它的状态为`fulfilled`，所以回调函数会`立即`执行，
 `Promise.resolve()`方法的`参数`就是回调函数的参数。
+
+
+## Promise.reject( r )
+
+## Promise.race( iterable )
+
+## Promise.all( iterable )
 
 
 

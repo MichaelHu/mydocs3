@@ -20,7 +20,6 @@
 
 ## 印象
 
-
 * 模块`打包`，可以将`css`甚至`image`文件都以`js`的方式打包。
 * `依赖分析`
 * 通过插件可以支持`各种`前端中间`文件类型`：.jade, .coffee, .less, .sass, .jsx等
@@ -120,6 +119,59 @@ html文件的解析，输出为`字符串`。它能对`html`文件的`标签属�
     npm install --save-dev extract-loader
 
 提取功能。从bundle中将require请求的css提取出来；从html中将img，css引用提取出来。适合用于发布版本的优化处理。
+
+
+#### vue-loader
+
+    npm install --save-dev vue-loader
+
+* github: <https://github.com/vuejs/vue-loader>
+* docs: <https://vue-loader.vuejs.org/zh-cn/start/spec.html>
+
+versions:
+
+    8.x： webpack 1
+    9.x:  webpack 2+
+
+`vue-cli`创建项目：
+
+    npm install -g vue-cli
+    vue init webpack-simple hello-vue
+    cd hello-vue
+    npm install
+    npm run dev
+
+css`作用域`支持：
+
+    <style scoped>
+    .example {
+        color: red;
+    }
+    </style>
+
+    <template>
+        <div class="example">hi</div>
+    </template>
+
+转换成：
+
+    <style>
+    .example[data-v-f3f3eg9] {
+        color: red;
+    }
+    </style>
+
+    <template>
+        <div class="example" data-v-f3f3eg9>hi</div>
+    </template>
+
+
+> `vue-loader`提供的css作用域的`优势`：
+
+* 组件内编写的内容不会影响其他组件以及全局
+* 但提供了`全局`更改某个类，来`影响`组件的样式
+
+
 
 
 
@@ -1184,7 +1236,7 @@ AMD风格。
 
 #### require.cache
 
-多次require，只会执行一次factory，以及只有一个export，所以必然会有cache机制。
+多次require同一模块，`只会执行一次factory`，以及`只有一个export`，所以必然会有cache机制。
 
 以下等式：
 
@@ -1207,9 +1259,14 @@ AMD风格。
 
 #### require.ensure
 
+> `按需(on demand)`下载额外依赖。
+
     require.ensure(dependencies: String[], callback: function([require]), [chunkName: String])
 
-`按需(on demand)`下载额外依赖。
+* 按需加载的模块打成一个`匿名chunk`
+* 可为按需加载的模块指定`chunk名称`
+
+以下为例子：
 
     // in file.js
     var a = require("a");
@@ -1234,6 +1291,19 @@ AMD风格。
             - e
             - f
     */
+
+
+某个实际按需加载模块的写法：
+
+    module.exports = resolve => {
+        require.ensure([], function (require) {
+            resolve(require('./index'));
+        });
+    };
+
+`exports`是一个函数，用于`executor参数`构造一个`Promise`对象。<ref://../frontend/promisejs.md.html>
+
+
 
 
 #### require

@@ -1,9 +1,10 @@
 # vue-router
 
+## Resources
 * github: <https://github.com/vuejs/vue-router>
 * docs: <http://router.vuejs.org/en/>
 
-### Features
+## Features
 * Nested route/view mapping
 * Modular, component-based router configuration
 * Route params, query, wildcards
@@ -13,13 +14,12 @@
 * HTML5 history mode or hash mode, with auto-fallback in IE9
 * Customizable Scroll Behavior
 
-### Installation and Usage
 
-Installation
+## Installation
 
     npm install vue-router
 
-Usage
+## Usage
 
     import Vue from 'vue'
     import VueRouter from 'vue-router'

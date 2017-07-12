@@ -8,6 +8,8 @@
 <img src="./img/redux-logo.png" height="60"> 
 <http://redux.js.org/index.html>
 
+## Features
+
 * 可预测的`状态容器`，非常适用于js `SPA`的构建
 * 一种设计思想的`彻底、坚定`的实现者
 * 大量使用`ES6`的新特性
@@ -17,7 +19,7 @@
 
 
 
-## 安装
+## Installation
 
 使用`npm`包管理器，如果不想用，可以从<https://npmcdn.com/redux/>直接下载代码文件。
 

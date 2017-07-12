@@ -4,24 +4,64 @@
 
  <img src="./img/Ecma_RVB-003.jpg" height="60">
 
+## Resources
+
 * es6: <http://www.ecma-international.org/ecma-262/6.0/index.html>
+* `ecma-262`: <ref://../ecma/ecma-262.md.html>
 * mozilla es6: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/New_in_JavaScript/ECMAScript_6_support_in_Mozilla>
-
-实时转码DEMO：
-
-<http://google.github.io/traceur-compiler/demo/repl.html>
+* 实时转码DEMO：<http://google.github.io/traceur-compiler/demo/repl.html>
 
 
 ## import & export
+
+参考： <http://www.ecma-international.org/ecma-262/6.0/index.html#sec-imports>
 
     import { sex, echo } from './a';
     import * as utils from './a';
     import utils from './a';
     import { sex, echo as ECHO } from './a';
     import React, {Component, PropTypes} from 'react';
-    export { sex, echo };
+
+
+    export * from './abc';
+    export ABC from './abc';
+
+    // VARDECLARATION
+    export var a = 12306;
+
+    // LexicalDeclaration
+    export const a = 12306;
+    export let a = 12306;
+
+    // FunctionDeclaration
     export function echo( ... ) { ... };
+
+    // GeneratorDeclaration
+    export function *() { ... };
+
+
+
+    // DEFAULT
+    var sex = 'female';
     export default sex;
+
+    export default {
+        [ key1 ] () { ... }
+        [ key2 ] () { ... }
+    };
+
+    // Assignment
+    var name = 'Hudamin';
+    export default name = 'Even';
+
+    // ClassDeclaration
+    export default class ABC extends DEF { ... };
+
+    // ExportClause
+    export {};
+    export { sex, echo };
+    export { sex as a, echo as e };
+
 
 * `from`后的`路径描述`，不以`./`或`../`开头的，默认从`node_modules`查找路径中查找
 * `import utils from './a';`，utils等同于`exports.default`
@@ -32,7 +72,8 @@
 
     export sex;
 
-* export不支持此种类型的输出：`export { name: varB, sex: varA };`，但支持：`export { varB, varA };`
+* export不支持此种类型的输出：`export { name: varB, sex: varA };`，
+    但支持：`export { varB, varA };`或`export { varB as name, varA as sex };`
 * import不支持此种类型的解构：`import { name, sex: varA } from './a';`
 
 a.js:
@@ -62,15 +103,16 @@ import.js:
 
 > 参考：<http://www.ecma-international.org/ecma-262/6.0/index.html#sec-arrow-function-definitions>
 
-    var array = [1, 2, 3];
-    //传统写法
-    array.forEach(function(v, i, a) {
-        console.log(v);
-    });
-    //ES6
-    array.forEach(v => console.log(v));
+    var array = [ 1, 2, 3 ];
+    // 传统写法
+    array.forEach( function( v, i, a ) {
+        console.log( v );
+    } );
+    // ES6
+    array.forEach( v => console.log( v ) );
 
 * 参数部分与`=>`之间不能有换行
+* `this`关键字的处理
 
 
 
@@ -112,33 +154,32 @@ import.js:
     wayou.program();// 输出 ‘I'm coding...’
 
 
-* 浅谈ES6中super关键字 <http://www.cnblogs.com/liutie1030/p/5997446.html>
+* 浅谈ES6中`super`关键字 <http://www.cnblogs.com/liutie1030/p/5997446.html>
 
 
 
 ## 增强的对象字面量
 
-
-    //通过对象字面量创建对象
+    // 通过对象字面量创建对象
     var human = {
         breathe() {
-            console.log('breathing...');
+            console.log( 'breathing...' );
         }
     };
     var worker = {
-        __proto__: human, //设置此对象的原型为human,相当于继承human
+        __proto__: human, // 设置此对象的原型为human,相当于继承human
         company: 'freelancer',
         work() {
-            console.log('working...');
+            console.log( 'working...' );
         }
     };
-    human.breathe();//输出 ‘breathing...’
+    human.breathe();    // 输出 ‘breathing...’
     //调用继承来的breathe方法
-    worker.breathe();//输出 ‘breathing...’
+    worker.breathe();   // 输出 ‘breathing...’
 
 
-* 可以在对象字面量里面定义原型
-* 定义方法可以不用function关键字
+* 可以在对象字面量里面定义`原型`（`__proto__`）
+* 定义方法可以不用`function`关键字
 * 直接调用父类方法
 
 
@@ -146,7 +187,7 @@ import.js:
 ## 字符串模板
 
     var num = Math.random();
-    console.log(`your num is ${num}`);
+    console.log( `your num is ${num}` );
 
 支持`backtick`
 
@@ -154,15 +195,15 @@ import.js:
 
 ## 解构
 
-    var [x,y]=getVal(), // 函数返回值的解构
-        [name,,age]=['wayou','male','secrect']; // 数组解构
+    var [ x, y ] = getVal(), // 函数返回值的解构
+        [ name, , age ] = [ 'wayou', 'male', 'secrect' ]; // 数组解构
 
     function getVal() {
         return [ 1, 2 ];
     }
 
-    console.log('x:' + x + ', y:' + y); // 输出：x:1, y:2 
-    console.log('name:' + name + ', age:' + age); // 输出： name:wayou, age:secrect 
+    console.log( 'x:' + x + ', y:' + y ); // 输出：x:1, y:2 
+    console.log( 'name:' + name + ', age:' + age ); // 输出： name:wayou, age:secrect 
 
 
 
@@ -170,19 +211,30 @@ import.js:
 
 ## 参数默认值，不定参数，拓展参数
 
-    function sayHello2(name='dude'){
-        console.log(`Hello ${name}`);
+    function sayHello2( name = 'dude' ){
+        console.log( `Hello ${name}` );
     }
 
 
-    function add(...x){
-        return x.reduce((m,n)=>m+n);
+    function add( ...x ){
+        return x.reduce( ( m, n ) => m + n );
     }
+
+
+    // `babel-preset-stage-2` 支持
+    var keys = () => {
+            return { k1(){} };
+        };
+
+    export default {
+        ...keys({})
+    };
 
 
 ## let与const 关键字
 
-    for (let i=0;i<2;i++)console.log(i); // 输出: 0,1
+    for ( let i=0; i<2; i++ )
+        console.log( i );   // 输出: 0,1
 
 
 

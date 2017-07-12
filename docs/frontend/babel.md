@@ -4,7 +4,9 @@
 
 `---- Use next generation JavaScript, today.`
 
-* ES新标准的火箭助推器
+## Features
+
+* ES新标准的`火箭`助推器，`cssnext`学习的就是`babel`
 * 很牛逼的东西
 * 程序员的`福音`，代码编写和浏览器运行环境独立开来，即使浏览器不支持，也不影响使用新语法编写程序
 * `docs`: <http://babeljs.io/docs/usage/babelrc/>
@@ -12,13 +14,15 @@
 ## 初识
 
 
-### Install
+### Installation
 
-    npm install --save-dev babel-cli
+    $ npm install --save-dev babel-cli
+    $ ./node_modules/.bin/babel -h
+    $ npm install babel-preset-es2015
+    $ ./node_modules/.bin/babel --presets es2015 main.js
 
 
-
-### 配置文件
+### Configurations
 
 `.babelrc`或者`package.json`皆可：
 
@@ -40,6 +44,8 @@
     npm install --save-dev babel-preset-stage-1
     npm install --save-dev babel-preset-stage-2
     npm install --save-dev babel-preset-stage-3
+
+<ref://../ecma/ecma-262.md.html>
 
 
 

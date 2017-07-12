@@ -24,5 +24,14 @@
     * 「Setting up ES6」( Babel 6, webpack 1.x, Node.js 5 )- <https://leanpub.com/setting-up-es6/read>
 
 
+## Stage-X
+
+TC39将提议分为`5类`：
+
+* `Stage 0` Strawman: just an idea, possible Babel plugin
+* `Stage 1` Proposal: this is worth working on.
+* `Stage 2` Draft: initial spec.
+* `Stage 3` Candidate: complete spec and initial browser implementations.
+* `Stage 4` Finished: will be added to the next yearly release.
 
 
