@@ -2,12 +2,16 @@
 
 > Keeps your `UI` in sync with the `URL`.
 
-    npm install --save react-router
-
+## Resources
 
 * github： <https://github.com/reactjs/react-router>
 * react-router-redux: <https://github.com/reactjs/react-router-redux>
 * history: <https://github.com/ReactTraining/history>
+
+
+## Installation
+
+    npm install --save react-router
 
 
 
@@ -77,6 +81,8 @@
 
 ### 特征
 
+* 父子路由的`包含`关系，父路由的component包含子路由的component
+* 使用`{ this.props.children }`来关联父子组件
 * `嵌套UI`的自动选择，`<App><About /></App>`
 * `路由参数`自动解析，获取方式：`this.props.params.xxx`或者`this.props.location.query.xxx`
 * 支持`默认路由`，`<IndexRoute component={Dashboard}>`
@@ -120,7 +126,7 @@
 
 ### 绝对路径
 
-`绝对`路径使用，在`简化`路径的同时能`保留`UI的嵌套信息。
+`绝对`路径使用，在`简化`路径的同时能`保留`UI的`嵌套信息`。
 
     render((
         <Router>

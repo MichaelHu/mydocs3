@@ -4,10 +4,14 @@
 > 致力于在网页中绘制`网状图形`，提供交互接口。图形技术支持`Canvas`、`WebGL`和`SVG`。
 
 
-## 概览
+## Resources
 
 * site: <http://sigmajs.org>
-* github: <https://github.com/jacomyal/sigma.js/wiki>
+* github: <https://github.com/jacomyal/sigma.js>
+* wiki: <https://github.com/jacomyal/sigma.js/wiki>
+
+
+## Misc
 * latest version: `1.2.0`
 * 需要注意并理解其`插件机制`，有些时候配置了，没有效果，甚至代码报错，可能是插件没有加载
 * 显示`边的label`，必须注意其`类型`必须为`string`，否则不展示 

@@ -34,7 +34,7 @@
     <script src="scripts/require.js"></script>
     <script>
     // use dependency list
-    require(['scripts/config']), function() {
+    require(['scripts/config'], function() {
         // Configuration loaded now, safe to do other require calls
         // that depend on that config.
         require(['foo'], function(foo) {
@@ -107,7 +107,7 @@
         }); 
 
 
-    `例子：`提供jQuery插件的shim配置方式， https://github.com/requirejs/example-jquery-shim
+    `例子：`提供jQuery插件的shim配置方式， <https://github.com/requirejs/example-jquery-shim>
 
     jQuery的特点是，不管是否运行AMD模式，都会注册`window.jQuery`和`window.$`
 
@@ -120,7 +120,7 @@
 
 ## 定义模块
 
-1. 模块定义恰当处理了作用域，避免污染全局命名空间。
+1. 模块定义恰当处理了`作用域`，`避免污染`全局命名空间。
 2. 显式列出依赖模块，并且能获得依赖模块的引用，而不需要通过全局对象的方式。使用了
     <a href="http://www.adequatelygood.com/JavaScript-Module-Pattern-In-Depth.html">
     模块模式（Module Pattern）</a>

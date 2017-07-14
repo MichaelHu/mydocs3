@@ -1,8 +1,20 @@
-# 有用的小抄 
+# useful things 
 
 > 记下，以备后续查看
 
 > 合作，最难的是定义`边界`和`共赢`。
+
+## 2017-07-13
+
+<http://ucren.com>，前同事黄志龙的技术blog，涉及游戏／算法／偏门hack等，干货较多。
+
+* `a`标签的`download`属性，支持纯前端方案将文件保存至本地
+        content.addEventListener( 'change', function self(){
+            saveBtn.setAttribute( 'href', 'data:text/paint; utf-8,' + content.value );
+            return self;
+        }() );
+
+* 抽奖程序特效等
 
 
 ## 2017-02-16
@@ -447,7 +459,7 @@ PC下移除a标签等元素点击时的虚线框：
 
 ## 15-03-17
 
-* iPresst.com，来自腾讯Alloy Team，是个在线PPT创作平台。整体效果不错，切换动画较全。
+* <http://ipresst.com>，来自腾讯Alloy Team，是个在线PPT创作平台。整体效果不错，切换动画较全。
 
     整体架构使用大画板，通过放大定位至某个版块完成切换。好处是切换动画有特色，也带来一些问题，
 
