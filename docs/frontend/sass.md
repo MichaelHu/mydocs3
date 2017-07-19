@@ -2,7 +2,7 @@
 
 > Syntactically Awesome StyleSheets, 语法上很牛逼的样式表。css扩展语言
 
-1. <http://sass-lang.com>
+1. site: <http://sass-lang.com>
 2. docs: <http://sass-lang.com/documentation/file.SASS_REFERENCE.html>
 
 

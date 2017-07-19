@@ -5,55 +5,40 @@
 > 结构之法，算法之道。多一种数据结构就多一种解决问题的方法，多一种方法就多一种思维模式。
 
 
-## 前言
-
-
-### 结构思想
-
-利用将空间进行`四等分`的思想，对一组空间对象建立`空间索引`。在需要的时候能`快速`找出与给定空间参数相关的对象集合。`避免`总是进行全局查找带来的性能`消耗`。
-
-
-
-### 参考资料
-
-`关键词`：`quadtree`(四叉树), `octree`(八叉树，用于3D): 3D quadtree
-
-
-* wikipedia: <https://en.wikipedia.org/wiki/Quadtree>
-
-* Quick Tip: Use Quadtrees to Detect Likely Collisions in 2D Space: <http://gamedevelopment.tutsplus.com/tutorials/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space--gamedev-374>
-
-* js quadtree: <https://github.com/timohausmann/quadtree-js/>
-
-* javascript quadtree implementation: <http://www.mikechambers.com/blog/2011/03/21/javascript-quadtree-implementation/>
-
-* Python quadtree: <https://github.com/fogleman/Quads>
-
-* quadtree web demos: <https://www.michaelfogleman.com/static/quads/>
-
-* HT for Web可视化QuadTree四叉树碰撞检测：<http://my.oschina.net/xhload3d/blog/353020>
-
-* 四叉树与八叉树：<http://blog.csdn.net/zhanxinhang/article/details/6706217>
-
-
-
 <style type="text/css">
 @import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
 </style>
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <script src="http://258i.com/static/bower_components/d3/d3.min.js"></script>
-<script src="./js/graph-layout/utils.js"></script>
 
 
 
+## Features
+
+* 一种基于`空间索引`的数据结构
+* 利用将`空间`进行`四等分`的思想，对一组空间对象建立`空间索引`。
+* 在需要的时候能`快速`找出与给定空间参数相关的对象集合。`避免`总是进行全局查找带来的性能`消耗`。
+
+
+
+## Resources
+
+`keywords`：`quadtree`(四叉树), `octree`(八叉树，用于3D): 3D quadtree
+
+* `wikipedia`: <https://en.wikipedia.org/wiki/Quadtree>
+* Quick Tip: Use Quadtrees to Detect Likely Collisions in 2D Space: <http://gamedevelopment.tutsplus.com/tutorials/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space--gamedev-374>
+* js quadtree: <https://github.com/timohausmann/quadtree-js/>
+* javascript quadtree implementation: <http://www.mikechambers.com/blog/2011/03/21/javascript-quadtree-implementation/>
+* Python quadtree: <https://github.com/fogleman/Quads>
+* quadtree web demos: <https://www.michaelfogleman.com/static/quads/>
+* HT for Web可视化QuadTree四叉树碰撞检测：<http://my.oschina.net/xhload3d/blog/353020>
+* `四叉树与八叉树`：<http://blog.csdn.net/zhanxinhang/article/details/6706217>
 
 
 
 
 
 ## BarnesHut quadtree
-
-
 
 ### 算法描述
 
@@ -446,6 +431,62 @@
                 }
             }
         );
+
+        // random graph data
+        function getRandomGraph(numOfNodes, numOfEdges, fixSize){
+
+            var i
+                , s
+                , N = numOfNodes
+                , E = numOfEdges
+                , g = { nodes: [], edges: [] }
+                ;
+
+            for(i=0; i<N; i++){
+                g.nodes.push({
+                    id: 'n' + i
+                    , label: '' + i
+                    , x: Math.random()
+                    , y: Math.random()
+                    , size: fixSize || Math.random()
+                    , color: fly.randomColor() 
+                });
+            }
+
+            for(i=0; i<E; i++){
+                var edge = {
+                    id: 'e' + i
+                    , source: 'n' + (Math.random() * N | 0) 
+                    , target: 'n' + (Math.random() * N | 0) 
+                    , size: fixSize ? 1 : 1 * Math.random()
+                    , label: 'e' + i
+                    // , type: 'curve'
+                    // , color: fly.randomColor() 
+                    , color: '#ccc'
+                    , hover_color: '#f00'
+                };
+
+                if(edgeExists(edge)){
+                    continue;
+                }
+                else {
+                    g.edges.push(edge);
+                }
+
+            }
+
+            function edgeExists(edge){
+                for(var i=0; i<g.edges.length; i++){
+                    if(g.edges[i].source == edge.source
+                        && g.edges[i].target == edge.target) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            return g;
+        }
 
 
         // show divisions

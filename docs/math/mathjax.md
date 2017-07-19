@@ -31,6 +31,19 @@
 * 使用mathjax的应用：<http://docs.mathjax.org/en/latest/misc/mathjax-in-use.html>
 
 
+## TeX和LaTeX的扩展
+* extensions: <http://docs.mathjax.org/en/latest/tex.html#tex-and-latex-extensions>
+* 比如`\binom`默认情况下不支持，因为其所在的扩展`AMSmath`默认没有加载，需要在配置中添加：
+        MathJax.Hub.Config({
+            extensions: ["tex2jax.js"],
+            TeX: { extensions: ["AMSmath.js"]},
+            jax: ["input/TeX","output/HTML-CSS"],
+            tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
+        });
+    遇到类似不支持的情况，可以先打开以上链接，然后搜索，找到其对应Extension，再将对应extension添加进来。
+
+
+
 
 ## installation
 
@@ -45,6 +58,8 @@
     </script>
 
 `config`参数具体参考，todo
+
+<http://docs.mathjax.org/en/latest/options/index.html>
 
 
 ### GIT

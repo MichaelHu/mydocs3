@@ -1,11 +1,46 @@
 # css-modules
 
+> A `CSS Module` is `a CSS file` in which all class names and animation names are `scoped locally by default`. 
+
+## Resources
+
 * github: <https://github.com/css-modules/css-modules>
 * webpack implementation: <https://github.com/webpack/css-loader#css-modules>
 
 
+## Features
 
-## 理解composes
+* 每个CSS文件被定义为一个CSS module
+* 所有`类名、动画名`默认为本地作用域
+
+
+
+## :global 与 :local
+
+### 声明开关、作用域
+
+    :global
+    :global( xxx )
+    :local
+    :local( xxx )
+
+### 定义区块
+
+    :global { ... }
+
+
+### 复杂示例
+
+    .localA :global .global-b .global-c :local(.localD.localE) .global-d { ... }
+    :global {
+        .global-class-name {
+            color: #333;
+        }
+    }
+
+
+
+## composes
 
 > 类组合
 

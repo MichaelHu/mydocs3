@@ -85,7 +85,11 @@
     true != 100
     NaN != NaN
 
-`注意`：`NaN`不能做比较，需要判断一个数是否为NaN，使用`isNaN()`
+`注意`：`NaN`不能做比较，需要判断一个数是否为`非数字`，使用`isNaN()`；若要判断一个数是否为NaN，或许可以这么判断：
+    
+    function isExactlyNaN( num ) {
+        return num !== num;
+    }
 
 
 <div id="test_20" class="test">
@@ -420,7 +424,73 @@ IE9以下，`hasEnumBug`
     Object.assign( target, ...sources )
 
 * `浅拷贝`
-* 可能会有TypeError错误，比如目标对象同名属性是只读的
+* 可能会有`TypeError`错误，比如目标对象同名属性是只读的
+
+
+## Object.create
+
+* es6: <http://www.ecma-international.org/ecma-262/6.0/index.html#sec-object.create>
+
+        Object.create( O [, Properties ] )
+
+* `O`必须为`Object或Null`，否则报`TypeError`，该参数作为新对象的`prototype`
+* `Properties`为`可选`参数，其格式为：
+        {
+            fieldName1: filedDescriptor1
+            , fieldName2: filedDescriptor2
+        }
+    其中`fieldDescriptor`同`Object.defineProperty`的第三个参数。
+* `Object.create( null )`能确保每次调用，总能生成全新的对象，能避免使用字面量`"{}"`可能会被复用的问题，比如`Windows`下的Chrome
+
+
+<div id="test_object_create" class="test">
+<div class="test-container">
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_object_create');
+        // 无原型链，无属性
+        var obj1 = Object.create( null );
+        s.show( 'test 1 ...' );
+        s.append_show( obj1 );
+
+        s.append_show( '\ntest 2 ...' );
+        // 提供原型链继承
+        var obj2 = Object.create( 
+                { sayHello: function() { s.append_show( 'Hello, I\'m ' + this.name ); } }
+                , { name: { value: 'hudamin', enumerable: true } } 
+            );
+        obj2.sayHello();
+
+        s.append_show( '\ntest 3 ...' );
+        // 继承数组原型链
+        var obj3 = Object.create( 
+                Array.prototype
+                , { name: { value: 'hudamin', enumerable: true } }
+            );
+        s.append_show( obj3 );
+        obj3.push( 'item 1' );
+        s.append_show( obj3[ 0 ] );
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+    
+
+## Object.keys
+
+> 返回`EnumerableOwnNames( obj )`，作为一个数组返回。
+
+可枚举属性prop的列表，且满足`obj.hasOwnProperty( prop ) === true`
+
+todo
+
+
 
 
 ## Object.defineProperty
@@ -431,14 +501,19 @@ IE9以下，`hasEnumBug`
 
 ### 数据描述符与存取描述符
 
+    配置项              默认值
+    ---------------------------------------
     公共：
-    configurable enumerable
+    configurable        false
+    enumerable          false
 
     数据描述符独有：
-    value writable
+    value               undefined
+    writable            false
 
     存取描述符独有：
-    get set
+    get                 undefined
+    set                 undefined
 
 ### 示例 
 
