@@ -57,6 +57,8 @@
 
 ### shortcut
 
+> `SVW-SHF`
+
     font-style font-variant font-weight font-size/line-height font-family
 
 `举例：`
