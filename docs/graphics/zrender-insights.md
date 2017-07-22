@@ -9,13 +9,30 @@
 * `v3.5.2`: <https://github.com/ecomfe/zrender/tree/3.5.2>
 
 
-## 简介
+## Features
 
 * 分层渲染的思想
 * MVC驱动模型
 * 使用`AMD`风格编写，使用`r.js`导出
 * 代码风格简洁易懂
 * 文档没有及时更新
+
+
+## 相关算法和数学知识
+
+> 一些基础的算法和数学知识
+
+* `矩阵`知识 <ref://../math/matrix.md.html>
+* `向量`知识 <ref://../math/vector.md.html>
+* 曲线插值算法`catmull-rom` <ref://../algorithm/catmull-rom.md.html>
+* 点和多边形相对位置的算法等 <ref://../algorithm/point-in-polygon.md.html>
+* 其他`包含`算法
+* 贝塞尔曲线详解 <ref://../math/bezier-curve.md.html>
+* 动画缓动效果`easing`
+
+
+
+
 
 ## top level 
 
@@ -821,6 +838,8 @@
 
 ## graphic/shape/
 
+### Line
+
     Line.js
         // 通过`Path.extend()`扩展
         Line()
@@ -832,6 +851,8 @@
                 pointAt( p )
         
 
+### Circle
+
     Circle.js
         // 通过`Path.extend()`扩展
         Circle()
@@ -841,6 +862,7 @@
                 buildPath( ctx, shape, inBundle )
 
 
+### Rect
 
     Rect.js
         // 通过`Path.extend()`扩展
@@ -862,6 +884,7 @@
                 buildPath( ctx, shape )
         
 
+### Star
 
     // n角星（n>=3)
     Star.js
@@ -874,6 +897,7 @@
                 buildPath( ctx, shape )
 
 
+### Arc
 
     Arc.js
         Arc()
@@ -883,6 +907,8 @@
                 style: { stroke: '#000', fill: null }
                 buildPath( ctx, shape )
 
+
+### Ployline
 
     Polyline.js
         Polyline()
@@ -894,6 +920,7 @@
                     polyHelper.buildPath( ctx, shape, false )
 
 
+### Ellipse
 
     Ellipse.js
         Ellipse()
@@ -905,6 +932,7 @@
                     // 从椭圆的左端点开始顺时针绘制四条三次贝塞尔曲线
 
 
+### Heart
 
     Heart.js
         Heart()
@@ -914,6 +942,7 @@
                 buildPath( ctx, shape )
                     // 移动到cx, cy，再绘制两条三次贝塞尔曲线
 
+### Ring
 
     Ring.js
         Ring()
@@ -922,6 +951,7 @@
                 shape: { cx: 0, cy: 0, r: 0, r0: 0 }
                 buildPath( ctx, shape )
 
+### BezierCurve
 
     BezierCurve.js
         BezierCurve()
@@ -941,6 +971,7 @@
                 tangentAt( t )
 
 
+### Droplet
 
     Droplet.js
         Droplet()
@@ -953,6 +984,8 @@
 
 
 
+### Other
+
     Isogon.js
     Polygon.js
     Rose.js
@@ -963,13 +996,18 @@
 
 ## contain/
 
+### utils
+
     utils.js
         normalizeRadian( angle )
 
 
+### line
+
     line.js
         containStroke( x0, y0, x1, y1, lineWidth, x, y )
 
+### path
 
     path.js
         isAroundEqual( a, b )
@@ -981,31 +1019,38 @@
         contain( pathData, x, y )
         containStroke( pathData, lineWidth, x, y )
 
+### arc
 
     arc.js
         containStroke( cx, cy, r, startAngle, endAngle, anticlockwise, lineWidth, x, y )
 
+### cubic
 
     cubic.js
         // 点(x,y)到其在三阶贝塞尔曲线的投影的距离小于一半的曲线宽度
         containStroke( x0, y0, x1, y1, x2, y2, x3, y3, lineWidth, x, y )
 
+### quadratic
 
     quadratic.js
         // 点(x,y)到其在二阶贝塞尔曲线的投影的距离小于一半的曲线宽度
         containStroke( x0, y0, x1, y1, x2, y2, lineWidth, x, y )
 
 
+### widingLine
+
     // utils函数，用于判断多边形包含
     windingLine.js
         // 边对节点的绕数（wn）
         windingLine( x0, y0, x1, y1, x, y )
 
+### ploygon
 
     polygon.js
         // 计算点是否被多边形里面
         contain( points, x, y )
 
+### text
 
     text.js
         getTextWidth( text, textFont )
@@ -1014,6 +1059,240 @@
         truncateText( text, containerWidth, textFont, ellipsis, options )
         estimateLength( text, contentWidth, ascCharWidth, cnCharWidth )
 
+
+
+## mixin/
+
+### Eventful
+
+    Eventful.js
+        Eventful()
+            properties:
+                _$handlers
+            prototype:
+                one( event, handler, context )
+                on( event, handler, context )
+                isSilent( event )
+                off( event, handler )
+                trigger( type )
+                triggerWithContext( type )
+
+### Draggable
+
+    Draggable.js
+        Draggable()
+            this.on( 'mousedown', this._dragStart, this )
+            this.on( 'mousemove', this._drag, this )
+            this.on( 'mouseup', this._dragEnd, this )
+            this.on( 'globalout', this._dragEnd, this )
+            properties:
+                _x
+                _y
+            prototype:
+                _dragStart( e )
+                _drag( e )
+                _dragEnd( e )
+
+
+### Animatable
+
+    Animatable.js
+        Animatable()
+            properties:
+                animators
+            prototype:
+                animate( path, loop )
+                stopAnimation( forwardToLast )
+                animateTo( target, time, delay, easing, callback )
+                _animateToShallow( path, source, target, time, delay )
+
+
+### Transformable
+
+    Transformable.js
+        Transformable( opts )
+            properties:
+                position
+                rotation
+                scale
+                origin
+            prototype:
+                updateTransform()
+                getLocalTransform( ctx )
+                setTransform( ctx )
+                restoreTransform( ctx )
+                decomposeTransform()
+                getGlobalScale()
+                transformCoordToLocal( x, y )
+                transformCoordToGlobal( x, y )
+            static:
+                getLocalTransform( target, m )
+
+
+## animation/
+
+
+### Animation
+
+    // 动画主类, 调度和管理所有动画控制器
+    Animation.js
+        Animation( options )
+            Dispatcher.call( this )
+            properties:
+                stage
+                onframe
+                _clips
+                _running
+                _pausedTime
+                _pauseStart
+                _paused
+            prototype:
+                addClip( clip )
+                addAnimator( animator )
+                removeClip( clip )
+                removeAnimator( animator )
+                _update()
+                _startLoop()
+                start()
+                stop()
+                pause()
+                resume()
+                clear()
+                animate( target, options )
+        util.mixin( Animation, Dispatcher )
+
+
+### Animator
+
+    Animator.js
+        defaultGetter( target, key )
+        defaultSetter( target, key, value )
+        interpolateNumber( p0, p1, percent )
+        interpolateString( p0, p1, percent )
+        interpolateArray( p0, p1, percent, out, arrDim )
+        fillArr( arr0, arr1, arrDim )
+        isArraySame( arr0, arr1, arrDim )
+        catmullRomInterpolateArray( p0, p1, p2, p3, t, t2, t3, out arrDim )
+        // 平滑曲线插值实现
+        catmullRomInterpolate( p0, p1, p2, p3, t, t2, t3 )
+        cloneValue( value )
+        rgba2String( rgba )
+        getArrayDim( keyframes )
+        createTrackClip( animator, easing, oneTrackDone, keyframes, propName )
+        Animator()
+            properties:
+                _tracks
+                _target
+                _loop
+                _getter
+                _setter
+                _clipCount
+                _delay
+                _doneList
+                _onframeList
+                _clipList
+            prototype:
+                // 设置动画关键帧
+                when( time, props )
+                during( callback )
+                pause()
+                resume()
+                isPaused()
+                _doneCallback()
+                start( easing )
+                stop( forwardToLast )
+                delay( time )
+                done( cb )
+                getClips()
+
+### Clip
+
+    // 动画主控制器
+    Clip.js
+        Clip( options )
+            properties:
+                _target
+                _life
+                _delay
+                _initialized
+                loop
+                gap
+                easing
+                onframe
+                ondestroy
+                onrestart
+                _pausedTime
+                _paused
+            prototype:
+                step( globalTime, deltaTime )
+                restart( globalTime )
+                fire( eventType, arg )
+                pause()
+                resume()
+
+
+### easing
+
+    // https://github.com/sole/tween.js/blob/master/src/Tween.js
+    // 0 <= k <= 1
+    easing.js
+        linear( k )
+        // t^2
+        quadraticIn( k )
+        quadraticOut( k )
+        quadraticInOut( k )
+        // t^3
+        cubicIn( k )
+        cubicOut( k )
+        cubicInOut( k )
+        // t^4
+        quarticIn( k )
+        quarticOut( k )
+        quarticInOut( k )
+        // t^5
+        quinticIn( k )
+        quinticOut( k )
+        quinticInOut( k )
+        // sin(t)
+        sinusoidalIn( k )
+        sinusoidalOut( k )
+        sinusoidalInOut( k )
+        // 2^t
+        exponentialIn( k )
+        exponentialOut( k )
+        exponentialInOut( k )
+        // 圆形曲线缓动 sqrt(1-t^2)
+        circularIn( k )
+        circularOut( k )
+        circularInOut( k )
+        // 创建类似于弹簧在停止前来回振荡的动画
+        elasticIn( k )
+        elasticOut( k )
+        elasticInOut( k )
+        // 在某一动画开始沿指示的路径进行动画处理前稍稍收回该动画的移动
+        backIn( k )
+        backOut( k )
+        backInOut( k )
+        // 创建弹跳效果
+        bounceIn( k )
+        bounceOut( k )
+        bounceInOut( k )
+
+
+
+### requestAnimationFrame
+
+    requestAnimationFrame.js
+        return (typeof window !== 'undefined' &&
+                    ((window.requestAnimationFrame && window.requestAnimationFrame.bind(window))
+                    // https://github.com/ecomfe/zrender/issues/189#issuecomment-224919809
+                    || (window.msRequestAnimationFrame && window.msRequestAnimationFrame.bind(window))
+                    || window.mozRequestAnimationFrame
+                    || window.webkitRequestAnimationFrame)
+                )
+                || function (func) {
+                    setTimeout(func, 16);
+                }; 
 
 
 
