@@ -688,7 +688,7 @@ img.c3 {
 	git log
 
 		commit 04dc2acd30f848c90cc4c1340c6ff21bafa3e53d
-		Author: jixuecong <jixuecong@lvwan.com>
+		Author: jixuecong <jixuecong@gmail.com>
 		Date:   Wed Jan 11 15:20:47 2017 +0800
 
 			修改水印位置
@@ -703,7 +703,7 @@ img.c3 {
 			feature/watermark: add searchSelectedItem markType
 
 		commit 04dc2acd30f848c90cc4c1340c6ff21bafa3e53d
-		Author: jixuecong <jixuecong@lvwan.com>
+		Author: jixuecong <jixuecong@gmail.com>
 		Date:   Wed Jan 11 15:20:47 2017 +0800
 
 			修改水印位置
@@ -712,7 +712,7 @@ img.c3 {
 	git log
 
 		commit 04dc2acd30f848c90cc4c1340c6ff21bafa3e53d
-		Author: jixuecong <jixuecong@lvwan.com>
+		Author: jixuecong <jixuecong@gmail.com>
 		Date:   Wed Jan 11 15:20:47 2017 +0800
 
 			修改水印位置
@@ -728,7 +728,7 @@ img.c3 {
 			feature-watermark-170107: just for test
 
 		commit 04dc2acd30f848c90cc4c1340c6ff21bafa3e53d
-		Author: jixuecong <jixuecong@lvwan.com>
+		Author: jixuecong <jixuecong@gmail.com>
 		Date:   Wed Jan 11 15:20:47 2017 +0800
 
 			修改水印位置
@@ -750,7 +750,7 @@ img.c3 {
 			feature-watermark-170107: just for test
 
 		commit 04dc2acd30f848c90cc4c1340c6ff21bafa3e53d
-		Author: jixuecong <jixuecong@lvwan.com>
+		Author: jixuecong <jixuecong@gmail.com>
 		Date:   Wed Jan 11 15:20:47 2017 +0800
 
 			修改水印位置
