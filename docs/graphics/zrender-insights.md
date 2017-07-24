@@ -26,7 +26,7 @@
 * `向量`知识 <ref://../math/vector.md.html>
 * 曲线插值算法`catmull-rom` <ref://../algorithm/catmull-rom.md.html>
 * 点和多边形相对位置的算法等 <ref://../algorithm/point-in-polygon.md.html>
-* 其他`包含`算法
+* 其他`包含`算法、`投影`算法等
 * 贝塞尔曲线详解 <ref://../math/bezier-curve.md.html>
 * 动画缓动效果`easing`
 
@@ -37,6 +37,13 @@
 ## top level 
 
 ### zrender
+
+* 一个ZRender实例对应一个Painter、一个Storage 
+* `refresh()`只是设置`_needsRefresh标志`，并不会立即刷新
+* `refreshImmediatly()`会立即刷新，内部直接调用`this.painter.refresh()`
+
+
+以下为代码层次结构：
 
     zrender.js
         VML or canvas
@@ -100,6 +107,7 @@
                 _displayListLen
             methods:
                 traverse( cb, context )
+                // 获取显示列表，用于Painter.refresh()
                 getDisplayList( update, includeIgnore )
                 updateDisplayList( includeIgnore )
                 _updateAndAddDisplayable( el, clipPaths, includeIgnore )
@@ -127,13 +135,16 @@
                 _opts
                 dpr
                 _singleCanvas
+                // DOM根节点
                 root
+                // 保存displayList
                 storage
                 _zlevelList
                 _layers
                 _layerConfig
                 _width
                 _height
+                // 单canvas时同root，否则为root的孩子节点
                 _domRoot
                 _progressiveLayers
                 _hoverLayer
@@ -142,6 +153,7 @@
                 isSingleCanvas()
                 getViewportRoot()
                 getViewportRootOffset()
+                // 刷新画布，包括内建层以及自定义层的绘制
                 refresh( paintAll )
                 addHover( el, hoverStyle )
                 removeHover( el )
@@ -180,6 +192,7 @@
         Layer( id, painter, dpr )
             properties:
                 id
+                // id可以是string，也可以是DOM对象。dom属性由id属性推导得到
                 dom
                 domBack
                 ctxBack
@@ -371,6 +384,7 @@
             filter( obj, cb, context )
             find( obj, cb, context )
             bind( func, context )
+            // `Echarts.prototype.convertFromPixel()`方法由curry生成
             curry( func )
             isArray( value )
             isFunction( value )
@@ -609,6 +623,7 @@
                 progressive
                 beforeBrush( ctx )
                 afterBrush( ctx )
+                // interface
                 brush( ctx, prevEl )
                 getBoundingRect()
                 contain( x, y )
@@ -624,6 +639,8 @@
 
 
 ### Path
+
+> 各类`shape`的基类，shape子类提供`buildPath( ctx, shape, inBundle )`接口的实现
 
     // Path element
     Path.js
@@ -753,6 +770,7 @@
             Displayable.call( this, opts )
             prototype:
                 type: 'image'
+                // 加载并渲染图片
                 brush( ctx, prevEl )
                 getBoundingRect()
         zrUtil.inherits( ZImage, Displayable )
@@ -813,8 +831,10 @@
                 textTransform: false
                 textRotation: 0
                 blend: null
+                // 绑定style，和事件没有半毛钱关系
                 bind( ctx, el, prevEl )
                 hasFill()
+                // 有stroke属性，且不为none，同时线宽不为0
                 hasStroke()
                 extendFrom( otherStyle, overwrite )
                 set( obj, value )
@@ -830,6 +850,7 @@
             Displayable.call( this, opts )
             prototype:
                 type: 'text'
+                // 设置文本样式，逐行输出文本
                 brush( ctx, prevEl )
                 getBoundingRect()
         zrUtil.inherits( Text, Displayable )
@@ -837,6 +858,8 @@
 
 
 ## graphic/shape/
+
+> 所有shape都是`Path`的`子类`
 
 ### Line
 
@@ -996,6 +1019,11 @@
 
 ## contain/
 
+> `包含算法`，包括`笔划包含`与`区域包含`两种方式
+
+* 使用了`Quick Reject`
+* `投影`算法（Projection）
+
 ### utils
 
     utils.js
@@ -1134,7 +1162,8 @@
 
 ### Animation
 
-    // 动画主类, 调度和管理所有动画控制器
+> 动画主类, 调度和管理所有动画控制器（`Animator / Clip`）
+
     Animation.js
         Animation( options )
             Dispatcher.call( this )
@@ -1163,6 +1192,8 @@
 
 
 ### Animator
+
+> 动画控制器，运用各类`插值`算法，构建`Clips列表`，包含一个动画序列
 
     Animator.js
         defaultGetter( target, key )
@@ -1206,6 +1237,8 @@
                 getClips()
 
 ### Clip
+
+> 动画主控制器，控制一个动画
 
     // 动画主控制器
     Clip.js
@@ -1293,6 +1326,89 @@
                 || function (func) {
                     setTimeout(func, 16);
                 }; 
+
+
+
+
+
+## container/
+
+### Group
+
+> Group是一个容器，可以插入自节点，Group的变换也会被应用到子节点上
+
+    Group.js
+        Group( opts )
+            Element.call( this, opts )
+            properties:
+                _children
+                __storage
+                __dirty
+            prototype:
+                isGroup: true
+                type: 'group'
+                silent: false
+                children()
+                childAt( idx )
+                childOfName( name )
+                childCount()
+                add( child )
+                addBefore( child, nextSibling )
+                _doAdd( child )
+                remove( child )
+                removeAll()
+                eachChild( cb, context )
+                traverse( cb, context )
+                addChildrenToStorage( storage )
+                delChildrenFromStorage( storage )
+                dirty()
+                getBoundingRect( includeChildren )
+        zrUtils.inherites( Group, Element )
+        
+
+
+## dom/
+
+### HandlerProxy
+
+> 为控制类实例初始化`dom事件处理函数`
+
+    HandlerProxy.js
+        TOUCH_CLICK_DELAY = 300
+        mouseHandlerNames = [
+            'click', 'dbclick', 'mousewheel', 'mouseout'
+            , 'mouseup', 'mousedown', 'mousemove', 'contextmenu'
+        ]
+        touchHandlerNames = [ 'touchstart', 'touchend', 'touchmove' ]
+        processGesture( proxy, event, stage )
+        setTouchTimer( instance )
+        domHandlers
+            mousemove( event )
+            mouseout( event )
+            touchstart( event )
+            touchmove( event )
+            touchend( event )
+            pointerdown( event )
+            pointmove( event )
+            pointerup( event )
+            pointerout( event )
+        isPointerFromTouch( event )
+        initDomHandler( instance )
+
+        HandlerDomProxy( dom ) 
+            properties:
+                dom
+                _touching
+                _touchTimer
+                _gestureMgr
+                // 实例化以后，_handlers包含各类绑定了实例上下文的处理函数
+                _handlers
+            prototype:
+                dispose()
+                setCursor( cursorStyle )
+            
+
+
 
 
 

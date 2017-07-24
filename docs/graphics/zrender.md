@@ -5,6 +5,7 @@
 ## Resources
 
 * github: <https://github.com/ecomfe/zrender>
+* `zrender-insights`: <ref://./zrender-insights.md.html>
 
 
 ## Features

@@ -15,7 +15,7 @@
     若需要将边设置为带箭头的贝塞尔曲线，则可以设置如下：
         defaultEdgeType: 'curvedArrow'
 * `graph类扩展`，使用`addMethod()`, `attach()`, `attachBefore()`。支持添加新的方法、修改现有方法，甚至可以修改graph构造函数。
-* `camera` todo
+* `renderer`会引用对应的`camera`，`camera`没有对`renderer`的直接引用，而是在sigma对象中使用`renderersPerCamera`来保存每个camera对应的renderer列表
 * `四叉树应用` todo
 
 
