@@ -529,13 +529,13 @@ other目录下的object对象`全都是blob类型`的，但可能对应真实的
 	git log
 	
 		commit 15bc60a9f86c9f63baad9e8418c3b891a713ecb4
-		Author: hudamin <hudamin@lvwan365.com>
+		Author: hudamin <hudamin@gmail.com>
 		Date:   Thu Jan 12 16:24:38 2017 +0800
 	
 			feature/watermark1: just for test2
 	
 		commit 4ccc58d77f1c9d2d51d2e5278176edb756c00d8b
-		Author: hudamin <hudamin@lvwan365.com>
+		Author: hudamin <hudamin@gmail.com>
 		Date:   Thu Jan 12 16:05:40 2017 +0800
 	
 			....	
@@ -547,13 +547,13 @@ other目录下的object对象`全都是blob类型`的，但可能对应真实的
 	git log
 	
 		commit 30754f379de39fc9bee5d36279e61c6df54f8dc0
-		Author: hudamin <hudamin@lvwan365.com>
+		Author: hudamin <hudamin@gmail.com>
 		Date:   Thu Jan 12 16:25:36 2017 +0800
 	
 			feature-watermark-170107: remove just for test
 	
 		commit 4ccc58d77f1c9d2d51d2e5278176edb756c00d8b
-		Author: hudamin <hudamin@lvwan365.com>
+		Author: hudamin <hudamin@gmail.com>
 		Date:   Thu Jan 12 16:05:40 2017 +0800
 	
 			....	
@@ -565,19 +565,19 @@ other目录下的object对象`全都是blob类型`的，但可能对应真实的
 	
 		commit 89b50bea2059c7c937557f934401d57d59277c2b
 		Merge: 15bc60a 30754f3
-		Author: hudamin <hudamin@lvwan365.com>
+		Author: hudamin <hudamin@gmail.com>
 		Date:   Thu Jan 12 16:32:00 2017 +0800
 	
 			Merge branch 'feature-watermark-170107' into feature/watermark1
 	
 		commit 30754f379de39fc9bee5d36279e61c6df54f8dc0
-		Author: hudamin <hudamin@lvwan365.com>
+		Author: hudamin <hudamin@gmail.com>
 		Date:   Thu Jan 12 16:25:36 2017 +0800
 	
 			feature-watermark-170107: remove just for test
 	
 		commit 15bc60a9f86c9f63baad9e8418c3b891a713ecb4
-		Author: hudamin <hudamin@lvwan365.com>
+		Author: hudamin <hudamin@gmail.com>
 		Date:   Thu Jan 12 16:24:38 2017 +0800
 	
 			feature/watermark1: just for test2
@@ -697,7 +697,7 @@ img.c3 {
 	git commit -m "feature/watermark: add searchSelectedItem markType"
 	git log
 		commit a088e00d2bc2b167f46f40078113f9b740c08749
-		Author: hudamin <hudamin@lvwan365.com>
+		Author: hudamin <hudamin@gmail.com>
 		Date:   Thu Jan 12 16:05:40 2017 +0800
 
 			feature/watermark: add searchSelectedItem markType
@@ -722,7 +722,7 @@ img.c3 {
 	git log
 
 		commit 9b4d99d5a7bb7b939ded3de521b2ec971e4bc3cb
-		Author: hudamin <hudamin@lvwan365.com>
+		Author: hudamin <hudamin@gmail.com>
 		Date:   Thu Jan 12 16:07:03 2017 +0800
 
 			feature-watermark-170107: just for test
@@ -738,13 +738,13 @@ img.c3 {
 	git log
 
 		commit 4ccc58d77f1c9d2d51d2e5278176edb756c00d8b
-		Author: hudamin <hudamin@lvwan365.com>
+		Author: hudamin <hudamin@gmail.com>
 		Date:   Thu Jan 12 16:05:40 2017 +0800
 
 			feature/watermark: add searchSelectedItem markType
 
 		commit 9b4d99d5a7bb7b939ded3de521b2ec971e4bc3cb
-		Author: hudamin <hudamin@lvwan365.com>
+		Author: hudamin <hudamin@gmail.com>
 		Date:   Thu Jan 12 16:07:03 2017 +0800
 
 			feature-watermark-170107: just for test
