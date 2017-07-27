@@ -2,13 +2,14 @@
 
 > 网络图谱、时间线、2D图形、3D图形的js库
 
+## Resources
 * site: <http://visjs.org>
 * github: <https://github.com/almende/vis>
 * docs: <http://visjs.org/docs/network/>
 * showcases: <http://visjs.org/showcase/index.html>
 
-## 简介
 
+## Features
 * 提供五大门类的图形处理库，网络图、时间线、数据集（DataSet，可增删改，支持数据变动事件订阅）、2D图形库、3D图形库。
 * `层次布局`算法的差异：孩子节点的计算受`hierarchical.sortMethod`取值的影响，取值`directed`则按广度优先选取，默认按深度优先选取。无最小交叉算法。
 * 节点形状原生支持`ellipse, circle, database, box, text`，以及标签在下方的`image, circularImage, diamond, dot, star, triangle, triangleDown, square, icon`

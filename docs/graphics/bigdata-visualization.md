@@ -3,6 +3,7 @@
 
 ## Resources
 
+* github - Data Visualization <https://github.com/showcases/data-visualization>
 * `百度地图`开放API示例：<http://lbsyun.baidu.com/jsdemo.htm>
 * `Echarts`官方示例：<http://echarts.baidu.com/examples.html>
 * `Echarts`三维展示：<http://gallery.echartsjs.com/editor.html?c=xryhZvyGr->

@@ -66,10 +66,14 @@
 
 ## Gradle Wrapper
 
-> 类似`nvm`之于`node + npm`
+> `Gradle Wrapper`之于`Gradle`类似`nvm`之于`node + npm`
+
+### Features
 
 * 支持特定构建使用特定的Gradle版本
 * 方便切换Gradle版本，比如切换回旧的版本，构建老版本的software
+
+### Usage
 
 在项目根目录执行： 
 
@@ -84,7 +88,7 @@
 
     Total time: 1secs
 
-> 注意`gradle wrapper` 与 `./gradlew wrapper`的区别，一个是创建wrapper，一个是更新wrapper
+> 注意`gradle wrapper` 与 `./gradlew wrapper`的区别，一个是`创建`wrapper，一个是`更新`wrapper
 
 通过`wrapper` task，可以在当前目录下生成一个新的wrapper文件组织，该wrapper封装了`--gradle-version`设置的版本号对应的gradle，若未指定`--gradle-version`，则默认封装调用wrapper task的Gradle的版本。
 

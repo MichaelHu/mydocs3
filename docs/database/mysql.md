@@ -6,13 +6,14 @@
 
 * site: <https://www.mysql.com>
 * `5.7` docs: <https://dev.mysql.com/doc/refman/5.7/en/>
-* community downloads: <https://dev.mysql.com/downloads/mysql/>
+* `Community Downloads`: <https://dev.mysql.com/downloads/mysql/>
 * 详解MySQL的用户密码过期功能: <http://www.jb51.net/article/79347.htm>
 * 备份数据库：<https://dev.mysql.com/doc/refman/5.7/en/mysqldump-copying-database.html>
 
 
 ## Versions
-
+* Community Version（社区版）: `5.7.19` - 2017-07
+* Enterprise Version（企业版）：收费版，个人一般不用
 
 
 ## Installation
@@ -43,7 +44,7 @@
         --datadir=$MYSQL/data \
         --log-error=$MYSQL/logs/mysqld.log
 
-会`自动`建立一个用户`root`，并且`密码在log文件中给出`。
+会`自动`建立一个用户`root`，并且`密码在log文件中给出`。`MongoDB`的用户机制不太一样，默认没有权限限制，需要用`--auth`选项启动权限限制。<ref://./mongodb-user-role.md.html>
 
 
 ### start server

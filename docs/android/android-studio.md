@@ -19,11 +19,17 @@
     SDK Patch Applier v4 1.74 MB
 
 
+## Versions
+
+* `2.3.3` 2017-07-27
+
+
 ## Tips
 
     使用模拟器，非常耗费CPU，达到200%，而且可能还要翻墙
     建议使用开启开发者模式的手机
         需要现在Android Studio上先安装Android SDK Platform
         华为手机（EMUI）开启开发者模式的方式，手机 - 设置 - 关于手机 - 版本号，点击7次
+    Android Studio连接的升级服务器jcenter需要翻墙
 
 

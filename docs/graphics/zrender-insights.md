@@ -1335,7 +1335,7 @@
 
 ### Group
 
-> Group是一个容器，可以插入自节点，Group的变换也会被应用到子节点上
+> Group是一个容器，可以插入子节点，Group的变换也会被应用到子节点上
 
     Group.js
         Group( opts )

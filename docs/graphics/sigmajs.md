@@ -11,9 +11,20 @@
 * wiki: <https://github.com/jacomyal/sigma.js/wiki>
 
 
+## Versions
+
+* `lateset`: 2016-11-03 `1.2.0`
+* 2016-02-17 `1.1.0`
+* 2014-08-22 `1.0.3`
+* 2014-04-02 `1.0.2`
+* 2014-02-26 `1.0.1`
+* 2014-01-30 `1.0.0` release
+* 2013-11-27 `1.0.0` draft
+
+
 ## Misc
-* latest version: `1.2.0`
-* 需要注意并理解其`插件机制`，有些时候配置了，没有效果，甚至代码报错，可能是插件没有加载
+
+* 需要注意并理解其`插件机制`，有些时候配置了，没有效果，甚至代码报错，可能是插件没有加载，需要`显式引入`插件代码，比如：<http://258i.com/static/build/sigma/plugins/sigma.renderers.edgeLabels.js>
 * 显示`边的label`，必须注意其`类型`必须为`string`，否则不展示 
 
 
@@ -21,16 +32,17 @@
 @import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
 </style>
 <script src="http://258i.com/static/build/sigma/sigma.js"></script>
+<script src="http://258i.com/static/build/sigma/plugins/sigma.renderers.edgeLabels.js"></script>
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
-<script src="../algorithm/js/graph-layout/utils.js"></script>
 
 
+## 工具函数
 
-## 快速启动
+### getUniqueSigmaInstance()
 
 以下代码提供`sigma`实例的生成器，根据`实例ID`在上下文中只保持一个实例，即使`多次调用`也是如此。
 
-    @[data-script="javascript"]function getUniqueSigmaInstance(instId, config, isSearch){
+    @[data-script="javascript"]function getUniqueSigmaInstance( instId, config, isSearch ){
 
         var instances = (
                 arguments.callee.__instances
@@ -38,16 +50,16 @@
             )
             ;
 
-        if(!instances[instId]) {
-            if(isSearch){
+        if( !instances[ instId ] ) {
+            if( isSearch ){
                 return false;
             }
 
-            if(!config) {
-                instances[instId] = new sigma();
+            if( !config ) {
+                instances[ instId ] = new sigma();
             }
             else {
-                instances[instId] = new sigma(
+                instances[ instId ] = new sigma(
                     $.extend(
                         {}
                         , config
@@ -56,21 +68,21 @@
             }
         }
         else {
-            if(isSearch == 2) {
-                var ret = instances[instId];
-                delete instances[instId];
+            if( isSearch == 2 ) {
+                var ret = instances[ instId ];
+                delete instances[ instId ];
                 return ret;
             }
         }
 
-        return instances[instId];
+        return instances[ instId ];
     }
 
-    function isSigmaInstanceExisted(instId){
-        return getUniqueSigmaInstance(instId, null, 2);
+    function isSigmaInstanceExisted( instId ){
+        return getUniqueSigmaInstance( instId, null, 2 );
     }
 
-    function getRandomGraph(numOfNodes, numOfEdges, isFixSize){
+    function getRandomGraph( numOfNodes, numOfEdges, isFixSize ){
 
         var i
             , s
@@ -79,34 +91,36 @@
             , g = { nodes: [], edges: [] }
             ;
 
-        for(i=0; i<N; i++){
-            g.nodes.push({
+        for( i = 0; i < N; i++ ) {
+            g.nodes.push( {
                 id: 'n' + i
                 , label: '' + i
                 , x: Math.random()
                 , y: Math.random()
                 , size: isFixSize ? 0.05 : Math.random()
                 , color: fly.randomColor() 
-            });
+            } );
         }
 
-        for(i=0; i<E; i++){
-            g.edges.push({
+        for( i = 0; i < E; i++ ) {
+            g.edges.push( {
                 id: 'e' + i
-                , source: 'n' + (Math.random() * N | 0) 
-                , target: 'n' + (Math.random() * N | 0) 
+                , source: 'n' + ( Math.random() * N | 0 ) 
+                , target: 'n' + ( Math.random() * N | 0 ) 
                 , size: isFixSize ? 0.01 : Math.random()
                 // , type: 'curve'
                 // , color: fly.randomColor() 
                 , color: '#ccc'
                 , hover_color: '#f00'
                 , label: 'aaa'
-            });
+            } );
         }
 
         return g;
     }
 
+
+### TickEaseIn
 
 再提供一个`脉搏`模拟器`TickEaseIn`：
 
@@ -176,25 +190,36 @@
 
 
 
-## 从例子开始
+## 网络图的例子
 
-两个节点一条边。
+### 自适应尺寸
 
-<div id="test_10" class="test">
+该例子展示包含两个节点和一条边的`简单网络`。
+* 图谱尺寸参数未根据renderer视图适配（标准化），`尺寸跨度`为0.3
+* 使用`autoRescale配置项`由Sigma引擎进行适配，先生成标准化后的Graph坐标，以`read_cam0:`为前缀
+* 标准化后，Camera参数为`{x: 0, y: 0, angle: 0, ratio: 1}`
+
+
+<div id="test_simple_network" class="test">
 <div class="test-container">
-<div id="test_10_graph" class="test-graph"></div>
+<div id="test_simple_network_graph" class="test-graph"></div>
 
     @[data-script="javascript editable"]
     (function(){
 
-        var s = fly.createShow('#test_10');
+        var s = fly.createShow('#test_simple_network');
         
         var sm = getUniqueSigmaInstance(
-                    'test_10'
+                    'test_simple_network'
                     , {
-                        renderers: [
+                        settings: {
+                            mouseWheelEnabled: false
+                            , drawEdgeLabels: true
+                            , autoRescale: true
+                        }
+                        , renderers: [
                             {
-                                container: 'test_10_graph'
+                                container: 'test_simple_network_graph'
                                 , type: 'canvas'
                             }
                         ]
@@ -205,7 +230,7 @@
             .clear()
             .addNode({
                 id: 'n0'
-                , label: 'Hello'
+                , label: 'Person 1'
                 , x: 0.5
                 , y: 0.5
                 , size: 1
@@ -213,7 +238,7 @@
             }) 
             .addNode({
                 id: 'n1'
-                , label: 'World!'
+                , label: 'Person 2'
                 , x: 0.8
                 , y: 0.8
                 , size: 1
@@ -223,16 +248,19 @@
                 id: 'e0'
                 , source: 'n0' 
                 , target: 'n1'
-                // , type: 'curve'
-                , label: 'aaa'
+                , label: 'relation'
                 , color: '#ccc'
             }) 
             ;
 
-        s.show(1, sm.graph.nodes());
-        s.append_show(2, sm.graph.edges());
-
         sm.refresh();
+
+        s.show( 1, sm.graph.nodes() );
+        s.append_show( 2, sm.graph.edges() );
+        s.append_show( 3, sm.camera.x, sm.camera.y, sm.camera.angle, sm.camera.ratio );
+        s.append_show( 4, sm.camera.getMatrix() );
+        s.append_show( 5, sm.camera.getRectangle( 500, 200 ) );
+        s.append_show( 6, sm.camera.cameraPosition( 0.5, 0.6 ) );
 
     })();
 
@@ -243,6 +271,83 @@
 
 
 
+
+### 标准化尺寸
+
+该例子展示包含两个节点和一条边的`简单网络`，坐标已经`标准化`（`重心`坐标为`0,0`）。
+* 图谱尺寸参数已根据renderer视图适配（标准化）
+* 不使用`autoRescale`配置项，将其设置为`false`关闭自适应功能
+* 使用`camera.goTo()`方法设置合适的camera参数
+
+
+<div id="test_normalized_network" class="test">
+<div class="test-container">
+<div id="test_normalized_network_graph" class="test-graph"></div>
+
+    @[data-script="javascript editable"]
+    (function(){
+
+        var s = fly.createShow('#test_normalized_network');
+        
+        var sm = getUniqueSigmaInstance(
+                    'test_normalized_network'
+                    , {
+                        settings: {
+                            mouseWheelEnabled: false
+                            , drawEdgeLabels: true
+                            , autoRescale: false
+                        }
+                        , renderers: [
+                            {
+                                container: 'test_normalized_network_graph'
+                                , type: 'canvas'
+                            }
+                        ]
+                    }
+                ); 
+
+        sm.graph
+            .clear()
+            .addNode({
+                id: 'n0'
+                , label: 'Person 1'
+                , x: -60
+                , y: -60
+                , size: 10
+                , color: '#f00'
+            }) 
+            .addNode({
+                id: 'n1'
+                , label: 'Person 2'
+                , x: 70 
+                , y: 65
+                , size: 10
+                , color: '#00f'
+            }) 
+            .addEdge({
+                id: 'e0'
+                , source: 'n0' 
+                , target: 'n1'
+                , label: 'relation'
+                , color: '#ccc'
+            }) 
+            ;
+
+        sm.refresh();
+
+        s.show( 1, sm.graph.nodes() );
+        s.append_show( 2, sm.graph.edges() );
+        s.append_show( 3, sm.camera.x, sm.camera.y, sm.camera.angle, sm.camera.ratio );
+        s.append_show( 4, sm.camera.getMatrix() );
+        s.append_show( 5, sm.camera.getRectangle( 500, 200 ) );
+        s.append_show( 6, sm.camera.cameraPosition( 0.5, 0.6 ) );
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel"></div>
+</div>
 
 
 @[style="text-align:center"]<img src="./img/sigma-graph-view-camera-renderer.png" width="560">
@@ -524,12 +629,14 @@ canvas绘制，`5`个`layer`：node、edge、labels、捕获鼠标事件层以�
 
 ### 坐标空间
 
+> `Graph坐标、Camera坐标、Renderer坐标`三类。
 
-可以看作往`screen`投射图形的`摄像机`，决定`视角`、`比例`、`投射中心`等投射参数。需要考虑以下坐标空间：
+参考：<ref://./sigmajs-insights.md.html>
 
-* `graph`坐标空间：对应画布`viewport`，与camera的`rendererX`属性对应
-* `camera`坐标空间：对应画布整体，与camera的`camX`属性对应
-* `screen`坐标空间，`renderer`的`width`与`height`属性，表示的就是`screen`坐标的尺寸
+`Camera`可以理解为往`Screen（Renderer）`投射图形的`摄像机`，它有`视角`、`比例`、`投射中心`等投射参数，而Graph坐标可以理解为胶带，也就是原始坐标，它可能被摄像机`标准化`过。
+
+
+> Todo: 下方论述可能存在错误，需要重新修正。
 
 坐标空间`示意图`如下所示：
 

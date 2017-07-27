@@ -378,6 +378,22 @@ todo
 
 > set environment and execute command, or print environment
 
+### Syntax
+
+    env [OPTION]... [-] [NAME=VALUE]... [COMMAND [ARG]...]
+
+    # 清除ABC环境变量，再运行命令node index.js
+    env -u ABC node index.js
+
+    # 配置PATH环境变量，运行npm命令（npm命令在/home/hudamin/bin目录下）
+    env - PATH="$PATH:/home/hudamin/bin" npm run build-deploy
+
+* 设置`环境变量`时，支持`变量扩展`，如上命令对`$PATH`变量的扩展
+* 设置环境变量时，必须带`分隔符"-"`
+
+
+### 命令文件使用
+
 `hello`：
 
     #! /usr/bin/env node
@@ -391,9 +407,10 @@ todo
     chmod +x hello
     ./hello
 
-> Probably the most common use of `env` is to `find the correct interpreter for a script`, when the interpreter may be in different directories on different systems.  The following example will find the `perl` interpreter by searching through the directories specified by `PATH`.
+> Probably the most common use of `env` is to `find the correct interpreter for a script`, when the interpreter may be in different directories on different systems.  The following example will find the `perl` interpreter by searching through the directories specified by `PATH`. —— `找到合适的命令解析器`
 
      #!/usr/bin/env perl
+
 
 
 
@@ -1107,7 +1124,7 @@ for `MAC`
 
 `Pattern Space`相当于`车间`，也称为`临时缓存区`，sed把流内容在这里进行处理，而不改变原文件的内容，`Hold Space`相当于`仓库`，加工的`半成品`在这里进行临时存储。
 
-由于各种原因，比如用户希望在某个条件下脚本中的某个命令被执行，或者希望模式空间得到保存以便下一次处理，都有可能使得sed在处理文件的时候不按照正常的流程来进行。这个时候，sed设置了一些`高级命令`来满足用户的要求。
+由于各种原因，比如用户希望在某个条件下脚本中的某个命令被执行，或者希望`模式空间`得到保存以便下一次处理，都有可能使得sed在处理文件的时候不按照正常的流程来进行。这个时候，sed设置了一些`高级命令`来满足用户的要求。
 
  <img src="./img/sed-flow.png">
 
@@ -1205,6 +1222,11 @@ sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://.
 	
     # 为每一行添加行号
     awk 'BEGIN{k=1}{printf("%d %s\n",k,$0)}' file
+
+
+### pattern格式
+
+功能较全的`Perl正则`表达式，强于`vim`和`sed`默认情况下的`magic正则`。
 
 
 ### 各类函数
