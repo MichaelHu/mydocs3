@@ -3,12 +3,15 @@
 
 ## Resources
 
+* 140626 `Visualizing Algorithms` 来自d3作者Mike Bostock，综述了各类可视化算法 <https://bost.ocks.org/mike/algorithms/>
+* 常用`图谱库` <http://anvaka.github.io/graph-drawing-libraries/#/all>
 * github - Data Visualization <https://github.com/showcases/data-visualization>
 * `百度地图`开放API示例：<http://lbsyun.baidu.com/jsdemo.htm>
 * `Echarts`官方示例：<http://echarts.baidu.com/examples.html>
 * `Echarts`三维展示：<http://gallery.echartsjs.com/editor.html?c=xryhZvyGr->
 * `叙利亚`冲突地图：<https://www.cartercenter.org/syria-conflict-map/>
 * `Echarts`地图迁徙应用：<http://echarts.baidu.com/demo.html#geo-lines>
+* `NetLogo`：<http://ccl.northwestern.edu/netlogo/models/DLA> 有客户端以及Web版本，选择或上传各类模型进行可视化模拟
 
 
 ## JS Libraries

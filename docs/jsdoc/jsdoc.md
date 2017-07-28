@@ -1,16 +1,19 @@
 # jsdoc
 
-* website: <http://usejsdoc.org>
+## Resources
+* site: <http://usejsdoc.org>
 * github: <https://github.com/jsdoc3/jsdoc>
 * `AMD Modules`: <http://usejsdoc.org/howto-amd-modules.html>
-
+* ES6 Classes: <http://usejsdoc.org/howto-es2015-classes.html>
+* ES6 Modules: <http://usejsdoc.org/howto-es2015-modules.html>
+* CommonJS Modules: <http://usejsdoc.org/howto-commonjs-modules.html> 
+* esdoc: <ref://./esdoc.md.html>
 
 
 
 ## 支持标签
 
-
-`62个`块标签，`2个`内联标签
+> `62个`块标签，`2个`内联标签
 
 
 ### 块标签 ( 62 )
@@ -223,7 +226,7 @@
 
 ### @description 或 @desc
 
-第一行写说明，可以省略@desc，其他地方，需要带上。
+第一行写说明，可以省略`@desc`，其他地方，需要带上。
 
     /**
      * Add two numbers.

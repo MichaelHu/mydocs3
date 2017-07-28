@@ -12,6 +12,7 @@
 
 * ECMA-262: <ref://../ecma/ecma-262.md.html>
 * MDN: <https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide>
+* `awesome-javascript`: <https://github.com/sorrycc/awesome-javascript> `大而全`的各类js库集合
 
 
 ## 算符优先级

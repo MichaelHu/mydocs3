@@ -553,8 +553,89 @@
 
 ## Media Queries
 
+### Resources
+
 1. `W3C：`<http://www.w3.org/TR/css3-mediaqueries/>
 2. `参考页面：`<http://www.cnblogs.com/asqq/archive/2012/04/13/2445912.html>
+
+
+### Syntax
+
+    /* media query */
+    @media [not|only] media-type and ( media-feature-expression ) {
+        ...
+    } 
+
+    /* media queries */
+    @media screen and ( color ), projection and ( color ) {
+        ...
+    }
+
+    /* @import statement */
+    @import url( color.css ) screen and ( color );
+
+    <!-- link media query -->
+    <link rel="stylesheet" media="[not|only] media-type and ( media-feature-expression )" href="mystylesheet.css">
+
+* `media-type media-feature-expression`是一个group，它们之间用`and`连接，是`与`的关系
+* 逻辑操作符`not`和`only`只出现在media-type前，作用于`当前group的逻辑`
+* 多个group使用`逗号","`分隔
+* `link标签`的media属性，`@import语句`的media表达式，都`不包含@media`
+
+
+### Media Types
+
+> 不包含已废弃的媒体类型，目前可用4种
+
+    all
+    print
+    screen
+    speech
+
+### Media Features
+
+> 31种
+    
+    aspect-ratio
+    color
+    color-index
+    device-aspect-ratio
+    device-height
+    device-width
+    grid
+    height
+    max-aspect-ratio
+    max-color
+    max-color-index
+    max-device-aspect-ratio
+    max-device-height
+    max-device-width
+    max-height
+    max-monochrome
+    max-resolution
+    max-width
+    min-aspect-ratio
+    min-color
+    min-color-index
+    min-device-aspect-ratio
+    min-device-width
+    min-device-height
+    min-height
+    min-resolution
+    min-width
+    monochrome
+    orientation
+    scan
+    width
+
+
+### Examples
+
+    @media print {
+        .nav {
+            display: none;
+        }
+    }
 
     <link rel="stylesheet" media="screen and (max-width:600px)" href="small.css" type="text/css" />
     <link rel="stylesheet" media="screen and (min-width:900px)" href="big.css" type="text/css"  />
@@ -564,6 +645,8 @@
     <link rel="stylesheet" media="all and (orientation:landscape)" href="landscape.css"  type="text/css" />
     <link rel="stylesheet" media="not print and (max-width: 1200px)" href="print.css" type="text/css" />
     <link rel="stylesheet" media="only screen and (max-device-width:240px)" href="android240.css" type="text/css" />
+
+
 
 
 

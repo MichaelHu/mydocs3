@@ -12,7 +12,7 @@
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 
 
-## intro
+## Syntax
 
     <form method="post" action="/post-message.cgi"
         enctype="multipart/form-data">
