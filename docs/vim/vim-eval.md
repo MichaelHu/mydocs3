@@ -1,9 +1,6 @@
-# Vim programing
-
-hudamin - 转载请注明出处
+# vim-eval
 
 > 来自`:help eval`
-
 
 ## 一、六种变量类型
 
@@ -29,7 +26,7 @@ hudamin - 转载请注明出处
         {'blue': '#0000ff', 'red': "#ff0000"}
 
 
-Number和String之间依据使用场景自动转换。
+`Number`和`String`之间依据使用场景自动转换。
 
 
 
@@ -48,16 +45,97 @@ Number和String之间依据使用场景自动转换。
 * `v:`前缀，全局变量，Vim预定义
 
 
+### let命令
+    
+    :let {var-name} = {expr1}
+    :let {var-name}[{idx}] = {expr1}
+    ...
+
+    :let [{name}, ..., ; {lastname}] = {expr1}  
+    :let [{name}, ..., ; {lastname}] .= {expr1}  
+    :let [{name}, ..., ; {lastname}] += {expr1}  
+    :let [{name}, ..., ; {lastname}] -= {expr1}  
+
+    " 例子
+    :let i=5
+    :let [a, b] = [1, 10]
+    :let [a, b] += [ 100, 200 ]
+    :echo a
+    :echo b
+
+
 
 ## 二、Command-line
 
-> 注意命令行与函数的区别
+> 注意`命令行`与`函数`的区别
 
     :let
     :unlet
     :set
     :echo
     :call
+
+以上皆为命令行命令，以`冒号开头`，而函数并不以冒号开头。当然call除了有命令格式`:call`之外，还有函数格式`call()`。以下为一些`内建`函数：
+
+    line()
+    col()
+    append()
+
+
+### 条件语句
+
+    :if {expr1}
+    : ...
+    :el[se]
+    : ...
+    :en[dif]
+
+    :if {expr1}
+    : ...
+    :elsei[f] {expr2}
+    : ...
+    :en[dif]
+
+    " 例子
+    :if version >= 500
+    : echo 'Correct version'
+    :endif
+
+
+### 循环语句
+
+    :wh[ile] {expr1}
+    : ... 
+    :endw[hile]
+
+    :for {var} in {list}
+    : ...
+    :endfo[r]
+
+    " 支持解构
+    :for [{var1}, {var2}, ...] in {listlist}
+    :   if {expr1}
+    :       con[tinue]
+    :   endif
+    :endfo[r]
+
+    " 例子
+    :let i = 1
+    :while i <= 10 
+    :   echo i
+    :   let i=i+1
+    :endwhile
+
+
+### 其他语句
+
+todo
+
+### Tips
+
+* 每一行都是一个命令，`都以命令行命令开始`，在行内可以调用内建函数
+* `:`前缀与命令中间可以带空格
+
 
 ## 三、Built-in Functions
 
@@ -763,6 +841,8 @@ todo ...
 
 ## Examples
 
+### 循环指定次数
+
     :let index = 0
     :while index < len(mylist)
     :   let item = mylist[index]
@@ -776,8 +856,10 @@ or
     :   call Doit(item)
     :endfor
 
-注意mylist中所有item必须是同一类型的，否则会报错。如果确实存在类型不一致，可以在
+注意mylist中所有item`必须是同一类型`的，否则会报错。如果确实存在类型不一致，可以在
 循环体尾部，将item `:unlet`掉。
+
+### for参数支持解构
 
 支持`变量列表`，举例如下：
 
@@ -786,7 +868,7 @@ or
     :endfor
 
 
-变量还支持`剩余项`，举例如下：
+变量还支持`剩余项`，用`分号";"`分隔，举例如下：
 
     :for [i, j; rest] in listlist
     :   call Doit(i, j)
@@ -794,6 +876,22 @@ or
     :       echo "remainder: " . string(rest)
     :   endif
     :endfor
+
+
+### 循环插入格式化行 
+
+    :let cur = line( '.' )
+    :let [i, total] = [1, 43]
+    :while i <= total
+    :   let line = printf("%s%d%s", 'a', i, 'b')
+    :   call append( cur, line )
+    :   let [i, cur] += [1, 1]
+    :endwhile
+
+    " 单行模式
+     :let cur = line( '.' ) | let [i, total] = [1, 43] | while i <= total | let line = printf("%s%d%s", 'a', i, 'b') | call append( cur, line ) | let [i, cur] += [1, 1] | endwhile
+
+
 
 
 ## Tips

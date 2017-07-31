@@ -51,6 +51,7 @@
 ### 线性贝塞尔曲线
 <script type="math/tex; mode=display">
 B(t)=P_0+(P_1-P_0)t = P_0 (1-t) + P_1 t, t\in[0,1]
+x \leftrightarrow y
 </script>
 
 
