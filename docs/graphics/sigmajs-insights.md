@@ -33,7 +33,7 @@
     * `注意`：rotate, scale的逆操作是简单的、可调序的，而translate的操作受rotate和scale的影响，是复杂的、不可调序的，必须按原转换的逆序进行。
 
 * `middleware`机制，其参数列表为`( readPrefix, writePrefix )`，在`sigmaInst.refresh()`中会`依次调用middlewares数组`中的所有middleware。`rescale`与`copy`这两个middleware`被主动调用`，不用添加到middlewares数组
-* `camera.applyView( read, write, options )`在renderer的`render()`方法中调用，调用时传入renderer的`width`和`height`，调用结果会生成新的`Renderer坐标`，带特定前缀，直接用于canvas绘制，例如：`renderer1:x`，若未传入write，则默认使用camera的前缀，例如：`cam0:x`
+* `camera.applyView( read, write, options )`在renderer的`render()`方法中调用，调用时传入renderer的`width`和`height`，调用结果会生成新的`Renderer坐标`，以renderer`中心点`为`(0, 0)`，带特定前缀，直接用于canvas绘制，例如：`renderer1:x`，若未传入write，则默认使用camera的前缀，例如：`cam0:x`
 * `autoRescale`属性默认为`true`，`sigmaInst.refresh()`会根据view（绑定的第一个renderer的视窗）的大小自动调整坐标及尺寸，生成新的`Camera坐标`，类似`read_cam0:x`，以`适应视窗大小`，并以调整后的坐标为初始坐标，并设置camera参数为`{ x: 0, y: 0, ratio: 1, angle: 0 }`
 * 若`autoRescale`属性设置为`false`，则`sigmaInst.refresh()`方法会调用copy middleware，从Graph原始坐标中复制一份新坐标，新坐标也以`read_cam0:`为前缀。
 * 使用`多个canvas层`进行绘制，根据`batchEdgesDrawing`选项的设置，可能为`2个`或`3个`层：

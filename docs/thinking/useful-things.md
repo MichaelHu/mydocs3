@@ -150,7 +150,7 @@ Chrome出了个小bug：论如何在Chrome下劫持原生只读对象: <https://
 
 ## 16-03-22
 
-> changelog: 170426
+> changelog: 170802, 170426
 
 启动本地简单服务器的方式：
 
@@ -168,12 +168,15 @@ or if you are running Ruby you can use
 
     ruby -run -e httpd . -p 8888
 
-or if you have `anywhere` installed on your machine, you can use
+or if you have `anywhere` installed - `npm install anywhere` - on your machine, you can use
 
     anywhere
     anywhere -p 8888
     anywhere -p 8888 docroot
 
+or if you have `http-server` installed - `npm install http-server` - on your machine, you can use
+
+    http-server
 
 
 

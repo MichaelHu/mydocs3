@@ -13,6 +13,30 @@
 个人总结的编码规范 <ref://../es/js-coding-style.md.html>
 
 
+## standard JS
+
+### Resources
+* site: <https://standardjs.com>
+* github: <https://github.com/standard/standard>
+
+### Features
+
+* 2空格
+* 省略分号
+* 清除未使用变量
+* 无配置文件
+* 自动fix等
+
+### Usage
+
+    $ npm install --save-dev standard
+    $ ./node_modules/.bin/standard
+    $ ./node_modules/.bin/standard "src/util/**/*.js" "test/**/*.js"
+
+
+
+
+
 ## Primer
 
 > HTML&CSS等的编码规范

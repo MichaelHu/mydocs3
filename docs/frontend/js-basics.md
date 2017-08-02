@@ -129,6 +129,54 @@
 
 
 
+## 分号的省略
+
+> JavaScript Semicolon Insertion - Everything you need to know <http://inimino.org/~inimino/blog/javascript_semicolons> 
+
+除了`return, break, continue, throw, postfix increment and decrement`之外，其他的分号都可以放心省略
+
+> `return {expr}` 语句，return和{expr}之间`不能`包含`换行`，否则等价于`return undefined`，如下：
+
+<div id="test_semi_colon" class="test">
+<div class="test-container">
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_semi_colon');
+
+        // problematic
+        function divideExactlyBy2_3_error( num ) {
+            return 
+                num % 3 == 0
+                || num % 2 == 0
+                ;
+        }
+
+        // ok
+        function divideExactlyBy2_3_ok( num ) {
+            return num % 3 == 0
+                || num % 2 == 0
+                ;
+        }
+
+        s.show( 'start testing ...' );
+        s.append_show( 1, typeof divideExactlyBy2_3_error( 1 ) );
+        s.append_show( 2, typeof divideExactlyBy2_3_error( 2 ) );
+        s.append_show( 9, typeof divideExactlyBy2_3_error( 9 ) );
+        s.append_show( 1, divideExactlyBy2_3_ok( 1 ) );
+        s.append_show( 2, divideExactlyBy2_3_ok( 2 ) );
+        s.append_show( 9, divideExactlyBy2_3_ok( 9 ) );
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
 ## 浮点计算性能
 
 

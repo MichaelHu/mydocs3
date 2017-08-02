@@ -132,6 +132,11 @@ Canvas 的 W3C 的标准上没有提及 canvas 的`最大高/宽度和面积`，
 ## Canvas Context基础
 
 
+### Tips
+
+* 默认`左上角`为坐标`( 0, 0 )`，x轴和y轴分别向右和向下递增
+
+
 ### drawing state 
 
 context维护一个绘制`状态栈`，该状态栈包含：

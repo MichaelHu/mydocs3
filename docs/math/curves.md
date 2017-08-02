@@ -3,6 +3,17 @@
 > 常用数学曲线
 
 
+<style type="text/css">
+@import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
+.graph-wrapper {
+    width: 100%;
+    height: 300px;
+}
+</style>
+<script src="http://258i.com/static/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
+
+
 ## Resources
 
 * 《高等数学》第六版 同济大学出版社 上册 附录二 P359
@@ -27,6 +38,65 @@ todo: 绘制出来
 y=ax^3
 </script>
 
+<div id="test_cubical_parabola" class="test">
+<div class="test-container">
+<div class="graph-wrapper"></div>
+
+    @[data-script="javascript"](function(){
+
+        var containerId = 'test_cubical_parabola';
+        var s = fly.createShow( '#' + containerId );
+        var $container = $( '#' + containerId );
+        var $canvasWrapper = $container.find( '.graph-wrapper' );
+        var $canvas = $( '<canvas>' ).appendTo( $canvasWrapper );
+        var ctx = $canvas[ 0 ].getContext( '2d' );
+        var dpr = window.devicePixelRatio || 1;
+
+        draw();
+        $( window ).on( 'resize', draw );
+
+        function draw() {
+            var width = $canvasWrapper.width()
+                , height = $canvasWrapper.height()
+                ;
+            $canvas.width( width )
+                .height( height )
+                .attr( 'width', width * dpr )
+                .attr( 'height', height * dpr )
+                ;
+            ctx.scale( dpr, dpr );
+
+            var coords = [];
+            for ( var i = -5; i <= 5; i += 0.2 ) {
+                var coord = [];
+                coord[ 0 ] = i;
+                coord[ 1 ] = Math.pow( i, 3 );
+                coords.push( coord );
+            }
+
+            ctx.translate( width / 2, height / 2 ); 
+            ctx.moveTo( -200, 0 );
+            ctx.lineTo( 200, 0 );
+            ctx.moveTo( 0, -145 );
+            ctx.lineTo( 0, 145 );
+            var graphRatio = 20;
+            for ( var i = 0; i < coords.length - 1; i++ ) {
+                ctx.moveTo( coords[ i ][ 0 ] * graphRatio, - coords[ i ][ 1 ] * graphRatio );
+                ctx.lineTo( coords[ i + 1 ][ 0 ] * graphRatio, - coords[ i + 1 ][ 1 ] * graphRatio );
+            }
+            ctx.stroke();
+        }
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
 
 ### 半立方抛物线
 
@@ -34,12 +104,129 @@ y=ax^3
 y^2=ax^3
 </script>
 
+<div id="test_semi_cubical_parabola" class="test">
+<div class="test-container">
+<div class="graph-wrapper"></div>
+
+    @[data-script="javascript"](function(){
+
+        var containerId = 'test_semi_cubical_parabola';
+        var s = fly.createShow( '#' + containerId );
+        var $container = $( '#' + containerId );
+        var $canvasWrapper = $container.find( '.graph-wrapper' );
+        var $canvas = $( '<canvas>' ).appendTo( $canvasWrapper );
+        var ctx = $canvas[ 0 ].getContext( '2d' );
+        var dpr = window.devicePixelRatio || 1;
+
+        draw();
+        $( window ).on( 'resize', draw );
+        
+        function draw() {
+            var width = $canvasWrapper.width()
+                , height = $canvasWrapper.height()
+                ;
+            $canvas.width( width )
+                .height( height )
+                .attr( 'width', width * dpr )
+                .attr( 'height', height * dpr )
+                ;
+            ctx.scale( dpr, dpr );
+
+            var coords = [];
+            for ( var y = -10; y <= 10; y += 0.5 ) {
+                var coord = [];
+                coord[ 0 ] = Math.pow( y * y, 1 / 3 );
+                coord[ 1 ] = y;
+                coords.push( coord );
+            }
+
+            ctx.translate( width / 2, height / 2 ); 
+            ctx.moveTo( -200, 0 );
+            ctx.lineTo( 200, 0 );
+            ctx.moveTo( 0, -145 );
+            ctx.lineTo( 0, 145 );
+            var graphRatio = 12;
+            for ( var i = 0; i < coords.length - 1; i++ ) {
+                ctx.moveTo( coords[ i ][ 0 ] * graphRatio, - coords[ i ][ 1 ] * graphRatio );
+                ctx.lineTo( coords[ i + 1 ][ 0 ] * graphRatio, - coords[ i + 1 ][ 1 ] * graphRatio );
+            }
+            ctx.stroke();
+        }
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+
 
 ### 概率曲线
 
 <script type="math/tex; mode=display">
-y=ex^{-x^2}
+y=e^{-x^2}
 </script>
+
+<div id="test_probability_curve" class="test">
+<div class="test-container">
+<div class="graph-wrapper"></div>
+
+    @[data-script="javascript"](function(){
+
+        var containerId = 'test_probability_curve';
+        var s = fly.createShow( '#' + containerId );
+        var $container = $( '#' + containerId );
+        var $canvasWrapper = $container.find( '.graph-wrapper' );
+        var $canvas = $( '<canvas>' ).appendTo( $canvasWrapper );
+        var ctx = $canvas[ 0 ].getContext( '2d' );
+        var dpr = window.devicePixelRatio || 1;
+
+        draw();
+        $( window ).on( 'resize', draw );
+        
+        function draw() {
+            var width = $canvasWrapper.width()
+                , height = $canvasWrapper.height()
+                ;
+            $canvas.width( width )
+                .height( height )
+                .attr( 'width', width * dpr )
+                .attr( 'height', height * dpr )
+                ;
+            ctx.scale( dpr, dpr );
+
+            var coords = [];
+            for ( var x = -2.2; x <= 2.2; x += 0.2 ) {
+                var coord = [];
+                coord[ 0 ] = x;
+                coord[ 1 ] = Math.pow( Math.E, -Math.pow( x, 2 ) );
+                coords.push( coord );
+            }
+
+            ctx.translate( width / 2, height / 2 ); 
+            ctx.moveTo( -200, 0 );
+            ctx.lineTo( 200, 0 );
+            ctx.moveTo( 0, -145 );
+            ctx.lineTo( 0, 145 );
+            var graphRatio = 50;
+            for ( var i = 0; i < coords.length - 1; i++ ) {
+                ctx.moveTo( coords[ i ][ 0 ] * graphRatio, - coords[ i ][ 1 ] * graphRatio );
+                ctx.lineTo( coords[ i + 1 ][ 0 ] * graphRatio, - coords[ i + 1 ][ 1 ] * graphRatio );
+            }
+            ctx.stroke();
+        }
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
 
 ### 箕舌线
 

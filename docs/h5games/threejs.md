@@ -13,7 +13,19 @@
 * github: <https://github.com/mrdoob/three.js/>
 * docs: <http://threejs.org/docs/index.html>
 * local examples: <a href="file:///Users/hudamin/projects/git/three.js/examples/index.html" target="_blank">Examples</a>
+* `「Learning Three.js」`samples: <https://github.com/josdirksen/learning-threejs>
 
+
+## Keywords
+
+    Object      Desc
+    ----------------------------------
+    scene       场景
+    plane       平面
+    cube        立方体
+    sphere      球体
+    camera      相机
+    axes        x、y和z轴
 
 
 todo:
