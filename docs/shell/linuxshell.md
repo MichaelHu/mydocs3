@@ -1046,8 +1046,8 @@ todo
 
 `递归目录树`查找：
 
-    $ grep -r recursive 'hello' .
-    $ grep -R recursive 'hello' .
+    $ grep -r 'hello' .
+    $ grep -R 'hello' .
     $ grep --recursive 'hello' .
 
 
