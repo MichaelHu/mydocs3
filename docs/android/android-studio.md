@@ -30,6 +30,6 @@
     建议使用开启开发者模式的手机
         需要现在Android Studio上先安装Android SDK Platform
         华为手机（EMUI）开启开发者模式的方式，手机 - 设置 - 关于手机 - 版本号，点击7次
-    Android Studio连接的升级服务器jcenter需要翻墙
+    Android Studio连接的升级服务器jcenter可能需要翻墙
 
 

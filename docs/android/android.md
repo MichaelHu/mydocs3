@@ -11,17 +11,53 @@
 
 ## versions
 
+谷歌推出的Android版本代号，几乎每一个版本代号都与`食品名称`有关。
+
+### android o
+
+> Oreo 奥利奥
+
+也称作`Android 8`，2017年3月21日，首个开发者预览版；2017 Google I/O开发者大会上发布了第二个开发者预览版。
+
+
 ### android 7.0
+
+> Nougat 牛轧糖
 
 `Android 7.0`是谷歌推出的智能手机操作系统，最终官方代号，定名为`“Nougat”（牛轧糖）`。谷歌2016年的I/O开发者大会在美国西部时间`2016年5月18-20日`召开，地点为山景城的Shoreline Ampitheatre圆形剧场。在这里，新版的`Android N`系统正式发布。[1] 
 
 `2016年8月22日`，谷歌正式推送`Android 7.0 Nougat正式版`。
+
+### android 6.0
+> Marshmallow 棉花糖
+### android 5.0
+> Lollipop 棒棒糖
+### android 4.4
+> Kitkat 奇巧巧克力
+### android 4.1
+> Jelly bean 果冻豆
+### android 4.0
+> Ice cream sandwich 冰激凌三明治
+### android 2.3
+> Gingerbread 姜饼
+### android 2.2
+> Froyo 冻酸奶
+### android 1.6
+> Donut 甜甜圈
+### android 1.5
+> Cupcake 纸杯蛋糕
+
 
 
 ## 开发环境搭建
 
 * JDK 7.0+
 * Android Studio <http://www.android-studio.org>
+
+
+## Tips
+
+* `*.iml`文件，`Intellij IDEA`自动创建的工程配置文件。是XML的一种，称为`中间标记语言`。maybe `Intermediate Markup Language`
 
 
 ## 架构

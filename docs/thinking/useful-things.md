@@ -4,6 +4,12 @@
 
 > 合作，最难的是定义`边界`和`共赢`。
 
+## 2017-08-04
+
+* `ATM` ( Automatic Teller Machine ) 自动提款机
+* `CDM` ( Cash Deposit Machine ) 自动存取款机
+
+
 ## 2017-07-13
 
 <http://ucren.com>，前同事黄志龙的技术blog，涉及游戏／算法／偏门hack等，干货较多。

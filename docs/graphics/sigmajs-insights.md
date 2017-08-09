@@ -39,6 +39,7 @@
 * 使用`多个canvas层`进行绘制，根据`batchEdgesDrawing`选项的设置，可能为`2个`或`3个`层：
     * `batchEdgesDrawing`选项，默认为`false`，此时边、节点以及标签都在一个canvas上绘制；如果设置为`true`，则边单独一个canvas绘制，节点和标签在另一个canvas绘制。
     * `mouse`和`hover`在同一个canvas绘制
+* `sigme.middlewares.rescale()`方法，对x, y在`[-1, 1]`的情况下进行rescale，此时sideMargin的设置对rescale的效果影响特别大，如果设置sideMargin = 10，rescale的效果就很差了，该值的设置应该参考x, y的范围，具体可参考`增量力导向布局的算法验证部分`
 * `四叉树应用` todo
 
 
@@ -101,14 +102,6 @@
         canvasEdgesBatchSize: 500
         webglEdgesBatchSize: 1000
 
-        // Rescale Settings
-        scalingMode: 'inside'
-        sideMargin: 0
-        minEdgeSize: 0.5
-        maxEdgeSize: 1
-        minNodeSize: 1
-        maxNodeSize: 8
-
         // Captors Settings
         touchEnabled: true
         mouseEnabled: true
@@ -128,6 +121,15 @@
         doubleClickTimeout: 300
         doubleTapTimeout: 300
         dragTimeout: 200
+
+        // Rescale Settings
+        scalingMode: 'inside'
+        // rescale前，为原始坐标增加外边距
+        sideMargin: 0
+        minEdgeSize: 0.5
+        maxEdgeSize: 1
+        minNodeSize: 1
+        maxNodeSize: 8
 
         // Global Settings
         autoResize: true
@@ -483,7 +485,7 @@
         __bindGraphMethod( methodName, scope, fn )
         __emptyObject( obj )
         graph( settings )
-            properties:
+            private properties:
                 inNeighborsIndex
                 outNeighborsIndex
                 allNeighborsIndex
@@ -645,7 +647,8 @@
 > 包括`点包含算法、双击事件、动画缓动、WebGL、矩阵计算`等。
 
     sigma.utils.js
-        sigma.utils.extend( src1, src2, ..., target )
+        // 返回一个新对象；左边的覆盖右边
+        sigma.utils.extend( src1, src2, ... )
         sigma.utils.dateNow()
         // 使用reduce()实现，有特色
         sigma.utils.pkg( pkgName )

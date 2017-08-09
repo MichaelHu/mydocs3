@@ -17,9 +17,11 @@
         var list = $(selector)
                 .add("h3")
                 .add("h4")
+                .add("h5")
+                .add("h6")
             , $li = null
             , $ul = $('<ul class="nav"></ul>')
-            , levelIndices = [0, 0, 0]
+            , levelIndices = [0, 0, 0, 0, 0]
             ;
 
         function normalizeItem(item){
@@ -36,6 +38,8 @@
                     }
                     levelIndices[1] = 0;
                     levelIndices[2] = 0;
+                    levelIndices[3] = 0;
+                    levelIndices[4] = 0;
                     break;
                 case 'H3': 
                     levelIndices[1]++;
@@ -46,10 +50,33 @@
                         );
                     }
                     levelIndices[2] = 0;
+                    levelIndices[3] = 0;
+                    levelIndices[4] = 0;
                     break;
                 case 'H4': 
                     levelIndices[2]++;
                     if(!/^\s*(?:[1-9][0-9]*\.){2}[1-9][0-9]*\s+/.test(txt)){
+                        $item.text(
+                            levelIndices.slice(0, 3).join('.') + ' ' 
+                            + $item.text()
+                        );
+                    }
+                    levelIndices[3] = 0;
+                    levelIndices[4] = 0;
+                    break;
+                case 'H5': 
+                    levelIndices[3]++;
+                    if(!/^\s*(?:[1-9][0-9]*\.){3}[1-9][0-9]*\s+/.test(txt)){
+                        $item.text(
+                            levelIndices.slice(0, 4).join('.') + ' ' 
+                            + $item.text()
+                        );
+                    }
+                    levelIndices[4] = 0;
+                    break;
+                case 'H6': 
+                    levelIndices[4]++;
+                    if(!/^\s*(?:[1-9][0-9]*\.){4}[1-9][0-9]*\s+/.test(txt)){
                         $item.text(
                             levelIndices.slice(0).join('.') + ' ' 
                             + $item.text()
@@ -108,6 +135,12 @@
             }
             else if($(item)[0].tagName == "H4"){
                 $li.css({"text-indent":"2em"})
+            }
+            else if($(item)[0].tagName == "H5"){
+                $li.css({"text-indent":"3em"})
+            }
+            else if($(item)[0].tagName == "H6"){
+                $li.css({"text-indent":"4em"})
             }
             
             $li.append(
