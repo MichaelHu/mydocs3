@@ -47,7 +47,7 @@ Web sites are made of lots of things -- frameworks, libraries, assets, and utili
 
 配置文件：`bower.json`
 
-其中的`version`字段注意要设置好，并且按version打tag，并发布到github。
+其中的`version`字段注意要设置好，并且按version打`tag`，并发布到`github`。
 
 
 

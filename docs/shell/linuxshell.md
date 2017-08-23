@@ -62,6 +62,13 @@
     $TMOUT              # 提示输入超时时间
 
     $UID                # uid
+    $USER               # 当前登录用户
+
+
+### 当前登录用户
+
+    $ echo $USER
+
 
 
 
@@ -774,6 +781,15 @@ todo
 
 ### top
 > 提供一个当前运行系统实时动态的视图，也就是正在运行进程
+
+gtop: <https://github.com/aksakalli/gtop>，node实现的终端可视化监控程序
+
+    $ npm install gtop -g
+    $ gtop
+
+ <img src="./img/gtop-170821.png" style="max-height:460px">
+    
+
 
 ### iostat
 
@@ -1666,6 +1682,15 @@ output：
         rm -rf $k/code/node_modules; \
         cp -r node_modules_pro-uglifyjs-170628/node_modules $k/code; \
     done
+
+### 查找指定文件中是否包含特定模式
+
+`17`个目录`21000`-`21016`下的`bin/pre_ctl`文件是否包含字符串`172.22.1.71`
+
+    for(( i=21000; i<=21016; i++ )); do \
+        echo grep 172.22.1.71 $i/bin/pre_ctl; \ 
+    done \
+    | sh -x
 
 
 

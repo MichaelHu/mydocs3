@@ -4,10 +4,14 @@
 
 > 合作，最难的是定义`边界`和`共赢`。
 
+## 2017-08-14
+
+* `K12` Kindergarten through Twelfth Grade，指从幼儿园（通常5-6岁）到十二年级（通常17-18岁），这两个年纪是美国、澳大利亚及加拿大的免费教育头尾的两个年级。在中国也可用作对`基础教育阶段`的通称。
+
 ## 2017-08-04
 
 * `ATM` ( Automatic Teller Machine ) 自动提款机
-* `CDM` ( Cash Deposit Machine ) 自动存取款机
+* `CDM` ( Cash Deposit Machine ) 自动存取款机。`deposit` - 储蓄，寄存，安置
 
 
 ## 2017-07-13

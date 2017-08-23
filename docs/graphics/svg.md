@@ -44,42 +44,6 @@ SVG 的主要竞争者是 Flash。
 
 
 
-## cbScriptBlock回调
-
-以下代码针对`svg`代码块提供编辑后的处理逻辑，同时将输出`svg`代码。
-
-    @[data-script="javascript"]function cbScriptBlock(block, scriptType) {
-        var $block = $(block)
-            , wrapperID = $block.closest('.test').attr('id')
-            , s = fly.createShow('#' + wrapperID)
-            , $anchor = $block
-            ;
-        
-        if(scriptType.indexOf('svg') > -1){
-            try {
-                var code = $block.text()
-                    , $prev = $block.prev()
-                    ;
-                if($prev.length){
-                    if($prev[0].tagName.toLowerCase() == 'button'){
-                        $anchor = $prev;
-                        $prev = $prev.prev();
-                    }
-                    if($prev.length && $prev[0].tagName.toLowerCase() == 'svg'){
-                        $prev.remove(); 
-                    }
-                }
-                $(code).insertBefore($anchor);
-            }
-            catch (e) {
-                s.show(e);
-            }
-        } 
-    }
-
-
-
-
 ## 简单例子
 
 svg文件，以下文本内容保存成文件名为`circle.svg`的文件，就成为svg文件，可以直接打开预览了：
@@ -103,7 +67,7 @@ svg文件，以下文本内容保存成文件名为`circle.svg`的文件，就�
 <div id="test_100" class="test">
 <div class="test-container">
 
-    @[data-script="svg editable"]<svg width="100%" height="100%">
+    @[data-script="html editable"]<svg width="100%" height="100%">
     <circle 
         cx="100" 
         cy="50" 
@@ -147,7 +111,7 @@ SVG 有一些预定义的形状元素，可被开发者使用和操作：
 <div id="test_110" class="test">
 <div class="test-container">
 
-    @[data-script="svg editable"]<svg width="100%" height="100%">
+    @[data-script="html editable"]<svg width="100%" height="100%">
     <rect width="300" height="100" x="200" y="20"
         style="
             fill: #8c564b;
@@ -171,7 +135,7 @@ SVG 有一些预定义的形状元素，可被开发者使用和操作：
 <div id="test_120" class="test">
 <div class="test-container">
 
-    @[data-script="svg editable"]<svg width="100%" height="100%">
+    @[data-script="html editable"]<svg width="100%" height="100%">
     <rect width="300" height="100" x="200" y="20"
         rx="50" ry="20"
         style="
@@ -200,7 +164,7 @@ SVG 有一些预定义的形状元素，可被开发者使用和操作：
 <div id="test_130" class="test">
 <div class="test-container">
 
-    @[data-script="svg editable"]<svg width="100%" height="100%">
+    @[data-script="html editable"]<svg width="100%" height="100%">
     <circle 
         r="100" 
         stroke="#ff7f0e" 
@@ -224,7 +188,7 @@ SVG 有一些预定义的形状元素，可被开发者使用和操作：
 <div id="test_140" class="test">
 <div class="test-container">
 
-    @[data-script="svg editable"]<svg width="100%" height="100%">
+    @[data-script="html editable"]<svg width="100%" height="100%">
     <ellipse 
         cx="200" 
         cy="80" 
@@ -249,7 +213,7 @@ SVG 有一些预定义的形状元素，可被开发者使用和操作：
 <div id="test_150" class="test">
 <div class="test-container">
 
-    @[data-script="svg editable"]<svg width="100%" height="100%">
+    @[data-script="html editable"]<svg width="100%" height="100%">
     <ellipse cx="240" cy="100" rx="220" ry="30" style="fill:#9ecae1"/>
     <ellipse cx="220" cy="70" rx="190" ry="20" style="fill:#fdae6b"/>
     <ellipse cx="210" cy="45" rx="170" ry="15" style="fill:#9e9ac8"/>
@@ -268,7 +232,7 @@ SVG 有一些预定义的形状元素，可被开发者使用和操作：
 <div id="test_160" class="test">
 <div class="test-container">
 
-    @[data-script="svg editable"]<svg width="100%" height="100%">
+    @[data-script="html editable"]<svg width="100%" height="100%">
     <ellipse cx="240" cy="100" rx="220" ry="30" style="fill:#7b4173"/>
     <ellipse cx="220" cy="100" rx="190" ry="20" style="fill:white"/>
     </svg>
@@ -289,7 +253,7 @@ SVG 有一些预定义的形状元素，可被开发者使用和操作：
 <div id="test_170" class="test">
 <div class="test-container">
 
-    @[data-script="svg editable"]<svg width="100%" height="100%">
+    @[data-script="html editable"]<svg width="100%" height="100%">
     <line 
         x1="30" y1="10" 
         x2="300" y2="100"
@@ -314,7 +278,7 @@ SVG 有一些预定义的形状元素，可被开发者使用和操作：
 <div id="test_180" class="test">
 <div class="test-container">
 
-    @[data-script="svg editable"]<svg width="100%" height="100%">
+    @[data-script="html editable"]<svg width="100%" height="100%">
     <polyline 
         points="5,0 5,20 25,20 25,40 45,40 45,60"
         style="
@@ -346,7 +310,7 @@ SVG 有一些预定义的形状元素，可被开发者使用和操作：
 <div id="test_190" class="test">
 <div class="test-container">
 
-    @[data-script="svg editable"]<svg width="100%" height="100%">
+    @[data-script="html editable"]<svg width="100%" height="100%">
     <polygon 
         points="220,10 300,120 170,140 120,30"
         style="
@@ -374,7 +338,7 @@ SVG 有一些预定义的形状元素，可被开发者使用和操作：
 <div id="test_200" class="test">
 <div class="test-container">
 
-    @[data-script="svg editable"]<svg width="100%" height="100%">
+    @[data-script="html editable"]<svg width="100%" height="100%">
     <text 
         x="100"
         y="10"
@@ -479,7 +443,7 @@ svg的text标签没有以下类似的属性（<http://stackoverflow.com/question
 <div id="test_210" class="test">
 <div class="test-container">
 
-    @[data-script="svg editable"]<svg width="100%" height="100%">
+    @[data-script="html editable"]<svg width="100%" height="100%">
     <path d="M30 30
         H300
         h2.786l8.179,7.089l9.633,4.544l8.725,2.182l9.814-0.909
@@ -2043,7 +2007,7 @@ svg的text标签没有以下类似的属性（<http://stackoverflow.com/question
 
 #### 路径绘枪
 
-    @[data-script="svg editable"]<svg width="100%" height="300">
+    @[data-script="html editable"]<svg width="100%" height="300">
     <path 
         stroke="#996" fill="#636363" stroke-miterlimit="10" d="
             M53.861,99.117h2.786l8.179,7.089l9.633,4.544l8.725,2.182l9.814-0.909
@@ -2074,7 +2038,7 @@ svg的text标签没有以下类似的属性（<http://stackoverflow.com/question
 `高斯模糊`的椭圆形：
 
 
-    @[data-script="svg editable"]<svg width="100%" height="160">
+    @[data-script="html editable"]<svg width="100%" height="160">
     <defs>
     <filter id="Gaussian_Blur">
     <feGaussianBlur in="SourceGraphic" stdDeviation="10" />
@@ -2119,7 +2083,7 @@ svg的text标签没有以下类似的属性（<http://stackoverflow.com/question
 
 > `点击椭圆`，启动动画
 
-    @[data-script="svg editable"]<svg width="100%" height="160">
+    @[data-script="html editable"]<svg width="100%" height="160">
     <ellipse 
         cx="100" cy="80" rx="70" ry="40">
         <animate attributeName="ry"
@@ -2142,7 +2106,7 @@ svg的text标签没有以下类似的属性（<http://stackoverflow.com/question
 
 双半径`依次`变化，两个动画形成`序列`：
 
-    @[data-script="svg editable"]<svg width="100%" height="160">
+    @[data-script="html editable"]<svg width="100%" height="160">
     <ellipse 
         cx="100" cy="80" rx="70" ry="40">
         <animate id="ani_1" attributeName="ry"

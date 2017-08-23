@@ -65,7 +65,10 @@
 
 ## flexible box layout
 
+### Resources
+
 * Level 1: <http://www.w3.org/TR/css-flexbox-1/>
+* `Flexbox布局的正确使用姿势`: <https://segmentfault.com/a/1190000009932882> 
 
 > `弹性`布局
 
@@ -79,20 +82,36 @@
 
 > 注意`flex container`与`flex item`的区别
 
+    /* 设定其内容元素使用flex布局 */
     display: flex | inline-flex;
+
     flex-flow: <flex-direction> || <flex-wrap>
         flex-flow: row wrap;
+
     flex-direction: row | row-reverse | column | column-reverse;
-        flex: row;
+
     flex-wrap: nowrap | wrap | wrap-reverse;
     
-    flex: none | [<flex-flow> <flex-shrink>? || <flex-basis>]
-        flex: none;   等价于  flex: 0 0 auto;
+    /* 设定子元素排布规则，此时text-align不生效 */
+    justify-content: flex-start | flex-end | center | space-between | space-around;
+
+    /* 设定flex元素本身的自适应布局配置 */
+    flex: none | [<flex-grow> <flex-shrink>? || <flex-basis>]
+        /* 等价于  flex: 0 0 auto; */
+        flex: none;   
+        /* 等价于  flex: 0 1 auto; */
+        flex: initial;
+        /* 等价于  flex: 1 1 auto; */
+        flex: auto;
+        /* 等价于  flex: <positive-number> 1 0; 完全按照指定值按比例分配空间*/
+        flex: <positive-number>;
+
         flex: 1 0 auto;
-        flex: 1 0 content;
         flex: 1 0 200px;
 
-    justify-content: flex-start | flex-end | center | space-between | space-around;
+    order: <integer>
+        order: 0;
+        order: -1;
 
 
 ### 例子1
@@ -191,6 +210,60 @@
 			item 4
 		</span>
 	</div>
+
+
+### 例子3
+
+* `flex`是一个`简写属性`，本例子可以测试以下值的布局表现，尝试修改后点击`Restart`按钮：
+
+        flex: 1 1 0;
+        flex: 0 1 0;
+        flex: 1 1 auto;
+        flex: 0 1 auto;
+        order: 0;
+        order: -1;
+        order: 1;
+        justify-content: flex-end;
+        justify-content: flex-start;
+        justify-content: space-between;
+        justify-content: space-around;
+
+    目前flex第三个字段尚不支持`content`。
+
+
+代码如下：
+
+    @[data-script="html editable"]<div class="flex-layout-container-3">
+        <div class="item-3-1">1</div>
+        <div class="item-3-2">2</div>
+        <div class="item-3-3">3</div>
+    </div>
+    <style type="text/css">
+        .flex-layout-container-3 {
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: space-between;
+            height: 100px;
+            margin-bottom: 10px;
+            border: 1px solid #999;
+        }
+
+        .item-3-1, 
+        .item-3-2,
+        .item-3-3 {
+            box-sizing: border-box;
+            flex: 0 1 auto;
+            width: 100px;
+            margin: 10px;
+            height: 80px;
+            border: 1px dotted blue;
+            text-align: center;
+        }
+
+        .item-3-2 {
+            order: -1;
+        }
+    </style>
 
 
 

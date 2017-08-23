@@ -2,7 +2,17 @@
 
 > 「 Android开发权威指南 」书摘
 
-> changelog: 170630
+> changelog: 170819, 170630
+
+
+## Keywords
+
+    parcel          包裹
+    parcelable      可打包的
+    ADB             Android Debug Bridge，调试桥
+    DDMS            Dalvik Debug Monitor Service，Dalvik虚拟机调试监控服务           
+    logcat
+
 
 
 ## Versions
@@ -14,7 +24,7 @@
 
 ## Layout文件
 
-> activity_quiz.xml
+> `activity_quiz.xml`
 
     可使用组件名作为XML节点，并为其配置相关属性
 
@@ -27,12 +37,16 @@
     属性：
 
         android:layout_width
+            match_parent
         android:layout_height
             wrap_content
             match_parent
             fill_parent
 
         android:layout_weight="1"
+
+        tools:context="com.bignerdranch..."
+        tools:text="..."
 
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
@@ -55,13 +69,15 @@
         android:scaleType="centerCrop"
             图片裁剪
 
-        android:orientation
+        android:orientation="vertical"
             特定LinearLayout
             LinearLayout显示顺序与其定义顺序有关 
 
         android:text
             字符串资源的引用，而不是字符串
             使用字符串资源，方便应用本地化
+
+        android:gravity="center"
 
         android:textSize="12dp"
         android:textStyle="bold"
@@ -632,7 +648,7 @@
     .apk
         资源文件
         代码文件
-        AndroidManifest.xml （ 应用元数据 ）
+        AndroidManifest.xml （ 应用元数据 ），用于向Android操作系统描述应用
 
     .apk若要在模拟器上运行，需要以`debug key`签名。
     分发给用于安装运行，需要以`release key`签名
@@ -688,7 +704,7 @@
     // 将布局文件和java代码关联起来
     public void setContentView( int layoutResID )
     
-调用QuizActivity的以上方法时，内部使用`LayoutInflater`类示例化布局文件中定义的每一个View对象。
+调用`QuizActivity`的以上方法时，内部使用`LayoutInflater`类实例化布局文件中定义的每一个`View对象`。
 
 
 
@@ -836,8 +852,8 @@
 ### jarsigner
 
     hudamin@local demo $ jarsigner
-    用法: jarsigner [选项] jar-file 别名
-           jarsigner -verify [选项] jar-file [别名...]
+    用法: jarsigner [选项] jar-file 密钥别名
+           jarsigner -verify [选项] jar-file [密钥别名...]
 
     [-keystore <url>]           密钥库位置
     [-storepass <口令>]         用于密钥库完整性的口令
@@ -1218,6 +1234,209 @@ Android应用的调试
         }
     }
 
+
+
+
+
+
+> 170818
+
+## Android应用的调试
+    DDMS Command + 9 打开
+    logcat
+
+    设备会将日志保留在log文件中一段时间，在连上Android Studio后，可以将之前记录的log日志显示出来
+
+    断点调试
+
+    Android Lint，其提出的问题都值得关注
+        设备兼容性警告
+        检查定义在XML文件中的对象类型
+        等
+
+        提示信息出现在Inspection Results
+
+    R类问题
+        引用未添加资源，或删除仍被引用的资源
+        解决办法：
+            检查资源文件中XML文件
+            清理项目：Build -> Clean Project
+            若改了build.gradle文件，Tools -> Android -> Sync Project with Gradle Files
+            运行Android Lint
+
+
+## 第5章 第二个Activity
+
+Activity对应一个`用户界面`
+
+### 创建新的activity
+
+    使用Android Studio提供的新建Activity向导
+
+    新建新的activity，至少涉及`三个文件`的新建或变化：Java类、XML布局、应用manifest文件
+
+        新生成java类文件
+        新创建xml布局文件
+        更新AndroidManifest.xml文件
+            应用的所有activity都必须在manifest配置文件中声明，这样操作系统才能使用它们
+
+            <manifest>
+                <application
+                    android:allowBackup="true"
+                    android:icon="@mipmap/ic_launcher"
+                    android:label="@string/app_name"
+                    android:theme="@style/AppTheme">
+                    <activity
+                        android:name=". QuizActivity"
+                        android:label="@string/app_name">
+                        <intent-filter>
+                            <action android:name="android.intent.action.MAIN" />
+                            <category android:name="android.intent.category.LAUNCHER" />
+                        </intent-filter>
+                    </activity>
+                    <activity android:name=". CheatActivity">
+                    </activity>
+                </application>
+            </manifest>
+
+            1. `android:name`属性是必需的，属性值前的`. `告诉操作系统，activity类文件位于manifest配置文件头部包属性值指定的包路径下。
+            2. `android:name`属性值也可以设置成完整的包路径，例如`com.bignerdranch.android.geoquiz.CheatActivity`
+
+
+    原有activity添加新按钮，并添加点击处理函数：
+
+        修改layout/activity_quiz.xml以及layout-land/activity_quiz.xml，添加新按钮：
+            <!-- 竖屏 --> 
+            <Button
+                android:id="@+id/cheat_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cheat_button" />
+
+            <!-- 横屏，底部居中 --> 
+            <Button
+                android:id="@+id/cheat_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:text="@string/cheat_button" />
+
+        Java文件中添加按钮引用以及点击处理函数：
+
+            ...
+            private Button mCheatButton;
+            ...
+
+            @override
+            protected void onCreate( Bundle savedInstanceState ) {
+                ...
+                mCheatButton = (Button)findViewById( R.id.cheat_button );
+                mCheatButton.setOnClickListener( new View.OnClickListener() {
+                    @override
+                    public void onClick( View v ) {
+                        ...
+                    }
+                } );
+                ...
+            }
+            ...
+
+
+    未专门创建横屏的布局文件，仍然可以使用默认布局在横屏下展示。
+
+
+
+### 启动另一个activity
+
+    startActivity方法：
+
+        public void startActivity( Intent intent )
+
+            [ Your application ]    |     [ Android OS ]        
+                                    |               
+    Activity                        |       ActivityManager
+        |                           |               |
+        |                           |               |
+        | ---startActivity(intent)--|-------------> |
+        |                           |               |
+        |         -------------     |               |
+        |         |     ?     | <---|-------------- |
+        |         -------------     |               |
+        |               |           |               |
+        |               |           |               |
+        |               |           |               |
+        |               |           |               |
+                                    |                
+                                    |                
+
+
+    1. 调用`startActivity()`，实际上将请求发送给了OS的`ActivityManager`,由`ActivityManager`负责创建Activity实例并调用`onCreate()`方法。
+    2. ActivityManager该启动哪个Activity，在于`startActivity()`方法传入的`intent`参数。
+
+
+    基于intent的通信
+
+        1. intent对象是component用来与OS通信的一种媒介工具。
+        2. component常见的有activity, service, broadcast receiver, content provider
+        3. intent是一种`多用途`通信工具，提供多个构造方法
+
+            [ GeoQuiz ]             |     [ Android OS ]        
+                                    |               
+    QuizActivity                    |       ActivityManager
+        |                           |               |
+        |                           |               |
+        | ---startActivity(intent)  |               |
+        |        |                  |               |
+        |        |     --------------------------   |
+        |        |---> |         intent         | ->|
+        |              | component=CheatActivity|   |
+        |              --------------------------   |
+        |                           |               |
+        |                           |               |
+        |                           |               |
+        |         -------------     |               |
+        |       | CheatActivity | <-----(Intent)--- |
+        |         -------------     |               |
+        |               |           |               |
+        |               |           |               |
+                                    |                
+                                    |                
+
+
+
+    现在可以进一步在原activity的java文件中，为mCheatButton添加点击处理逻辑：
+
+        @override
+        public void onClick( View v ) {
+            // Start CheatActivity
+            Intent i = new Intent( QuizActivity.this, CheatActivity.class );
+            startActivity( i );
+        }
+
+
+    * 通过`startActivity()`方法启动的新的activity，可以通过`回退`按钮关闭而回到上一activity
+    * 显式intent，同一应用中一个activity创建另一个activity
+    * 隐式intent，一个activity启动不同应用中的另一个activity
+
+    `newIntent()`封装
+
+
+### 父子activity数据传递
+
+    * 使用intent extra存储用于activity间传递的信息
+    * extra是一种键值结构
+    * 使用`Intent.putExtra( ... )`方法来操作extra字段，提供多种形式，以下为`布尔值`的形式：
+            public Intent putExtra( String name, boolean value )
+
+
+
+
+## 问题列表
+
+* Tools -> Android -> Sync Project with Gradle Giles，出现以下错误：
+        Error: Failed to find Build Tools revision 26.0.1
+
+    解决办法：安装对应版本的Build Tools即可。可直接点击提示链接`Install Build Tools 26.0.1 and sync project`
 
 
 

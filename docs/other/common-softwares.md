@@ -39,6 +39,7 @@ UE效果图制作，通常用于查看UE输出稿。
 
 * `Version 40.2 (33826)` <http://www.jianshu.com/p/3590f089e500>
 * `Version 44.1 (41455)` 是一个`Ked by The Shark`破解版，加压后直接可用，见我的百度网盘
+* `Version 45.2 (43514)` 同样是一个`Ked by The Shark`破解版(180817)
 
 
 

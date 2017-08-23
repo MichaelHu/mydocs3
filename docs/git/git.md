@@ -205,12 +205,30 @@ todo:
     git diff --staged <file>
     git diff --cached <file>
 
-其他options：
+其他options，列举部分如下：
 
-    --stat 显示统计信息
+    --stat                      显示统计信息
+    --src-prefix                默认为a/
+    --dst-prefix                默认为b/
+    --no-prefix
+    -R                          交换src和dst 
+    --ignore-blank-lines    
+    -b, --ignore-space-change
+    -w, --ignore-all-space
+    --ignore-blank-lines
+    --name-only                 只显示变化的文件
+    --name-status               显示变化文件及其变化状态
 
-以上<file>可以是文件，也可以是目录。
+以上<file>可以是文件，也可以是目录。其`部分`支持`glob pattern`（<ref://../shell/glob.md.html>）。
 
+    git diff *.md
+    git diff **/*.md
+
+以上针对扩展名的过滤，不支持`二级以上目录`的文件过滤。若要支持二级以上目录的文件过滤，可以使用前后都添加`*`的方式，比如：
+
+    $ git diff *events*
+    src/containers/graph/events/layout/layoutGrid.js
+    src/containers/graph/events/layout/layoutOrganic.js
 
 
 
@@ -1038,6 +1056,8 @@ When we start mixing branches and commits, we will see how these two features co
 
 
 ### 重命名分支
+
+> move / rename
 
     git branch -m <oldbranch> <newbranch>
     git branch -M <oldbranch> <newbranch>

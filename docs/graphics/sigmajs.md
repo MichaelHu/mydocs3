@@ -6,9 +6,10 @@
 
 ## Resources
 
-* site: <http://sigmajs.org>
-* github: <https://github.com/jacomyal/sigma.js>
-* wiki: <https://github.com/jacomyal/sigma.js/wiki>
+* `site`: <http://sigmajs.org>
+* `github`: <https://github.com/jacomyal/sigma.js>
+    <iframe src="https://ghbtns.com/github-btn.html?user=jacomyal&repo=sigma.js&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe> 
+* `wiki`: <https://github.com/jacomyal/sigma.js/wiki>
 
 
 ## Versions
@@ -25,7 +26,7 @@
 ## Misc
 
 * 需要注意并理解其`插件机制`，有些时候配置了，没有效果，甚至代码报错，可能是插件没有加载，需要`显式引入`插件代码，比如：<http://258i.com/static/build/sigma/plugins/sigma.renderers.edgeLabels.js>
-* 显示`边的label`，必须注意其`类型`必须为`string`，否则不展示 
+* 显示`边的label`，注意其`类型`必须为`string`，否则不展示 
 
 
 <style type="text/css">

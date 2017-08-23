@@ -61,6 +61,144 @@
 
 
 
+## 2d-context IDL
+
+    typedef (HTMLImageElement or
+             HTMLVideoElement or
+             HTMLCanvasElement) CanvasImageSource;
+
+    interface CanvasRenderingContext2D {
+
+      // back-reference to the canvas
+      readonly attribute HTMLCanvasElement canvas;
+
+      // state
+      void save(); // push state on state stack
+      void restore(); // pop state stack and restore state
+
+      // transformations (default: transform is the identity matrix)
+      void scale(unrestricted double x, unrestricted double y);
+      void rotate(unrestricted double angle);
+      void translate(unrestricted double x, unrestricted double y);
+      void transform(unrestricted double a, unrestricted double b, unrestricted double c, unrestricted double d, unrestricted double e, unrestricted double f);
+      void setTransform(unrestricted double a, unrestricted double b, unrestricted double c, unrestricted double d, unrestricted double e, unrestricted double f);
+
+      // compositing
+               attribute unrestricted double globalAlpha; // (default: 1.0)
+               attribute DOMString globalCompositeOperation; // (default: "source-over")
+
+      // colors and styles (see also the CanvasDrawingStyles interface)
+               attribute (DOMString or CanvasGradient or CanvasPattern) strokeStyle; // (default: "black")
+               attribute (DOMString or CanvasGradient or CanvasPattern) fillStyle; // (default: "black")
+      CanvasGradient createLinearGradient(double x0, double y0, double x1, double y1);
+      CanvasGradient createRadialGradient(double x0, double y0, double r0, double x1, double y1, double r1);
+      CanvasPattern createPattern(CanvasImageSource image, [TreatNullAs=EmptyString] DOMString repetition);
+
+      // shadows
+               attribute unrestricted double shadowOffsetX; // (default: 0)
+               attribute unrestricted double shadowOffsetY; // (default: 0)
+               attribute unrestricted double shadowBlur; // (default: 0)
+               attribute DOMString shadowColor; // (default: "transparent black")
+
+      // rects
+      void clearRect(unrestricted double x, unrestricted double y, unrestricted double w, unrestricted double h);
+      void fillRect(unrestricted double x, unrestricted double y, unrestricted double w, unrestricted double h);
+      void strokeRect(unrestricted double x, unrestricted double y, unrestricted double w, unrestricted double h);
+
+      // path API (see also CanvasPathMethods)
+      void beginPath();
+      void fill();
+      void stroke();
+      void drawFocusIfNeeded(Element element);
+      void clip(); // Further constrains the clipping region to the current path.
+      boolean isPointInPath(unrestricted double x, unrestricted double y);
+
+      // text (see also the CanvasDrawingStyles interface)
+      void fillText(DOMString text, unrestricted double x, unrestricted double y, optional unrestricted double maxWidth);
+      void strokeText(DOMString text, unrestricted double x, unrestricted double y, optional unrestricted double maxWidth);
+      TextMetrics measureText(DOMString text);
+
+      // drawing images
+      void drawImage(CanvasImageSource image, unrestricted double dx, unrestricted double dy);
+      void drawImage(CanvasImageSource image, unrestricted double dx, unrestricted double dy, unrestricted double dw, unrestricted double dh);
+      void drawImage(CanvasImageSource image, unrestricted double sx, unrestricted double sy, unrestricted double sw, unrestricted double sh, unrestricted double dx, unrestricted double dy, unrestricted double dw, unrestricted double dh);
+
+      // hit regions
+      void addHitRegion(HitRegionOptions options);
+      void removeHitRegion(DOMString id);
+      void clearHitRegions();
+
+      // pixel manipulation
+      ImageData createImageData(unrestricted double sw, unrestricted double sh);
+      ImageData createImageData(ImageData imagedata);
+      ImageData getImageData(double sx, double sy, double sw, double sh);
+      void putImageData(ImageData imagedata, double dx, double dy);
+      void putImageData(ImageData imagedata, double dx, double dy, double dirtyX, double dirtyY, double dirtyWidth, double dirtyHeight);
+    };
+    CanvasRenderingContext2D implements CanvasDrawingStyles;
+    CanvasRenderingContext2D implements CanvasPathMethods;
+
+    [NoInterfaceObject]
+    interface CanvasDrawingStyles {
+      // line caps/joins
+               attribute unrestricted double lineWidth; // (default: 1)
+               attribute DOMString lineCap; // "butt", "round", "square" (default: "butt")
+               attribute DOMString lineJoin; // "round", "bevel", "miter" (default: "miter")
+               attribute unrestricted double miterLimit; // (default: 10)
+
+      // dashed lines
+      void setLineDash(sequence<unrestricted double> segments); // (default: empty)
+      sequence<unrestricted double> getLineDash();
+               attribute unrestricted double lineDashOffset;
+
+
+      // text
+               attribute DOMString font; // (default: "10px sans-serif")
+               attribute DOMString textAlign; // "start", "end", "left", "right", "center" (default: "start")
+               attribute DOMString textBaseline; // "top", "hanging", "middle", "alphabetic", "ideographic", "bottom" (default: "alphabetic")
+    };
+
+    [NoInterfaceObject]
+    interface CanvasPathMethods {
+      // shared path API methods
+      void closePath();
+      void moveTo(unrestricted double x, unrestricted double y);
+      void lineTo(unrestricted double x, unrestricted double y);
+      void quadraticCurveTo(unrestricted double cpx, unrestricted double cpy, unrestricted double x, unrestricted double y);
+      void bezierCurveTo(unrestricted double cp1x, unrestricted double cp1y, unrestricted double cp2x, unrestricted double cp2y, unrestricted double x, unrestricted double y);
+      void arcTo(unrestricted double x1, unrestricted double y1, unrestricted double x2, unrestricted double y2, unrestricted double radius); 
+      void rect(unrestricted double x, unrestricted double y, unrestricted double w, unrestricted double h);
+      void arc(unrestricted double x, unrestricted double y, unrestricted double radius, unrestricted double startAngle, unrestricted double endAngle, optional boolean counterclockwise = false); 
+
+      };
+
+    interface CanvasGradient {
+      // opaque object
+      void addColorStop(double offset, DOMString color);
+    };
+
+    interface CanvasPattern {
+      // opaque object
+    };
+
+    interface TextMetrics {
+      readonly attribute double width;
+    };
+
+    dictionary HitRegionOptions {
+      // dictionary to allow expansion on Hit Regions in Canvas Context 2D Level 2
+      DOMString id = "";
+      // for control-backed regions:
+      Element? control = null;
+    };
+
+    interface ImageData {
+      readonly attribute unsigned long width;
+      readonly attribute unsigned long height;
+      readonly attribute Uint8ClampedArray data;
+    };
+
+
 
 
 ## 前置基本要点
@@ -91,6 +229,37 @@
         canvas.height = cssSize.h * ratio;
         ctx.scale(ratio, ratio);
     }
+
+
+### block drawing 
+
+> 块绘制，指定绘制区域的`左上顶点`，以及绘制区域`尺寸`，通过传入`ondraw回调`函数执行绘制行为
+
+#### 代码实现
+
+    @[data-script="javascript"]function doBlockDrawing( context, options ) {
+        var opt = options || {}
+            , topleft = opt.topleft || { x: 0, y: 0 }
+            , size = opt.size || {
+                w: context.canvas.offsetWidth
+                , h: context.canvas.offsetHeight
+            }
+            , ondraw = opt.ondraw || function() {}
+            ;
+
+        context.save();
+        context.rect( topleft.x, topleft.y, size.w, size.h );
+        context.clip();
+        context.setTransform( 1, 0, 0, 1, topleft.x, topleft.y );
+        ondraw( context, size );
+        context.restore();
+    } 
+
+#### 使用提示
+
+* `ondraw()`回调中，不使用`context.save()`, `context.restore()`，避免将剪辑区重置
+* `ondraw()`回调中，可调用`context.beginPath()`，重新开始路径绘制
+* `ondraw()`回调中，size规定区域的`左上点为(0, 0)`
 
 
 
@@ -162,6 +331,209 @@ APIs:
 
 
 
+### Fill and Stroke styles
+
+#### APIs
+
+    value = CSS color | canvasGradient | canvasPattern 
+    context.fillStyle [ = value ]
+    context.strokeStyle [ = value ]
+    gradient = context.createLinearGradient( x0, y0, x1, y1 )
+    gradient = context.createRadialGradient( x0, y0, r0, x1, y1, r1 )
+
+    // offset: [ 0, 1 ]; color: CSS color
+    gradient.addColorStop( offset, color )
+    // image: HTMLElement img, ImageData Object
+    pattern = context.createPattern( image, repetition )
+
+* `createRadialGradient`: <https://www.w3.org/TR/2dcontext/#dom-context-2d-createradialgradient>
+
+
+#### Examples
+
+> `createRadialGradient()`尚未搞明白，todo
+
+<div id="test_fill_and_stroke_style" class="test">
+<div class="test-container">
+<canvas></canvas>
+
+    @[data-script="javascript editable"](function(){
+
+        var containerId = 'test_fill_and_stroke_style';
+        var s = fly.createShow( '#' + containerId );
+        var canvas = document.querySelector( '#' + containerId + ' canvas' );
+        var context = canvas.getContext( '2d' );
+        var cssWidth = canvas.offsetWidth;
+        var cssHeight = canvas.offsetHeight;
+
+        // pixel adaptive
+        adaptDevice( canvas, { w: cssWidth, h: cssHeight } );
+
+        function doDrawing( topleft, ondraw ) {
+            doBlockDrawing( context, {
+                topleft: topleft
+                , size: { w: cssWidth / 6, h: cssHeight / 2 }
+                , ondraw: ondraw
+            } );
+        }
+
+        function createDraw( getGradient ) {
+            return function( context, size ) {
+                var gradient = getGradient( context, size.w, size.h );
+                gradient.addColorStop( 0, '#16420c' );
+                gradient.addColorStop( 0.5, '#da8e31' );
+                gradient.addColorStop( 1, '#fefeb8' );
+                context.fillStyle = gradient;
+                context.fillRect( 0, 0, size.w, size.h );
+            }
+        }
+
+        // [ 0, 0 ]
+        doDrawing( 
+            { x: 0, y: 0 }
+            , createDraw( function( context, w, h ) {
+                return context.createLinearGradient( 0, 0, w, h );
+            } )
+        );
+
+        // [ 1, 0 ]
+        doDrawing( 
+            { x: cssWidth / 6, y: 0 }
+            , createDraw( function( context, w, h ) {
+                return context.createLinearGradient( 0, 0, w / 2, h / 2 );
+            } )
+        );
+
+        // [ 2, 0 ]
+        doDrawing( 
+            { x: cssWidth / 6 * 2, y: 0 }
+            , createDraw( function( context, w, h ) {
+                return context.createLinearGradient( w / 2, h / 2, w, h );
+            } )
+        );
+
+        // [ 3, 0 ]
+        doDrawing( 
+            { x: cssWidth / 6 * 3, y: 0 }
+            , createDraw( function( context, w, h ) {
+                return context.createRadialGradient( 
+                        w / 4, h / 2, 0 
+                        , w / 4 * 3, h / 2, Math.max( w, h ) / 2 
+                    );
+            } )
+        );
+
+        // [ 4, 0 ]
+        doDrawing( 
+            { x: cssWidth / 6 * 4, y: 0 }
+            , createDraw( function( context, w, h ) {
+                return context.createRadialGradient( 
+                        w / 4, h / 2, Math.max( w, h ) / 2 
+                        , w / 4 * 3, h / 2, Math.max( w, h ) / 2 
+                    );
+            } )
+        );
+
+        // [ 5, 0 ]
+        doDrawing( 
+            { x: cssWidth / 6 * 5, y: 0 }
+            , createDraw( function( context, w, h ) {
+                return context.createRadialGradient( 
+                        w / 4, h / 2, Math.max( w, h ) / 2 
+                        , w / 4 * 3, h / 2, 0
+                    );
+            } )
+        );
+
+        // [ 0, 1 ]
+        doDrawing( 
+            { x: 0, y: cssHeight / 2 }
+            , createDraw( function( context, w, h ) {
+                return context.createRadialGradient( 
+                        w / 2, h / 2, 0
+                        , w / 2, h / 2, Math.max( w, h )
+                    );
+            } )
+        );
+
+        // [ 1, 1 ]
+        doDrawing( 
+            { x: cssWidth / 6, y: cssHeight / 2 }
+            , createDraw( function( context, w, h ) {
+                return context.createRadialGradient( 
+                        0, 0, 0
+                        , w, h, Math.min( w, h ) / 2 * 1.5
+                    );
+            } )
+        );
+
+        // [ 2, 1 ]
+        doDrawing( 
+            { x: cssWidth / 6 * 2, y: cssHeight / 2 }
+            , createDraw( function( context, w, h ) {
+                return context.createRadialGradient( 
+                        0, 0, 0
+                        , w, h, Math.max( w, h )
+                    );
+            } )
+        );
+
+        // [ 3, 1 ]
+        doDrawing( 
+            { x: cssWidth / 6 * 3, y: cssHeight / 2 }
+            , createDraw( function( context, w, h ) {
+                return context.createRadialGradient( 
+                        w / 4, h / 2, 0
+                        , w / 4 * 3, h / 2, Math.max( w, h ) / 2 * 1.5
+                    );
+            } )
+        );
+
+        // [ 4, 1 ]
+        doDrawing( 
+            { x: cssWidth / 6 * 4, y: cssHeight / 2 }
+            , createDraw( function( context, w, h ) {
+                return context.createRadialGradient( 
+                        w, h, Math.max( w, h )
+                        , 0, 0, 0
+                    );
+            } )
+        );
+
+        // [ 5, 1 ]
+        doDrawing( 
+            { x: cssWidth / 6 * 5, y: cssHeight / 2 }
+            , createDraw( function( context, w, h ) {
+                return context.createRadialGradient( 
+                        w, h, Math.max( w, h )
+                        , 0, 0, Math.max( w, h ) / 2
+                    );
+            } )
+        );
+
+        s.show( 'testing ...' );
+        s.append_show( cssWidth, cssHeight );
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+### clip region
+> 剪辑区
+
+    // Further constrains the clipping region to the current path.
+    context.clip();
+
+* 默认剪辑区为`矩形区域( 0, 0, w, h )`
+* `context.save()`恢复默认剪辑区，`context.clip()`创建新的剪辑区，创建新的剪辑区后，无法通过再次调用context.clip()修改剪辑区，也就是说clip()只能在准备path后`调用一次`，后续的多次调用不生效
+* 剪辑区从`路径`创建
+
 
 
 ### line styles
@@ -175,10 +547,197 @@ APIs:
 
 线接样式。取值`bevel`, `round`, `miter`之一
 
+
 #### miterLimit
+
+与`lineJoin`配合，当lineJoin设置为`miter`时，才起作用。当两线条交角为`锐角`时，限制斜面的最大长度。单位为线宽的倍数。下图展示过大的miterLimit带来的不协调的交角效果：
+
+ <img src="./img/large-miterlimit.png">
+
+可参考`MDN`：<https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/miterLimit>
+
+
 #### setLineDash()
 #### getLineDash()
 #### lineDashOffset
+
+#### Examples
+
+<div id="test_lineJoin" class="test">
+<div class="test-container">
+<canvas></canvas>
+
+    @[data-script="javascript"](function(){
+
+        var containerId = 'test_lineJoin';
+        var s = fly.createShow( '#' + containerId );
+        var canvas = document.querySelector( '#' + containerId + ' canvas' );
+        var context = canvas.getContext( '2d' );
+        var cssWidth = canvas.offsetWidth;
+        var cssHeight = canvas.offsetHeight;
+
+        // pixel adaptive
+        adaptDevice( canvas, { w: cssWidth, h: cssHeight } );
+
+        function doDrawing( topleft, ondraw ) {
+            doBlockDrawing( context, {
+                topleft: topleft
+                , size: { w: cssWidth / 6, h: cssHeight / 2 }
+                , ondraw: ondraw
+            } );
+        }
+
+        function createDraw( setStyle ) {
+            return function( context, size ) {
+                setStyle( context, size );
+                context.beginPath();
+                context.moveTo( 10, 10 );
+                context.lineTo( size.w / 4, size.h / 2 );
+                context.lineTo( size.w / 2, size.h / 4 );
+                context.lineTo( size.w / 2 * 1.1, size.h / 4 * 3 );
+                context.lineTo( size.w - 10, size.h - 10 );
+                context.stroke();
+            };
+        }
+
+        var lineWidth = 8;
+        // [ 0, 0 ]
+        doDrawing(
+            { x: 0, y: 0 }
+            , createDraw( function( context, size ) {
+                context.lineWidth = lineWidth;
+                context.lineCap = 'butt';
+            } ) 
+        );
+
+        // [ 1, 0 ]
+        doDrawing(
+            { x: cssWidth / 6, y: 0 }
+            , createDraw( function( context, size ) {
+                context.lineWidth = lineWidth;
+                context.lineCap = 'round';
+            } ) 
+        );
+
+        // [ 2, 0 ]
+        doDrawing(
+            { x: cssWidth / 6 * 2, y: 0 }
+            , createDraw( function( context, size ) {
+                context.lineWidth = lineWidth;
+                context.lineCap = 'square';
+            } ) 
+        );
+
+        // [ 3, 0 ]
+        doDrawing(
+            { x: cssWidth / 6 * 3, y: 0 }
+            , createDraw( function( context, size ) {
+                context.lineWidth = lineWidth;
+                context.lineCap = 'butt';
+                context.lineJoin = 'bevel';
+            } ) 
+        );
+
+        // [ 4, 0 ]
+        doDrawing(
+            { x: cssWidth / 6 * 4, y: 0 }
+            , createDraw( function( context, size ) {
+                context.lineWidth = lineWidth;
+                context.lineCap = 'round';
+                context.lineJoin = 'round';
+            } ) 
+        );
+
+        // [ 5, 0 ]
+        doDrawing(
+            { x: cssWidth / 6 * 5, y: 0 }
+            , createDraw( function( context, size ) {
+                context.lineWidth = lineWidth;
+                context.lineCap = 'square';
+                context.lineJoin = 'miter';
+                context.miterLimit = 3;
+            } ) 
+        );
+
+
+        // ============= line 2 ===============
+
+        var lineDash = [ lineWidth, lineWidth * 2 ];
+        // [ 0, 1 ]
+        doDrawing(
+            { x: 0, y: cssHeight / 2 }
+            , createDraw( function( context, size ) {
+                context.lineWidth = lineWidth;
+                context.lineCap = 'butt';
+                context.setLineDash( lineDash );
+            } ) 
+        );
+
+        // [ 1, 1 ]
+        doDrawing(
+            { x: cssWidth / 6, y: cssHeight / 2 }
+            , createDraw( function( context, size ) {
+                context.lineWidth = lineWidth;
+                context.lineCap = 'round';
+                context.setLineDash( lineDash );
+            } ) 
+        );
+
+        // [ 2, 1 ]
+        doDrawing(
+            { x: cssWidth / 6 * 2, y: cssHeight / 2 }
+            , createDraw( function( context, size ) {
+                context.lineWidth = lineWidth;
+                context.lineCap = 'square';
+                context.setLineDash( lineDash );
+            } ) 
+        );
+
+        // [ 3, 1 ]
+        doDrawing(
+            { x: cssWidth / 6 * 3, y: cssHeight / 2 }
+            , createDraw( function( context, size ) {
+                context.lineWidth = lineWidth;
+                context.lineCap = 'butt';
+                context.lineJoin = 'bevel';
+                context.setLineDash( lineDash );
+            } ) 
+        );
+
+        // [ 4, 1 ]
+        doDrawing(
+            { x: cssWidth / 6 * 4, y: cssHeight / 2 }
+            , createDraw( function( context, size ) {
+                context.lineWidth = lineWidth;
+                context.lineCap = 'round';
+                context.lineJoin = 'round';
+                context.setLineDash( lineDash );
+            } ) 
+        );
+
+        // [ 5, 1 ]
+        doDrawing(
+            { x: cssWidth / 6 * 5, y: cssHeight / 2 }
+            , createDraw( function( context, size ) {
+                context.lineWidth = lineWidth;
+                context.lineCap = 'square';
+                context.lineJoin = 'miter';
+                context.miterLimit = 3;
+                context.setLineDash( lineDash );
+            } ) 
+        );
+
+
+        s.show(1);
+        s.append_show(2);
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
 
 
 
@@ -355,146 +914,6 @@ closePath()并`不会清空`当前路径的子路径列表。
 
 
 
-## IDL
-
-    typedef (HTMLImageElement or
-             HTMLVideoElement or
-             HTMLCanvasElement) CanvasImageSource;
-
-    interface CanvasRenderingContext2D {
-
-      // back-reference to the canvas
-      readonly attribute HTMLCanvasElement canvas;
-
-      // state
-      void save(); // push state on state stack
-      void restore(); // pop state stack and restore state
-
-      // transformations (default: transform is the identity matrix)
-      void scale(unrestricted double x, unrestricted double y);
-      void rotate(unrestricted double angle);
-      void translate(unrestricted double x, unrestricted double y);
-      void transform(unrestricted double a, unrestricted double b, unrestricted double c, unrestricted double d, unrestricted double e, unrestricted double f);
-      void setTransform(unrestricted double a, unrestricted double b, unrestricted double c, unrestricted double d, unrestricted double e, unrestricted double f);
-
-      // compositing
-               attribute unrestricted double globalAlpha; // (default: 1.0)
-               attribute DOMString globalCompositeOperation; // (default: "source-over")
-
-      // colors and styles (see also the CanvasDrawingStyles interface)
-               attribute (DOMString or CanvasGradient or CanvasPattern) strokeStyle; // (default: "black")
-               attribute (DOMString or CanvasGradient or CanvasPattern) fillStyle; // (default: "black")
-      CanvasGradient createLinearGradient(double x0, double y0, double x1, double y1);
-      CanvasGradient createRadialGradient(double x0, double y0, double r0, double x1, double y1, double r1);
-      CanvasPattern createPattern(CanvasImageSource image, [TreatNullAs=EmptyString] DOMString repetition);
-
-      // shadows
-               attribute unrestricted double shadowOffsetX; // (default: 0)
-               attribute unrestricted double shadowOffsetY; // (default: 0)
-               attribute unrestricted double shadowBlur; // (default: 0)
-               attribute DOMString shadowColor; // (default: "transparent black")
-
-      // rects
-      void clearRect(unrestricted double x, unrestricted double y, unrestricted double w, unrestricted double h);
-      void fillRect(unrestricted double x, unrestricted double y, unrestricted double w, unrestricted double h);
-      void strokeRect(unrestricted double x, unrestricted double y, unrestricted double w, unrestricted double h);
-
-      // path API (see also CanvasPathMethods)
-      void beginPath();
-      void fill();
-      void stroke();
-      void drawFocusIfNeeded(Element element);
-      void clip();
-      boolean isPointInPath(unrestricted double x, unrestricted double y);
-
-      // text (see also the CanvasDrawingStyles interface)
-      void fillText(DOMString text, unrestricted double x, unrestricted double y, optional unrestricted double maxWidth);
-      void strokeText(DOMString text, unrestricted double x, unrestricted double y, optional unrestricted double maxWidth);
-      TextMetrics measureText(DOMString text);
-
-      // drawing images
-      void drawImage(CanvasImageSource image, unrestricted double dx, unrestricted double dy);
-      void drawImage(CanvasImageSource image, unrestricted double dx, unrestricted double dy, unrestricted double dw, unrestricted double dh);
-      void drawImage(CanvasImageSource image, unrestricted double sx, unrestricted double sy, unrestricted double sw, unrestricted double sh, unrestricted double dx, unrestricted double dy, unrestricted double dw, unrestricted double dh);
-
-      // hit regions
-      void addHitRegion(HitRegionOptions options);
-      void removeHitRegion(DOMString id);
-      void clearHitRegions();
-
-      // pixel manipulation
-      ImageData createImageData(unrestricted double sw, unrestricted double sh);
-      ImageData createImageData(ImageData imagedata);
-      ImageData getImageData(double sx, double sy, double sw, double sh);
-      void putImageData(ImageData imagedata, double dx, double dy);
-      void putImageData(ImageData imagedata, double dx, double dy, double dirtyX, double dirtyY, double dirtyWidth, double dirtyHeight);
-    };
-    CanvasRenderingContext2D implements CanvasDrawingStyles;
-    CanvasRenderingContext2D implements CanvasPathMethods;
-
-    [NoInterfaceObject]
-    interface CanvasDrawingStyles {
-      // line caps/joins
-               attribute unrestricted double lineWidth; // (default: 1)
-               attribute DOMString lineCap; // "butt", "round", "square" (default: "butt")
-               attribute DOMString lineJoin; // "round", "bevel", "miter" (default: "miter")
-               attribute unrestricted double miterLimit; // (default: 10)
-
-      // dashed lines
-      void setLineDash(sequence<unrestricted double> segments); // (default: empty)
-      sequence<unrestricted double> getLineDash();
-               attribute unrestricted double lineDashOffset;
-
-
-      // text
-               attribute DOMString font; // (default: "10px sans-serif")
-               attribute DOMString textAlign; // "start", "end", "left", "right", "center" (default: "start")
-               attribute DOMString textBaseline; // "top", "hanging", "middle", "alphabetic", "ideographic", "bottom" (default: "alphabetic")
-    };
-
-    [NoInterfaceObject]
-    interface CanvasPathMethods {
-      // shared path API methods
-      void closePath();
-      void moveTo(unrestricted double x, unrestricted double y);
-      void lineTo(unrestricted double x, unrestricted double y);
-      void quadraticCurveTo(unrestricted double cpx, unrestricted double cpy, unrestricted double x, unrestricted double y);
-      void bezierCurveTo(unrestricted double cp1x, unrestricted double cp1y, unrestricted double cp2x, unrestricted double cp2y, unrestricted double x, unrestricted double y);
-      void arcTo(unrestricted double x1, unrestricted double y1, unrestricted double x2, unrestricted double y2, unrestricted double radius); 
-      void rect(unrestricted double x, unrestricted double y, unrestricted double w, unrestricted double h);
-      void arc(unrestricted double x, unrestricted double y, unrestricted double radius, unrestricted double startAngle, unrestricted double endAngle, optional boolean counterclockwise = false); 
-
-      };
-
-    interface CanvasGradient {
-      // opaque object
-      void addColorStop(double offset, DOMString color);
-    };
-
-    interface CanvasPattern {
-      // opaque object
-    };
-
-    interface TextMetrics {
-      readonly attribute double width;
-    };
-
-    dictionary HitRegionOptions {
-      // dictionary to allow expansion on Hit Regions in Canvas Context 2D Level 2
-      DOMString id = "";
-      // for control-backed regions:
-      Element? control = null;
-    };
-
-    interface ImageData {
-      readonly attribute unsigned long width;
-      readonly attribute unsigned long height;
-      readonly attribute Uint8ClampedArray data;
-    };
-
-
-
-
 ## 有用的属性
 
 `devicePixelRatio`：<http://www.html5rocks.com/en/tutorials/canvas/hidpi/>
@@ -658,6 +1077,253 @@ android 2.3.3的原生浏览器是不支持的，虽然该函数可以正常调�
 安装的UC浏览器都支持。
 
 不过可以认为webview是不支持的。
+
+
+
+
+## transform matrix
+
+> 变换矩阵
+
+
+### 齐次坐标
+
+#### 定义
+
+齐次坐标是指一个用于`投影几何`里的坐标系统，如同`欧氏几何`里的笛卡儿坐标一样。它将一个原本是`n`维的向量用一个`n+1`维向量来表示。
+
+如向量：
+
+    ( x1, x2, x3, ..., xn )
+
+的`齐次坐标`表示为：
+
+    [ hx1, hx2, hx3, ..., hxn, h ]
+
+其中`h`是一个实数。一个向量的齐次表示不是唯一的，齐次坐标中的`h`取`不同`的值都`表示`的是`同一个点`，因此一个点的齐次坐标有`无限种`表示法。
+例如，齐次坐标`[2, 4, 2]`与`[1, 2, 1]`表示的都是二维点`[2, 1]`。
+
+#### 特征
+
+> ref: <https://baike.baidu.com/item/齐次坐标/511284>
+
+* 投影平面上的任何点都可以表示成一个三元组`(X, Y, Z)`，称为该点的齐次坐标或投影坐标，其中X、Y、Z`不全为0`
+* 以齐次坐标表示的点，若该坐标内的数值全乘上一个相同的非零实数，仍会表示该点
+* 相反的，两个齐次坐标表示同一点，当前仅当其中一个齐次坐标可由另一个齐次坐标乘上一个相同的`非零常数`获得
+* 当Z不为0，则该点表示欧式平面上的点`(X/Z, Y/Z)`
+* 当Z为0，则该点表示一个`无穷远点`
+
+
+`todo`：二维齐次坐标变换。
+
+
+### transform( a, b, c, d, e, f )
+
+#### 变换矩阵
+
+ <img src="./img/canvas_transform.png">
+
+变换矩阵会`叠加`，不同于`setTransform`的重置
+
+参考：
+* <http://sumsung753.blog.163.com/blog/static/146364501201281311522752/>
+* <http://shawphy.com/2011/01/transformation-matrix-in-front-end.html>
+
+#### 平移
+
+    matrix(1, 0, 0, 1, tx, ty)
+
+    x' = 1x + 0y + tx = x + tx
+    y' = 0x + 1y + ty = y + ty 
+
+等价于：
+
+    translate(tx, ty)
+
+
+#### 缩放
+
+    matrix(sx, 0, 0, sy, 0, 0)
+
+    x' = sx * x + 0 * y + 0 = sx * x
+    y' = 0 * x + sy * y + 0 = sy * y
+
+等价于：
+
+    scale(sx, sy)
+
+
+#### 旋转
+
+> `逆时针`旋转θ，更多参考三角函数：<ref://../math/basics.md.html>
+
+    matrix(cosθ, sinθ, -sinθ, cosθ, 0, 0)
+
+    x' = x * cosθ - y * sinθ + 0 = x * cosθ - y * sinθ
+    y' = x * sinθ + y * cosθ + 0 = x * sinθ + y * cosθ
+
+等价于：
+
+    rotate(θ)
+
+
+#### 切变
+
+    matrix(1, tan(θy), tan(θx), 1, 0, 0)
+
+    x' = x + y * tan(θx)
+    y' = x * tan(θy) + y
+
+θx和θy分别代表往x轴正方向和往y轴正方向倾斜的角度，两者是相互独立的。
+
+比如：
+
+    matrix(1, 0, tan(45deg), 1, 0, 0)
+
+    x' = x + y * tan(45deg)
+    y' = y
+
+表示向x轴倾斜45度。
+
+`镜像反射`：todo
+
+
+
+
+
+
+## createPattern
+
+`语法：`
+
+    context.createPattern(image,"repeat|repeat-x|repeat-y|no-repeat");
+
+`例子：`
+
+    var c=document.getElementById("myCanvas");
+    var ctx=c.getContext("2d");
+    var img=document.getElementById("lamp");
+    var pat=ctx.createPattern(img,"repeat");
+    ctx.rect(0,0,150,100);
+    ctx.fillStyle=pat;
+    ctx.fill();
+
+
+## createLinearGradient
+
+`语法：`
+
+    context.createLinearGradient(x0,y0,x1,y1);
+
+x0,y0为渐变起始点，x1,y1为渐变结束点。
+
+`例子：`
+
+    var c=document.getElementById("myCanvas");
+    var ctx=c.getContext("2d");
+    var my_gradient=ctx.createLinearGradient(0,0,0,170);
+    my_gradient.addColorStop(0,"black");
+    my_gradient.addColorStop(1,"white");
+    ctx.fillStyle=my_gradient;
+    ctx.fillRect(20,20,150,100);
+
+
+
+## createRadialGradient 
+
+`语法：`
+
+    context.createRadialGradient(x0,y0,r0,x1,y1,r1);
+
+
+
+
+
+## drawImage
+
+> `s`代表`source`，`d`代表`destination`
+
+1. 画布上定位( dx, dy )图像
+
+        context.drawImage( img, dx, dy );
+
+2. 画布上定位图像( dx, dy )，并规定图像的宽度和高度( dw, dh )
+
+        context.drawImage( img, dx, dy, dw, dh );
+
+3. 剪切图像( sx, sy, sw, sh )，并在画布上定位( dx, dy )被剪切的部分，并规定图像的宽度和高度( dw, dh )
+
+        context.drawImage( img, sx, sy, sw, sh, dx, dy, dw, dh );
+
+ <img src="./img/canvas-drawImage.png">
+
+
+### Image Sources
+
+> 2d context能处理的来源，也即`img`对应的对象
+
+* HTMLImageElement对象，也即`<img>`对应的DOM对象
+* HTMLVideoElement对象，也即`<video>`对应的DOM对象
+* HTMLCanvasElement对象，也即`<canvas>`对应的DOM对象
+
+
+
+
+## Pixel Manipulation
+
+> 像素操作
+
+    // CSS尺寸、透明背景
+    context.createImageData( sw, sh )
+    context.createImageData( imageData )
+    context.getImageData( sx, sy, sw, sh )
+    imageData.width
+    imageData.height
+    imageData.data
+    imageData.putImageData( imageData, dx, dy[, dirtyX, dirtyY, dirtyWidth, dirtyHeight] )
+
+
+
+
+## Shadows
+
+> 4个全局阴影属性。
+
+1. 不能被转换成CSS值的value将被忽略
+
+### shaowColor
+### shadowOffsetX
+### shadowOffsetY
+### shadowBlur
+
+
+
+
+
+
+
+
+## 紧贴直线的文本
+
+todo
+
+
+
+## globalCompositeOperation
+
+该属性`设置或返回`如何将一个`源（新的）`图像绘制到`目标（已有）`的图像上。
+
+可取以下`12`个值：
+
+    source-over source-atop source-in source-out 
+    destination-over destination-atop destination-in destination-out 
+    lighter darker copy xor
+
+对应效果如下，下图中`目标`为`红色`正方形，`源`为`绿色`圆形。：
+
+<img src="./img/canvas-gco.png">
+
+
 
 
 
@@ -906,221 +1572,3 @@ android 2.3.3的原生浏览器是不支持的，虽然该函数可以正常调�
 
 
 
-
-## transform matrix
-
-> 变换矩阵
-
-
-### 齐次坐标
-
-将一个原本是`n`维的向量用一个`n+1`维向量来表示。如向量：
-
-    ( x1, x2, x3, ..., xn )
-
-的其次坐标表示为：
-
-    [ hx1, hx2, hx3, ..., hxn, h ]
-
-其中`h`是一个实数。一个向量的齐次表示不是唯一的，齐次坐标中的`h`取`不同`的值都`表示`的是`同一个点`。
-例如，齐次坐标`[8, 4, 2]`与`[4, 2, 1]`表示的都是二维点`[2, 1]`。
-
-`todo`：二维齐次坐标变换。
-
-
-### transform( a, b, c, d, e, f )
-
- <img src="./img/canvas_transform.png">
-
-变换矩阵会叠加，不同于`setTransform`的重置
-
-参考： <http://sumsung753.blog.163.com/blog/static/146364501201281311522752/>
-
-<http://shawphy.com/2011/01/transformation-matrix-in-front-end.html>
-
-`平移`：
-
-    matrix(1, 0, 0, 1, tx, ty)
-
-    x' = 1x + 0y + tx = x + tx
-    y' = 0x + 1y + ty = y + ty 
-
-等价于：
-
-    translate(tx, ty)
-
-
-`缩放`：
-
-    matrix(sx, 0, 0, sy, 0, 0)
-
-    x' = sx * x + 0 * y + 0 = sx * x
-    y' = 0 * x + sy * y + 0 = sy * y
-
-等价于：
-
-    scale(sx, sy)
-
-
-`旋转` - 逆时针旋转θ：
-
-    matrix(cosθ, sinθ, -sinθ, cosθ, 0, 0)
-
-    x' = x * cosθ - y * sinθ + 0 = x * cosθ - y * sinθ
-    y' = x * sinθ + y * cosθ + 0 = x * sinθ + y * cosθ
-
-等价于：
-
-    rotate(θ)
-
-
-`切变`：
-
-    matrix(1, tan(θy), tan(θx), 1, 0, 0)
-
-    x' = x + y * tan(θx)
-    y' = x * tan(θy) + y
-
-θx和θy分别代表往x轴正方向和往y轴正方向倾斜的角度，两者是相互独立的。
-
-比如：
-
-    matrix(1, 0, tan(45deg), 1, 0, 0)
-
-    x' = x + y * tan(45deg)
-    y' = y
-
-表示向x轴倾斜45度。
-
-`镜像反射`：todo
-
-
-
-
-
-
-## createPattern
-
-`语法：`
-
-    context.createPattern(image,"repeat|repeat-x|repeat-y|no-repeat");
-
-`例子：`
-
-    var c=document.getElementById("myCanvas");
-    var ctx=c.getContext("2d");
-    var img=document.getElementById("lamp");
-    var pat=ctx.createPattern(img,"repeat");
-    ctx.rect(0,0,150,100);
-    ctx.fillStyle=pat;
-    ctx.fill();
-
-
-## createLinearGradient
-
-`语法：`
-
-    context.createLinearGradient(x0,y0,x1,y1);
-
-x0,y0为渐变起始点，x1,y1为渐变结束点。
-
-`例子：`
-
-    var c=document.getElementById("myCanvas");
-    var ctx=c.getContext("2d");
-    var my_gradient=ctx.createLinearGradient(0,0,0,170);
-    my_gradient.addColorStop(0,"black");
-    my_gradient.addColorStop(1,"white");
-    ctx.fillStyle=my_gradient;
-    ctx.fillRect(20,20,150,100);
-
-
-
-## createRadialGradient 
-
-`语法：`
-
-    context.createRadialGradient(x0,y0,r0,x1,y1,r1);
-
-
-
-
-
-## drawImage
-
-> `s`代表`source`，`d`代表`destination`
-
-1. 画布上定位( dx, dy )图像
-
-        context.drawImage( img, dx, dy );
-
-2. 画布上定位图像( dx, dy )，并规定图像的宽度和高度( dw, dh )
-
-        context.drawImage( img, dx, dy, dw, dh );
-
-3. 剪切图像( sx, sy, sw, sh )，并在画布上定位( dx, dy )被剪切的部分，并规定图像的宽度和高度( dw, dh )
-
-        context.drawImage( img, sx, sy, sw, sh, dx, dy, dw, dh );
-
- <img src="./img/canvas-drawImage.png">
-
-
-### Image Sources
-
-> 2d context能处理的来源，也即`img`对应的对象
-
-* HTMLImageElement对象，也即`<img>`对应的DOM对象
-* HTMLVideoElement对象，也即`<video>`对应的DOM对象
-* HTMLCanvasElement对象，也即`<canvas>`对应的DOM对象
-
-
-
-
-
-
-## Shadows
-
-> 4个全局阴影属性。
-
-1. 不能被转换成CSS值的value将被忽略
-
-### shaowColor
-### shadowOffsetX
-### shadowOffsetY
-### shadowBlur
-
-
-
-
-
-
-
-
-## 紧贴直线的文本
-
-todo
-
-
-
-## globalCompositeOperation
-
-该属性设置或返回如何将一个源（新的）图像绘制到目标（已有）的图像上。
-
-可取以下值：
-
-* source-over
-* source-atop
-* source-in
-* source-out
-* destination-over
-* destination-atop
-* destination-in
-* destination-out
-* lighter
-* darker
-* copy
-* xor
-
-对应效果如下：
-
-<img src="./img/canvas-gco.png">
