@@ -1,7 +1,6 @@
 # canvas-network
 
 
-
 <style type="text/css">
 @import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
 .canvas-wrapper {
@@ -54,18 +53,24 @@
 
 ## 绘制基本图谱
 
+### drawNode()
+
+    @[data-script="babel-loose"]function drawNode( context, x, y, label ) {
+    }
+
+
 ### 阶段性验证
 
 <div id="test_basic_network" class="test">
 <div class="test-container">
 <div class="canvas-wrapper"></div>
 
-    @[data-script="javascript"](function(){
+    @[data-script="babel"](function(){
 
-        var containerId = 'test_basic_network';
-        var s = fly.createShow( '#' + containerId );
-        var canvas = createCanvas( '#' + containerId + ' .canvas-wrapper' );
-        var context = canvas.getContext( '2d' );
+        let containerId = 'test_basic_network';
+        let s = fly.createShow( '#' + containerId );
+        let canvas = createCanvas( '#' + containerId + ' .canvas-wrapper' );
+        let context = canvas.getContext( '2d' );
 
         context.strokeRect( 0, 0, 200, 200 );
         s.show(1);
