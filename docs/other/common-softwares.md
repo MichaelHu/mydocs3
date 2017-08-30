@@ -7,21 +7,20 @@
 
 ### OmniGraffle
 
-`RMB600+`，
-快速作图工具、模板丰富。
+`RMB600+`，快速作图工具、模板丰富。目前本地有`两个版本`同时可用：
+
+    v6.6.1          /Applications/OmniGraffle.app
+    v7.4.2          /Applications/OmniGraffle.localized
 
 
 ### SimpleMind
 
-`RMB300`，
-脑图工具，支持多root、连线创建等
+`RMB300`，脑图工具，支持多root、连线创建等
 
 
 ### ColorSnapper
 
-`RMB68`，
-Mac下一款功能强大的`取色器`
-
+`RMB68`，Mac下一款功能强大的`取色器`
 
 
 ### SecureCRT
@@ -39,7 +38,7 @@ UE效果图制作，通常用于查看UE输出稿。
 
 * `Version 40.2 (33826)` <http://www.jianshu.com/p/3590f089e500>
 * `Version 44.1 (41455)` 是一个`Ked by The Shark`破解版，加压后直接可用，见我的百度网盘
-* `Version 45.2 (43514)` 同样是一个`Ked by The Shark`破解版(180817)
+* `Version 45.2 (43514)` 同样是一个`Ked by The Shark`破解版(180817)，同见网盘
 
 
 

@@ -4,9 +4,11 @@
 
 > GitBook helps your team write, collaborate and publish content online.
 
-* site: <https://www.gitbook.com>
-* gitbook-cli: <https://github.com/GitbookIO/gitbook-cli>
-* gitbook: <https://github.com/GitbookIO/gitbook>
+## Resources
+
+* `site`: <https://www.gitbook.com>
+* `gitbook-cli`: <https://github.com/GitbookIO/gitbook-cli>
+* `gitbook`: <https://github.com/GitbookIO/gitbook>
 
 
 ## Features
@@ -14,7 +16,7 @@
 * 查看开源文档：<https://www.gitbook.com/explore>
 * 帮助团队编写文档、协作以及`发布在线内容`
 * 案例：Redux文档 <http://redux.js.org/index.html>
-* 工具链：GitBook editor (web版及客户端版), ...
+* 工具链：`GitBook editor` (web版及客户端版), ...
 * 可以在gitbook站点编写自己的在线书籍、API文档、帮助手册等
 * 也可以离线安装，用于本地撰写和发布，适合于团队协作编写文档
 * 有一些免费书籍可查看

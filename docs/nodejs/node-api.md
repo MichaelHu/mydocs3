@@ -1,7 +1,11 @@
 # node api 
 
-<http://nodeapi.ucdok.com/api/index.html>
-<https://nodejs.org/api/>
+
+## Resources
+
+* `API docs`: <https://nodejs.org/api/>
+* <http://nodeapi.ucdok.com/api/index.html>
+
 
 ## Changelog 
 

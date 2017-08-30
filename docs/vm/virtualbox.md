@@ -15,7 +15,7 @@ span.line-through {
 * main site: <https://www.virtualbox.org>
 * 主要套件：
     * platform packages，虚拟机app安装包
-    * extension pack
+    * extension pack，包含虚拟机的USB等硬件支持等
     * developer kit
     * guest additions，宿主系统扩展程序包，提供底层虚拟硬件的支持，必须安装。一般存在以下路径：
         `/Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso`
@@ -37,7 +37,7 @@ span.line-through {
 3. [ `170113` ] ( 以上现象的真实原因 )升级至`MacOS Sierra 10.12.2`以后，为招行U盾USB设备添加空的USB过滤器以后，进入VM，Mac的蓝牙键盘和鼠标都断开连接，无法使用，但是自带键盘和触摸板可用，U盾可用；如果去除USB过滤器，则U盾不可用，蓝牙键盘和鼠标可用。
 
 
-## 安装VBoxGurstAdditions增强功能
+## 安装VBoxGuestAdditions增强功能
 
 进入虚拟机后，在菜单栏`设备`下，选择加载该增强功能的`iso`，就可以启动安装程序。
 
