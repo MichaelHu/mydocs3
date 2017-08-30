@@ -5,6 +5,9 @@
 > 我和我的宾利跑车，这是我最大最大的车噢，好漂亮的～
  <img src="./img/even/img_7990.jpg">
 
+> 我的兰博基尼跑车，我们叫TA`白车`
+ <img src="./img/even/img_7988.jpg">
+
 > 我的奔驰小跑车，在我两岁的时候，TA是我的最爱
  <img src="./img/even/img_8002.jpg">
 
