@@ -1,10 +1,10 @@
 # nodejs安装
 
-## Site
+## Resources
 
-* site: <http://nodejs.org>
-* site cn: <http://nodejs.cn>
-
+* `site`: <http://nodejs.org>
+* `site cn`: <http://nodejs.cn>
+* `releases`: <https://nodejs.org/download/release/>
 
 
 ## Installation

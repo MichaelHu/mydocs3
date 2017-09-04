@@ -1,0 +1,123 @@
+<style type="text/css">
+@import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
+.canvas-wrapper {
+    height: 500px;
+}
+</style>
+
+<div id="test_basic_network" class="test">
+	<div class="test-container">
+		<div class="canvas-wrapper" style="height:500px; width:600px;"></div>
+	</div>
+</div>
+
+<script>
+
+function createCanvas( container, options ){
+    var width, height, canvas
+        , opt = options || {}
+        ;
+
+    if ( typeof container == 'string' ) {
+        if ( document.querySelector ) {
+            container = document.querySelector( container );
+        }
+        else {
+            container = document.getElementById( container );
+        }
+    }
+
+    width = container.offsetWidth;
+    height = container.offsetHeight;
+    canvas = document.createElement( 'canvas' );
+    container.appendChild( canvas );
+    adaptDevice( canvas, { w: width, h: height } );
+    return canvas;
+} 
+
+
+function adaptDevice( canvas, cssSize ){
+    var ratio = window.devicePixelRatio
+        , ctx = canvas.getContext( '2d' )
+        ;
+    canvas.width = cssSize.w * ratio;
+    canvas.height = cssSize.h * ratio;
+    canvas.style.width = cssSize.w + 'px';
+    canvas.style.height = cssSize.h + 'px';
+    ctx.scale( ratio, ratio );
+}  
+
+function drawNode( context, x, y, label, color ) {
+    let r = 500;
+    context.save();
+    context.beginPath();
+    context.arc( x, y, r, 0, Math.PI * 2 ); 
+    context.closePath();
+    // context.rect( x - r / 2, y - r / 2, r, r ); 
+    context.strokeStyle = color || '#2ca02c';
+    context.stroke();
+    context.restore();
+}
+
+
+function drawEdge( context, source, target, label, color ) {
+    context.save();
+    context.beginPath();
+    context.moveTo( source.x, source.y );
+    context.lineTo( target.x, target.y );
+    context.strokeStyle = color || '#2ca02c';
+    context.stroke();
+    context.restore();
+}  
+
+
+
+(function(){
+
+    let containerId = 'test_basic_network';
+    let canvas = createCanvas( '#' + containerId + ' .canvas-wrapper' );
+    let context = canvas.getContext( '2d' );
+    const MAX_NODES_FIRST = 509000;
+    const MAX_NODES_SECOND = 469000;
+    let allNodes = MAX_NODES_FIRST + MAX_NODES_SECOND;
+    let width = canvas.offsetWidth;
+    let height = canvas.offsetHeight;
+    let source, target;
+
+	context.strokeRect( 0, 0, 100, 50 );
+
+	setTimeout( () => {
+		let startTime = new Date().getTime();
+		console.log( startTime );
+		for( let i = 0; i < MAX_NODES_FIRST; i++ ) {
+			source = target;
+			let x = width * Math.random();
+			let y = height * Math.random();
+			target = { x: x, y: y };
+			drawNode( context, x, y, 'n' + i );
+			if ( source ) {
+				// drawEdge( context, source, target, 'e' + i, '#fff' );
+			}
+		}
+		let endTime = new Date().getTime();
+		console.log( endTime );
+	}, 0 );
+
+    // setTimeout( () => {
+    //     let startTime = new Date().getTime();
+    //     for( let i = 0; i < MAX_NODES_SECOND; i++ ) {
+    //         let x = width * Math.random();
+    //         let y = height * Math.random();
+    //         drawNode( context, x, y, 'n' + i, '#d62728' );
+    //     }
+    //     let endTime = new Date().getTime();
+    //     s.append_show( MAX_NODES_SECOND + ' nodes, ' + ( endTime - startTime ) / 1000 + 's' );
+    // }, 5000 ) ;
+
+
+})(); 
+
+
+
+
+</script>

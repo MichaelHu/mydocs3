@@ -88,8 +88,8 @@ C_{m\times n} = A_{m\times p} \cdot B_{p\times n}
 </script>
 
 <script type="math/tex">
-矩阵C中的每一个元素c_{ij}=\sum_{k=1}^p{a_{ik}b_{kj}}
-下面用一个简单的例子来说明。设A为2\times 3的矩阵，B为3\times 2的矩阵，则两者的乘积为
+\text{矩阵}C中的每一个元素c_{ij}=\sum_{k=1}^p{a_{ik}b_{kj}}， 下面用一个简单的例子来说明。\\
+设A为2\times 3的矩阵，B为3\times 2的矩阵，则两者的乘积为
 </script>
 
 <script type="math/tex; mode=display">

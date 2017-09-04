@@ -9,9 +9,21 @@
 
 ## Changelog 
 
-> <https://github.com/nodejs/node/blob/v8.1.1/CHANGELOG.md> 
+> `releases`: <https://nodejs.org/download/release/>
 
+* 2017-08-15 v8.4.0                                            
+* 2017-08-10 v8.3.0                                            
+* 2017-07-28 v8.2.1                                            
+* 2017-07-20 v8.2.0                                            
+* 2017-07-11 v8.1.4                                            
+* 2017-06-29 v8.1.3                                            
+* 2017-06-22 v8.1.2                                            
+* 2017-06-13 v8.1.1                                            
+* 2017-06-09 v8.1.0                                            
 * 2017-06-13 Version 8.1.1 Stable
+* 2017-04-11 v7.9.0
+* 2017-03-29 v7.8.0
+* 2017-03-21 `v6.10.1`
 * 2015-10-05 Version 4.1.2 Stable
 * 2015-09-08 Version 4.0.0 Stable
 * 2015-07-09 Version 0.12.7 Stable ， 对应 npm 2.11.3

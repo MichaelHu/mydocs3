@@ -6,12 +6,13 @@
 </style>
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 
-* w3c css [ the latest ]: <https://www.w3.org/TR/CSS/>
+## Resources
+
+* w3c css [ `the latest` ]: <https://www.w3.org/TR/CSS/>
 * css 2.1: <https://www.w3.org/TR/CSS2/>
 
 
-## rem单位
-
+## rem
 
 <img src="./img/font-size.jpg">
 
@@ -28,8 +29,11 @@
 
 ## clip
 
+### Resources
+
 * w3c: <https://www.w3.org/TR/2011/REC-CSS2-20110607/visufx.html#overflow-clipping>
 * 博客介绍：<http://www.zhangxinxu.com/wordpress/2011/04/css-clip-rect/>
+* 用css的clip属性制作环形进度条: <http://www.toutiao.com/a6459677884238791181>
 
 ### 格式
 
@@ -45,14 +49,120 @@
 
  <img src="./img/css-clip.png">
 
+* 兼容写法
+
+        .hidden{
+            position: absolute;
+            clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+            clip: rect(1px, 1px, 1px, 1px);
+        }
+
+
 
 ### 例子
 
-    .hidden{
-        position: absolute;
-        clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
-        clip: rect(1px, 1px, 1px, 1px);
-    }
+实现`圆环`进度条。存在问题：`50%`交界处有卡顿，效果不流畅。推荐还是用svg或者canvas实现比较好。
+
+<div id="test_css_clip" class="test">
+<div class="test-container">
+
+    @[data-script="html editable"]<style type="text/css">
+        .clip-outer {
+            float: left;
+            margin-left: 20px;
+            width: 120px;
+            height: 150px;
+        }
+        .clip-left, .clip-right {
+            float: left;
+            position: relative;
+            width: 50px;
+            height: 100px;
+            overflow: hidden;
+        }
+        .clip-left-inner, .clip-right-inner {
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            border: 5px solid yellowgreen;
+            border-radius: 50%;
+            box-sizing: border-box;
+        }
+        .clip-left-inner {
+            clip: rect( 0px, 100px, 100px, 50px );
+            animation: rotate 3s 3s linear forwards;
+        }
+        .clip-right-inner {
+            left: -100%;
+            clip: rect( 0px, 50px, 100px, 0px );
+            animation: rotate 3s 0s linear forwards;
+        }
+        @keyframes rotate {
+            from { transform: rotate( 0deg ); }
+            to { transform: rotate( 180deg ); }
+        }
+        .clip-no-animation {
+            animation: none;
+        }
+    </style>
+    <div class="clip-outer">
+        <div class="clip-left">
+            <div class="clip-left-inner"></div>
+        </div>
+        <div class="clip-right">
+            <div class="clip-right-inner"></div>
+        </div>
+    </div>
+
+    <div class="clip-outer">
+        <div class="clip-left">
+            <div class="clip-left-inner clip-no-animation" style="transform:rotate(0deg);"></div>
+        </div>
+        <div class="clip-right">
+            <div class="clip-right-inner clip-no-animation" style="transform:rotate(60deg);"></div>
+        </div>
+    </div>
+
+    <div class="clip-outer">
+        <div class="clip-left">
+            <div class="clip-left-inner clip-no-animation" style="transform:rotate(0deg);"></div>
+        </div>
+        <div class="clip-right">
+            <div class="clip-right-inner clip-no-animation" style="transform:rotate(120deg);"></div>
+        </div>
+    </div>
+
+    <div class="clip-outer">
+        <div class="clip-left">
+            <div class="clip-left-inner clip-no-animation" style="transform:rotate(0deg);"></div>
+        </div>
+        <div class="clip-right">
+            <div class="clip-right-inner clip-no-animation" style="transform:rotate(180deg);"></div>
+        </div>
+    </div>
+
+    <div class="clip-outer">
+        <div class="clip-left">
+            <div class="clip-left-inner clip-no-animation" style="transform:rotate(60deg);"></div>
+        </div>
+        <div class="clip-right">
+            <div class="clip-right-inner clip-no-animation" style="transform:rotate(180deg);"></div>
+        </div>
+    </div>
+
+    <div class="clip-outer">
+        <div class="clip-left">
+            <div class="clip-left-inner clip-no-animation" style="transform:rotate(120deg);"></div>
+        </div>
+        <div class="clip-right">
+            <div class="clip-right-inner clip-no-animation" style="transform:rotate(180deg);"></div>
+        </div>
+    </div>
+
+    <div style="clear:both;"></div>
+
+</div>
+</div>
 
 
 

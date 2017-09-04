@@ -14,11 +14,13 @@
 2013,
 2012
 
+## Resources
+
 * site: <https://git-scm.com><img src="./img/git.png" height="20">
 * docs: <https://git-scm.com/doc>
 * 参考图文教程： <http://pcottle.github.io/learnGitBranching/?demo>
 
-    github: <https://github.com/pcottle/learnGitBranching>
+    github: <https://github.com/pcottle/learnGitBranching> <iframe src="https://ghbtns.com/github-btn.html?user=pcottle&repo=learnGitBranching&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 
     <img src="./img/git-learnbranch-success.png" style="max-height:400px">
 
@@ -269,6 +271,9 @@ todo:
     # 限定不包含合并分支
     git log --no-merges
 
+    # 设定时间格式
+    git log --date=format:"%Y-%m-%d %H:%M:%S"
+
 
 
 `commit log`按时间先后逆序排布，但是最近的commit不一定比较远的commit对应的代码包新，比如下图，`hangzhou1229-newlogo`分支是第二个commit，但是该分支是基于半个月前的master分支进行的一个patch。
@@ -496,7 +501,7 @@ other目录下的object对象`全都是blob类型`的，但可能对应真实的
 #### 行得通但不够优雅的方式
 
 * 使用c2前的可用commit覆盖当前HEAD，并提交。
-* 再执行`git cherry-pick`，将需要的commit pick回来。
+* 再执行`git cherry-pick`，将`需要的`commit pick回来，特别注意`merge类`的历史commit，确保无副作用再pick。
 
 #### 行不通的方式
 
@@ -1180,7 +1185,7 @@ When we start mixing branches and commits, we will see how these two features co
 
 ## git file mode
 
-* refer: <http://stackoverflow.com/questions/1580596/how-do-i-make-git-ignore-file-mode-chmod-changes>
+> reference: <http://stackoverflow.com/questions/1580596/how-do-i-make-git-ignore-file-mode-chmod-changes>
 
 文件内容未变，但是`pull`的时候发现以下`diff`信息：
 
@@ -1228,15 +1233,17 @@ It's a very straightforward way of saying that you would like to `copy a series 
     git checkout master
     git cherry-pick C3 C4 C7
 
-相比rebase和merge，它的特殊之处在于：
+相比`rebase`和`merge`，它的特殊之处在于：
 
 * 可以`精确指定commit`
-* 当然，它运行得好的前提也是，你必须精确知道你要哪个commit，但有时候你不一定知道。
+* 当然，它运行得好的前提也是，你必须`精确`知道你要哪个commit，但有时候你不一定知道。
 
 另外，还有：
 
     git fetch
     git cherry-pick origin/master
+
+可以cherry-pick一个`分支`，这也容易理解。
 
 
 
@@ -1267,7 +1274,11 @@ It's a very straightforward way of saying that you would like to `copy a series 
 
 ## ssh访问
 
-1. 本地机器上生成SSH Key
+### sshkey验证
+
+> Linux或Mac适用
+
+1. 本地机器上生成SSH Key。其他参考：<ref://../linux/ssh.md.html>
 
     1. 先查看是否存在`~/.ssh`，该目录下存在两个文件
             
@@ -1291,7 +1302,9 @@ It's a very straightforward way of saying that you would like to `copy a series 
     以上显示已经添加成功
 
 
-windows机器上添加sshkey，可以使用`git bash`来生成。
+### windows的情况
+
+windows机器上添加`sshkey`，可以使用`git bash`来生成。
 
 
 

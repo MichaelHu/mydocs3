@@ -933,13 +933,15 @@ gtop: <https://github.com/aksakalli/gtop>，node实现的终端可视化监控�
 
 ### 密码串传递
 
-密码串传递比较特殊，有以下五种参数，比如enc命令的密码通过变量传递为`-pass pass:$password`：
+密码串传递比较特殊，有以下`五种参数`，比如enc命令的密码通过变量传递为`-pass pass:$password`：
 
     pass:password 
     env:var
     file:pathname
     fd:number
     stdin
+
+`git log --date=format:"%Y-%m-%d %H:%M:%S"`有类似的option传递，参考<ref://../git/git.md.html>
 
 
 
@@ -1211,7 +1213,7 @@ sed的`正则（使用-E( mac )或-r( linux )）`接近`perl`的正则，比如�
 
     sed '1!G;h;$!d' file
 
-当然，还有另外的办法，但这个办法是`比较简单`的。（`理解`：对于n行文本，`前n-1行`输出为空，`最后一行`输出逆序行）。
+当然，还有另外的办法，但这个办法是`比较简单`的。（`理解`：对于n行文本，`前n-1行`输出为空，`最后一行`输出逆序行）。该命令用于同`vim`的命令行结合，能对选中行按行号逆序排列，参考<ref://../vim/vim.md.html>
 
 sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://../encoding/character-escape.md.html>
 

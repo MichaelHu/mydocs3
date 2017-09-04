@@ -5,13 +5,13 @@
 
 ## Resources
 
-* github: <https://github.com/ecomfe/zrender>
+* github: <https://github.com/ecomfe/zrender> <iframe src="https://ghbtns.com/github-btn.html?user=ecomfe&repo=zrender&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 * `v3.5.2`: <https://github.com/ecomfe/zrender/tree/3.5.2>
 
 
 ## Features
 
-* 分层渲染的思想
+* `分层`渲染的思想
 * MVC驱动模型
 * 使用`AMD`风格编写，使用`r.js`导出
 * 代码风格简洁易懂
@@ -276,6 +276,7 @@
                 attr( key, value )
                 setClipPath( clipPath )
                 removeClipPath()
+                // 添加animators以及clipPath至zr
                 addSelfToZr( zr )
                 removeSelfFromZr( zr )
 
@@ -384,7 +385,7 @@
             filter( obj, cb, context )
             find( obj, cb, context )
             bind( func, context )
-            // `Echarts.prototype.convertFromPixel()`方法由curry生成
+            // `Echarts.prototype.convertFromPixel()`方法由curry生成；此函数可以用于封装参数
             curry( func )
             isArray( value )
             isFunction( value )
@@ -598,6 +599,8 @@
 ## graphic/
 
 ### Displayable
+
+> 继承自`Element`类，是`Path`的父类
 
     // Base class of all displayable graphic objects
     Displayable.js

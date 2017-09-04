@@ -2,7 +2,7 @@
 
 ## Setup Configuration
 
-将要下载的组件简要信息：
+将要下载的组件的简要信息：
 
     Setup Type: Standard
     SDK Folder: /Users/hudamin/Library/Android/sdk
@@ -33,3 +33,8 @@
     Android Studio连接的升级服务器jcenter可能需要翻墙
 
 
+## 右下角弹窗提示
+
+    The follwing components are ready to update: Android Emulator, Google Repository, Intel x86
+    Emulator Accelerator (HAXM installer), Android SDK Platform 26, Google Play Intel x86 Atom
+    System Image

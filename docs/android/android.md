@@ -1,6 +1,6 @@
 # android
 
-
+## 相关内容
 
 * java
 * android api: Activity, service, intent等
@@ -11,7 +11,7 @@
 
 ## versions
 
-谷歌推出的Android版本代号，几乎每一个版本代号都与`食品名称`有关。
+`谷歌`推出的Android版本代号，几乎每一个版本代号都与`食品名称`有关。
 
 ### android o
 
@@ -58,6 +58,12 @@
 ## Tips
 
 * `*.iml`文件，`Intellij IDEA`自动创建的工程配置文件。是XML的一种，称为`中间标记语言`。maybe `Intermediate Markup Language`
+* `APT` - Annotation Processing Tool，`注解处理工具`。相关参考如下：
+    * 161015 利用APT实现Android编译时注解 <http://blog.csdn.net/mcryeasy/article/details/52740041>
+    * 160204 android-apt <http://www.jianshu.com/p/2494825183c5>
+    * 161020 android-apt 即将退出历史舞台 <http://blog.csdn.net/asce1885/article/details/52878076> 
+        ，`Android Gradle` 插件提供了名为 `annotationProcessor` 的功能来完全代替 `android-apt`，该文
+        还介绍了如何从`android-apt`切换到`annotationProcessor`。
 
 
 ## 架构
