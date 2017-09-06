@@ -9,6 +9,15 @@
 </style>
 <script src="http://258i.com/static/build/babel/babel.min.js"></script> 
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
+<script src="./data/all.js"></script>
+
+
+## 步骤
+
+* 画布创建、分辨率适配等
+* 支持通用图谱数据格式
+* 绘制节点、边、标签
+* 第一个类：Graph
 
 
 ## API设计
@@ -16,6 +25,11 @@
     启用ES6语法
     支持移动版
     可以只支持canvas，其他暂不考虑
+    使用prefix fields
+    graph可以clone
+    视图中点为坐标轴原点
+    多renderer
+    暂不做私有属性
     场景收集
         new
         destroy
@@ -25,6 +39,7 @@
             addNode()
             addEdge()
         refresh() 
+        clear()
         layers
         event
             onnodeclick
@@ -50,6 +65,152 @@
 
 
 ## 基础方法
+
+### getNodesRect()
+
+    @[data-script="babel-loose"]function getNodesRect( nodes, options ) {
+
+        var opt = options || {}
+            , xMin = Infinity
+            , yMin = Infinity
+            , xMax = -Infinity
+            , yMax = -Infinity
+            , readPrefix = opt.readPrefix || ''
+            , ignoreNodeSize = typeof opt.ignoreNodeSize == 'undefined'
+                ? true : opt.ignoreNodeSize
+            , node, i, x, y, size
+            ;
+
+        i = nodes.length - 1;
+        while( i >= 0 ) {
+            node = nodes[ i ];
+            x = node[ readPrefix + 'x' ] || 0;
+            y = node[ readPrefix + 'y' ] || 0;
+            size = ignoreNodeSize 
+                ? 0 : node[ readPrefix + 'size' ] || node[ 'size' ] || 0;
+            if( x - size < xMin ) {
+                xMin = x - size;
+            }
+            if( x + size > xMax ) {
+                xMax = x + size;
+            }
+            if( y - size < yMin ) {
+                yMin = y - size;
+            }
+            if( y + size > yMax ) {
+                yMax = y + size;
+            }
+            i--;
+        }
+
+        if( nodes.length == 0 ) {
+            xMin = 0;
+            yMin = 0;
+            xMax = 0;
+            yMax = 0;
+        }
+
+        return {
+            x: xMin
+            , y: yMin
+            , w: xMax - xMin
+            , h: yMax - yMin
+        };
+
+    }
+
+### alignCenter()
+
+    @[data-script="babel-loose"]function alignCenter( graph, options ){
+        let nodes = graph.nodes() || []
+            , opt = options || {}
+            , writePrefix = opt.writePrefix || ''
+            , readPrefix = opt.readPrefix || ''
+            , rect
+            , onNode = opt.onNode || function() {}
+            , center
+            , offset
+            ;
+
+        if ( !nodes.length ) {
+            return;
+        }
+
+        rect = getNodesRect( nodes );
+        center = {
+            x: rect.x + rect.w / 2
+            , y: rect.y + rect.h / 2
+        };
+
+        offset = { x: 0 - center.x, y: 0 - center.y };
+
+        nodes.forEach( ( node ) => {
+            onNode( node );
+            node[ writePrefix + 'x' ] = node[ readPrefix + 'x' ] + offset.x;
+            node[ writePrefix + 'y' ] = node[ readPrefix + 'y' ] + offset.y;
+        } );
+    }
+
+
+### rescale()
+
+    @[data-script="babel-loose"]function rescale( graph, width, height, options ){
+        let nodes = graph.nodes() || []
+            , opt = options || {}
+            , readPrefix = opt.readPrefix || ''
+            , writePrefix = opt.writePrefix || ''
+            , rect, ratio
+            , onNode = opt.onNode || function() {}
+            , maxNodeSize = opt.maxNodeSize
+            , minNodeSize = opt.minNodeSize
+            , _maxNodeSize, _minNodeSize
+            , ignoreNodeSize = typeof opt.ignoreNodeSize == 'undefined'
+                ? true : opt.ignoreNodeSize
+            , w, h
+            ;
+
+        minNodeSize = minNodeSize || maxNodeSize || 10;
+        maxNodeSize = maxNodeSize || minNodeSize || 20;
+        w = ignoreNodeSize ? width : width - 2 * maxNodeSize;
+        h = ignoreNodeSize ? height : height - 2 * maxNodeSize;
+
+        if ( !nodes.length ) {
+            return;
+        }
+
+        _maxNodeSize = 0;
+        _minNodeSize = Infinity;
+        nodes.forEach( ( node ) => {
+            if ( node.size > _maxNodeSize ) {
+                _maxNodeSize = node.size;
+            }
+            if ( node.size < _minNodeSize ) {
+                _minNodeSize = node.size;
+            }
+        } );
+
+        rect = getNodesRect( nodes, { ignoreNodeSize: true } );
+        if ( w * h * rect.w * rect.h == 0 ) {
+            return;
+        }
+
+        ratio = Math.min( w / rect.w, h / rect.h );
+
+        let sizeRange = maxNodeSize - minNodeSize;
+        let _sizeRange = _maxNodeSize - _minNodeSize;
+        nodes.forEach( ( node ) => {
+            onNode( node );
+            node[ writePrefix + 'x' ] = ratio * node[ readPrefix + 'x' ];
+            node[ writePrefix + 'y' ] = ratio * node[ readPrefix + 'y' ];
+            if ( _sizeRange == 0 ) {
+                node[ writePrefix + 'size' ] = minNodeSize + sizeRange / 2;
+            }
+            else {
+                node[ writePrefix + 'size' ] = ( node[ readPrefix + 'size' ] - _minNodeSize ) 
+                    / _sizeRange * sizeRange + minNodeSize;
+            }
+        });
+    }
 
 ### createCanvas()
 
@@ -85,21 +246,169 @@
         canvas.height = cssSize.h * ratio;
         canvas.style.width = cssSize.w + 'px';
         canvas.style.height = cssSize.h + 'px';
+        // the center point is ( 0, 0 )
+        ctx.translate( cssSize.w / 2, cssSize.h / 2 );
         ctx.scale( ratio, ratio );
     }
+
+
+## 类
+
+### Graph
+
+> 存储和管理图谱的节点、边数据，提供高效的相关基本操作
+
+    @[data-script="babel-loose"]class _Graph {
+
+        constructor( nodes, edges ) {
+            let me = this;
+            me._nodesArray = [];
+            me._edgesArray = [];
+            me._nodesIndex = {};
+            me._edgesIndex = {};
+            me.init( nodes, edges );
+        }
+
+        init( nodes, edges ) {
+            let me = this;
+            me.addNodes( nodes );
+            me.addEdges( edges );
+        }
+
+        nodes( ids ) {
+            let me = this;
+            if ( ids === undefined ) {
+                return me._nodesArray.slice( 0 );
+            }
+
+            if ( typeof ids === 'string' || typeof ids === 'number' ) {
+                return me._nodesIndex[ ids ];
+            }
+
+            if ( Object.prototype.toString.call( ids ) === '[object Array]' ) {
+                let _nodes = [];
+                for ( let i = 0; i < ids.length; i++ ) {
+                    if ( typeof ids[ i ] === 'string' || typeof ids[ i ] === 'number' ) {
+                        _nodes.push( me._nodesIndex[ ids[ i ] ] );
+                    }
+                    else {
+                        throw 'nodes: node must have a string or number id.';
+                    }
+                }
+                return _nodes;
+            }
+            throw 'nodes: wrong arguments.';
+        }
+
+        edges( ids ) {
+            let me = this;
+            if ( ids === undefined ) {
+                return me._edgesArray.slice( 0 );
+            }
+
+            if ( typeof ids === 'string' || typeof ids === 'number' ) {
+                return me._edgesIndex[ ids ];
+            }
+
+            if ( Object.prototype.toString.call( ids ) === '[object Array]' ) {
+                let _edges = [];
+                for ( let i = 0; i < ids.length; i++ ) {
+                    if ( typeof ids[ i ] === 'string' || typeof ids[ i ] === 'number' ) {
+                        _edges.push( me._edgesIndex[ ids[ i ] ] );
+                    }
+                    else {
+                        throw 'edges: edge must have a string or number id.';
+                    }
+                }
+                return _edges;
+            }
+            throw 'edges: wrong arguments.';
+        }
+
+        addNodes( nodes ) {
+            let me = this;
+            if ( !nodes || !nodes.length ) {
+                return me;
+            }
+            nodes.forEach( node => me.addNode( node ) );
+            return me;
+        }
+
+        addEdges( edges ) {
+            let me = this;
+            if ( !edges || !edges.length ) {
+                return me;
+            }
+            edges.forEach( edge => me.addEdge( edge ) );
+            return me;
+        }
+
+        addNode( node ) {
+            let me = this
+                , validNode = {}
+                ;
+
+            if ( typeof node.id !== 'string' && typeof node.id !== 'number' ) {
+                throw 'The node must have a string or number id.';
+            }
+
+            for ( let k in node ) {
+                validNode[ k ] = node[ k ];
+            }
+            me._nodesArray.push( validNode );
+            me._nodesIndex[ validNode.id ] = validNode;
+            return me;
+        }
+
+        addEdge( edge ) {
+            let me = this
+                , validEdge = {}
+                ;
+
+            if ( typeof edge.id !== 'string' && typeof edge.id !== 'number' ) {
+                throw 'The edge must have a string or number id.';
+            }
+
+            if ( ( typeof edge.source !== 'string' && typeof edge.source !== 'number' ) 
+                || !me._nodesIndex[ edge.source ] ) {
+                throw 'The edge source must have an existing node id.';
+            }
+
+            if ( ( typeof edge.target !== 'string' && typeof edge.target !== 'number' ) 
+                || !me._nodesIndex[ edge.target ] ) {
+                throw 'The edge target must have an existing node id.';
+            }
+
+            for ( let k in edge ) {
+                validEdge[ k ] = edge[ k ];
+            }
+            me._edgesArray.push( validEdge );
+            me._edgesIndex[ validEdge.id ] = validEdge;
+            return me;
+        }
+        
+    }
+
+    var Graph = _Graph;
+
 
 
 ## 绘制基本图谱
 
 ### drawNode()
 
-    @[data-script="babel-loose"]function drawNode( context, x, y, label, color ) {
-        let r = 700;
+    @[data-script="babel-loose"]function drawNode( context, node ) {
+        let r = node.size
+            , x = node.x
+            , y = node.y
+            , color = node.color || '#2ca02c';
+            ;
+
         context.save();
         context.beginPath();
         context.arc( x, y, r, 0, Math.PI * 2 ); 
         // context.rect( x - r / 2, y - r / 2, r, r ); 
-        context.strokeStyle = color || '#2ca02c';
+        context.strokeStyle = color;
         context.stroke();
         context.restore();
     }
@@ -107,12 +416,16 @@
 
 ### drawEdge()
 
-    @[data-script="babel-loose"]function drawEdge( context, source, target, label, color ) {
+    @[data-script="babel-loose"]function drawEdge( context, edge, source, target, options ) {
+        let label = edge.label
+            , color = edge.color || '#2ca02c';
+            ;
+
         context.save();
         context.beginPath();
         context.moveTo( source.x, source.y );
         context.lineTo( target.x, target.y );
-        context.strokeStyle = color || '#2ca02c';
+        context.strokeStyle = color;
         context.stroke();
         context.restore();
     }
@@ -126,32 +439,68 @@
 <div class="canvas-wrapper"></div>
 <div class="test-console"></div>
 
-    @[data-script="babel"](function(){
+    @[data-script="babel editable"](function(){
 
         let containerId = 'test_basic_network';
         let s = fly.createShow( '#' + containerId );
-        let canvas = createCanvas( '#' + containerId + ' .canvas-wrapper' );
+        let container = document.getElementById( containerId );
+        let canvas = container.canvas 
+            || createCanvas( '#' + containerId + ' .canvas-wrapper' );
         let context = canvas.getContext( '2d' );
         const MAX_NODES_FIRST = 500;
         let width = canvas.offsetWidth;
         let height = canvas.offsetHeight;
         let source, target;
 
+        container.canvas = canvas;
+        context.clearRect( -width / 2, -height / 2, width, height );
+
+        // let g1 = networkGraph_circle_0628;
+        // let g1 = networkGraph_mesh_0628;
+        // let g1 = getLineGraph(14, 30, {nodeSize: 8});
+        // let g1 = networkGraph_FR;
+        // let g1 = networkGraph_ForceAtlas2;
+        // let g1 = networkGraph0520;
+        // let g1 = networkGraph_grid_0521;
+        // let g1 = networkGraph_tree_0521;
+        // let g1 = networkGraph_2circles_0523;
+        // let g1 = networkGraph_edges_between_the_same_level_nodes;
+        // let g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        // let g1 = networkGraph_tree_0524;
+        // let g1 = networkGraph_many_children_0526;
+        // let g1 = networkGraph_star_161017;
+        // let g1 = networkGraph_person_event_event_person_0729;
+        // let g1 = networkGraph_person_event_event_person_0801;
+        // let g1 = networkGraph_triangle_0801;
+        let g1 = networkGraph_triangle_0801_2;
+        // let g1 = networkGraph_complex_hier_160816;
+        // let g1 = networkGraph_complex_hier_160817;
+        // let g1 = networkGraph_complex_hier_160820;
+        // let g1 = networkGraph_complex_hier_160823;
+        // let g1 = networkGraph_circle_group_1118;
+
+        let graph = new Graph( g1.nodes, g1.edges );
         let startTime = new Date().getTime();
-        for( let i = 0; i < MAX_NODES_FIRST; i++ ) {
-            source = target;
-            let x = width * Math.random();
-            let y = height * Math.random();
-            target = { x: x, y: y };
-            drawNode( context, x, y, 'n' + i );
-            if ( source ) {
-                drawEdge( context, source, target, 'e' + i, '#fff' );
-            }
-        }
+        rescale( graph, width, height
+            , { 
+                ignoreNodeSize: false
+                , minNodeSize: 5
+                , maxNodeSize: 10
+            } 
+        );
+        alignCenter( graph );
+        graph.edges().forEach( ( edge ) => {
+            let source = graph.nodes( edge.source );
+            let target = graph.nodes( edge.target );
+            drawEdge( context, edge, source, target );
+        } );
+        graph.nodes().forEach( ( node ) => {
+            drawNode( context, node );
+        } );
         let endTime = new Date().getTime();
 
         s.show( 'testing start ...' );
-        s.append_show( MAX_NODES_FIRST + ' nodes, ' + ( endTime - startTime ) / 1000 + 's' );
+        s.append_show( graph.nodes().length + ' nodes, ' + ( endTime - startTime ) / 1000 + 's' );
 
     })();
 
@@ -209,12 +558,12 @@
         console.log( startTime );
         for( let i = 0; i < MAX_NODES_FIRST; i++ ) {
             source = target;
-            let x = width * Math.random();
-            let y = height * Math.random();
+            let x = ( Math.random() > 0.5 ? 1 : -1 ) * width * Math.random();
+            let y = ( Math.random() > 0.5 ? 1 : -1 ) * height * Math.random();
             target = { x: x, y: y };
-            drawNode( context, x, y, 'n' + i );
+            drawNode( context, { x: x, y: y, size: 800 } );
             if ( source ) {
-                drawEdge( context, source, target, 'e' + i, '#fff' );
+                drawEdge( context, { label: 'e' + i, color: '#fff' }, source, target );
             }
         }
         let endTime = new Date().getTime();

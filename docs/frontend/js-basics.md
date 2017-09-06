@@ -510,6 +510,9 @@ IE9以下，`hasEnumBug`
                 , { name: { value: 'hudamin', enumerable: true } } 
             );
         obj2.sayHello();
+        for ( var i in obj2 ) {
+            s.append_show( i );
+        }
 
         s.append_show( '\ntest 3 ...' );
         // 继承数组原型链

@@ -155,6 +155,7 @@ import.js:
 
 
 * 浅谈ES6中`super`关键字 <http://www.cnblogs.com/liutie1030/p/5997446.html>
+* `class`也是具有`块级作用域`的关键字
 
 
 
@@ -235,6 +236,9 @@ import.js:
 
     for ( let i=0; i<2; i++ )
         console.log( i );   // 输出: 0,1
+
+* let支持`块级`作用域 
+* 不允许`重复`声明
 
 
 

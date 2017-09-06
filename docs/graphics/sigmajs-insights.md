@@ -483,6 +483,7 @@
         _indexes
         _methodBindings
         _methodBeforeBindings
+        // 通过该方法，data数据作为scope封装到method中，以便支持私有属性
         __bindGraphMethod( methodName, scope, fn )
         __emptyObject( obj )
         graph( settings )
