@@ -41,6 +41,7 @@
     * `batchEdgesDrawing`选项，默认为`false`，此时边、节点以及标签都在一个canvas上绘制；如果设置为`true`，则边单独一个canvas绘制，节点和标签在另一个canvas绘制。
     * `mouse`和`hover`在同一个canvas绘制
 * `sigme.middlewares.rescale()`方法，对x, y在`[-1, 1]`的情况下进行rescale，此时sideMargin的设置对rescale的效果影响特别大，如果设置sideMargin = 10，rescale的效果就很差了，该值的设置应该参考x, y的范围，具体可参考`增量力导向布局的算法验证部分`
+* `camera.goTo()`方法调用，会派发`coordinatesUpdated`事件，该事件会触发调用sigma实例的`renderCamera()`方法，进而调用对应camera相关的`renderer`的`render()方法`
 * `四叉树应用` todo
 
 

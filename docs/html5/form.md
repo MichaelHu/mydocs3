@@ -9,6 +9,7 @@
     vertical-align: middle;
 }
 </style>
+<script src="http://258i.com/static/build/babel/babel.min.js"></script> 
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 
 
@@ -165,6 +166,83 @@
 
 
 
+### selection
+
+#### 相关DOM interface
+
+    void select();
+    attribute unsigned long selectionStart;
+    attribute unsigned long selectionEnd;
+    attribute DOMString selectionDirection;
+    void setRangeText( DOMString replacement );
+    void setRangeText( DOMString replacement, unsigned long start, unsigned long end
+            , optional SelectionMode selectionMode = "preserve" );
+    void setSelectionRange( unsigned long start, unsigned long end, optional DOMString direction );
+
+
+#### Example
+
+以下例子展示鼠标`光标位置`的获取。
+
+<div id="test_selection_js" class="test">
+<div class="test-container">
+<div class="test-console"></div>
+
+    @[data-script="html"]<style type="text/css">
+        #test_selection { 
+            margin: 10px 0;
+            padding: 8px;
+            border: 2px dotted #999;
+        }
+        #test_selection input {
+            display: block;
+            width: 200px;
+        }
+        #test_selection textarea {
+            display: block;
+            width: 300px;
+        }
+    </style>
+    <form id="test_selection">
+        <input type="text">
+        <textarea></textarea>
+    </form>
+
+以下为js代码：
+
+    @[data-script="babel"](function(){
+
+        let s = fly.createShow('#test_selection_js');
+        let $input = $( '#test_selection input' );
+        let $textarea = $( '#test_selection textarea' );
+
+        $input.val( 'abcdefghi' )[ 0 ].select();
+        $textarea.val( 'abcdefghi\noknetdakfdfj' );
+
+        $input.on( 'keypress', ( e ) => {
+            s.append_show( 'input cursor', $( e.target )[ 0 ].selectionStart );
+        } );
+
+        $textarea.on( 'keypress', ( e ) => {
+            s.append_show( 'textarea cursor', $( e.target )[ 0 ].selectionStart );
+        } );
+
+        s.show( 'testing ... ' );
+
+    })();
+
+<div class="test-panel"></div>
+</div>
+</div>
+
+参考文章：
+
+* `JS获取文本框焦点光标位置、选中起始位置、终止位置、选择内容` <http://blog.csdn.net/itdragons/article/details/52186058>
+    
+
+
+
+
 ## select
 
 <div id="test_select" class="test">
@@ -227,20 +305,20 @@
 
 有一种类型曾经提出来过，但是相关标准已经不再维护，所以慎用。那就是`application/json`
 
-    <form enctype='application/json'>
-      <input name='name' value='Bender'>
-      <select name='hind'>
+    <form enctype="application/json">
+      <input name="name" value="Bender">
+      <select name="hind">
         <option selected>Bitable</option>
         <option>Kickable</option>
       </select>
-      <input type='checkbox' name='shiny' checked>
+      <input type="checkbox" name="shiny" checked>
     </form>
 
     // produces
     {
-      "name":   "Bender"
-    , "hind":   "Bitable"
-    , "shiny":  true
+        "name":   "Bender"
+        , "hind":   "Bitable"
+        , "shiny":  true
     }
 
 相关标准文档在：<https://www.w3.org/TR/2015/NOTE-html-json-forms-20150929/>

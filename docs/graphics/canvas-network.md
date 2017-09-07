@@ -35,6 +35,14 @@
         font( options )
 * 添加Network类的`defaultSettings`以及`settings`
 
+> 170907
+
+* 第三个类：`Camera`，管理视角参数，可以投射到多个renderer（荧幕）
+* 第四个类：`Renderer`，管理画布（荧幕）
+* 第五个类：`Network2`，临时类，用于测试`Camera-Renderer`渲染机制
+
+以上类只是完成了基本代码编写，尚需要demo验证
+
 
 ## API设计
 
@@ -46,6 +54,7 @@
     使用prefix fields
     graph可以clone
     视图中点为坐标轴原点
+    多camera
     多renderer
     分层渲染
     19个事件支持
@@ -86,6 +95,13 @@
             onmousewheel
             oncontextmenu
 
+
+### Sigmajs晦涩之处
+
+    Camera和Renderer的关系
+    Renderer没有默认指定中央点为(0, 0)
+
+
 ### API草案
 
     Network
@@ -104,6 +120,7 @@
         addEdges( edges )
         addNode( node )
         addEdge( edge )
+
 
 
 ## 基础方法
@@ -661,6 +678,228 @@
 
     var Network = _Network;
 
+### Network2
+
+> 临时测试用
+
+    class __Network {
+
+        constructor( options ) {
+            let me = this
+                , opt = options || {}
+                , graphData = opt.graph || {} 
+                ;
+
+            me.defaultSettings = {
+                drawNodeLabels: false
+                , onNode: drawNode
+                , onEdge: drawEdge
+                , maxNodeSize: 20
+                , minNodeSize: 5
+
+                // default color
+                , nodeLabelColor: '#111'
+                , nodeFillColor: '#2ca02c'
+                , nodeStrokeColor: '#2ca02c'
+                , edgeLabelColor: '#111'
+                , edgeFillColor: '#999'
+                , edgeStrokeColor: '#999'
+
+                // default fontStyle
+                , fontStyle: 'normal'
+                , fontVariant: 'normal'
+                , fontWeight: 'normal'
+                , fontSize: '12px'
+                , lineHeight: '14px'
+                , fontFamily: 'sans-serif'
+            };
+
+            me.settings = utils.extend( {}, me.defaultSettings, opt );
+            me.graph = new Graph( graphData.nodes, graphData.edges );
+            me.cameras = [];
+        }
+
+        setGraph( nodes, edges ) {
+            let me = this;
+            me.graph.set( nodes, edges );
+            return me;
+        }
+
+        addCamera( options ) {
+            let me = this
+                , opt = utils.extend( {}, me.settings, options )
+                , camera = new Camera( me.graph, opt )
+                ;
+            me.cameras.push( camera );
+        }
+
+        refresh( options ) {
+            let me = this
+                , opt = utils.extend( {}, me.settings, options )
+                ;
+            me.cameras.forEach( ( camera ) => camera.refresh() );
+        }
+
+    }
+
+    var Network2 = __Network;
+
+
+### Camera
+
+> 管理`视角`，包括视中心、缩放、旋转等参数
+
+* camera管理从属于它的renderer
+* camera需要有一套独立于graph的`标准化`坐标，其相关的renderer的渲染基于这套标准化坐标
+* 坐标统一保存在graph中，不同套坐标使用`前缀`区分
+* camera是自带`胶片`（graph数据）的，`goTo( x, y, ratio, angle )`的含义是将胶片的`(x,y)`投射到荧幕（renderer）的`中心点`，也就是`(0, 0)`；将胶片`放大`ratio倍，再`逆时针`旋转angle弧度
+
+以下为代码实现：
+
+    @[data-script="babel-loose"]class _Camera {
+
+        constructor( graph, options ) {
+            let me = this
+                ;
+
+            me.settings = utils.defaults( {}, options );
+            me.prefix = 'c0:';
+            me.graph = graph;
+            me.x = 0;
+            me.y = 0;
+            me.angle = 0;
+            me.ratio = 1;
+
+            me.renderers = [];
+            if ( me.settings.renderers ) {
+                me.initRenderers();
+            }
+        }
+
+        initRenderers() {
+            // todo ....
+        }
+
+        addRenderer( container, options ) {
+            let me = this
+                , opt = utils.extend( {}, me.settings, options )
+                , renderer = new Renderer( container, me, opt )
+                ;
+            me.renderers.push( renderer );
+        }
+
+        snapshot() {
+            let me = this
+                , prefix = me.prefix
+                ;
+            me.graph.nodes().forEach( ( node ) => {
+                node[ prefix + 'x' ] = node.x;
+                node[ prefix + 'y' ] = node.y;
+            } );
+            return me;
+        }
+
+        project() {
+            let me = this
+                , readPrefix = me.prefix
+                , writePrefix = 'r_' + me.prefix 
+                ;
+            me.graph.nodes().forEach( ( node ) => {
+                node[ writePrefix + 'x' ] = node[ readPrefix + 'x' ];
+                node[ writePrefix + 'y' ] = node[ readPrefix + 'y' ];
+            } );
+            return me;
+        }
+
+        refresh() {
+            let me = this
+                ;
+            me.snapshot().project();
+            me.renderers.forEach( ( renderer ) => renderer.render() );
+        }
+
+    }
+    var Camera = _Camera;
+
+
+### Renderer
+
+> 渲染器（荧幕）
+
+* 不同于sigmajs，canvas层面调整荧幕中央为`(0, 0)`
+
+
+以下为代码实现：
+
+    @[data-script="babel-loose"]class _Renderer {
+
+        constructor( container, camera, options ) {
+            let me = this
+                ;
+
+            me.settings = utils.defaults( {}, options );
+            me.camera = camera;
+            me.container = container;
+            me.canvas = createCanvas( container );
+            me.context = me.canvas.getContext( '2d' );
+        }
+
+        draw( options ) {
+
+            let me = this
+                , opt = utils.defaults( {}, options, me.settings )
+                , graph = me.camera.graph
+                , onNode = opt.onNode
+                , onEdge = opt.onEdge
+                , nodeOption = utils.extend( {}, opt, {
+                    fontStyle: opt.nodeFontStyle || opt.fontStyle
+                    , fontVariant: opt.nodeFontVariant || opt.fontVariat
+                    , fontWeight: opt.nodeFontWeight || opt.fontWeight
+                    , fontSize: opt.nodeFontSize || opt.fontSize
+                    , lineHeight: opt.nodeLineHeight || opt.lineHeight
+                    , fontFamily: opt.nodeFontFamily || opt.fontFamily
+                } )
+                , edgeOption = utils.extend( {}, opt, {
+                    fontStyle: opt.edgeFontStyle || opt.fontStyle
+                    , fontVariant: opt.edgeFontVariant || opt.fontVariat
+                    , fontWeight: opt.edgeFontWeight || opt.fontWeight
+                    , fontSize: opt.edgeFontSize || opt.fontSize
+                    , lineHeight: opt.edgeLineHeight || opt.lineHeight
+                    , fontFamily: opt.edgeFontFamily || opt.fontFamily
+                } )
+                ;
+
+            graph.edges().forEach( ( edge ) => {
+                let source = graph.nodes( edge.source );
+                let target = graph.nodes( edge.target );
+                onEdge( me.context, edge, source, target, nodeOption );
+            } );
+            graph.nodes().forEach( ( node ) => {
+                onNode( me.context, node, edgeOption );
+            } );
+
+            return me;
+
+        }
+
+        render( options ) {
+
+            let me = this
+                , width = me.container.offsetWidth
+                , height = me.container.offsetHeight
+                ;
+            me.context.clearRect(
+                - width / 2, - height / 2
+                , width, height
+            );
+            return me.draw( options );
+
+        }
+
+    }
+    var Renderer = _Renderer;
+
+
 
 ## 绘制基本图谱
 
@@ -734,6 +973,8 @@
                     '#' + containerId + ' .canvas-wrapper' 
                     , {
                         drawNodeLabels: conf_drawNodeLabels
+                        , maxNodeSize: 10
+                        , minNodeSize: 5
                         , fontFamily: 'Arial'
                         , nodeLabelColor: '#666'
                     }
@@ -770,9 +1011,7 @@
 
         let startTime = new Date().getTime();
         net.refresh( {
-            maxNodeSize: 10
-            , minNodeSize: 5
-            , drawNodeLabels: conf_drawNodeLabels
+            drawNodeLabels: conf_drawNodeLabels
         } );
         let endTime = new Date().getTime();
 
@@ -787,6 +1026,9 @@
 </div>
 
 
+
+
+### 阶段性验证2
 
 
 
