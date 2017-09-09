@@ -717,6 +717,7 @@
             me.settings = utils.extend( {}, me.defaultSettings, opt );
             me.graph = new Graph( graphData.nodes, graphData.edges );
             me.cameras = [];
+            me.addCamera( me.settings );
         }
 
         setGraph( nodes, edges ) {
@@ -727,9 +728,13 @@
 
         addCamera( options ) {
             let me = this
-                , opt = utils.extend( {}, me.settings, options )
-                , camera = new Camera( me.graph, opt )
+                , opt = utils.extend( {}, me.settings)
                 ;
+
+            delete opt.renderers;
+            utils.extend( opt, options );
+
+            let camera = new Camera( me.graph, opt )
             me.cameras.push( camera );
         }
 
@@ -747,10 +752,10 @@
 
 ### Camera
 
-> 管理`视角`，包括视中心、缩放、旋转等参数
+> 投影机，管理`视角`，包括视中心、缩放、旋转等参数
 
 * camera管理从属于它的renderer
-* camera需要有一套独立于graph的`标准化`坐标，其相关的renderer的渲染基于这套标准化坐标
+* camera需要有一套独立于graph的`标准化`坐标（可能是`rescale`以后的坐标），其相关的renderer的渲染基于这套标准化坐标
 * 坐标统一保存在graph中，不同套坐标使用`前缀`区分
 * camera是自带`胶片`（graph数据）的，`goTo( x, y, ratio, angle )`的含义是将胶片的`(x,y)`投射到荧幕（renderer）的`中心点`，也就是`(0, 0)`；将胶片`放大`ratio倍，再`逆时针`旋转angle弧度
 
@@ -777,7 +782,17 @@
         }
 
         initRenderers() {
-            // todo ....
+            let me = this
+                , opt = me.settings
+                , renderers = opt.renderers
+                ;
+
+            if ( typeof renderers.length != 'undefined' ) {
+                renderers.forEach( ( renderer ) => me.addRenderer( renderer.container, opt ) );
+            }
+            else {
+                me.addRenderer( renderers.container, opt );
+            }
         }
 
         addRenderer( container, options ) {
@@ -824,7 +839,7 @@
 
 ### Renderer
 
-> 渲染器（荧幕）
+> 荧幕，图形渲染器
 
 * 不同于sigmajs，canvas层面调整荧幕中央为`(0, 0)`
 

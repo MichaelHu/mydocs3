@@ -515,22 +515,21 @@
 
 ## CSS3特效
 
-1. `miniMAC/magic (3299 stars)` : <http://minimamente.com/example/magic_animations/>
+1. `animate.css`: <https://daneden.github.io/animate.css/> github: <https://github.com/daneden/animate.css> <iframe src="https://ghbtns.com/github-btn.html?user=daneden&repo=animate.css&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
+
+2. `miniMAC/magic` : <http://minimamente.com/example/magic_animations/> github: <https://github.com/miniMAC/magic> <iframe src="https://ghbtns.com/github-btn.html?user=miniMAC&repo=magic&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
    
     <img src="./img/magic-animations.png" style="max-width:400px">
 
-2. `joemottershaw/animations (38499 stars)`: <https://daneden.github.io/animate.css/>
-
-3. `Flux Slider (1214 stars)`: 
-
-    基于图片的动画特效：<http://www.joelambert.co.uk/flux/> 
+3. `Flux Slider`，基于图片的动画特效：<http://www.joelambert.co.uk/flux/> github: <https://github.com/joelambert/Flux-Slider> <iframe src="https://ghbtns.com/github-btn.html?user=joelambert&repo=Flux-Slider&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 
     <video width="837" height="480" controls><source src="./video/flux-slider.mp4"></video>
 
-4. `textillate (2065 stars)`: <http://textillate.js.org>
+4. `textillate`: <http://textillate.js.org> github: <https://github.com/jschr/textillate> <iframe src="https://ghbtns.com/github-btn.html?user=jschr&repo=textillate&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>   
 
-    基于文本的动画效果，是一个jquery插件，需要引入自带的`animation.css`文件
+    基于`文本`的动画效果，是一个`jquery`插件，需要引入自带的`animation.css`文件
 
+5. `vivify`: <http://vivify.mkcreative.cz> 支持`67种`动画类  github: <https://github.com/Martz90/vivify> <iframe src="https://ghbtns.com/github-btn.html?user=Martz90&repo=vivify&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 
 
 

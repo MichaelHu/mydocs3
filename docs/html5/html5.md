@@ -11,23 +11,26 @@
 
 ## Overview
 
-w3c html5 标准文档: <https://www.w3.org/TR/html/>
-
-* 非常全面的文档，可当reference
-* 值得全面通读一下
+* `w3c`标准文档: <https://www.w3.org/TR/html/>
+* 非常全面的文档，可当`reference`，值得全面通读一下
 
 
 ## ARIA Role attribute
 
 > Web Accessibility Initiative - Accessible Rich Internet Applications ( WAI-ARIA )
 
-    <li role="menuitem">Open file…</li>
+### Resources
 
 * Overview: <https://www.w3.org/WAI/intro/aria>
 * wai-aria: <https://www.w3.org/TR/wai-aria/>
 * role attribute: <https://www.w3.org/TR/2011/WD-role-attribute-20110113/>
 * HTML allowed roles: <https://www.w3.org/TR/2016/REC-html51-20161101/dom.html#allowed-aria-roles-states-and-properties>
 * XHTML role Vocabulary: <https://www.w3.org/1999/xhtml/vocab>
+
+
+### Description
+
+    <li role="menuitem">Open file…</li>
 
 Every HTML element `may` have an `ARIA role attribute` specified. This is an ARIA Role attribute as defined by [WAI-ARIA].
 
@@ -49,9 +52,11 @@ The `WAI-ARIA role` that an HTML element has assigned to it is `the first non-ab
 
 ## Fetch API
 
-> 引入两个更通用的概念：Request, Response。
+> 引入两个更通用的概念：`Request`, `Response`。
 
-Support: Chrome 42+, Safari 10.1+
+* Support: Chrome `42+`, Safari `10.1+`
+* `r2`: HTTP client. `新款`轻量级请求客户端，支持node和浏览器，全面使用fetch API  <https://github.com/mikeal/r2> <iframe src="https://ghbtns.com/github-btn.html?user=mikeal&repo=r2&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>   
+* `request`: 🏊🏾 Simplified HTTP request client<https://github.com/request/request> <iframe src="https://ghbtns.com/github-btn.html?user=request&repo=request&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 
 <div id="test_PH" class="test">
 <div class="test-container">

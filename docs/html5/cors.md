@@ -2,7 +2,9 @@
 
 > `Cross-Origin Resource Sharing`，跨域（跨源）资源共享。
 
-* `同源策略`，限制`脚本`发起的请求，比如XMLHttpRequest、Fetch请求
+## Overview
+
+* `同源策略`，限制`脚本`发起的请求，比如`XMLHttpRequest`、`Fetch`请求
 * 定义一种使`客户端`可以`跨域`请求的机制
 * W3 REC文档：<http://www.w3.org/TR/cors/>
 * `2014-01-16`成为`REC`文档

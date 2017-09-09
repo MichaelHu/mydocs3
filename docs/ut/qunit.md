@@ -1,8 +1,17 @@
 # QUnit Memo
 
-> js单元测试工具，由jQuery团队开发，也是jQuery的官方测试套装。
+> js单元测试工具，由`jQuery`团队开发，也是jQuery的官方测试套装。
 
-<http://qunitjs.com/>
+## Resources
+
+* site: <http://qunitjs.com/>
+* api: <http://api.qunitjs.com>
+* github: <https://github.com/qunitjs/qunit> <iframe src="https://ghbtns.com/github-btn.html?user=qunitjs&repo=qunit&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
+
+
+## Versions
+
+* 2.4.0
 
 npm: `npm install --save-dev qunitjs`
 
