@@ -4,9 +4,25 @@
 
 > 加桩，模拟XMLHttpRequest等
 
-* github: <https://github.com/sinonjs/sinon>
+## Resources
+
+* github: <https://github.com/sinonjs/sinon> <iframe src="https://ghbtns.com/github-btn.html?user=sinonjs&repo=sinon&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 * website: <http://sinonjs.org>
+* releases: <http://sinonjs.org/releases/>
 * docs: <http://sinonjs.org/docs/>
+
+
+## Versions
+
+    3.2.1
+    3.2.0
+    3.1.0
+    3.0.0 
+        sinon.stub( obj, 'method' ).callsFake( func );
+    2.4.1
+    ...
+    1.17.6
+
 
 
 ## Installations
@@ -50,6 +66,7 @@
             assertEquals("json", jQuery.ajax.getCall(0).args[0].dataType);
         }
     }
+
 
 ### APIs
 
@@ -97,7 +114,10 @@
 
     var stub = sinon.stub();
     var stub = sinon.stub( object, 'method' );
+    // v3.0.0开始已被移除
     var stub = sinon.stub( object, 'method', func );
+    // v3.0.0开始使用以下方式
+    var stub = sinon.stub( object, 'method' ).callsFake func );
     var stub = sinon.stub( obj );
 
     var stub = sinon.createStubInstance( MyConstructor );

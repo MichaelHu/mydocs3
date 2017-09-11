@@ -242,6 +242,7 @@ todo:
 
     # 最近n次修改日志
     git log -n -- <file>
+    git log -3
 
     # 详细修改日志
     git log -p -- <file>
@@ -273,6 +274,11 @@ todo:
 
     # 设定时间格式
     git log --date=format:"%Y-%m-%d %H:%M:%S"
+
+    # 从commit1到commit2之间的提交日志，不包含commit1
+    git log commit1..commit2
+    git log -p 55130805d5e95f0075e94d4b65985175c4295738..HEAD
+    git log -p 55130805d5e95f0075e94d4b65985175c4295738..677a258a9a83c50f2d7543d11e4bc133fcf156fc
 
 
 

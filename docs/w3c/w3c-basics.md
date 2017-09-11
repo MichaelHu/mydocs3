@@ -35,6 +35,8 @@
     * Retired: <https://www.w3.org/TR/XMLHttpRequest/>
 * Network Error Logging <https://www.w3.org/TR/network-error-logging/> `NEL` Header
 * IndexedDB: <https://w3c.github.io/IndexedDB/>
+* Web Storage: <https://www.w3.org/TR/webstorage/> `localStorage`, `sessionStorage` <ref://../html5/web-storage.md.html>
+    
 
 
 ## W3C文档状态

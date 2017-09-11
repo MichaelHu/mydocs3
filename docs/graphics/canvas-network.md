@@ -11,6 +11,7 @@
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <script src="./data/graph/all.js"></script>
 <script src="./data/graph/utils.js"></script>
+<script src="http://258i.com/static/build/sinon-3.2.1.js"></script>
 
 
 ## 步骤
@@ -326,6 +327,60 @@
     }
 
 
+## 绘制基本图谱
+
+### drawNode()
+
+    @[data-script="babel-loose"]function drawNode( context, node, options ) {
+        let opt = utils.defaults( {}, options )
+            , r = node.size || ( ( opt.nodeMaxSize || 20 ) + ( opt.nodeMinSize || 5 ) ) / 2 
+            , x = node.x || 0
+            , y = node.y || 0
+            , color = node.color || '#2ca02c'
+            ;
+
+        context.save();
+        context.beginPath();
+        context.arc( x, y, r, 0, Math.PI * 2 ); 
+        // context.rect( x - r / 2, y - r / 2, r, r ); 
+        context.strokeStyle = color || opt.nodeStrokeColor;
+        context.stroke();
+        if ( !opt.noFillNode ) {
+            context.fillStyle = color || opt.nodeFillColor;
+            context.fill();
+        }
+        if ( opt.drawNodeLabels ) {
+            let metrics = context.measureText( node.label );
+            context.strokeStyle = opt.nodeLabelColor;
+            context.fillStyle = opt.nodeLabelColor;
+            context.font = utils.font( opt );
+            context.textAlign = 'center';
+            context.textBaseline = 'top';
+            context.strokeText( node.label, x, y + r + 0, metrics.width );
+        }
+        context.restore();
+    }
+
+
+### drawEdge()
+
+    @[data-script="babel-loose"]function drawEdge( context, edge, source, target, options ) {
+        let label = edge.label
+            , color = edge.color || '#2ca02c';
+            ;
+
+        context.save();
+        context.beginPath();
+        context.moveTo( source.x, source.y );
+        context.lineTo( target.x, target.y );
+        context.strokeStyle = color;
+        context.stroke();
+        context.restore();
+    }
+
+
+
+
 ## packages
 
 ### utils
@@ -377,10 +432,24 @@
             return styles.join( ' ' );
         }
 
+        function dom( container ) {
+            if ( typeof container == 'string' ) {
+                if ( document.querySelector ) {
+                    container = document.querySelector( container );
+                }
+            }
+
+            if ( ! container instanceof HTMLElement ) {
+                throw 'Network: wrong argument.';
+            }
+            return container;
+        }
+
         return {
             extend
             , defaults
             , font
+            , dom
         };
 
     } )();
@@ -678,11 +747,19 @@
 
     var Network = _Network;
 
+
+
+
 ### Network2
 
 > 临时测试用
 
-    class __Network {
+* settings`层级链`，Network -> Camera -> Renderer
+
+
+#### 代码实现
+
+    @[data-script="babel-loose"]class __Network {
 
         constructor( options ) {
             let me = this
@@ -750,6 +827,40 @@
     var Network2 = __Network;
 
 
+#### 验证
+
+<div id="test_Network2" class="test">
+<div class="test-container">
+
+    @[data-script="babel"](function(){
+
+        var s = fly.createShow('#test_Network2');
+        s.show( 'ut starting...' );
+
+        if ( !window.Camera ) {
+            window.Camera = sinon.spy( function( graph, options ) {
+                this.settings = utils.defaults( {}, options );
+            } );
+        }
+
+        let net = new Network2();
+        s.append_show( net.cameras.length == 1, 'net.cameras has 1 item' );
+        s.append_show( net.cameras[ 0 ].settings.edgeStrokeColor === '#999'
+            , 'correct default edgeStrokeColor' ); 
+
+        net.addCamera();
+        s.append_show( net.cameras.length == 2, 'net.cameras has 2 items after addCamera()' );
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
 ### Camera
 
 > 投影机，管理`视角`，包括视中心、缩放、旋转等参数
@@ -759,7 +870,7 @@
 * 坐标统一保存在graph中，不同套坐标使用`前缀`区分
 * camera是自带`胶片`（graph数据）的，`goTo( x, y, ratio, angle )`的含义是将胶片的`(x,y)`投射到荧幕（renderer）的`中心点`，也就是`(0, 0)`；将胶片`放大`ratio倍，再`逆时针`旋转angle弧度
 
-以下为代码实现：
+#### 代码实现
 
     @[data-script="babel-loose"]class _Camera {
 
@@ -837,6 +948,49 @@
     var Camera = _Camera;
 
 
+#### 验证
+
+<div id="test_Camera" class="test">
+<div class="test-container">
+
+    @[data-script="babel"](function(){
+
+        var s = fly.createShow('#test_Camera');
+
+        let render = sinon.spy();
+        let addRenderer = sinon.stub( Camera.prototype, 'addRenderer' )
+                .callsFake( function( container, options ) {
+                    this.renderers.push( { render: render } );
+                } );
+
+        s.show( 'testing Camera class ...' );
+
+        let nodes = [ { id: 1, x: null, y: null } ];
+        let graph = new Graph( nodes );
+        let camera = new Camera( graph, { renderers: {} } ); 
+
+        s.append_show( camera.prefix === 'c0:', 'correct prefix' );
+        s.append_show( addRenderer.calledOnce, 'addRenderer() called once' );
+        s.append_show( render.notCalled, 'render() not called' );
+
+        camera.refresh();
+        s.append_show( render.calledOnce, 'render() called once' );
+        s.append_show( camera.renderers.length === 1, 'renderers has 1 item' ); 
+        s.append_show( camera.graph.nodes().length === 1, 'has 1 node' );
+        s.append_show( camera.graph.nodes()[ 0 ][ 'c0:x' ] === null, 'correct snapshot()' );
+        s.append_show( camera.graph.nodes()[ 0 ][ 'r_c0:x' ] === null, 'correct project()' );
+
+        addRenderer.restore();
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
 ### Renderer
 
 > 荧幕，图形渲染器
@@ -854,7 +1008,7 @@
 
             me.settings = utils.defaults( {}, options );
             me.camera = camera;
-            me.container = container;
+            me.container = utils.dom( container );
             me.canvas = createCanvas( container );
             me.context = me.canvas.getContext( '2d' );
         }
@@ -903,6 +1057,7 @@
                 , width = me.container.offsetWidth
                 , height = me.container.offsetHeight
                 ;
+
             me.context.clearRect(
                 - width / 2, - height / 2
                 , width, height
@@ -916,57 +1071,7 @@
 
 
 
-## 绘制基本图谱
-
-### drawNode()
-
-    @[data-script="babel-loose"]function drawNode( context, node, options ) {
-        let r = node.size
-            , x = node.x
-            , y = node.y
-            , color = node.color || '#2ca02c'
-            , opt = utils.defaults( {}, options )
-            ;
-
-        context.save();
-        context.beginPath();
-        context.arc( x, y, r, 0, Math.PI * 2 ); 
-        // context.rect( x - r / 2, y - r / 2, r, r ); 
-        context.strokeStyle = color || opt.nodeStrokeColor;
-        context.stroke();
-        if ( !opt.noFillNode ) {
-            context.fillStyle = color || opt.nodeFillColor;
-            context.fill();
-        }
-        if ( opt.drawNodeLabels ) {
-            let metrics = context.measureText( node.label );
-            context.strokeStyle = opt.nodeLabelColor;
-            context.fillStyle = opt.nodeLabelColor;
-            context.font = utils.font( opt );
-            context.textAlign = 'center';
-            context.textBaseline = 'top';
-            context.strokeText( node.label, x, y + r + 0, metrics.width );
-        }
-        context.restore();
-    }
-
-
-### drawEdge()
-
-    @[data-script="babel-loose"]function drawEdge( context, edge, source, target, options ) {
-        let label = edge.label
-            , color = edge.color || '#2ca02c';
-            ;
-
-        context.save();
-        context.beginPath();
-        context.moveTo( source.x, source.y );
-        context.lineTo( target.x, target.y );
-        context.strokeStyle = color;
-        context.stroke();
-        context.restore();
-    }
-
+## 验证
 
 ### 阶段性验证
 
@@ -1046,6 +1151,45 @@
 ### 阶段性验证2
 
 
+<div id="test_basic_network2" class="test">
+<div class="test-container">
+<div class="canvas-wrapper"></div>
+<div class="test-console"></div>
+
+    @[data-script="babel editable"](function(){
+
+        var containerId = 'test_basic_network2';
+        var s = fly.createShow( '#' + containerId );
+        let container = document.getElementById( containerId ); 
+        let net = container.net
+                || new Network2( {
+                    graph: { nodes: [ { id: 1, x: 10, y: 20, label: 'n1' } ] }   
+                    , renderers: {
+                        container: '#' + containerId + ' .canvas-wrapper'
+                    }
+                } );
+
+        container.net = net;
+
+        var g1 = getRandomGraph( 100, 100, [ 5, 20 ]
+                    , { 
+                        width: net.cameras[ 0 ].renderers[ 0 ].canvas.offsetWidth
+                        , height: net.cameras[ 0 ].renderers[ 0 ].canvas.offsetHeight
+                    } 
+                );
+
+        net.refresh();
+        net.setGraph( g1.nodes, g1.edges );
+        net.refresh();
+        s.show(1);
+        s.append_show(2);
+
+    })();
+
+</div>
+<div class="test-panel">
+</div>
+</div>
 
 
 ## 性能试验
@@ -1092,16 +1236,16 @@
         let source, target;
 
         container.canvas = canvas;
-        context.clearRect( 0, 0, width, height );
+        context.clearRect( - width / 2, - height / 2, width, height );
 
         let startTime = new Date().getTime();
         console.log( startTime );
         for( let i = 0; i < MAX_NODES_FIRST; i++ ) {
             source = target;
-            let x = ( Math.random() > 0.5 ? 1 : -1 ) * width * Math.random();
-            let y = ( Math.random() > 0.5 ? 1 : -1 ) * height * Math.random();
+            let x = ( Math.random() > 0.5 ? 1 : -1 ) * width / 2 * Math.random();
+            let y = ( Math.random() > 0.5 ? 1 : -1 ) * height / 2 * Math.random();
             target = { x: x, y: y };
-            drawNode( context, { x: x, y: y, size: 800 }, { noFillNode: true } );
+            drawNode( context, { x: x, y: y, size: 500 }, { noFillNode: true } );
             if ( source ) {
                 drawEdge( context, { label: 'e' + i, color: '#fff' }, source, target );
             }

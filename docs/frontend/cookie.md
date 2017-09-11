@@ -1,7 +1,28 @@
 # Cookie
 
 
-> Cookie使用需谨慎，保持短小精悍。<https://tools.ietf.org/html/rfc6265>
+> Cookie使用需谨慎，保持短小精悍。
+
+## Resources
+
+* rfc: <https://tools.ietf.org/html/rfc6265>
+
+
+## Syntax
+
+    cookie-header = "Cookie:" OWS cookie-string OWS
+    cookie-string = cookie-pair *( ";" SP cookie-pair )
+    cookie-pair   = cookie-name "=" cookie-value
+    cookie-name   = token
+    cookie-value  = *cookie-octet / ( DQUOTE *cookie-octet DQUOTE )
+    cookie-octet  = %x21 / %x23-2B / %x2D-3A / %x3C-5B / %5D-7E
+    OWS           = *( [ obs-fold ] WSP )
+                    ; "optional" whitespace
+    obs-fold      = CRLF
+
+* `;` 开头的为注释
+* `cookie-pair`对应User Agent从`Set-Cookie`响应头中获取的`cookie-name`和`cookie-value`
+* `User Agent`通过`Cookie`请求头，将cookie-string发送给服务器
 
 
 
