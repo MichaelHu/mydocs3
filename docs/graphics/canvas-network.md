@@ -44,6 +44,11 @@
 
 以上类只是完成了基本代码编写，尚需要demo验证
 
+> 170911
+
+* 引入`sinon.js`单测，针对类层次开发过程中的单元测试，完成Network2、Camera的单测
+* 基本调通Network2 -> Camera -> Renderer类层次构建
+
 
 ## API设计
 
