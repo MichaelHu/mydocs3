@@ -7,7 +7,7 @@
     height: 500px;
 }
 .canvas-wrapper2 {
-    height: 500px;
+    height: 300px;
     width: 50%;
     float: left;
 }
@@ -62,8 +62,8 @@
     * 全局settings在创建Network实例时传入
     * 添加新的Camera，其settings可通过addCamera( options )传入
     * 添加新的Renderer，其settings可通过addRenderer( container, options )传入
-    * 刷新图谱时，新的settings可以通过Network.refresh( options )传入，可以覆盖原有settings，但仅限当前refresh行为
-
+    * `刷新`图谱时，新的settings可以通过Network.refresh( options )传入，可以覆盖原有settings，但`仅限当前`refresh行为；同样的Camera.refresh( options )和Renderer.render( options )也类似，其传入的options仅限当前行为
+* `多Camera`功能
 
 
 
@@ -148,6 +148,7 @@
         constructor( options )
         setGraph( nodes, edges )
         addCamera( options )
+        cameras( id )
         refresh( options )
     Camera
         constructor( graph, options )
@@ -858,7 +859,7 @@
             me.fromCameraId = 0;
             me.settings = utils.extend( {}, me.defaultSettings, opt );
             me.graph = new Graph( graphData.nodes, graphData.edges );
-            me.cameras = [];
+            me._cameras = [];
             me.addCamera( me.settings );
         }
 
@@ -868,23 +869,46 @@
             return me;
         }
 
+        cameras( id ) {
+            let me = this
+                , _camera;
+
+            if ( id === undefined ) {
+                _camera = me._cameras;
+            }
+            else if ( typeof id === 'string' || typeof id === 'number') {
+                for ( let i = 0; i < me._cameras.length; i++ ) {
+                    if ( me._cameras[ i ].id === id ) {
+                        _camera = me._cameras[ i ];    
+                        break;
+                    }
+                }
+            }
+            else {
+                throw 'cameras(): wrong arguments.';
+            }
+
+            return _camera;
+        }
+
         addCamera( options ) {
             let me = this
-                , opt = utils.extend( { cameraId: me.fromCameraId++ }, me.settings)
+                , opt = utils.extend( { cameraId: me.fromCameraId++ }, me.settings, options )
                 ;
 
             delete opt.renderers;
             utils.extend( opt, options );
 
             let camera = new Camera( me.graph, opt )
-            me.cameras.push( camera );
+            me._cameras.push( camera );
+            return camera.id;
         }
 
         refresh( options ) {
             let me = this
-                , opt = utils.extend( {}, me.settings, options )
+                , opt = utils.extend( {}, options )
                 ;
-            me.cameras.forEach( ( camera ) => camera.refresh( opt ) );
+            me._cameras.forEach( ( camera ) => camera.refresh( opt ) );
         }
 
     }
@@ -909,12 +933,13 @@
         }
 
         let net = new Network2();
-        s.append_show( net.cameras.length == 1, 'net.cameras has 1 item' );
-        s.append_show( net.cameras[ 0 ].settings.edgeStrokeColor === '#999'
+        s.append_show( net.cameras().length == 1, 'net.cameras() has 1 item' );
+        console.log( net.cameras() );
+        s.append_show( net.cameras()[ 0 ].settings.edgeStrokeColor === '#999'
             , 'correct default edgeStrokeColor' ); 
 
         net.addCamera();
-        s.append_show( net.cameras.length == 2, 'net.cameras has 2 items after addCamera()' );
+        s.append_show( net.cameras().length == 2, 'net.cameras() has 2 items after addCamera()' );
 
     })();
 
@@ -1027,7 +1052,7 @@
 
         refresh( options ) {
             let me = this
-                , opt = utils.extend( {}, me.settings, options )
+                , opt = utils.extend( {}, options )
                 ;
             me.snapshot( opt ).project( opt );
             me.renderers.forEach( ( renderer ) => renderer.render( opt ) );
@@ -1247,6 +1272,8 @@
 <div class="test-container">
 <div class="canvas-wrapper2"></div>
 <div class="canvas-wrapper2"></div>
+<div class="canvas-wrapper2"></div>
+<div class="canvas-wrapper2"></div>
 <div class="test-console"></div>
 
     @[data-script="babel editable"](function(){
@@ -1256,8 +1283,8 @@
         let container = document.getElementById( containerId ); 
         let net = container.net
                 || new Network2( {
-                    graph: { nodes: [ { id: 1, x: 10, y: 20, label: 'n1' } ] }   
-                    , autoRescale: true
+                    // graph: { nodes: [ { id: 1, x: 10, y: 20, label: 'n1' } ] }   
+                    autoRescale: true
                     , minNodeSize: 3
                     , maxNodeSize: 10
                     , alignCenter: true
@@ -1302,9 +1329,28 @@
         // var g1 = networkGraph_complex_hier_160823;
         // var g1 = networkGraph_circle_group_1118;
 
-        net.refresh();
+        if ( !container.cameraAdded ) {
+            container.cameraAdded = net.addCamera( {
+                autoRescale: false
+                , renderers: [
+                    {
+                        container: '#' + containerId + ' .canvas-wrapper2:nth-child(3)'
+                        , drawNodeLabels: true
+                    }
+                    , {
+                        container: '#' + containerId + ' .canvas-wrapper2:nth-child(4)'
+                        , edgeStrokeColor: 'red'
+                        , drawNodeLabels: true
+                        , nodeLabelColor: '#f0f' 
+                    }
+                ]
+            } );
+        }
+
         net.setGraph( g1.nodes, g1.edges );
         net.refresh();
+        net.cameras( container.cameraAdded )
+            .refresh( { autoRescale: true, minNodeSize: 2, maxNodeSize: 8 } );
         s.show( 'testing ...' );
 
     })();
