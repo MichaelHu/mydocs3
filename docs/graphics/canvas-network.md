@@ -6,6 +6,11 @@
 .canvas-wrapper {
     height: 500px;
 }
+.canvas-wrapper2 {
+    height: 500px;
+    width: 50%;
+    float: left;
+}
 </style>
 <script src="http://258i.com/static/build/babel/babel.min.js"></script> 
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
@@ -49,6 +54,18 @@
 * 引入`sinon.js`单测，针对类层次开发过程中的单元测试，完成Network2、Camera的单测
 * 基本调通Network2 -> Camera -> Renderer类层次构建
 
+> 170912
+
+* `一Camera`对应`多Renderer`调试
+* `autoRescale`调试
+* `settings chain`开发和调试
+    * 全局settings在创建Network实例时传入
+    * 添加新的Camera，其settings可通过addCamera( options )传入
+    * 添加新的Renderer，其settings可通过addRenderer( container, options )传入
+    * 刷新图谱时，新的settings可以通过Network.refresh( options )传入，可以覆盖原有settings，但仅限当前refresh行为
+
+
+
 
 ## API设计
 
@@ -66,6 +83,7 @@
     19个事件支持
     暂不做私有属性
     MVC模式
+    settings chain
 
 ### 场景收集
 
@@ -126,6 +144,29 @@
         addEdges( edges )
         addNode( node )
         addEdge( edge )
+    Network2
+        constructor( options )
+        setGraph( nodes, edges )
+        addCamera( options )
+        refresh( options )
+    Camera
+        constructor( graph, options )
+        initRenderers()
+        addRenderer( container, options )
+        snapshot( options )
+        project( options )
+        refresh( options )
+    Renderer
+        constructor( container, camera, options )
+        draw( options )
+        render( options )
+
+
+
+
+### 配置链
+
+
 
 
 
@@ -217,7 +258,7 @@
             return;
         }
 
-        rect = getNodesRect( nodes );
+        rect = getNodesRect( nodes, opt );
         center = {
             x: rect.x + rect.w / 2
             , y: rect.y + rect.h / 2
@@ -263,11 +304,13 @@
         _maxNodeSize = 0;
         _minNodeSize = Infinity;
         nodes.forEach( ( node ) => {
-            if ( node.size > _maxNodeSize ) {
-                _maxNodeSize = node.size;
+            let size = node[ readPrefix + 'size' ] 
+                    = node[ readPrefix + 'size' ] || node.size || 0;
+            if ( size > _maxNodeSize ) {
+                _maxNodeSize = size;
             }
-            if ( node.size < _minNodeSize ) {
-                _minNodeSize = node.size;
+            if ( size < _minNodeSize ) {
+                _minNodeSize = size;
             }
         } );
 
@@ -283,11 +326,11 @@
         nodes.forEach( ( node ) => {
             node[ writePrefix + 'x' ] = ratio * node[ readPrefix + 'x' ];
             node[ writePrefix + 'y' ] = ratio * node[ readPrefix + 'y' ];
-            if ( _sizeRange == 0 ) {
+            if ( _sizeRange == 0 || isNaN( _sizeRange )  ) {
                 node[ writePrefix + 'size' ] = minNodeSize + sizeRange / 2;
             }
             else {
-                node[ writePrefix + 'size' ] = ( node[ readPrefix + 'size' ] - _minNodeSize ) 
+                node[ writePrefix + 'size' ] = ( node[ readPrefix + 'size' ]  - _minNodeSize ) 
                     / _sizeRange * sizeRange + minNodeSize;
             }
         });
@@ -338,10 +381,13 @@
 
     @[data-script="babel-loose"]function drawNode( context, node, options ) {
         let opt = utils.defaults( {}, options )
-            , r = node.size || ( ( opt.nodeMaxSize || 20 ) + ( opt.nodeMinSize || 5 ) ) / 2 
-            , x = node.x || 0
-            , y = node.y || 0
-            , color = node.color || '#2ca02c'
+            , prefix = opt.readPrefix || ''
+            , r = node[ prefix + 'size' ] || node.size
+                || ( ( opt.nodeMaxSize || 20 ) + ( opt.nodeMinSize || 5 ) ) / 2 
+            , x = node[ prefix + 'x' ] || 0
+            , y = node[ prefix + 'y' ] || 0
+            , color = node[ prefix + 'color' ] || node.color
+            , label = node[ prefix + 'label' ] || node.label
             ;
 
         context.save();
@@ -355,7 +401,7 @@
             context.fill();
         }
         if ( opt.drawNodeLabels ) {
-            let metrics = context.measureText( node.label );
+            let metrics = context.measureText( label );
             context.strokeStyle = opt.nodeLabelColor;
             context.fillStyle = opt.nodeLabelColor;
             context.font = utils.font( opt );
@@ -370,14 +416,16 @@
 ### drawEdge()
 
     @[data-script="babel-loose"]function drawEdge( context, edge, source, target, options ) {
-        let label = edge.label
-            , color = edge.color || '#2ca02c';
+        let opt = utils.extend( {}, options ) 
+            , prefix = opt.readPrefix || ''
+            , label = edge[ prefix + 'label' ] || edge.label
+            , color = edge[ prefix + 'color' ] || edge.color || opt.edgeStrokeColor
             ;
 
         context.save();
         context.beginPath();
-        context.moveTo( source.x, source.y );
-        context.lineTo( target.x, target.y );
+        context.moveTo( source[ prefix + 'x' ], source[ prefix + 'y' ] );
+        context.lineTo( target[ prefix + 'x' ], target[ prefix + 'y' ] );
         context.strokeStyle = color;
         context.stroke();
         context.restore();
@@ -689,7 +737,7 @@
 
         draw( options ) {
             let me = this
-                , opt = utils.defaults( {}, options, me.settings ) 
+                , opt = utils.extend( {}, me.settings, options ) 
                 , onNode = opt.onNode
                 , onEdge = opt.onEdge
                 , nodeOption = utils.extend( {}, opt, {
@@ -727,10 +775,10 @@
             me.graph.edges().forEach( ( edge ) => {
                 let source = me.graph.nodes( edge.source );
                 let target = me.graph.nodes( edge.target );
-                onEdge( me.context, edge, source, target, nodeOption ); 
+                onEdge( me.context, edge, source, target, edgeOption ); 
             } );
             me.graph.nodes().forEach( ( node ) => {
-                onNode( me.context, node, edgeOption ); 
+                onNode( me.context, node, nodeOption ); 
             } );
 
             return me;
@@ -759,7 +807,8 @@
 
 > 临时测试用
 
-* settings`层级链`，Network -> Camera -> Renderer
+* settings`层级链`，Network -> Camera -> Renderer，下层配置覆盖上层配置
+* camera的id由内部通过`Network.fromCameraId`自增id生成，外部可以通过`camera.id`获得
 
 
 #### 代码实现
@@ -773,11 +822,21 @@
                 ;
 
             me.defaultSettings = {
-                drawNodeLabels: false
-                , onNode: drawNode
-                , onEdge: drawEdge
+
+                // =====================
+                // camera settings
+                // ---------------------
+                autoRescale: false 
                 , maxNodeSize: 20
                 , minNodeSize: 5
+
+
+                // =====================
+                // renderer settings
+                // ---------------------
+                , drawNodeLabels: false
+                , onNode: drawNode
+                , onEdge: drawEdge
 
                 // default color
                 , nodeLabelColor: '#111'
@@ -796,6 +855,7 @@
                 , fontFamily: 'sans-serif'
             };
 
+            me.fromCameraId = 0;
             me.settings = utils.extend( {}, me.defaultSettings, opt );
             me.graph = new Graph( graphData.nodes, graphData.edges );
             me.cameras = [];
@@ -810,7 +870,7 @@
 
         addCamera( options ) {
             let me = this
-                , opt = utils.extend( {}, me.settings)
+                , opt = utils.extend( { cameraId: me.fromCameraId++ }, me.settings)
                 ;
 
             delete opt.renderers;
@@ -824,7 +884,7 @@
             let me = this
                 , opt = utils.extend( {}, me.settings, options )
                 ;
-            me.cameras.forEach( ( camera ) => camera.refresh() );
+            me.cameras.forEach( ( camera ) => camera.refresh( opt ) );
         }
 
     }
@@ -884,7 +944,8 @@
                 ;
 
             me.settings = utils.defaults( {}, options );
-            me.prefix = 'c0:';
+            me.id = me.settings.cameraId;
+            me.prefix = 'c' + me.id + ':';
             me.graph = graph;
             me.x = 0;
             me.y = 0;
@@ -904,10 +965,12 @@
                 ;
 
             if ( typeof renderers.length != 'undefined' ) {
-                renderers.forEach( ( renderer ) => me.addRenderer( renderer.container, opt ) );
+                renderers.forEach( ( renderer ) => {
+                    me.addRenderer( renderer.container, utils.extend( {}, opt, renderer ) ) 
+                } );
             }
             else {
-                me.addRenderer( renderers.container, opt );
+                me.addRenderer( renderers.container, utils.extend( {}, opt, renderers ) );
             }
         }
 
@@ -919,34 +982,55 @@
             me.renderers.push( renderer );
         }
 
-        snapshot() {
+        snapshot( options ) {
             let me = this
                 , prefix = me.prefix
+                , opt = utils.extend( { writePrefix: prefix }, me.settings, options ) 
+                , mainRenderer = me.renderers.length ? me.renderers[ 0 ] : null
                 ;
-            me.graph.nodes().forEach( ( node ) => {
-                node[ prefix + 'x' ] = node.x;
-                node[ prefix + 'y' ] = node.y;
-            } );
+
+            if ( opt.alignCenter ) {
+                alignCenter( me.graph, opt );
+            }
+            else {
+                me.graph.nodes().forEach( ( node ) => {
+                    node[ prefix + 'x' ] = node.x;
+                    node[ prefix + 'y' ] = node.y;
+                } );
+            }
+
+            if ( opt.autoRescale && mainRenderer ) {
+                rescale( me.graph, mainRenderer.width
+                    , mainRenderer.height
+                    , utils.extend( {}, opt, { readPrefix: prefix, ignoreNodeSize: false } ) 
+                );
+            }
+
             return me;
         }
 
-        project() {
+        project( options ) {
             let me = this
                 , readPrefix = me.prefix
-                , writePrefix = 'r_' + me.prefix 
+                , writePrefix
                 ;
-            me.graph.nodes().forEach( ( node ) => {
-                node[ writePrefix + 'x' ] = node[ readPrefix + 'x' ];
-                node[ writePrefix + 'y' ] = node[ readPrefix + 'y' ];
-            } );
+            if ( me.renderers.length ) {
+                writePrefix = me.renderers[ 0 ].prefix;
+                me.graph.nodes().forEach( ( node ) => {
+                    node[ writePrefix + 'x' ] = node[ readPrefix + 'x' ];
+                    node[ writePrefix + 'y' ] = node[ readPrefix + 'y' ];
+                    node[ writePrefix + 'size' ] = node[ readPrefix + 'size' ];
+                } );
+            }
             return me;
         }
 
-        refresh() {
+        refresh( options ) {
             let me = this
+                , opt = utils.extend( {}, me.settings, options )
                 ;
-            me.snapshot().project();
-            me.renderers.forEach( ( renderer ) => renderer.render() );
+            me.snapshot( opt ).project( opt );
+            me.renderers.forEach( ( renderer ) => renderer.render( opt ) );
         }
 
     }
@@ -965,14 +1049,14 @@
         let render = sinon.spy();
         let addRenderer = sinon.stub( Camera.prototype, 'addRenderer' )
                 .callsFake( function( container, options ) {
-                    this.renderers.push( { render: render } );
+                    this.renderers.push( { prefix: 'r_c0:', render: render } );
                 } );
 
         s.show( 'testing Camera class ...' );
 
         let nodes = [ { id: 1, x: null, y: null } ];
         let graph = new Graph( nodes );
-        let camera = new Camera( graph, { renderers: {} } ); 
+        let camera = new Camera( graph, { renderers: {}, cameraId: 0 } ); 
 
         s.append_show( camera.prefix === 'c0:', 'correct prefix' );
         s.append_show( addRenderer.calledOnce, 'addRenderer() called once' );
@@ -1013,7 +1097,10 @@
 
             me.settings = utils.defaults( {}, options );
             me.camera = camera;
+            me.prefix = 'r_' + me.camera.prefix;
             me.container = utils.dom( container );
+            me.width = me.container.offsetWidth;
+            me.height = me.container.offsetHeight;
             me.canvas = createCanvas( container );
             me.context = me.canvas.getContext( '2d' );
         }
@@ -1021,7 +1108,7 @@
         draw( options ) {
 
             let me = this
-                , opt = utils.defaults( {}, options, me.settings )
+                , opt = utils.extend( { readPrefix: me.prefix }, me.settings, options )
                 , graph = me.camera.graph
                 , onNode = opt.onNode
                 , onEdge = opt.onEdge
@@ -1046,10 +1133,10 @@
             graph.edges().forEach( ( edge ) => {
                 let source = graph.nodes( edge.source );
                 let target = graph.nodes( edge.target );
-                onEdge( me.context, edge, source, target, nodeOption );
+                onEdge( me.context, edge, source, target, edgeOption );
             } );
             graph.nodes().forEach( ( node ) => {
-                onNode( me.context, node, edgeOption );
+                onNode( me.context, node, nodeOption );
             } );
 
             return me;
@@ -1059,8 +1146,8 @@
         render( options ) {
 
             let me = this
-                , width = me.container.offsetWidth
-                , height = me.container.offsetHeight
+                , width = me.width
+                , height = me.height
                 ;
 
             me.context.clearRect(
@@ -1158,7 +1245,8 @@
 
 <div id="test_basic_network2" class="test">
 <div class="test-container">
-<div class="canvas-wrapper"></div>
+<div class="canvas-wrapper2"></div>
+<div class="canvas-wrapper2"></div>
 <div class="test-console"></div>
 
     @[data-script="babel editable"](function(){
@@ -1169,25 +1257,55 @@
         let net = container.net
                 || new Network2( {
                     graph: { nodes: [ { id: 1, x: 10, y: 20, label: 'n1' } ] }   
-                    , renderers: {
-                        container: '#' + containerId + ' .canvas-wrapper'
-                    }
+                    , autoRescale: true
+                    , minNodeSize: 3
+                    , maxNodeSize: 10
+                    , alignCenter: true
+                    , renderers: [
+                        {
+                            container: '#' + containerId + ' .canvas-wrapper2:nth-child(1)'
+                            , drawNodeLabels: true
+                        }
+                        , {
+                            container: '#' + containerId + ' .canvas-wrapper2:nth-child(2)'
+                            , edgeStrokeColor: 'red'
+                            , drawNodeLabels: true
+                            , nodeLabelColor: '#888' 
+                        }
+                    ]
                 } );
 
         container.net = net;
 
-        var g1 = getRandomGraph( 100, 100, [ 5, 20 ]
-                    , { 
-                        width: net.cameras[ 0 ].renderers[ 0 ].canvas.offsetWidth
-                        , height: net.cameras[ 0 ].renderers[ 0 ].canvas.offsetHeight
-                    } 
-                );
+        var g1 = getRandomGraph( 100, 100, [ 5, 20 ] );
+        // var g1 = getLineGraph(14, 30, {nodeSize: 8});
+        // var g1 = networkGraph_circle_0628;
+        // var g1 = networkGraph_mesh_0628;
+        // var g1 = networkGraph_FR;
+        // var g1 = networkGraph_ForceAtlas2;
+        // var g1 = networkGraph0520;
+        // var g1 = networkGraph_grid_0521;
+        // var g1 = networkGraph_tree_0521;
+        // var g1 = networkGraph_2circles_0523;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes;
+        // var g1 = networkGraph_edges_between_the_same_level_nodes_2;
+        // var g1 = networkGraph_tree_0524;
+        // var g1 = networkGraph_many_children_0526;
+        // var g1 = networkGraph_star_161017;
+        // var g1 = networkGraph_person_event_event_person_0729;
+        // var g1 = networkGraph_person_event_event_person_0801;
+        // var g1 = networkGraph_triangle_0801;
+        // var g1 = networkGraph_triangle_0801_2;
+        // var g1 = networkGraph_complex_hier_160816;
+        // var g1 = networkGraph_complex_hier_160817;
+        // var g1 = networkGraph_complex_hier_160820;
+        // var g1 = networkGraph_complex_hier_160823;
+        // var g1 = networkGraph_circle_group_1118;
 
         net.refresh();
         net.setGraph( g1.nodes, g1.edges );
         net.refresh();
-        s.show(1);
-        s.append_show(2);
+        s.show( 'testing ...' );
 
     })();
 
