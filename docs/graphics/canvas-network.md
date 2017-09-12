@@ -63,7 +63,13 @@
     * 添加新的Camera，其settings可通过addCamera( options )传入
     * 添加新的Renderer，其settings可通过addRenderer( container, options )传入
     * `刷新`图谱时，新的settings可以通过Network.refresh( options )传入，可以覆盖原有settings，但`仅限当前`refresh行为；同样的Camera.refresh( options )和Renderer.render( options )也类似，其传入的options仅限当前行为
-* `多Camera`功能
+* 调试`多Camera`功能
+* 增加`utils.extend( target, ...others )`
+* 开发及调试`Camera.goTo( perspective, needsRefresh )`
+
+> 170913
+
+* todo: resize / 分层渲染
 
 
 
@@ -79,11 +85,14 @@
     视图中点为坐标轴原点
     多camera
     多renderer
-    分层渲染
-    19个事件支持
     暂不做私有属性
-    MVC模式
     settings chain
+
+    事件引擎
+    动画引擎
+    分层渲染
+    MVC模式
+    19个事件支持
 
 ### 场景收集
 
@@ -156,6 +165,7 @@
         addRenderer( container, options )
         snapshot( options )
         project( options )
+        goTo( perspective, needsRefresh )
         refresh( options )
     Renderer
         constructor( container, camera, options )
@@ -439,6 +449,8 @@
 
 ### utils
 
+#### 代码实现
+
     @[data-script="babel-loose"]var utils = ( function() {
 
         function extend( target, ...sources ) {
@@ -446,6 +458,22 @@
                 let source = sources[ i ];
                 for ( let key in source ) {
                     if ( source.hasOwnProperty( key ) ) {
+                        target[ key ] = source[ key ];
+                    }
+                }
+            }
+            return target;
+        }
+
+        function extendOnly( target, ...others ) {
+            let len = others.length 
+                , sources = [].slice.call( others, 0, len - 1 )
+                , keys = others[ len - 1 ] 
+                ;
+            for ( let i = 0; i < sources.length; i++ ) {
+                let source = sources[ i ];
+                for ( let key in source ) {
+                    if ( source.hasOwnProperty( key ) && keys.indexOf( key ) >= 0 ) {
                         target[ key ] = source[ key ];
                     }
                 }
@@ -501,12 +529,46 @@
 
         return {
             extend
+            , extendOnly
             , defaults
             , font
             , dom
         };
 
     } )();
+
+
+#### 单测
+
+    
+<div id="test_utils" class="test">
+<div class="test-container">
+
+    @[data-script="babel"](function(){
+
+        var s = fly.createShow('#test_utils');
+        s.show( 'testing utils ...' );
+        
+        let target = { a: 1 }
+            , source = { a: 3, b: '123', c: 'hello' }
+            ;
+
+        let t1 = utils.extendOnly( {}, target, source, [ 'a', 'c' ] );
+        s.append_show( t1.a === 3, 'a should be extended' );
+        s.append_show( t1.b === undefined, 'b should not be extended' );
+        s.append_show( t1.c === 'hello', 'c should be extended' );
+
+        let t2 = utils.extendOnly( {}, [ 'a', 'c' ] );
+        s.append_show( t2.a === undefined && t2.c === undefined, 'a or c should not be extended' );
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+    
 
 
 ## 类
@@ -1040,13 +1102,28 @@
                 , writePrefix
                 ;
             if ( me.renderers.length ) {
+                let offset = { x: 0 - me.x, y: 0 - me.y };
+                let ratio = me.ratio;
+                let angle = me.angle;
+                let cos = Math.cos( angle ), sin = Math.sin( angle );
                 writePrefix = me.renderers[ 0 ].prefix;
                 me.graph.nodes().forEach( ( node ) => {
-                    node[ writePrefix + 'x' ] = node[ readPrefix + 'x' ];
-                    node[ writePrefix + 'y' ] = node[ readPrefix + 'y' ];
-                    node[ writePrefix + 'size' ] = node[ readPrefix + 'size' ];
+                    node[ writePrefix + 'x' ] = ( node[ readPrefix + 'x' ] + offset.x ) * ratio;
+                    node[ writePrefix + 'y' ] = ( node[ readPrefix + 'y' ] + offset.y ) * ratio;
+                    node[ writePrefix + 'size' ] = ( node[ readPrefix + 'size' ] ) * ratio;
+
+                    let x = node[ writePrefix + 'x' ], y = node[ writePrefix + 'y' ];  
+                    node[ writePrefix + 'x' ] = x * cos + y * sin;
+                    node[ writePrefix + 'y' ] = -x * sin + y * cos;
                 } );
             }
+            return me;
+        }
+
+        goTo( perspective, needsRefresh ) {
+            let me = this;
+            utils.extendOnly( me, perspective, [ 'x', 'y', 'ratio', 'angle' ] );
+            needsRefresh && me.refresh();
             return me;
         }
 
@@ -1054,6 +1131,7 @@
             let me = this
                 , opt = utils.extend( {}, options )
                 ;
+
             me.snapshot( opt ).project( opt );
             me.renderers.forEach( ( renderer ) => renderer.render( opt ) );
         }
@@ -1109,7 +1187,8 @@
 
 > 荧幕，图形渲染器
 
-* 不同于sigmajs，canvas层面调整荧幕中央为`(0, 0)`
+* 不同于sigmajs，canvas层面已经调整`荧幕中央`为`(0, 0)`
+* 可扩展出`SVG` Renderer, `WebGL` Renderer
 
 
 以下为代码实现：
@@ -1190,7 +1269,12 @@
 
 ## 验证
 
-### 阶段性验证
+### 阶段性验证1
+
+> 主要验证内容
+
+* 无Camera版本（简版）图谱引擎验证
+* 渲染性能评估
 
 
 <div id="test_basic_network" class="test">
@@ -1267,6 +1351,12 @@
 
 ### 阶段性验证2
 
+> 主要验证内容
+
+* 单Camera - 多Renderer，独立渲染参数
+* 多Camera，独立视角
+* 配置链：Network级 - Camera级 - Renderer级
+* Camera视角变换 
 
 <div id="test_basic_network2" class="test">
 <div class="test-container">
@@ -1311,7 +1401,7 @@
         // var g1 = networkGraph_FR;
         // var g1 = networkGraph_ForceAtlas2;
         // var g1 = networkGraph0520;
-        // var g1 = networkGraph_grid_0521;
+        var g1 = networkGraph_grid_0521;
         // var g1 = networkGraph_tree_0521;
         // var g1 = networkGraph_2circles_0523;
         // var g1 = networkGraph_edges_between_the_same_level_nodes;
@@ -1335,13 +1425,9 @@
                 , renderers: [
                     {
                         container: '#' + containerId + ' .canvas-wrapper2:nth-child(3)'
-                        , drawNodeLabels: true
                     }
                     , {
                         container: '#' + containerId + ' .canvas-wrapper2:nth-child(4)'
-                        , edgeStrokeColor: 'red'
-                        , drawNodeLabels: true
-                        , nodeLabelColor: '#f0f' 
                     }
                 ]
             } );
@@ -1350,6 +1436,7 @@
         net.setGraph( g1.nodes, g1.edges );
         net.refresh();
         net.cameras( container.cameraAdded )
+            .goTo( { x: -50, y: -50, ratio: 0.6, angle: Math.PI / 4 } )
             .refresh( { autoRescale: true, minNodeSize: 2, maxNodeSize: 8 } );
         s.show( 'testing ...' );
 
