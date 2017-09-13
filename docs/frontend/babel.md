@@ -36,6 +36,27 @@
         presets: []
     }
 
+可以使用`babel-preset-env`插件<http://babeljs.io/docs/plugins/preset-env/>，由babel自动决定该使用哪些babel插件。
+
+    $ npm install --save-dev babel-preset-env 
+
+以下配置取代`preset-es2015,16,17,latest`：
+
+    {
+        "presets": [ "env" ]
+    }
+
+以下配置将按`当前`node版本来决定使用的babel插件，比如在`node 4.x`下，`箭头函数`不转译；而在`node 0.12`下，会转译箭头函数。
+
+    { 
+        "presets": [
+            [ "env", {
+                "targets": {
+                    "node": "current"
+                }
+            }]
+        ]
+    }
 
 
 

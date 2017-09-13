@@ -128,6 +128,50 @@
 </div>
 
 
+## null, false的数学计算
+
+`null, false, true`可以`直接`参与数学运算，在计算过程中，它们分别代表：
+
+    null = 0
+    false = 0
+    true = 1
+
+
+<div id="test_null_false" class="test">
+<div class="test-console"></div>
+<div class="test-container">
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_null_false');
+        var items = [
+                [ 'null + 3', '3' ]
+                , [ 'null - 3', '-3' ]
+                , [ 'false + 3', '3' ]
+                , [ 'false - 3', '-3' ]
+                , [ 'true + 3', '4' ]
+                , [ 'true - 3', '-2' ]
+                , [ 'typeof( null + 3 )', '"number"' ]
+            ]
+            , expr
+            ;
+        s.show('strict equaltions test: \n');
+        for(var i=0; i<items.length; i++){
+            expr = items[i][0] + ' === ' + items[i][1]; 
+            s.append_show(
+                expr
+                , eval(expr)
+            );
+        }
+
+    })();
+
+</div>
+<div class="test-panel">
+</div>
+</div>
+
+
 
 ## 分号的省略
 

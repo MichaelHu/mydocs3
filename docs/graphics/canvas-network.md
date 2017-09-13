@@ -69,7 +69,14 @@
 
 > 170913
 
-* todo: resize / 分层渲染
+* 第六个类：`Layer`，实现画布分层
+* `resize`功能
+* some bugfix
+
+
+> 170914
+
+todo: 调试画布分层 / 事件
 
 
 
@@ -278,8 +285,8 @@
         offset = { x: 0 - center.x, y: 0 - center.y };
 
         nodes.forEach( ( node ) => {
-            node[ writePrefix + 'x' ] = node[ readPrefix + 'x' ] + offset.x;
-            node[ writePrefix + 'y' ] = node[ readPrefix + 'y' ] + offset.y;
+            node[ writePrefix + 'x' ] = ( node[ readPrefix + 'x' ] || 0 ) + offset.x;
+            node[ writePrefix + 'y' ] = ( node[ readPrefix + 'y' ] || 0 ) + offset.y;
         } );
     }
 
@@ -335,8 +342,8 @@
         let sizeRange = maxNodeSize - minNodeSize;
         let _sizeRange = _maxNodeSize - _minNodeSize;
         nodes.forEach( ( node ) => {
-            node[ writePrefix + 'x' ] = ratio * node[ readPrefix + 'x' ];
-            node[ writePrefix + 'y' ] = ratio * node[ readPrefix + 'y' ];
+            node[ writePrefix + 'x' ] = ratio * ( node[ readPrefix + 'x' ] || 0 );
+            node[ writePrefix + 'y' ] = ratio * ( node[ readPrefix + 'y' ] || 0 );
             if ( _sizeRange == 0 || isNaN( _sizeRange )  ) {
                 node[ writePrefix + 'size' ] = minNodeSize + sizeRange / 2;
             }
@@ -793,7 +800,6 @@
                 , width = me.container.offsetWidth
                 , height = me.container.offsetHeight
                 ;
-            console.log( 'resize', width, height );
             adaptDevice( me.canvas, { w: width, h: height } );
             me.refresh();
         }
@@ -1021,6 +1027,7 @@
 * camera需要有一套独立于graph的`标准化`坐标（可能是`rescale`以后的坐标），其相关的renderer的渲染基于这套标准化坐标
 * 坐标统一保存在graph中，不同套坐标使用`前缀`区分
 * camera是自带`胶片`（graph数据）的，`goTo( x, y, ratio, angle )`的含义是将胶片的`(x,y)`投射到荧幕（renderer）的`中心点`，也就是`(0, 0)`；将胶片`放大`ratio倍，再`逆时针`旋转angle弧度
+* `约定`：graph坐标相关值x, y, size，在`读取过程`中，若其值为`null, undefined或NaN`，需修正成`0`
 
 #### 代码实现
 
@@ -1081,8 +1088,8 @@
             }
             else {
                 me.graph.nodes().forEach( ( node ) => {
-                    node[ prefix + 'x' ] = node.x;
-                    node[ prefix + 'y' ] = node.y;
+                    node[ prefix + 'x' ] = node.x || 0;
+                    node[ prefix + 'y' ] = node.y || 0;
                 } );
             }
 
@@ -1108,9 +1115,11 @@
                 let cos = Math.cos( angle ), sin = Math.sin( angle );
                 writePrefix = me.renderers[ 0 ].prefix;
                 me.graph.nodes().forEach( ( node ) => {
-                    node[ writePrefix + 'x' ] = ( node[ readPrefix + 'x' ] + offset.x ) * ratio;
-                    node[ writePrefix + 'y' ] = ( node[ readPrefix + 'y' ] + offset.y ) * ratio;
-                    node[ writePrefix + 'size' ] = ( node[ readPrefix + 'size' ] ) * ratio;
+                    node[ writePrefix + 'x' ] 
+                        = ( ( node[ readPrefix + 'x' ] || 0 ) + offset.x ) * ratio;
+                    node[ writePrefix + 'y' ] 
+                        = ( ( node[ readPrefix + 'y' ] || 0 ) + offset.y ) * ratio;
+                    node[ writePrefix + 'size' ] = ( node[ readPrefix + 'size' ] || 0 ) * ratio;
 
                     let x = node[ writePrefix + 'x' ], y = node[ writePrefix + 'y' ];  
                     node[ writePrefix + 'x' ] = x * cos + y * sin;
@@ -1143,9 +1152,10 @@
 #### 验证
 
 <div id="test_Camera" class="test">
+<div class="test-console"></div>
 <div class="test-container">
 
-    @[data-script="babel"](function(){
+    @[data-script="babel editable"](function(){
 
         var s = fly.createShow('#test_Camera');
 
@@ -1169,15 +1179,16 @@
         s.append_show( render.calledOnce, 'render() called once' );
         s.append_show( camera.renderers.length === 1, 'renderers has 1 item' ); 
         s.append_show( camera.graph.nodes().length === 1, 'has 1 node' );
-        s.append_show( camera.graph.nodes()[ 0 ][ 'c0:x' ] === null, 'correct snapshot()' );
-        s.append_show( camera.graph.nodes()[ 0 ][ 'r_c0:x' ] === null, 'correct project()' );
+        s.append_show( camera.graph.nodes()[ 0 ][ 'c0:x' ] === 0, 'correct snapshot()' );
+        s.append_show( camera.graph.nodes()[ 0 ][ 'r_c0:x' ] === 0, 'correct project()' );
+
+        console.log( camera.graph.nodes() );
 
         addRenderer.restore();
 
     })();
 
 </div>
-<div class="test-console"></div>
 <div class="test-panel">
 </div>
 </div>
@@ -1189,6 +1200,8 @@
 
 * 不同于sigmajs，canvas层面已经调整`荧幕中央`为`(0, 0)`
 * 可扩展出`SVG` Renderer, `WebGL` Renderer
+* 支持`画布分层`，至少包含两个层。一个绘制节点、边、标签等内容的层（`main`）；另一个绘制Hover层（`hover`）
+* Renderer管理`从属`的画布层，能随意调用`指定`画布进行绘制
 
 
 以下为代码实现：
@@ -1202,11 +1215,29 @@
             me.settings = utils.defaults( {}, options );
             me.camera = camera;
             me.prefix = 'r_' + me.camera.prefix;
+
             me.container = utils.dom( container );
             me.width = me.container.offsetWidth;
             me.height = me.container.offsetHeight;
-            me.canvas = createCanvas( container );
-            me.context = me.canvas.getContext( '2d' );
+            me.container.style.position = 'relative';
+
+            me.layers = {};
+            me.initLayers();
+            window.addEventListener( 'resize', e => me.resize(), false );
+        }
+
+        initLayers() {
+            let me = this;
+            me.layers[ 'main' ] = new Layer( me.container, 'main', me.settings );
+            me.layers[ 'hover' ] = new Layer( me.container, 'hover', me.settings );
+        }
+
+        eachLayers( func ) {
+            let me = this;
+            for ( let key in me.layers ) {
+                let layer = me.layers[ key ];
+                func.call( layer, key );
+            }
         }
 
         draw( options ) {
@@ -1237,33 +1268,92 @@
             graph.edges().forEach( ( edge ) => {
                 let source = graph.nodes( edge.source );
                 let target = graph.nodes( edge.target );
-                onEdge( me.context, edge, source, target, edgeOption );
+                onEdge( me.layers[ 'main' ].context, edge, source, target, edgeOption );
             } );
+
             graph.nodes().forEach( ( node ) => {
-                onNode( me.context, node, nodeOption );
+                onNode( me.layers[ 'main' ].context, node, nodeOption );
             } );
 
             return me;
 
         }
 
-        render( options ) {
+        resize() {
+            let me = this;
 
+            me.width = me.container.offsetWidth;
+            me.height = me.container.offsetHeight;
+
+            me.eachLayers( function( type ) {
+                this.resize();
+            } );
+            me.render();
+        }
+
+        render( options ) {
             let me = this
                 , width = me.width
                 , height = me.height
                 ;
 
-            me.context.clearRect(
-                - width / 2, - height / 2
-                , width, height
-            );
-            return me.draw( options );
+            me.eachLayers( function( type ) {
+                this.context.clearRect(
+                    - width / 2, - height / 2
+                    , width, height
+                );
+            } );
 
+            return me.draw( options );
         }
 
     }
     var Renderer = _Renderer;
+
+
+### Layer
+
+> 画布层，每一个画布层包含一张背景透明的画布。
+
+* 管理画布与`屏幕dpr`、`容器尺寸`的适配
+* 管理画布的`堆叠`顺序
+
+#### 代码实现
+
+    @[data-script="babel-loose"]class _Layer {
+
+        constructor( container, type, options ) {
+            let me = this;
+            const zIndexConfig = {
+                    main: 100        
+                    , hover: 1000
+                };
+
+            me.settings = utils.extend( {}, options );
+            me.container = utils.dom( container );
+            me.canvas = createCanvas( container );
+            me.context = me.canvas.getContext( '2d' );
+
+            me.canvas.style.position = 'absolute';
+            me.canvas.style.top = '0';
+            me.canvas.style.left = '0';
+            me.canvas.style.right = '0';
+            me.canvas.style.bottom = '0';
+            me.canvas.setAttribute( 'data-type', type );
+            me.canvas.style.zIndex = zIndexConfig[ type ] || 'auto';
+        }
+
+        resize() {
+            let me = this
+                , width = me.container.offsetWidth
+                , height = me.container.offsetHeight
+                ;
+            adaptDevice( me.canvas, { w: width, h: height } );
+        }
+
+    }
+    var Layer = _Layer;
+
 
 
 

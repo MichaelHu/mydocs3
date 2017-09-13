@@ -1,6 +1,6 @@
 # bower
 
-> A package manager for the web.
+> A `package manager` for the web.
 
 Web sites are made of lots of things -- frameworks, libraries, assets, and utilities. Bower manage all these things for you.
 

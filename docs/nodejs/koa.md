@@ -1,69 +1,152 @@
 # koa
 
-> next generation web framework for node.js
+> Next generation web framework for `node.js`
 
-> changelog: 1706, 1603
+> changelog: 170913, 1706, 1603
 
 
 ## Resources 
 
 * `site and docs`: <http://koajs.com>
-* github: <https://github.com/koajs/koa>
+* github: <https://github.com/koajs/koa> <iframe src="https://ghbtns.com/github-btn.html?user=koajs&repo=koa&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 * `available middlewares`: <https://github.com/koajs/koa/wiki>
 
 
 
 ## Versions
 
-### v3.x.x
-* koa `deprecated` Support for `generators` will be removed in v3.
+    v3.x.x
+        koa deprecated Support for generators will be removed in v3. 3.x版开始，不再支持generator函数
 
-### v2.x.x
-> from `2015-10-23`
+    v2.x.x
+        > from 2015-10-23
+        * latest: v2.3.0
+        * 使用了ES6的语法，使用上也有一些区别，比如app必须new的方式获得，以为Application使用class关键字定义的
 
-* `latest`: v2.3.0
-* 使用了`ES6`的语法，使用上也有一些区别，比如app必须`new`的方式获得，以为Application使用`class`关键字定义的
+    v1.x.x
+        > from 2015-08-23
 
-### v1.x.x
-> from `2015-08-23`
-
-
-### v0.x.x
-> from `2013-11-08`
+    v0.x.x
+        > from 2013-11-08
 
         
 
 
 ## Installation
 
-> 要求node `>= 7.6.0`，或者`支持ES2015`以及async功能的模式
+> 要求node `>= 7.6.0`，或者`支持ES2015`以及`async`功能的模式
 
-    nvm install 7
-    npm install koa
-    node my-koa-app.js
+    $ nvm install 7
+    $ npm install koa
+    $ node my-koa-app.js
+
+### 直接使用
+
+node版本`高于`7.6，代码中可直接使用async函数。
+
+
+### Babel使用
+
+如果在`低于`7.6版本的node环境下使用Koa的`async`，推荐使用babel的`require hook` <http://babeljs.io/docs/usage/babel-register/>
+
+    $ npm install babel-register --save-dev
+
+至少安装以下能解析和转译async函数的babel`插件`：
+
+    $ npm install --save-dev babel-plugin-transform-async-to-generator
+    $ npm install --save-dev babel-plugin-transform-async-to-module-method
+
+在`.babelrc`文件中，包含以下内容：
+
+    {
+        plugins: [ "transform-async-to-generator" ]
+    }
+
+配置好babel环境以后，代码可以这么写：
+
+    require( 'babel-core/register' );
+    // 此后的代码将被Babel转译
+    const app = require( './app' );
 
 
 
 ## Koa application
 
-* `koa app`是一个对象，它包含了一系列的中间件函数，这些中间件在响应请求时，按一种`类似堆栈`的方式来组织和执行
-* hello world app:
+`koa app`是一个对象，它包含了一系列的`中间件函数`，这些中间件在响应请求时，按一种`类似堆栈`的方式来组织和执行
 
-        const Koa = require( 'koa' );
-        const app = new Koa();
+以hello world应用为例，只需几行代码：
 
-        app.use( ctx => {
-            ctx.body = 'Hello, World!';
-        } );
+    const Koa = require( 'koa' );
+    const app = new Koa();
 
-        app.listen( 3000 );
+    app.use( ctx => {
+        ctx.body = 'Hello, World!';
+    } );
+
+    app.listen( 3000 );
 
 
 
-## Middleware Cascading
+### Middleware Cascading
+
 > 中间件级联
 
-`Connect（另一种使用中间件的框架）`简单地将控制权交给一系列函数来处理，直到函数返回。 `Koa`与之的不同之处在于，当执行到`yield next`语句时，Koa 暂停了该中间件，继续执行下一个符合请求的中间件(`downstream`)，直到向下路径上不再有中间件为止，然后控制权再逐级返回给上层中间件(`upstream`)。
+`Connect（另一种使用中间件的框架）`简单地将控制权交给一系列函数来处理，直到函数返回。 
+
+`Koa`与之的不同之处在于，当执行到`yield next`语句时，Koa 暂停了该中间件，继续执行下一个符合请求的中间件(`downstream`)，直到向下路径上不再有中间件为止，然后控制权再逐级返回给上层中间件(`upstream`)。
+
+
+#### 控制权流转
+
+执行过程中，`控制权`在Koa的中间件堆栈中经历`下行／上行`两个阶段，以下示意仅供参考。
+
+    -------- downstream  ←|→  upstream ----------- 
+
+    mdw1 →                                   → mdw1  
+          ↓                                 ↑
+         mdw2 →                        → mdw2
+               ↓                      ↑
+               ....                .... 
+                  ↓                ↑
+                  mdwn → .... → mdwn
+
+
+
+
+### async/await方式
+
+> 新版（v3.x）推荐的方式
+
+    const Koa = require( 'koa' );
+    const app = new Koa();
+
+    // x-response-time
+    app.use( async ( ctx, next ) => {
+        const start = Date.now();
+        await next();
+        const ms = Date.now() - start;
+        ctx.set( 'X-Response-Time', `${ms}ms` );
+    } );
+
+    // logger
+    app.use( async ( ctx, next ) => {
+        const start = Date.now();
+        await next();
+        const ms = Date.now() - start;
+        console.log( `${ctx.method} ${ctx.url} - ${ms}` );
+    } );
+
+    // response
+    app.use( async ctx => {
+        ctx.body = 'Hello World';
+    } );
+
+    app.listen( 3000 );
+
+
+### Generator方式 
+
+> `3.x版本`开始，不再支持
 
     var koa = require('koa');
     var app = koa();
