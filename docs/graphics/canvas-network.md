@@ -1206,6 +1206,8 @@ todo: 坐标模型调试／事件模型、相关utils
 
 > 荧幕，图形渲染器
 
+#### 定位及说明
+
 * 不同于sigmajs，canvas层面已经调整`荧幕中央`为`(0, 0)`
 * 可扩展出`SVG` Renderer, `WebGL` Renderer
 * 支持`画布分层`，至少包含两个层。一个绘制节点、边、标签等内容的层（`main`）；另一个绘制Hover层（`hover`）
