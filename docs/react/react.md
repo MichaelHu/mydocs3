@@ -538,7 +538,31 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
 
 ### 无状态组件
 
-简单、高性能的方式，针对组件只作为props的`纯粹`函数的情况。这种情形下，可以用函数代替Component类。
+简单、高性能的方式，针对组件只作为针对props的`纯粹函数`的情况。这种情形下，可以用函数`代替`Component类。
+
+
+<div id="test_stateless_component" class="test">
+<div class="test-container">
+
+    @[data-script="compile-react editable"](function(){
+
+        var s = fly.createShow('#test_stateless_component');
+        var mountNode = $( '#test_stateless_component .test-react' )[ 0 ];
+
+        var Simple = function( props ) {
+                return ( <div>Hello, {props.name}</div> );     
+            };
+        s.show( 'testing Simple component ...' );
+        ReactDOM.render( <Simple name="hudamin" />, mountNode );
+
+    })();
+
+</div>
+<div class="test-react"></div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
 
 
 
@@ -669,7 +693,7 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
 
 ## react-router 
 
-查看这里<a href="./react-router.md.preview.html">react-router</a>
+查看这里<ref://./react-router.md.html>
 
 
 
@@ -907,6 +931,10 @@ TODO:
 * 与Rocket的比较，`分治`的思想是一致的，不过React更加深入
 * 伟大之处在于`jsx`的引入
 * 牛逼之处在于`生态`的建立
+
+### Related Articles
+
+* 201509 React 源码剖析系列 － 解密 setState <https://zhuanlan.zhihu.com/p/20328570>
 
 
 

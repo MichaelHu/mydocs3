@@ -10,6 +10,8 @@
     height: 300px;
     width: 50%;
     float: left;
+    box-sizing: border-box;
+    border: 1px dotted #ccc;
 }
 </style>
 <script src="http://258i.com/static/build/babel/babel.min.js"></script> 
@@ -76,8 +78,14 @@
 
 > 170914
 
-todo: 调试画布分层 / 事件
+* 调试main与hover画布
+* 考虑事件模型
+* 增加点击事件，并简单调试
+* 定义`坐标模型`，`四种`类型的坐标 
 
+> 170915
+
+todo: 坐标模型调试／事件模型、相关utils
 
 
 ## API设计
@@ -1202,9 +1210,15 @@ todo: 调试画布分层 / 事件
 * 可扩展出`SVG` Renderer, `WebGL` Renderer
 * 支持`画布分层`，至少包含两个层。一个绘制节点、边、标签等内容的层（`main`）；另一个绘制Hover层（`hover`）
 * Renderer管理`从属`的画布层，能随意调用`指定`画布进行绘制
+* 处理和派发发生在荧幕上的`事件`
+* 坐标类型（`4类`）：`Graph坐标`、`Camera坐标`、`Renderer坐标`、`Viewport坐标`
+    * Graph坐标，对应原始坐标值
+    * Camera坐标，对应原始坐标值，或者对应将原始坐标值进行Rescale后的坐标值
+    * Renderer坐标，以画布`中心点`为坐标原点的坐标系
+    * Viewport坐标，画布矩形`左上`顶点为(0, 0)，`右下`顶点为(w, h)，只和`可视区`相关，总是`非负`坐标值
 
 
-以下为代码实现：
+#### 代码实现
 
     @[data-script="babel-loose"]class _Renderer {
 
@@ -1224,12 +1238,20 @@ todo: 调试画布分层 / 事件
             me.layers = {};
             me.initLayers();
             window.addEventListener( 'resize', e => me.resize(), false );
+            me.container.addEventListener( 'click', ( e ) => {
+                let rect = me.container.getBoundingClientRect()
+                    , point = { x: e.clientX - rect.left, y: e.clientY - rect.top }
+                    ;
+                console.log( [ e.clientX, e.clientY, rect.top, rect.left ].join( ' | ' ) );
+                console.log( 'point: ' + point.x + ', ' + point.y );
+            } );
         }
 
         initLayers() {
             let me = this;
-            me.layers[ 'main' ] = new Layer( me.container, 'main', me.settings );
-            me.layers[ 'hover' ] = new Layer( me.container, 'hover', me.settings );
+            [ 'main', 'hover' ].forEach( ( type ) => {
+                me.layers[ type ] = new Layer( me.container, type, me.settings );
+            } );
         }
 
         eachLayers( func ) {
@@ -1268,7 +1290,7 @@ todo: 调试画布分层 / 事件
             graph.edges().forEach( ( edge ) => {
                 let source = graph.nodes( edge.source );
                 let target = graph.nodes( edge.target );
-                onEdge( me.layers[ 'main' ].context, edge, source, target, edgeOption );
+                onEdge( me.layers[ 'hover' ].context, edge, source, target, edgeOption );
             } );
 
             graph.nodes().forEach( ( node ) => {

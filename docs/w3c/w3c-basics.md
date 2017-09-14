@@ -17,6 +17,7 @@
 * DOM <https://www.w3.org/TR/dom/>
 * BOM (无正式标准，归类方便，特放此处) <https://www.w3cschool.cn/javascript/js-window.html>
 * CSS3 <https://www.w3.org/TR/CSS/>
+* CSSOM <https://www.w3.org/TR/cssom-view-1/> CSSOM View Module，参考<ref://./cssom.md.html>
 * DOM-Level-0：`Netscape Navigator 3`及`MS IE 3`提供的HTML文档功能的合集，无正式规范 
 * DOM-Level-2-Core, 2000 <https://www.w3.org/TR/DOM-Level-2-Core/>
 * DOM-Level-3-Core <https://www.w3.org/TR/DOM-Level-3-Core/>
