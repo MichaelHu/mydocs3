@@ -37,6 +37,8 @@
 * Network Error Logging <https://www.w3.org/TR/network-error-logging/> `NEL` Header
 * IndexedDB: <https://w3c.github.io/IndexedDB/>
 * Web Storage: <https://www.w3.org/TR/webstorage/> `localStorage`, `sessionStorage` <ref://../html5/web-storage.md.html>
+* Web Workers: <https://www.w3.org/TR/workers/>
+* Service Workers 1: <https://www.w3.org/TR/service-workers-1/> 
     
 
 

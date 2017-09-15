@@ -8,11 +8,11 @@
 
 ## 登录及账户设置
 
-配置ECS实例，选择Linux系统为`Centos`（目前云主机的常用OS），可以`ssh`直接登录机器：
+配置ECS实例，选择Linux系统为`Centos`（目前阿里云主机的常用OS），可以`ssh`直接登录机器：
 
     ssh root@xxx.xxx.xxx.xxx
 
-主机供应商直接提供`root`账号，可以自己添加普通账号和密码：
+主机供应商直接提供`root`账号，可以自己添加普通账号和密码（参考：<ref://../linux/user_group.md.html>）：
 
     # useradd -b /home irice
     # passwd irice

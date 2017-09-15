@@ -1,17 +1,15 @@
 # USER:GROUP under LINUX
 
 
+## 文件
 
-
-
-
-## 1 文件
+相关文件主要为以下几个：
 
 * `/etc/group`：包含所有组 
 * `/etc/passwd`及`/etc/shadow`：包含系统存在的所有用户名
 
 
-### 1.1 /etc/group
+### /etc/group
 
 
 每行格式：
@@ -42,7 +40,7 @@ root用户属于`wheel, daemon, kmem, sys, ..., admin`组成员。
 
 
 
-### 1.2 /etc/passwd
+### /etc/passwd
 
 每行格式：
 
@@ -70,16 +68,15 @@ root用户属于`wheel, daemon, kmem, sys, ..., admin`组成员。
 
 
 
-### 1.3 疑问
+### 疑问
 
 > `?` Mac下为什么找不到user_name为hudamin的配置行呢？
 
 MacOS已经不同于Linux，它采用`BSD的权限管理系统`。虽然仍然有/etc/group和/etc/passwd文件，它们只用于单用户模式下的权限管理。GUI系统启动以后，使用全新一套权限管理系统。所以你在通常的Linux权限管理文件中，根本找不到自己的用户名。
 
-可以参考： http://wenku.baidu.com/link?url=uCKDCnaflnijR7nMvBP4XbJJVGT_UPMs6lpVDYtMWerou01LfCazWNXDxqqD7fg3zufhlSR6AM0lBgct9BqPLKXun-BISbCekAcjYExadVS
+可以参考： <http://wenku.baidu.com/link?url=uCKDCnaflnijR7nMvBP4XbJJVGT_UPMs6lpVDYtMWerou01LfCazWNXDxqqD7fg3zufhlSR6AM0lBgct9BqPLKXun-BISbCekAcjYExadVS>
 
 真正想要查看自己用户名所属组、权限等信息，可以通过`Directory Utility`工具的`目录编辑器`中查看。
-
 
 
 
@@ -91,7 +88,6 @@ MacOS已经不同于Linux，它采用`BSD的权限管理系统`。虽然仍然�
     $ id
     uid=501(hudamin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),98(_lpadmin),33(_appstore),100(_lpoperator),204(_developer),398(com.apple.access_screensharing),399(com.apple.access_ssh)
     
-
 
 
 ## usermod

@@ -83,9 +83,16 @@
 * 增加点击事件，并简单调试
 * 定义`坐标模型`，`四种`类型的坐标 
 
+
 > 170915
 
-todo: 坐标模型调试／事件模型、相关utils
+* 节点点击：viewport坐标 -> render坐标 -> 获取节点
+* 开始编写小部分包含算法（contain）
+
+
+> 170916
+
+todo：hover层渲染／节点hover／拖动／动画
 
 
 ## API设计
@@ -583,7 +590,24 @@ todo: 坐标模型调试／事件模型、相关utils
 <div class="test-panel">
 </div>
 </div>
+
+
+
+### contain
     
+#### 代码实现
+
+    @[data-script="babel-loose"]var contain = ( () => {
+
+        function pointInPoint( x1, y1, x2, y2, r ) {
+            return Math.pow( x1 - x2, 2 ) + Math.pow( y1 - y2, 2 ) <= r * r;
+        }
+
+        return {
+            pointInPoint
+        };
+            
+    } )();
 
 
 ## 类
@@ -1213,11 +1237,11 @@ todo: 坐标模型调试／事件模型、相关utils
 * 支持`画布分层`，至少包含两个层。一个绘制节点、边、标签等内容的层（`main`）；另一个绘制Hover层（`hover`）
 * Renderer管理`从属`的画布层，能随意调用`指定`画布进行绘制
 * 处理和派发发生在荧幕上的`事件`
-* 坐标类型（`4类`）：`Graph坐标`、`Camera坐标`、`Renderer坐标`、`Viewport坐标`
-    * Graph坐标，对应原始坐标值
-    * Camera坐标，对应原始坐标值，或者对应将原始坐标值进行Rescale后的坐标值
-    * Renderer坐标，以画布`中心点`为坐标原点的坐标系
-    * Viewport坐标，画布矩形`左上`顶点为(0, 0)，`右下`顶点为(w, h)，只和`可视区`相关，总是`非负`坐标值
+* 坐标类型（`4类`）：
+    * `Graph坐标`，对应`原始`坐标值
+    * `Camera坐标`，对应原始坐标值，或者对应将原始坐标值进行`Rescale`后的坐标值
+    * `Renderer坐标`，以画布`中心点`为坐标原点的坐标系
+    * `Viewport坐标`，画布矩形`左上`顶点为(0, 0)，`右下`顶点为(w, h)，只和`可视区`相关，总是`非负`坐标值
 
 
 #### 代码实现
@@ -1242,10 +1266,26 @@ todo: 坐标模型调试／事件模型、相关utils
             window.addEventListener( 'resize', e => me.resize(), false );
             me.container.addEventListener( 'click', ( e ) => {
                 let rect = me.container.getBoundingClientRect()
-                    , point = { x: e.clientX - rect.left, y: e.clientY - rect.top }
+                    , viewportPoint = { x: e.clientX - rect.left, y: e.clientY - rect.top }
+                    , renderPoint = { 
+                        x: viewportPoint.x - me.width / 2
+                        , y: viewportPoint.y - me.height / 2
+                    }
                     ;
                 console.log( [ e.clientX, e.clientY, rect.top, rect.left ].join( ' | ' ) );
-                console.log( 'point: ' + point.x + ', ' + point.y );
+                console.log( 'point: ' + viewportPoint.x + ', ' + viewportPoint.y );
+                console.log( 'renderPoint: ' + renderPoint.x + ', ' + renderPoint.y );
+                me.camera.graph.nodes().forEach( ( node ) => {
+                    if ( contain.pointInPoint(
+                            node[ me.prefix + 'x' ]
+                            , node[ me.prefix + 'y' ]
+                            , renderPoint.x
+                            , renderPoint.y
+                            , node[ me.prefix + 'size' ] 
+                        ) ) {
+                        console.log( 'node ' + node.label + ' clicked' );
+                    }
+                } );
             } );
         }
 
@@ -1312,7 +1352,8 @@ todo: 坐标模型调试／事件模型、相关utils
             me.eachLayers( function( type ) {
                 this.resize();
             } );
-            me.render();
+            me.camera.refresh();
+            // me.render();
         }
 
         render( options ) {
@@ -1535,7 +1576,7 @@ todo: 坐标模型调试／事件模型、相关utils
 
         if ( !container.cameraAdded ) {
             container.cameraAdded = net.addCamera( {
-                autoRescale: false
+                autoRescale: true
                 , renderers: [
                     {
                         container: '#' + containerId + ' .canvas-wrapper2:nth-child(3)'
