@@ -26,6 +26,42 @@
 * 深入了解CSS字体度量，行高和vertical-align <https://www.w3cplus.com/css/css-font-metrics-line-height-and-vertical-align.html>
 
 
+## 伪元素&伪类
+
+> <https://www.w3.org/TR/CSS2/selector.html#before-and-after> 
+
+### Tips
+
+`input`, `img`, `iframe`等元素不能设置伪元素，因为其不能插入内容。
+
+
+### 伪元素
+
+    ::first-letter
+    ::first-line
+    ::before
+    ::after
+
+### 伪类
+
+    :active
+    :focus
+    :hover
+    :link
+    :visited
+    :first-child
+    :lang
+
+### first-letter & first-child
+
+todo
+
+### Resources
+
+* 为什么input不支持伪元素(:after,:before)？ <https://www.zhihu.com/question/21296044>
+* 170918 你所不知的 CSS ::before 和 ::after `伪元素`用法 <http://blog.dimpurr.com/css-before-after/>
+
+
 
 ## clip
 

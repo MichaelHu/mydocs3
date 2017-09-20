@@ -55,9 +55,29 @@
 
 > 4w+ Stars，包含JavaScript, React, CSS-in-JavaScript, CSS&Sass, Ruby
 
-* <https://github.com/airbnb/javascript>
+* <https://github.com/airbnb/javascript> <iframe src="https://ghbtns.com/github-btn.html?user=airbnb&repo=javascript&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 * <https://github.com/yuche/javascript>
 * <https://github.com/JasonBoy/javascript/tree/master/react>
+
+
+## EFE
+
+> `EcomFE/spec` - EFE出品的相关规范文档 <https://github.com/ecomfe/spec> <iframe src="https://ghbtns.com/github-btn.html?user=ecomfe&repo=spec&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
+
+包含以下规范：
+
+* Javascript编码规范 [1.3]
+* Javascript编码规范 - ESNext补充篇 [draft]
+* HTML编码规范 [1.2]
+* CSS编码规范 [1.2]
+* Less编码规范 [1.1]
+* E-JSON数据传输标准 [1.0]
+* 模块和加载器规范 [1.1]
+* 包结构规范 [1.1]
+* 项目目录结构规范 [1.1]
+* 图表库标准 [1.0]
+* react编码规范 [draft]
+
 
 
 ## w3schools

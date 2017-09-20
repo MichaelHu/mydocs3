@@ -31,6 +31,7 @@
 * 牛大拿设计师导航：<http://www.niudana.com> 
 * 印记中文 - 最权威的中文开发文档：<https://www.docschina.org>
 * 掘金：<https://juejin.im>
+* 简书：<http://www.jianshu.com>
 * segmentfault: <https://segmentfault.com>
 * div.io: <http://div.io>
 * 极客搜索：<https://s.geekbang.org>
