@@ -14,18 +14,18 @@
 
 ## 外接显示器注意
 
-黑屏情况下，拔下外接显示器，可能导致机器死机。确保拔下外接显示器的时候，主显示器是`点亮`的。
+`黑屏`情况下，拔下外接显示器，会导致机器`死机`，除了硬重启外，无法再次点亮屏幕。该问题截至目前版本`macOS Sierra 10.12.6 (16G29)`未解决。安全做法是确保拔下外接显示器的时候，主显示器是`点亮`的。
 
 
 ## Option + 选择
 
-支持`块选择`。
+原生Terminal支持`块选择`。iTerm2则支持`Command + Option`进行块选择。
 
 ## xcode
 
 > 170922
 
-`xcode`更新以后，运行`git status`，提示以下信息：
+`xcode`更新以后，新版本为`Version 9.0 (9A235)`，运行`git status`，提示以下信息：
 
     Agreeing to the Xcode/iOS license requires admin privileges, please 
     run “sudo xcodebuild -license” and then retry this command.
@@ -34,4 +34,4 @@
 
     $ sudo xcodebuild -license
 
-此次
+此次更新后，git版本升级到`git version 2.13.5 (Apple Git-94)`，明显的一个更新是git log列表中，会显示当前commit关联的HEAD及其他Branch，并使用彩色文字标示。
