@@ -1,4 +1,4 @@
-# QUnit Memo
+# qunit
 
 > js单元测试工具，由`jQuery`团队开发，也是jQuery的官方测试套装。
 
@@ -11,9 +11,58 @@
 
 ## Versions
 
-* 2.4.0
+* 2.4.0 <https://github.com/qunitjs/qunit/tree/2.4.0>
+* 1.23.1 <https://github.com/qunitjs/qunit/tree/1.23.1>
+* QUnit 2.x Upgrade Guide <http://qunitjs.com/upgrade-guide-2.x/> 
+    * globals只开放`QUnit`，其他相关的方法挂到该namaspace下，比如：
+            old                     2.x
+            ------------------------------------------
+            module()                QUnit.module()
+            test()                  QUnit.test()
+            stop(), start()         assert.async()
+            equal()                 assert.equal()
+            deepEqual()             assert.deepEqual()
+            ok()                    assert.ok()
+            module:setup()          module:beforeEach()
+            module:teardown()       module:afterEach()
+            QUnit.log = callback    QUnit.log( callback )
+            QUnit.push()            QUnit.pushResult()
+            QUnit.init()            removed
+            QUnit.reset()           removed，需要自行分成多个test
+            QUnit.jsDump()          QUnit.dump()
+    * 全局断言函数，全都放到了`assert`下面，assert通过`函数参数`传入
 
-npm: `npm install --save-dev qunitjs`
+            QUnit.test( 'a test', function( assert ) {
+                assert.expect( 2 );
+                ...
+            } );
+
+    * `QUnit.test()`的第二个参数，移至callback内部，用`assert.expect( value )`代替
+
+
+## Installation
+
+### 浏览器
+
+QUnit单测文件下载：
+
+* 2.4.0 js: <https://code.jquery.com/qunit/qunit-2.4.0.js>
+* 2.4.0 css: <https://code.jquery.com/qunit/qunit-2.4.0.css>
+
+或者：
+
+    curl -O https://code.jquery.com/qunit/qunit-2.4.0.js \
+        -O https://code.jquery.com/qunit/qunit-2.4.0.css
+
+
+### 命令行
+
+    $ npm install --save-dev qunitjs
+    $ yarn add qunitjs --dev
+    $ bower install --save-dev qunit
+
+
+
 
 ## 一、测试方法
 

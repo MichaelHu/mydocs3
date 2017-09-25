@@ -190,6 +190,8 @@
     &#8195;
     &#12288;
 
+另外可参考：<ref://../other/common-characters.md.html>
+
 ## css
 
     font-family: "Hiragino Sans GB","Microsoft Yahei",'\5B8B\4F53';

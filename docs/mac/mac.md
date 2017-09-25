@@ -21,4 +21,17 @@
 
 支持`块选择`。
 
+## xcode
 
+> 170922
+
+`xcode`更新以后，运行`git status`，提示以下信息：
+
+    Agreeing to the Xcode/iOS license requires admin privileges, please 
+    run “sudo xcodebuild -license” and then retry this command.
+
+只需按提示执行以下命令：
+
+    $ sudo xcodebuild -license
+
+此次

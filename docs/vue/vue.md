@@ -240,7 +240,7 @@ Instance Methods / Events
 
 
 
-* data, computed, methods, watch等对象内部的field都可以通过`vm.xxx`获得，vm为vue实例
+> `data`, `computed`, `methods`, `watch`等对象内部的field都可以通过`vm.xxx`获得，vm为vue实例
     
 
 

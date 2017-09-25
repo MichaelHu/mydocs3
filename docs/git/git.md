@@ -543,7 +543,11 @@ other目录下的object对象`全都是blob类型`的，但可能对应真实的
     git fetch
     git merge origin/master
 
-`recursive` strategy
+合并策略通过`-s`选项传入，默认为`recursive` strategy，它采用3路合并算法，是`git merge`和`git pull`操作时默认采用的合并方案，recursive策略还支持细化的合并算法，可以通过`-X<options>`传入。
+
+    # 采用recursive合并策略，冲突时优先使用ours
+    $ git merge -s recursive -Xours <branch>
+
 
 ### 例子
 

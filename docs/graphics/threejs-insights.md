@@ -19,6 +19,7 @@
 
     quaternion      四元数
     morph           渐变
+    flare           火光，照明灯
 
 
 ## top levels
@@ -536,7 +537,31 @@
 
 ### WebGLRenderer
 
+* js类`私有属性`实现方式，关键在于`实例方法`（`不同于`原型链方法）
+* 主要绘制方法：`context.bindBuffer(...)`, `context.drawArrays( ... )`
+
+
+以下为接口纲要：
+
     WebGLRenderer( parameters )
+
+        // 一些私有变量，供实例方法使用
+        _canvas
+        _context
+        _alpha
+        _depth
+        _stencil
+        _antialias
+        _premultipliedAlpha
+        _preserveDrawingBuffer
+        lightsArray
+        shadowArray
+        currentRenderList
+        spritesArray
+        flaresArray
+        _this
+
+        // 属性
         domElement = _canvas
         context = _g1
 
@@ -564,12 +589,13 @@
         maxMorphNormals = 4
 
         info = { render: _infoRender, memory: _infoMemory, programs: null }
+
+        vr
+        shadowMap
         
         // 执行初始化
         initGLContext();
 
-        vr
-        shadowMap
 
         // 定义一些实例方法，操作构造函数中的私有属性
         getContext()
@@ -608,11 +634,47 @@
         setupVertexAttributes( material, program, geometry, startIndex )
         start()
         loop( time )
+        projectObject( object, camera, sortObjects )
+        renderObjects( renderList, scene, camera, overrideMaterial )
+        renderObject( object, scene, camera, geometry, material, group )
+        initMaterial( material, fog, object )
+        setProgram( camera, fog, material, object )
+        refreshUniformsCommon( uniforms, material )
+        refreshUniformsLine( uniforms, material )
+        refreshUniformsDash( uniforms, material )
+        refreshUniformsPoints( uniforms, material )
+        refreshUniformsFog( uniforms, material )
+        refreshUniformsLambert( uniforms, material )
+        refreshUniformsPhong( uniforms, material )
+        refreshUniformsToon( uniforms, material )
+        refreshUniformsStandard( uniforms, material )
+        refreshUniformsPhysical( uniforms, material )
+        refreshUniformsDepth( uniforms, material )
+        refreshUniformsDistance( uniforms, material )
+        refreshUniformsNormal( uniforms, material )
+        makeUniformsLightsNeedsUpdate( uniforms, value )
+        allocTextureUnit()
+
+
 
         // 其他实例方法
         renderBufferImmediate( object, program, material )
         renderBufferDirect( camera, fog, geometry, material, object, group )
         compile( scene, camera )
+        animate( callback )
+        render( scene, camera, renderTarget, forceClear )
+        setFaceCulling( cullFace, frontFaceDirection )
+        allocTextureUnit()
+        setTexture2D( texture, slot )
+        setTexture( texture, slot )
+        setTextureCube( texture, slot )
+        getRenderTarget()
+        setRenderTarget( renderTarget )
+        readRenderTargetPixels( renderTarget, x, y, width, height, buffer )
+
+
+
+
 
         
          
@@ -628,6 +690,61 @@
 ### WebGL2Renderer
 
 ### webgl/
+
+#### WebGLAttributes
+#### WebGLBackground
+#### WebGLBufferRenderer
+
+    WebGLBufferRenderer( gl, extensions, infoRender )
+        // 私有属性
+        mode
+
+        // 实例方法
+        setMode( value )
+        render( start, count ) // 调用gl.drawArrays()
+        renderInstances( geometry, start, count )
+
+
+#### WebGLCapabilities
+#### WebGLClipping
+#### WebGLExtensions
+#### WebGLFlareRenderer
+#### WebGLGeometries
+#### WebGLIndexedBufferRenderer
+#### WebGLLights
+#### WebGLMorphtargets
+#### WebGLObjects
+
+封装了geometries和infoRender，再对外提供`update( object )`以及`clear()`两个方法。
+
+    WebGLObjects( geometries, infoRender )
+        return {
+            update: update
+            , clear: clear
+        }
+
+
+#### WebGLProgram
+#### WebGLPrograms
+#### WebGLProperties
+#### WebGLRenderLists
+#### WebGLShader
+#### WebGLShadowMap
+#### WebGLSpriteRenderer
+#### WebGLState
+#### WebGLTextures
+#### WebGLUniforms
+#### WebGLUtils
+
+封装了gl和extensions，再对外提供`convert( p )`方法。
+
+    WebGLUtils( gl, extensions )
+        return {
+            convert: convert
+        }
+
+
+
 
 ### webvr/
 
