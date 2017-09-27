@@ -632,6 +632,8 @@ Redux的middleware与`Express`或`Koa`的middleware是类似的，只不过解�
 
     ({ getState, dispatch }) => next => action 
 
+Store包含`getState()`和`dispatch()`接口，所以有以上`解构`的表示方式。middleware`封装`了Store和next，返回一个接收`action`作为`参数`的函数。
+
 以下用`简单`方式展示了Redux的`applyMiddleware`的实现思想：
 
     // Warning: Naïve implementation!
@@ -642,9 +644,10 @@ Redux的middleware与`Express`或`Koa`的middleware是类似的，只不过解�
       middlewares.reverse()
 
       let dispatch = store.dispatch
-      middlewares.forEach(middleware =>
+      middlewares.forEach(middleware => {
+        // 返回的dispatch方法内部封装了上一dispath方法，用next引用
         dispatch = middleware(store)(dispatch)
-      )
+      })
 
       return Object.assign({}, store, { dispatch })
     }

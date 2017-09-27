@@ -26,7 +26,7 @@
 * `简洁优雅`的异步编程方式，看似同步的方式来实现异步的功能，`减少`回调函数的多层`嵌套`
 * 在`ES6`中已经作为语言的原生支持的特性
 * `node 4.0+`版本，已经默认支持ES6新特性
-* 浏览器原生支持： Chrome32+, Edge, Firefox 29+, Opera 19+, Safari 7.1+
+* 浏览器原生支持： `Chrome 32+`, Edge, Firefox 29+, Opera 19+, `Safari 7.1+`
 * `ES7`中，引入`async/await`，或许会取代promise
 
 

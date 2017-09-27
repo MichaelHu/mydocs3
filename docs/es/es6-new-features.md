@@ -112,7 +112,16 @@ import.js:
     array.forEach( v => console.log( v ) );
 
 * 参数部分与`=>`之间不能有换行
-* `this`关键字的处理
+* `this`关键字在函数体中能直接体现当前上下文的this，不同于function内的this
+* 简单情况下`()`与`{}`可以省略。省略`{}`时，`return`关键字也可省略
+        
+        a => a + 5                          // (), {}, return都省略
+        ( a, b ) => a + b                   // 省略{}, return
+        ( a, b ) => { name: a, age: b }     // 错误写法：返回值包含{}，不能省略{}以及return
+        ( a, b ) => {                       // 正确写法，都不能省略
+            return { name: a, age: b }; 
+        }
+        
 
 
 
@@ -136,6 +145,8 @@ import.js:
         constructor(name) {
             // 直接调用父类构造器进行初始化
             super(name);
+            // this关键词必须在super()调用后才能使用
+            ...
         }
         program() {
             console.log("I'm coding...");
@@ -155,7 +166,8 @@ import.js:
 
 
 * 浅谈ES6中`super`关键字 <http://www.cnblogs.com/liutie1030/p/5997446.html>
-* `class`也是具有`块级作用域`的关键字
+* `Note`: `class`也是具有`块级作用域`的关键字
+* 如果带`extends`关键词进行`继承`，那么在`constructor`中，`super()`需在`this`关键词可用`之前`完成调用
 
 
 
@@ -366,7 +378,7 @@ Symbol不能赋值给`let`声明的`变量`：
 
 ## Promises
 
-<ref://../frontend/promise.md.html>
+<ref://../frontend/promisejs.md.html>
 
     // 创建promise
     var promise = new Promise(function(resolve, reject) {
