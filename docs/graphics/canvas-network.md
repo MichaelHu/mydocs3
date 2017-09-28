@@ -1055,7 +1055,7 @@ todo：hover层渲染／节点hover／拖动／动画
 
 > 投影机，管理`视角`，包括视中心、缩放、旋转等参数
 
-* camera管理从属于它的renderer
+* camera管理`从属`于它的renderer
 * camera需要有一套独立于graph的`标准化`坐标（可能是`rescale`以后的坐标），其相关的renderer的渲染基于这套标准化坐标
 * 坐标统一保存在graph中，不同套坐标使用`前缀`区分
 * camera是自带`胶片`（graph数据）的，`goTo( x, y, ratio, angle )`的含义是将胶片的`(x,y)`投射到荧幕（renderer）的`中心点`，也就是`(0, 0)`；将胶片`放大`ratio倍，再`逆时针`旋转angle弧度
@@ -1235,11 +1235,11 @@ todo：hover层渲染／节点hover／拖动／动画
 * 不同于sigmajs，canvas层面已经调整`荧幕中央`为`(0, 0)`
 * 可扩展出`SVG` Renderer, `WebGL` Renderer
 * 支持`画布分层`，至少包含两个层。一个绘制节点、边、标签等内容的层（`main`）；另一个绘制Hover层（`hover`）
-* Renderer管理`从属`的画布层，能随意调用`指定`画布进行绘制
+* Renderer管理`从属`的画布层（Layer），能随意调用`指定`画布进行绘制
 * 处理和派发发生在荧幕上的`事件`
 * 坐标类型（`4类`）：
     * `Graph坐标`，对应`原始`坐标值
-    * `Camera坐标`，对应原始坐标值，或者对应将原始坐标值进行`Rescale`后的坐标值
+    * `Camera坐标`，对应原始坐标值，`或者`对应将原始坐标值进行`Rescale`后的坐标值
     * `Renderer坐标`，以画布`中心点`为坐标原点的坐标系
     * `Viewport坐标`，画布矩形`左上`顶点为(0, 0)，`右下`顶点为(w, h)，只和`可视区`相关，总是`非负`坐标值
 

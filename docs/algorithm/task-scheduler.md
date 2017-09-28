@@ -177,6 +177,10 @@ from <ref://../graphics/canvas-network.md.html>
         DONE
             -> compute outputInfo
             -> dispatch `done` event
+
+* 正常情况下，外部无法检测到`READY`状态的task，因为当WAITING态结束，进入READY后，在当前task进入EXECUTING状态前，`控制权`一直在当前task
+* 如果能检测到`READY`状态的task，则表明该task的配置存在错误
+* 外部`可以检测`到处于`WAITING`, `EXECUTING`以及`DONE`三个状态的task
                    
                    
 ### input配置
@@ -496,6 +500,9 @@ from <ref://../graphics/canvas-network.md.html>
 
         // 任务依赖关系全部构建完毕，可以调用start()方法启动任务
         t1.start();
+        s.append_show( t1.state == 'DONE', 'correct t1.state after start' );
+        s.append_show( t2.state == 'WAITING', 'correct t2.state after t1.start' );
+        s.append_show( t3.state == 'WAITING', 'correct t3.state after t1.start' );
 
         s.append_show( 
             t3.isDepInputReady() === false
@@ -520,6 +527,10 @@ from <ref://../graphics/canvas-network.md.html>
         );
 
         t2.start();
+        s.append_show( t1.state == 'DONE', 'correct t1.state after t2.start' );
+        s.append_show( t2.state == 'DONE', 'correct t2.state after t2.start' );
+        s.append_show( t3.state == 'DONE', 'correct t3.state after t2.start' );
+
         s.append_show( 
             t3.isDepInputReady() === true
             , 't3.isDepInputReady() === true after t2 is done'
@@ -554,7 +565,7 @@ from <ref://../graphics/canvas-network.md.html>
 </div>
 
 
-## 验证
+### Task验证
 
 <div id="test_tasks_1" class="test">
 <div class="test-container">
@@ -611,3 +622,40 @@ from <ref://../graphics/canvas-network.md.html>
 <div class="test-panel">
 </div>
 </div>
+
+
+
+
+## TaskManager
+
+### Features
+
+* 统一`管理`所有task实例，包括创建、依赖添加、启动
+* 支持从构造函数的参数中获取配置，`批量`创建任务
+* 可添加新创建任务（状态为`WAITING`）
+* 识别任务`依赖网络`，计算相关网络信息 
+* 依赖网络必须是`森林`
+
+
+### 代码实现
+
+    @[data-script="babel"]class _TaskManager {
+
+        constructor( options ) {
+            let opt = utils.extend( {}, options )
+                , me = this
+                ;
+        }
+
+        tasks( ids ) {}
+
+        addTask( task ) {}
+
+        toGraph( options ) {}
+
+    }
+    var TaskManager = _TaskManager;
+
+
+### TaskManager单测
+
