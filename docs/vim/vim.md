@@ -3,9 +3,25 @@
 2017-02-10, 2016-10-22, 2016-07-23
 , 2016-07-07, 2014-11-05 hudamin - 转载请注明出处
 
-<http://www.vim.org/>
+> 向编辑神器`VIM`致敬！ 
 
-> 向编辑神器VIM致敬 
+
+## Resources
+
+* site: <http://www.vim.org/>
+* vim scripts: <https://vim.sourceforge.io/scripts/index.php>
+
+
+## Features
+
+> vim - the ubiquitous text editor
+
+* persistent, multi-level undo tree
+* extensive plugin system
+* support for hundreds of programming languages and file formats
+* powerful search and replace
+* integrates with many tools
+
 
 ## 拎出来放在前面的内容
 
