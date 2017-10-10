@@ -100,16 +100,13 @@ from <ref://../graphics/canvas-network.md.html>
 
 ## Dep
 
+`依赖配置对象`，是一个具有特定字段（`__type: 'DEP'`）的对象。满足该格式的对象，都认为是依赖配置对象。
 
-    @[data-script="babel"]class _Dep {
-
-        constructor( id, ondone ) {
-            this.id = id;
-            this.ondone = ondone;
-        }
-
+    {
+        __type: 'DEP'
+        , id: 'task-id'
+        , ondone: function( taskOutput ) { ... }
     }
-    var Dep = _Dep;
 
 
 ## EventTarget
@@ -187,11 +184,24 @@ from <ref://../graphics/canvas-network.md.html>
 
     {
         field1: 10                             // 基本数据字段，设置时确定
-        , field2: function( fields ) { ... }   // 函数字段，当前task进入READY状态时通过执行该函数确定
-                                               // ，该字段不能依赖其他函数字段
-        , field3: {                            // 依赖字段，依赖的task进入DONE状态时确定
-            taskid: '...'
+
+        /**
+         * 函数字段，也称为onready字段
+         * 当前task进入READY状态时，通过执行该函数，返回值作为对应字段的值
+         * 该字段不能依赖其他函数字段
+         * 函数中的this指向当前task
+         */
+        , field2: function( fields ) { ... }   
+
+        /**
+         * 依赖字段，也称为ondone字段
+         * 依赖的task进入DONE状态时，通过执行ondone函数，返回值作为对应字段的值
+         * 函数中的this指向当前task
+         */
+        , field3: {                            
+            id: '...'
             , ondone: function( taskoutput ) { ... } 
+            , __type: 'DEP' // __type字段标识该字段为依赖字段
         }
     }
 
@@ -200,9 +210,13 @@ from <ref://../graphics/canvas-network.md.html>
 
 > 进入`EXECUTING`状态时确定
 
-    type        GET / POST
-    url         string or function( inputInfo )
-    data        object or function( inputInfo )
+    {
+        type: 'GET' | 'POST'
+        , url: 'string' | function( inputInfo )
+        , data: object  | function( inputInfo )
+    }
+
+其中字段为`function`类型时，其`返回值`作为对应字段的最终值，函数执行时`this`指向当前task。
 
 
 ### callback配置
@@ -229,9 +243,22 @@ from <ref://../graphics/canvas-network.md.html>
                 delete _tasks[ key ];
             }
         };
+        const isTypeofDep = ( obj ) => {
+            return obj && obj.__type == 'DEP';
+        };
+
 
         class _Task extends EventTarget {
 
+            /**
+             * Create a Task
+             * @param {string} id                           - task id
+             * @param {Object} [options]                    - task options
+             * @param {Object} options.request              - task request config 
+             * @param {string|number} [options.prefix='']   - task id prefix，一般由TaskManager统一设置
+             * @param {Object} [options.input]              - task input config
+             * @param {Object} [options.callback]           - task request callback
+             */
             constructor( id, options ) {
                 super();
                 let opt = utils.extend( {}, options )
@@ -245,18 +272,21 @@ from <ref://../graphics/canvas-network.md.html>
                         }
                         , opt.callback 
                     )
+                    , prefix = opt.prefix || ''
                     ;
 
                 if ( typeof id != 'string' && typeof id != 'number' ) {
                     throw new Error( '_Task(): id must be of "string" or "number".' );
                 }
 
+                id = prefix + id;
                 if ( _tasks[ id ] ) {
                     throw new Error( '_Task(): dumplicated id.' );
                 }
                 _tasks[ id ] = me;
 
                 me.isTesting = opt.isTesting || false;
+                me.prefix = prefix;
                 me.id = id;
                 me.input = input;
                 me.request = request;
@@ -278,9 +308,9 @@ from <ref://../graphics/canvas-network.md.html>
                     ;
 
                 for ( let key in input ) {
-                    if ( input[ key ] instanceof Dep ) {
+                    if ( isTypeofDep( input[ key ] ) ) {
                         let dep = input[ key ];
-                        let task = getById( dep.id );
+                        let task = getById( me.prefix + dep.id );
                         if ( dependencies.indexOf( task ) < 0 ) {
                             dependencies.push( task );
                         }
@@ -387,7 +417,7 @@ from <ref://../graphics/canvas-network.md.html>
                 for ( let key in input ) {
                     // non-onready fields or non-ondone fields
                     if ( typeof input[ key ] != 'function'
-                        && ! ( input[ key ] instanceof Dep ) ) {
+                        && ! isTypeofDep( input[ key ] ) ) {
                         inputInfo[ key ] = input[ key ];
                     }
                 }
@@ -414,7 +444,7 @@ from <ref://../graphics/canvas-network.md.html>
                     ;
 
                 for ( let key in input ) {
-                    if ( input[ key ] instanceof Dep 
+                    if ( isTypeofDep( input[ key ] ) 
                         && typeof inputInfo[ key ] == 'undefined' ) {
                         return false;
                     }
@@ -443,20 +473,21 @@ from <ref://../graphics/canvas-network.md.html>
     @[data-script="babel"](function(){
 
         var s = fly.createShow('#test_task_ut');
+        let prefix = 'p-';
         s.show( 'class Task testing...' );
 
         // 创建任务1
-        let t1 = new Task( 'task-1', { isTesting: 1 } ); 
+        let t1 = new Task( 'task-1', { isTesting: 1, prefix } ); 
         s.append_show( '\n t1 testing ...' );
-        s.append_show( Task.getById( 'task-1' ) == t1, 'correct getById()' );
-        s.append_show( t1.id == 'task-1', 'correct task.id' );
+        s.append_show( Task.getById( prefix + 'task-1' ) == t1, 'correct getById()' );
+        s.append_show( t1.id == prefix + 'task-1', 'correct task.id ' + t1.id );
         s.append_show( t1.state == 'WAITING', 'correct task.state' );
 
         // 创建任务2
-        let t2 = new Task( 'task-2', { isTesting: 1 } ); 
+        let t2 = new Task( 'task-2', { isTesting: 1, prefix } ); 
         s.append_show( '\n t2 testing ...' );
-        s.append_show( Task.getById( 'task-2' ) == t2, 'correct getById()' );
-        s.append_show( t2.id == 'task-2', 'correct task.id' );
+        s.append_show( Task.getById( prefix + 'task-2' ) == t2, 'correct getById()' );
+        s.append_show( t2.id == prefix + 'task-2', 'correct task.id ' + t2.id );
         s.append_show( t2.state == 'WAITING', 'correct task.state' );
 
         // 创建任务3
@@ -469,8 +500,8 @@ from <ref://../graphics/canvas-network.md.html>
                             + ', room: ' + fields.room
                             ; 
                     }
-                    , password: new Dep( 'task-1', taskOutput => taskOutput.p + 123 )
-                    , room: new Dep( 'task-2', taskOutput => 'R-' + taskOutput.room )
+                    , password: { id: 'task-1', ondone: taskOutput => taskOutput.p + 123, __type: 'DEP' }
+                    , room: { id: 'task-2', ondone: taskOutput => 'R-' + taskOutput.room, __type: 'DEP'  }
                 }
                 , request: {
                     type: 'POST'
@@ -479,6 +510,7 @@ from <ref://../graphics/canvas-network.md.html>
                 }
                 , callback: {}
                 , isTesting: 1
+                , prefix
             } );
 
         // 任务全部创建完毕，可以调用addDeps()方法构建依赖关系
@@ -487,6 +519,7 @@ from <ref://../graphics/canvas-network.md.html>
         t3.addDeps();
 
         s.append_show( '\n t3 testing ...' );
+        s.append_show( t3.id == prefix + 'task-3', 'correct task.id ' + t3.id );
         s.append_show( t3.isInputReady() === false, 't3.isInputReady() === false' );
         s.append_show( t3.isDepInputReady() === false, 't3.isDepInputReady() === false' );
         s.append_show( t3.inputInfo.name == 'hudamin', 't3.inputInfo.name == "hudamin"' );
@@ -593,13 +626,17 @@ from <ref://../graphics/canvas-network.md.html>
 
         let t2 = new Task( 'task-11', {
                 input: {
-                    name: new Dep( 'task-10', ( outputInfo ) => { 
-                        s.append_show( 
-                            't2 inputInfo.name becomes valid after t1 is done'
-                            , outputInfo.name 
-                        );
-                        return outputInfo.name;
-                    } )
+                    name: {
+                        id: 'task-10'
+                        , ondone: ( outputInfo ) => { 
+                            s.append_show( 
+                                't2 inputInfo.name becomes valid after t1 is done'
+                                , outputInfo.name 
+                            );
+                            return outputInfo.name;
+                        }
+                        , __type: 'DEP'
+                    } 
                 }
                 , request: {
                     type: 'POST'
@@ -630,26 +667,68 @@ from <ref://../graphics/canvas-network.md.html>
 
 ### Features
 
-* 统一`管理`所有task实例，包括创建、依赖添加、启动
+* 统一`管理`从属于当前任务管理器的所有task实例，包括创建、依赖添加、启动
 * 支持从构造函数的参数中获取配置，`批量`创建任务
 * 可添加新创建任务（状态为`WAITING`）
 * 识别任务`依赖网络`，计算相关网络信息 
 * 依赖网络必须是`森林`
+* 通过`prefix`字段，为任务id添加前缀，以便支持`同一任务多次创建并执行`
+    * `任务配置`字段中，`不必关心`prefix的影响，也即prefix对任务配置是`透明的`
+    * `创建`任务时，只需`传入`prefix选项，传入的id参数`不必关心`prefix的设置
+    * 但`Task.getById( id )`需要考虑prefix的设置
+* prefix字段`通常`由TaskManager设置，由`内部传递`给Task，而Task的配置中一般不包含prefix设置
 
 
 ### 代码实现
 
     @[data-script="babel"]class _TaskManager {
 
+        /**
+         * Create a TaskManager
+         * @param {Object} options
+         * @param {string|number} [options.prefix='']       - task id prefix
+         * @param {Object[]} [options.taskConfigs]          - array of task config
+         * @param {string} options.taskConfigs[].id         - task id
+         * @param {Object} options.taskConfigs[].options    - task options
+         */
         constructor( options ) {
             let opt = utils.extend( {}, options )
                 , me = this
+                , taskConfigs = opt.taskConfigs
+                , prefix = opt.prefix || ''
                 ;
+
+            me.prefix = prefix;
+            me.tasks = [];
+            me.createTasks( taskConfigs );
         }
 
         tasks( ids ) {}
 
-        addTask( task ) {}
+        createTasks( taskConfigs ) {
+            let me = this
+                , configs = taskConfigs || []
+                ;
+
+            configs.forEach( config => {
+                let task = new Task( config.id, utils.extend( config.options, { prefix: me.prefix } ) );
+                me.addTask( task );
+            } );
+        }
+
+        addTask( task ) {
+            task && this.tasks.push( task );
+        }
+
+        start() {
+            let me = this;
+            me.tasks.forEach( task => {
+                task.addDeps();
+            } );
+            me.tasks.forEach( task => {
+                task.start();
+            } );
+        }
 
         toGraph( options ) {}
 

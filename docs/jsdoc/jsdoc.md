@@ -255,7 +255,7 @@
 ### @param 或 @arg 或 @argument
 
 
-Name only
+#### Name only
 
     /**
      * @param somebody
@@ -264,7 +264,7 @@ Name only
         alert('Hello ' + somebody);
     }
 
-Name and type
+#### Name and type
 
     /**
      * @param {string} somebody
@@ -274,7 +274,7 @@ Name and type
     }
 
 
-Name, type, and description
+#### Name, type, and description
 
     /**
      * @param {string} somebody Somebody's name.
@@ -285,6 +285,8 @@ Name, type, and description
 
 You can add a hyphen before the description to make it more readable. Be sure to include a space before and after the hyphen.
 
+#### All
+
 Name, type, and description, with a hyphen before the description
 
     /**
@@ -294,6 +296,8 @@ Name, type, and description, with a hyphen before the description
         alert('Hello ' + somebody);
     }
 
+
+#### 参数属性
 
 Documenting a parameter's properties
 
@@ -324,6 +328,8 @@ Documenting properties of values in an array
     };
 
 
+#### 可选参数
+
 An optional parameter (using JSDoc syntax)
 
     /**
@@ -348,6 +354,9 @@ An optional parameter (using Google Closure Compiler syntax)
         alert('Hello ' + somebody);
     }
 
+
+#### 可选参数及其默认值
+
 An optional parameter and default value
 
     /**
@@ -360,6 +369,8 @@ An optional parameter and default value
         alert('Hello ' + somebody);
     }
 
+
+#### 多种类型值
 
 Allows one type OR another type (type union)
 
@@ -376,6 +387,8 @@ Allows one type OR another type (type union)
     }
 
 
+#### 任意类型值
+
 Allows any type
 
     /**
@@ -385,6 +398,8 @@ Allows any type
         console.log('Hello ' + JSON.stringify(somebody));
     }
 
+
+#### 变长参数列表
 
 Allows a parameter to be repeated
 
@@ -403,6 +418,7 @@ Allows a parameter to be repeated
 
 
 
+#### 回调参数类型
 
 Parameters that accept a callback
 
