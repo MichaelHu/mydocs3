@@ -9,9 +9,11 @@
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 
 
-## Overview
+## Resources
 
-* `w3c`标准文档: <https://www.w3.org/TR/html/>
+* `html 5`: <https://www.w3.org/TR/html/>
+* `html 5.1`: <https://www.w3.org/TR/html51>
+* `html历史`：<https://www.w3.org/TR/html51/introduction.html#introduction-history> 
 * 非常全面的文档，可当`reference`，值得全面通读一下
 
 

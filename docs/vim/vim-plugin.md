@@ -4,8 +4,8 @@
 
 ## 插件管理工具
 
-* `vim-pathogen`: vim插件管理工具，插件统一放在`~/.vim/bundle`或`~/vimfiles`(windows)下，每个插件独立一个目录，互不影响。个人只需维护`.vimrc`文件，插件都通过github放至bundle目录下，更好支持独立更新。`2008`年左右发布第一版，截至`2017-08-02`，stars达到`9.3k`。
-* `Vundle.vim`: <https://github.com/VundleVim/Vundle.vim> 2010年发布第一版，截至`2017-08-02` stars达到`15k`
+* `vim-pathogen`: <https://github.com/tpope/vim-pathogen> vim插件管理工具，插件统一放在`~/.vim/bundle`或`~/vimfiles`(windows)下，每个插件独立一个目录，互不影响。个人只需维护`.vimrc`文件，插件都通过`git clone`放至bundle目录下，更好支持独立更新。`2008`年左右发布第一版。<iframe src="https://ghbtns.com/github-btn.html?user=tpope&repo=vim-pathogen&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
+* `Vundle.vim`: <https://github.com/VundleVim/Vundle.vim> 2010年发布第一版，截至`2017-08-02` stars达到`15k` <iframe src="https://ghbtns.com/github-btn.html?user=VundleVim&repo=Vundle.vim&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 
 
 ## 常用插件

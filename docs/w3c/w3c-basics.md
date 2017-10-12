@@ -4,6 +4,9 @@
 
 致力于`Web标准`的制定和推广。
 
+
+## Resources
+
 * 主页：<http://www.w3.org>
 * W3C中国：<http://www.chinaw3c.org>
 * Web标准：<http://www.w3.org/standards/>
@@ -14,6 +17,7 @@
 
 * WebIDL Level 1 <https://www.w3.org/TR/WebIDL-1/> `Interface definition language, ECMAScript binding`，DOMString
 * HTML5 <https://www.w3.org/TR/html/>
+* HTML5.1 <https://www.w3.org/TR/html51/>
 * DOM <https://www.w3.org/TR/dom/>
 * BOM (无正式标准，归类方便，特放此处) <https://www.w3cschool.cn/javascript/js-window.html>
 * CSS2.1 <https://www.w3.org/TR/CSS2/>
