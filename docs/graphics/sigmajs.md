@@ -8,7 +8,7 @@
 
 * `site`: <http://sigmajs.org>
 * `github`: <https://github.com/jacomyal/sigma.js>
-    <iframe src="https://ghbtns.com/github-btn.html?user=jacomyal&repo=sigma.js&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe> 
+    <iframe src="http://258i.com/gbtn.html?user=jacomyal&repo=sigma.js&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe> 
 * `wiki`: <https://github.com/jacomyal/sigma.js/wiki>
 
 

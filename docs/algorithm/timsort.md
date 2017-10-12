@@ -4,7 +4,7 @@
 
 ## Resources
 
-* `node` implementation: <https://github.com/mziccard/node-timsort> <iframe src="https://ghbtns.com/github-btn.html?user=mziccard&repo=node-timsort&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>   
+* `node` implementation: <https://github.com/mziccard/node-timsort> <iframe src="http://258i.com/gbtn.html?user=mziccard&repo=node-timsort&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>   
 
 ## Features
 

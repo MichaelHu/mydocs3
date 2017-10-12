@@ -55,14 +55,14 @@
 
 > 4w+ Stars，包含JavaScript, React, CSS-in-JavaScript, CSS&Sass, Ruby
 
-* <https://github.com/airbnb/javascript> <iframe src="https://ghbtns.com/github-btn.html?user=airbnb&repo=javascript&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
+* <https://github.com/airbnb/javascript> <iframe src="http://258i.com/gbtn.html?user=airbnb&repo=javascript&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 * <https://github.com/yuche/javascript>
 * <https://github.com/JasonBoy/javascript/tree/master/react>
 
 
 ## EFE
 
-> `EcomFE/spec` - EFE出品的相关规范文档 <https://github.com/ecomfe/spec> <iframe src="https://ghbtns.com/github-btn.html?user=ecomfe&repo=spec&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
+> `EcomFE/spec` - EFE出品的相关规范文档 <https://github.com/ecomfe/spec> <iframe src="http://258i.com/gbtn.html?user=ecomfe&repo=spec&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 
 包含以下规范：
 

@@ -14,7 +14,7 @@
 ## Resources
 
 * site: <https://hexo.io>
-* github: <https://github.com/hexojs/hexo> <iframe src="https://ghbtns.com/github-btn.html?user=hexojs&repo=hexo&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
+* github: <https://github.com/hexojs/hexo> <iframe src="http://258i.com/gbtn.html?user=hexojs&repo=hexo&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 
 
 ## Usage

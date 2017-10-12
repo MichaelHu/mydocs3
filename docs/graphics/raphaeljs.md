@@ -3,7 +3,7 @@
 ## Resources
 
 * site: <http://dmitrybaranovskiy.github.io/raphael/>
-* github (`9k+` Stars): <https://github.com/DmitryBaranovskiy/raphael/> <iframe src="https://ghbtns.com/github-btn.html?user=DmitryBaranovskiy&repo=raphael&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
+* github (`9k+` Stars): <https://github.com/DmitryBaranovskiy/raphael/> <iframe src="http://258i.com/gbtn.html?user=DmitryBaranovskiy&repo=raphael&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 
 ## Features
 

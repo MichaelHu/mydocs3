@@ -6,7 +6,7 @@
 
 * site: <http://qunitjs.com/>
 * api: <http://api.qunitjs.com>
-* github: <https://github.com/qunitjs/qunit> <iframe src="https://ghbtns.com/github-btn.html?user=qunitjs&repo=qunit&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
+* github: <https://github.com/qunitjs/qunit> <iframe src="http://258i.com/gbtn.html?user=qunitjs&repo=qunit&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 
 
 ## Versions

@@ -57,8 +57,8 @@ The `WAI-ARIA role` that an HTML element has assigned to it is `the first non-ab
 > 引入两个更通用的概念：`Request`, `Response`。
 
 * Support: Chrome `42+`, Safari `10.1+`
-* `r2`: HTTP client. `新款`轻量级请求客户端，支持node和浏览器，全面使用fetch API  <https://github.com/mikeal/r2> <iframe src="https://ghbtns.com/github-btn.html?user=mikeal&repo=r2&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>   
-* `request`: 🏊🏾 Simplified HTTP request client<https://github.com/request/request> <iframe src="https://ghbtns.com/github-btn.html?user=request&repo=request&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
+* `r2`: HTTP client. `新款`轻量级请求客户端，支持node和浏览器，全面使用fetch API  <https://github.com/mikeal/r2> <iframe src="http://258i.com/gbtn.html?user=mikeal&repo=r2&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>   
+* `request`: 🏊🏾 Simplified HTTP request client<https://github.com/request/request> <iframe src="http://258i.com/gbtn.html?user=request&repo=request&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 
 <div id="test_PH" class="test">
 <div class="test-container">

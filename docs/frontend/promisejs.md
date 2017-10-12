@@ -15,7 +15,7 @@
 
 * ES6定义：<http://www.ecma-international.org/ecma-262/6.0/index.html#sec-promise-objects>
 * MDN: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise>
-* 开源实现1: <https://github.com/then/promise> <iframe src="https://ghbtns.com/github-btn.html?user=then&repo=promise&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
+* 开源实现1: <https://github.com/then/promise> <iframe src="http://258i.com/gbtn.html?user=then&repo=promise&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 
 
 ## Overview

@@ -20,7 +20,7 @@
 * docs: <https://git-scm.com/doc>
 * 参考图文教程： <http://pcottle.github.io/learnGitBranching/?demo>
 
-    github: <https://github.com/pcottle/learnGitBranching> <iframe src="https://ghbtns.com/github-btn.html?user=pcottle&repo=learnGitBranching&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
+    github: <https://github.com/pcottle/learnGitBranching> <iframe src="http://258i.com/gbtn.html?user=pcottle&repo=learnGitBranching&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 
     <img src="./img/git-learnbranch-success.png" style="max-height:400px">
 

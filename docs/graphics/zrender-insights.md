@@ -5,7 +5,7 @@
 
 ## Resources
 
-* github: <https://github.com/ecomfe/zrender> <iframe src="https://ghbtns.com/github-btn.html?user=ecomfe&repo=zrender&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
+* github: <https://github.com/ecomfe/zrender> <iframe src="http://258i.com/gbtn.html?user=ecomfe&repo=zrender&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 * `v3.5.2`: <https://github.com/ecomfe/zrender/tree/3.5.2>
 
 

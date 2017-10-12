@@ -6,7 +6,7 @@
 
 * `+` 170504 前端一站式异常解决方案 <http://jixianqianduan.com>
 
-    `github`: <https://github.com/ouvens/tryjs> <iframe src="https://ghbtns.com/github-btn.html?user=ouvens&repo=tryjs&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
+    `github`: <https://github.com/ouvens/tryjs> <iframe src="http://258i.com/gbtn.html?user=ouvens&repo=tryjs&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
         1. tryjs，通过封装函数进行try-catch方式的捕获
         2. 针对React的异常捕获实现了一个方案，不足之处是不能全部捕获
     

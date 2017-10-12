@@ -5,7 +5,7 @@
 ## Resources
 
 * 官网： <http://facebook.github.io/jest/>
-* github:  <https://github.com/facebook/jest> <iframe src="https://ghbtns.com/github-btn.html?user=facebook&repo=jest&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
+* github:  <https://github.com/facebook/jest> <iframe src="http://258i.com/gbtn.html?user=facebook&repo=jest&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 * API Docs:  <http://facebook.github.io/jest/docs/api.html>
 * Configurations: <http://facebook.github.io/jest/docs/configuration.html>
 

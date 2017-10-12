@@ -12,7 +12,7 @@
 ## Resources
 
 * site：<http://electron.atom.io>
-* github：<https://github.com/electron/electron> <iframe src="https://ghbtns.com/github-btn.html?user=electron&repo=electron&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
+* github：<https://github.com/electron/electron> <iframe src="http://258i.com/gbtn.html?user=electron&repo=electron&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 * 文档：<http://electron.atom.io/docs/>
 * 使用Electron构建的APP（有头有脸的`120+`）：<http://electron.atom.io/apps/>
 

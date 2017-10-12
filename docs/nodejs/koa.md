@@ -8,7 +8,7 @@
 ## Resources 
 
 * `site and docs`: <http://koajs.com>
-* github: <https://github.com/koajs/koa> <iframe src="https://ghbtns.com/github-btn.html?user=koajs&repo=koa&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
+* github: <https://github.com/koajs/koa> <iframe src="http://258i.com/gbtn.html?user=koajs&repo=koa&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 * `available middlewares`: <https://github.com/koajs/koa/wiki>
 
 
