@@ -1028,6 +1028,36 @@ gtop: <https://github.com/aksakalli/gtop>，node实现的终端可视化监控�
 
 
 
+## curl
+
+命令行发起网络请求，支持HTTP(S)/FTP等协议。
+
+    # 内容输出到文件，文件名从url中计算
+    $ curl -O <url>
+
+    # 内容输出到文件，文件名由<file>指定
+    $ curl -o <file> <url>
+
+    # 支持重定向
+    $ curl -L <url>
+    $ curl --location <url>
+
+    # 静默模式，不显示进度信息和错误信息
+    $ curl -s <url>
+    $ curl --silent <url>
+
+    # 支持在静默模式下，仍然显示错误信息
+    $ curl -Ss <url>
+    $ curl -s --show-error <url>
+
+    # 支持重定向、静默模式、指定输出文件，同时能显示错误信息 
+    $ curl -LSso <file> <url>
+
+    # 同步远程文件时间
+    $ curl -R <url>
+    $ curl --remote-time <url>
+
+
 
 ## grep
 

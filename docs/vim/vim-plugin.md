@@ -4,8 +4,28 @@
 
 ## 插件管理工具
 
-* `vim-pathogen`: <https://github.com/tpope/vim-pathogen> vim插件管理工具，插件统一放在`~/.vim/bundle`或`~/vimfiles`(windows)下，每个插件独立一个目录，互不影响。个人只需维护`.vimrc`文件，插件都通过`git clone`放至bundle目录下，更好支持独立更新。`2008`年左右发布第一版。<iframe src="http://258i.com/gbtn.html?user=tpope&repo=vim-pathogen&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
-* `Vundle.vim`: <https://github.com/VundleVim/Vundle.vim> 2010年发布第一版，截至`2017-08-02` stars达到`15k` <iframe src="http://258i.com/gbtn.html?user=VundleVim&repo=Vundle.vim&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
+### vim-pathogen
+
+* github: <https://github.com/tpope/vim-pathogen> <iframe src="http://258i.com/gbtn.html?user=tpope&repo=vim-pathogen&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
+* vim插件管理工具，插件统一放在`~/.vim/bundle`或`~/vimfiles`(windows)下，每个插件独立一个目录，互不影响。个人只需维护`.vimrc`文件，插件都通过`git clone`放至bundle目录下，更好支持独立更新。`2008`年左右发布第一版  
+* 提供规范手动安装
+
+### Vundle.vim
+
+* github: <https://github.com/VundleVim/Vundle.vim> <iframe src="http://258i.com/gbtn.html?user=VundleVim&repo=Vundle.vim&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe> 
+* 2010年发布第一版
+* 提供规范自动安装
+* 在`.vimrc`文件中使用`Plugin`指令配置插件获取位置，支持github/local／submodule等
+* 插件安装自动化：启动vim后，`:PluginInstall`；或者`vim +PluginInstall +qall`
+* 可以列出已配置的插件列表： `PluginList`
+* 可以在线搜索可用插件： `:PluginSearch foo`
+* 可以自动清除不用插件： `:PluginClean`
+
+
+### apt-vim
+
+* github: <https://github.com/egalpin/apt-vim> <iframe src="http://258i.com/gbtn.html?user=egalpin&repo=apt-vim&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
+* 安装麻烦一些，但安装好以后，可以通过命令行来安装插件
 
 
 ## 常用插件

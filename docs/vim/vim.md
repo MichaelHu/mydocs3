@@ -10,6 +10,8 @@
 
 * site: <http://www.vim.org/>
 * vim scripts: <https://vim.sourceforge.io/scripts/index.php>
+* vim-scripts: <http://vim-scripts.org/vim/scripts.html> 
+* github vim-scripts: <https://github.com/vim-scripts>
 
 
 ## Features
