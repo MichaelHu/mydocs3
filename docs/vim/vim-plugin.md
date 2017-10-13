@@ -37,10 +37,20 @@
 以上插件内容均在github上可以找到，在我的github starred里面可以找到。
 
 
-## 我的.vimrc文件
+## .vimrc文件
+
+### 我的.vimrc文件
 
 适合我的`.vimrc`文件： 
 <https://github.com/MichaelHu/myscripts/blob/master/vim/vimrc>
+
+### 君毅的.vimrc
+
+使用Vundle.vim管理插件：<https://github.com/zhaojy1025/Note/blob/master/vim/vimrc>
+
+### sensible.vim
+
+一个Vundle.vim插件：<https://github.com/tpope/vim-sensible/blob/master/plugin/sensible.vim> <iframe src="http://258i.com/gbtn.html?user=tpope&repo=vim-sensible&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
 
 
 ## pathogen安装与配置

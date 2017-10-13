@@ -1279,6 +1279,10 @@ It's a very straightforward way of saying that you would like to `copy a series 
 
 
 
+## git rm
+
+    git rm -r --cached node_modules
+
 
 
 

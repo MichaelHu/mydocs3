@@ -100,13 +100,20 @@ from <ref://../graphics/canvas-network.md.html>
 
 ## Dep
 
-`依赖配置对象`，是一个具有特定字段（`__type: 'DEP'`）的对象。满足该格式的对象，都认为是依赖配置对象。
+格式如下：
 
     {
         __type: 'DEP'
         , id: 'task-id'
         , ondone: function( taskOutput ) { ... }
     }
+
+* `依赖配置对象`，是一个具有特定字段（`__type: 'DEP'`）的对象。满足该格式的对象，都认为是依赖配置对象。
+* 依赖配置对象没有实现成一个`Dep class`，原因是：
+    * 避免向用户暴露Dep类
+    * 避免用户需要手动创建( new )新的Dep对象
+    * 一些运行时的配置不方便在用户添加配置的时候传递到Dep的构造中，比如`prefix`字段
+    * 只给用户暴露`纯对象`的配置，构建则在运行时进行，方便将运行上下文的信息带入
 
 
 ## EventTarget
@@ -160,17 +167,16 @@ from <ref://../graphics/canvas-network.md.html>
     start
         -> isInputReady()           进入EXECUTING状态
         -> isDepInputReady()        进入READY状态
-    done
-        ondone
-            -> compute ondone fields
-            -> isDepInputReady()    进入READY状态
-        READY
-            -> compute onready fields
-            -> isInputReady()       进入EXECUTING状态
-        EXECUTING
-            -> compute request fields
-            -> exec()               
-    success or error                进入DONE状态
+    ondone
+        -> compute ondone fields
+        -> isDepInputReady()        进入READY状态
+    READY
+        -> compute onready fields
+        -> isInputReady()           进入EXECUTING状态
+    EXECUTING
+        -> compute request fields
+        -> exec()               
+    onsuccess or onerror            进入DONE状态
         DONE
             -> compute outputInfo
             -> dispatch `done` event
@@ -228,6 +234,21 @@ from <ref://../graphics/canvas-network.md.html>
 
 
 ### 代码实现
+
+代码实现需要注意的点：
+
+* 状态变化时，需要派发状态变化事件( `statechange` )，外部响应该事件时，确保外部获取到一致的任务状态
+* 代码实现中`onready()`与`ready()`分开, `onexec()`与`exec()`分开实现，确保调用ready()后能将状态设置为`READY`，调用exec()后能将状态设置为`EXECUTING`
+* 总的来说，能保证以下代码逻辑的正确性，也即控制台输出`true`：
+
+        t1.addObserver( 'statechange', ( params, target ) => {
+            console.log( target.state === params.state );
+        } );
+        t1.dispatch( 'statechange', { state: 'READY' } );
+
+* 如果input的两个`不同字段`同时都依赖`同一个task`，需要`避免`该task`两次执行`onready
+
+以下为代码实现：
 
     @[data-script="babel"]var Task = ( function() {
 
@@ -297,8 +318,23 @@ from <ref://../graphics/canvas-network.md.html>
                 me.dependencies = [];
 
                 // init
-                me.state = 'WAITING';
                 me.initInputInfo();
+                me.state = 'WAITING';
+            }
+
+            initInputInfo() {
+                let me = this
+                    , input = me.input
+                    , inputInfo = me.inputInfo
+                    ;
+
+                for ( let key in input ) {
+                    // non-onready fields or non-ondone fields
+                    if ( typeof input[ key ] != 'function'
+                        && ! isTypeofDep( input[ key ] ) ) {
+                        inputInfo[ key ] = input[ key ];
+                    }
+                }
             }
 
             addDeps() {
@@ -319,8 +355,7 @@ from <ref://../graphics/canvas-network.md.html>
                             task.addObserver( 'done', ( params ) => {
                                 me.inputInfo[ k ] = dep.ondone.bind( me )( params );
                                 if ( me.isDepInputReady() ) {
-                                    me.state = 'READY';
-                                    me.ready();
+                                    me.onready();
                                 }
                             } ); 
                         } )( key );
@@ -336,12 +371,57 @@ from <ref://../graphics/canvas-network.md.html>
                 }
 
                 if ( me.isInputReady() ) {
-                    me.state = 'EXECUTING';
-                    me.exec();
+                    me.onexec();
                 }
                 else if ( me.isDepInputReady() ) {
-                    me.state = 'READY';
-                    me.ready();
+                    me.onready();
+                }
+            }
+
+            onready() {
+                let me = this;
+                me.ready();
+                me.state = 'READY';
+                me.dispatch( 'statechange' );
+
+                if ( me.isInputReady() ) {
+                    me.exec();
+                    me.state = 'EXECUTING';
+                    me.dispatch( 'statechange' );
+                }
+            }
+
+            ready() {
+                let me = this
+                    , input = me.input
+                    , inputInfo = me.inputInfo
+                    ;
+
+                if ( me.state == 'EXECUTING' || me.state == 'DONE' ) {
+                    return;
+                }
+
+                // compute onready fields
+                for ( let key in input ) {
+                    if ( typeof input[ key ] == 'function' ) {
+                        inputInfo[ key ] = input[ key ].bind( me )( inputInfo );
+                    }
+                }
+            }
+
+            onexec() {
+                let me = this;
+
+                me.exec();
+                me.state = 'EXECUTING';
+                me.dispatch( 'statechange' );
+
+                if ( me.isTesting ) {
+                    let resp = { p: 123, room: 708 };
+                    me.outputInfo = me.callback.success.bind( me )( resp );
+                    me.state = 'DONE';
+                    me.dispatch( 'statechange' );
+                    me.dispatch( 'done', me.outputInfo );
                 }
             }
 
@@ -363,64 +443,21 @@ from <ref://../graphics/canvas-network.md.html>
                     }
                 }
 
-                if ( me.isTesting ) {
-                    let resp = { p: 123, room: 708 };
-                    me.outputInfo = me.callback.success.bind( me )( resp );
+                let settings = utils.extend( {}, requestInfo, callback ); 
+                let oldSuccess = settings.success;
+                let oldError = settings.error;
+                settings.success = ( resp ) => {
+                    me.outputInfo = oldSuccess( resp );
+                    me.state = 'DONE';
+                    me.dispatch( 'statechange' );
                     me.dispatch( 'done', me.outputInfo );
-                }
-                else {
-                    let settings = utils.extend( {}, requestInfo, callback ); 
-                    let oldSuccess = settings.success;
-                    let oldError = settings.error;
-                    settings.success = ( resp ) => {
-                        me.outputInfo = oldSuccess( resp );
-                        me.dispatch( 'done', me.outputInfo );
-                    };
-                    settings.error = ( xhr, textStatus, errorThrown ) => {
-                        oldError( xhr, textStatus, errorThrown );
-                        throw errorThrown;
-                    };
-                    $.ajax( settings.url, settings );
-                }
+                };
+                settings.error = ( xhr, textStatus, errorThrown ) => {
+                    oldError( xhr, textStatus, errorThrown );
+                    throw errorThrown;
+                };
+                $.ajax( settings.url, settings );
 
-                me.state = 'DONE';
-            }
-
-            ready() {
-                let me = this
-                    , input = me.input
-                    , inputInfo = me.inputInfo
-                    ;
-
-                if ( me.state == 'EXECUTING' || me.state == 'DONE' ) {
-                    return;
-                }
-
-                // compute onready fields
-                for ( let key in input ) {
-                    if ( typeof input[ key ] == 'function' ) {
-                        inputInfo[ key ] = input[ key ].bind( me )( inputInfo );
-                    }
-                }
-
-                if ( me.isInputReady() ) {
-                    me.exec();
-                }
-            }
-
-            initInputInfo() {
-                let me = this
-                    , input = me.input
-                    , inputInfo = me.inputInfo
-                    ;
-
-                for ( let key in input ) {
-                    // non-onready fields or non-ondone fields
-                    if ( typeof input[ key ] != 'function'
-                        && ! isTypeofDep( input[ key ] ) ) {
-                        inputInfo[ key ] = input[ key ];
-                    }
-                }
             }
 
             isInputReady() {
@@ -457,6 +494,7 @@ from <ref://../graphics/canvas-network.md.html>
         utils.extend( _Task, {
             getById
             , clear
+            , isTypeofDep
         } );
 
         return _Task;
@@ -466,14 +504,14 @@ from <ref://../graphics/canvas-network.md.html>
 
 ### Task单测
 
-
 <div id="test_task_ut" class="test">
+<div class="test-console"></div>
 <div class="test-container">
 
-    @[data-script="babel"](function(){
+    @[data-script="babel editable"](function(){
 
         var s = fly.createShow('#test_task_ut');
-        let prefix = 'p-';
+        let prefix = 'p' + Date.now() + '-';
         s.show( 'class Task testing...' );
 
         // 创建任务1
@@ -505,7 +543,7 @@ from <ref://../graphics/canvas-network.md.html>
                 }
                 , request: {
                     type: 'POST'
-                    , url: ( inputInfo ) => 'http://258i.com/' + inputInfo.name
+                    , url: ( inputInfo ) => 'http://258i.com/phpapp/form-enctype.php?' + inputInfo.name
                     , data: ( inputInfo ) => { return { info: inputInfo.desc }; }
                 }
                 , callback: {}
@@ -562,7 +600,7 @@ from <ref://../graphics/canvas-network.md.html>
         t2.start();
         s.append_show( t1.state == 'DONE', 'correct t1.state after t2.start' );
         s.append_show( t2.state == 'DONE', 'correct t2.state after t2.start' );
-        s.append_show( t3.state == 'DONE', 'correct t3.state after t2.start' );
+        s.append_show( t3.state == 'EXECUTING', 'correct t3.state after t2.start' );
 
         s.append_show( 
             t3.isDepInputReady() === true
@@ -578,8 +616,8 @@ from <ref://../graphics/canvas-network.md.html>
             , 'correct t3.inputInfo.desc when ready'
         );
         s.append_show(
-            t3.requestInfo.url == 'http://258i.com/hudamin'
-            , 't3.requestInfo.url == "http://258i.com/hudamin"'
+            t3.requestInfo.url == 'http://258i.com/phpapp/form-enctype.php?hudamin'
+            , 't3.requestInfo.url == "http://258i.com/phpapp/form-enctype.php?hudamin"'
         );
         s.append_show(
             t3.requestInfo.data.info == 'hello hudamin, your password: 246, room: R-708'
@@ -592,7 +630,6 @@ from <ref://../graphics/canvas-network.md.html>
     })();
 
 </div>
-<div class="test-console"></div>
 <div class="test-panel">
 </div>
 </div>
@@ -671,11 +708,14 @@ from <ref://../graphics/canvas-network.md.html>
 * 支持从构造函数的参数中获取配置，`批量`创建任务
 * 可添加新创建任务（状态为`WAITING`）
 * 识别任务`依赖网络`，计算相关网络信息 
-* 依赖网络必须是`森林`
+* 依赖网络必须是`森林`，不能存在回路，实现过程中需要`避免`出现回路
 * 通过`prefix`字段，为任务id添加前缀，以便支持`同一任务多次创建并执行`
     * `任务配置`字段中，`不必关心`prefix的影响，也即prefix对任务配置是`透明的`
+            { id: 'task-1', options: ... }
     * `创建`任务时，只需`传入`prefix选项，传入的id参数`不必关心`prefix的设置
+            new Task( 'task-1', { prefix: 'p1-' } )
     * 但`Task.getById( id )`需要考虑prefix的设置
+            Task.getById( 'p1-task-1' )
 * prefix字段`通常`由TaskManager设置，由`内部传递`给Task，而Task的配置中一般不包含prefix设置
 
 
@@ -686,10 +726,11 @@ from <ref://../graphics/canvas-network.md.html>
         /**
          * Create a TaskManager
          * @param {Object} options
-         * @param {string|number} [options.prefix='']       - task id prefix
-         * @param {Object[]} [options.taskConfigs]          - array of task config
-         * @param {string} options.taskConfigs[].id         - task id
-         * @param {Object} options.taskConfigs[].options    - task options
+         * @param {string|number} [options.prefix='']           - task id prefix
+         * @param {function|null} [options.onstatechange=null]  - task id prefix
+         * @param {Object[]} [options.taskConfigs]              - array of task config
+         * @param {string} options.taskConfigs[].id             - task id
+         * @param {Object} options.taskConfigs[].options        - task options
          */
         constructor( options ) {
             let opt = utils.extend( {}, options )
@@ -700,12 +741,16 @@ from <ref://../graphics/canvas-network.md.html>
 
             me.prefix = prefix;
             me.tasks = [];
-            me.createTasks( taskConfigs );
+            me.createTasks( taskConfigs, opt.onstatechange );
         }
 
         tasks( ids ) {}
 
-        createTasks( taskConfigs ) {
+        addTask( task ) {
+            task && this.tasks.push( task );
+        }
+
+        createTasks( taskConfigs, onstatechange ) {
             let me = this
                 , configs = taskConfigs || []
                 ;
@@ -713,28 +758,255 @@ from <ref://../graphics/canvas-network.md.html>
             configs.forEach( config => {
                 let task = new Task( config.id, utils.extend( config.options, { prefix: me.prefix } ) );
                 me.addTask( task );
+                if ( typeof onstatechange == 'function' ) { 
+                    task.addObserver( 'statechange', onstatechange );
+                }
             } );
+
+            return me;
         }
 
-        addTask( task ) {
-            task && this.tasks.push( task );
+        addDeps() {
+            let me = this;
+            me.tasks.forEach( task => {
+                task.addDeps();
+            } );
+            return me;
         }
 
         start() {
             let me = this;
             me.tasks.forEach( task => {
-                task.addDeps();
-            } );
-            me.tasks.forEach( task => {
                 task.start();
             } );
+            return me;
         }
 
-        toGraph( options ) {}
+        onstatechange( params, target ) {
+        }
+
+        /**
+         * get dependencies network, which is refered to as a graph 
+         * @param {Object} [options]
+         * @returns {Object} 
+         *      {
+         *          nodes: []
+         *          , edges: []
+         *      }
+         */
+        toGraph( options ) {
+            let me = this
+                , tasks = me.tasks
+                , nodes = []
+                , edges = []
+                , edgeCount = 0
+                ;
+            tasks.forEach( ( task ) => {
+                let node = utils.extendOnly( 
+                        { x: null, y: null, size: 5 }
+                        , task
+                        , [ 'id', 'inputInfo', 'requestInfo' ]
+                    );
+                nodes.push( node );
+
+                task.dependencies.forEach( ( dep ) => {
+                    let edge = {
+                            id: me.prefix + 'e' + edgeCount++
+                            , source: dep.id
+                            , target: task.id
+                        };
+                    edges.push( edge );
+                } );
+            } );
+
+            return { nodes, edges };
+       }
 
     }
     var TaskManager = _TaskManager;
 
 
 ### TaskManager单测
+
+* `prefix`是否正确
+* `tasks`有正确的长度
+* `task`有正确的状态
+* 被依赖task ( t1 )及task ( t2 )的事件按`串行顺序`派发：
+        t1.EXECUTING - t1.DONE - t2.READY - t2.EXECUTING - t2.DONE
+* 用于测试的3个任务具有如下`依赖`关系：
+         (1)task-1   -------------->  (3)task-3
+                |                         ^
+                |                         |
+                |-----> (2)task-2 ---------
+
+<div id="test_task_manager_ut" class="test">
+<div class="test-console"></div>
+<div class="test-container">
+
+    @[data-script="babel editable"](function(){
+
+        var s = fly.createShow('#test_task_manager_ut');
+        s.show( 'start testing ...' );
+
+        let taskConfigs = [
+                {
+                    id: 'task-1'
+                    , options: {
+                        request: {
+                            type: 'GET'
+                            , url: 'http://258i.com/phpapp/cors-new.php'
+                        }
+                        , callback: {
+                            success: ( resp ) => {
+                                s.append_show( 'task-1 request success', resp );
+                                return resp;
+                            }
+                        }
+                    }
+                }
+
+                , {
+                    id: 'task-2'
+                    , options: {
+                        input: {
+                            name: {
+                                id: 'task-1'
+                                , ondone: ( outputInfo ) => {
+                                    s.append_show(
+                                        'task-2 inputInfo.name becomes valid after task-1 is done'
+                                        , outputInfo.name
+                                    );
+                                    return outputInfo.name;
+                                }
+                                , __type: 'DEP'
+                            }
+                            // 两个不同字段依赖同一个task
+                            , name_2nd: {
+                                id: 'task-1'
+                                , ondone: ( outputInfo ) => {
+                                    s.append_show(
+                                        'task-2 inputInfo.name_2nd becomes valid after task-1 is done'
+                                        , outputInfo.name
+                                    );
+                                    return outputInfo.name;
+                                }
+                                , __type: 'DEP'
+                            }
+                            , msg: ( fields ) => { return 'Hello, ' + fields.name; }
+                        } 
+                        , request: {
+                            type: 'GET'
+                            , url: 'http://258i.com/phpapp/cors-new.php'
+                        }
+                        , callback: {
+                            success: ( resp ) => {
+                                s.append_show( 'task-2 request success', resp );
+                                return resp;
+                            }
+                        }
+                    }
+                }
+
+                , {
+                    id: 'task-3'
+                    , options: {
+                        input: {
+                            name: {
+                                id: 'task-1'
+                                , ondone: ( outputInfo ) => {
+                                    s.append_show(
+                                        'task-3 inputInfo.name becomes valid after task-1 is done'
+                                        , outputInfo.name
+                                    );
+                                    return outputInfo.name;
+                                }
+                                , __type: 'DEP'
+                            }
+                            , name_2nd: {
+                                id: 'task-2'
+                                , ondone: ( outputInfo ) => {
+                                    s.append_show(
+                                        'task-3 inputInfo.name becomes valid after task-2 is done'
+                                        , outputInfo.name
+                                    );
+                                    return 'task-2-output';
+                                }
+                                , __type: 'DEP'
+                            }
+                        }
+                        , request: {
+                            type: 'POST'
+                            , url: 'http://258i.com/phpapp/form-enctype.php'
+                            , data: inputInfo => inputInfo
+                        }
+                    }
+                }
+
+            ];
+
+        window.gTaskConfigs = taskConfigs;
+
+        let prefix = 'p' + Date.now() + '-';
+        let onstatechange = ( params, target ) => {
+            s.append_show( '∆ statechange', target.id, target.state );
+        };
+        let tm = new TaskManager( { prefix, taskConfigs, onstatechange } );
+
+        s.append_show( '\n after createTasks ...' );
+        s.append_show( tm.prefix == prefix, 'tm.prefix is ' + prefix );
+        s.append_show( tm.tasks.length == 3, 'tm.tasks.length is 2' );
+        s.append_show( tm.tasks[ 0 ].state == 'WAITING', 'tm.tasks[ 0 ].state is "WAITING"' );
+        s.append_show( tm.tasks[ 1 ].state == 'WAITING', 'tm.tasks[ 1 ].state is "WAITING"' );
+        s.append_show( tm.tasks[ 2 ].state == 'WAITING', 'tm.tasks[ 2 ].state is "WAITING"' );
+
+        tm = tm.addDeps();
+        s.append_show( '\n after addDeps ...' );
+        s.append_show( tm.tasks[ 0 ].state == 'WAITING', 'tm.tasks[ 0 ].state is "WAITING"' );
+        s.append_show( tm.tasks[ 1 ].state == 'WAITING', 'tm.tasks[ 1 ].state is "WAITING"' );
+        s.append_show( tm.tasks[ 2 ].state == 'WAITING', 'tm.tasks[ 2 ].state is "WAITING"' );
+        s.append_show( tm.tasks[ 0 ].observers[ 'done' ].length == 3, 'tm.tasks[ 0 ].observers[ "done" ].length is 3' );
+
+        s.append_show( '\n after start ...' );
+        tm = tm.start();
+
+    })();
+
+</div>
+<div class="test-panel">
+</div>
+</div>
+
+
+### 依赖图谱验证
+
+图谱信息跟随任务状态变化而变化。
+
+<div id="test_task_manager_tograph" class="test">
+<div class="test-container">
+
+    @[data-script="babel editable"](function(){
+
+        var s = fly.createShow('#test_task_manager_tograph');
+        s.show( 'start testing ...' );
+
+        let taskConfigs = window.gTaskConfigs;
+        let prefix = 'p' + Date.now() + '-';
+        let onstatechange = ( params, target ) => {
+                s.append_show( '\n statechange', target.id, target.state );
+                s.append_show( tm.toGraph() );
+            };
+
+        let tm = new TaskManager( { prefix, taskConfigs, onstatechange } ); 
+        tm.addDeps().start();
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
 

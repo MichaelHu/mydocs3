@@ -1,5 +1,7 @@
 # webpack2
 
+## Resources
+
 * site: <https://webpack.js.org>
 * webpack 1 and common things: <ref://./webpack.md.html>
 * core concepts: <https://webpack.js.org/concepts/>
