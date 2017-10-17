@@ -446,8 +446,8 @@ from <ref://../graphics/canvas-network.md.html>
                 let settings = utils.extend( {}, requestInfo, callback ); 
                 let oldSuccess = settings.success;
                 let oldError = settings.error;
-                settings.success = ( resp ) => {
-                    me.outputInfo = oldSuccess( resp );
+                settings.success = ( resp, textStatus, request ) => {
+                    me.outputInfo = oldSuccess( resp, textStatus, request );
                     me.state = 'DONE';
                     me.dispatch( 'statechange' );
                     me.dispatch( 'done', me.outputInfo );

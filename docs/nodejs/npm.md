@@ -276,8 +276,19 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
     Email: (this IS public) hdm0571@163.com
     hudamin@local beat-command-release $ git push origin master
     Everything up-to-date
+    hudamin@local beat-command-release $ npm whoami
+    michaelhu
     hudamin@local beat-command-release $ npm publish
     + beat-command-release@0.0.1
+
+
+#### 一些问题
+
+> 171014, `npm publish` 总出现`E403`错误，仔细查看有如下提示：
+
+    you must verify your email before publishing a new package: https://www.npmjs.com/email-edit : ...
+
+到提供的站点<https://www.npmjs.com/email-edit>，进行邮箱验证，验证通过后即可正常发布npm package。看来以前不需要验证，现在需要强制进行验证了。
 
 
 

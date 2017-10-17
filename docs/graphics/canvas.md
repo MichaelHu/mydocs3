@@ -1267,6 +1267,11 @@ x0,y0为渐变起始点，x1,y1为渐变结束点。
 * HTMLCanvasElement对象，也即`<canvas>`对应的DOM对象
 
 
+### 绘制视频帧
+
+<http://blog.csdn.net/qq_16559905/article/details/53234610>
+
+
 
 
 ## Pixel Manipulation
