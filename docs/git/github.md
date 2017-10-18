@@ -13,6 +13,49 @@
     *.html linguist-language=Node
 
 
+
+
+
+## 选择开源协议
+
+* `github`提供了一个如何选择开源协议的站点，可供参考：<https://choosealicense.com>
+* `阮一峰`老师也写了一篇相关文章：开源许可证教程 <http://www.ruanyifeng.com/blog/2017/10/open-source-license-tutorial.html>
+* `知乎`上的专题：主流开源协议之间有何异同？<https://www.zhihu.com/question/19568896>
+
+### 宽容许可证
+
+* `基本特点`：没有使用限制；没有担保（不保证代码质量）；披露要求（用户必须披露原始作者）
+* `npm init`时提供的默认`ISC`协议属于宽容许可证
+
+常见的宽容许可证：
+
+1. `MIT`协议，称为世上最为简洁和慷慨（permissive）的开源协议之一。比如JQuery，Rails等
+
+2. `BSD`协议，与MIT差不多，也非常简单、慷慨。主要为：
+
+    * `ISC`: <https://choosealicense.com/licenses/isc/>
+    * `BSD 2-clause`: <https://choosealicense.com/licenses/bsd-2-clause/>
+    * `BSD 3-clause`: <https://choosealicense.com/licenses/bsd-3-clause/>
+
+3. `Apache 2`协议
+
+    <https://choosealicense.com/licenses/apache-2.0/>，与MIT近似，区别主要在于Apache 2额外提供了一份简易的专利许可授权，明确禁止商标使用权以及要求明确指明所有修改过的文件。应用案例有：Apache家族、SVN、NuGet等。
+
+### Copyleft许可证
+
+常见的`Copyleft`许可证
+
+* AGPL
+* GPL
+* LGPL
+* Mozilla ( MPL )
+
+
+
+
+
+
+
 ## github pages
 
 参考：<ref://./github-pages.md.html>

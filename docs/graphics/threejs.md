@@ -13,6 +13,7 @@
 * github: <https://github.com/mrdoob/three.js/>
 * docs: <http://threejs.org/docs/index.html>
 * local examples: <a href="file:///Users/hudamin/projects/git/three.js/examples/index.html" target="_blank">Examples</a>
+* 现学现卖Three.js: <https://aotu.io/notes/2017/08/28/getting-started-with-threejs/>
 * `「Learning Three.js」`samples: <https://github.com/josdirksen/learning-threejs>
 
 
@@ -26,6 +27,8 @@
     sphere      球体
     camera      相机
     axes        x、y和z轴
+    mesh        网，好比一个包装工，它将“可视化的材质”粘合在一个数学世界里的几何体上，
+                形成一个可添加到场景的对象
 
 
 todo:

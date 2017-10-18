@@ -4,12 +4,20 @@
 
 <img src="./img/python-logo.png" height="50">
 
+## Features
 
-## Overview
+* 高效
+* 强大的整合能力
 
-* site: <https://www.python.org>
-* Python 3提供许多新特性
-* 第一个使用scrapy爬虫项目：<http://cuiqingcai.com/990.html> todo
+
+## Resources
+
+* `site`: <https://www.python.org>
+* `Python 3`提供许多新特性
+* 第一个使用`scrapy`爬虫项目：<http://cuiqingcai.com/990.html> todo
+* `Anaconda`: <ref://./anaconda.md.html>
+* `Jupyter`: <http://jupyter.readthedocs.io/en/latest/> github: <https://github.com/jupyter/jupyter>
+
 
 ### CLI
 

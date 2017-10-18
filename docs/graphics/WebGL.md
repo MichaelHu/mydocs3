@@ -12,6 +12,7 @@
 * WebIDL 2.0: <https://www.khronos.org/registry/webgl/specs/latest/2.0/webgl2.idl>
 * WebGL框架列表：<https://en.wikipedia.org/wiki/List_of_WebGL_frameworks>
 * `OpenGL ES 2.0`: <ref://./doc/opengl_es_full_spec_2.0.pdf>
+* `WebGL Fundamentals`: <https://webglfundamentals.org> github: <https://github.com/greggman/webgl-fundamentals>
 * 并不是`w3c`出specs，也可以理解，毕竟WebGL来自`OpenGL`
 
 
