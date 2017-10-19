@@ -2,7 +2,10 @@
 
 > A tool for managing JavaScript projects with multiple packages.
 
-* <https://github.com/lerna/lerna>
+
+## Resources
+
+* <https://github.com/lerna/lerna> <iframe src="http://258i.com/gbtn.html?user=lerna&repo=lerna&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
 * <https://lernajs.io>
 
 

@@ -262,7 +262,7 @@
 
 2. 用js实现类的定义、继承、包含类属性、实例属性、类方法、实例方法、公共属性、私有属性
 
-3. 用js（ES5的方式）定义一个`Person`类，包含属性name和age，方法sayHello，输出name和age；再定义一个子类Student，包含属性grade，方法sayHello，除了输出父类相关属性外，再输出grade。
+3. 用js（`ES5`的方式）定义一个`Person`类，包含属性name和age，方法sayHello，输出name和age；再定义一个子类Student，包含属性grade，方法sayHello，除了输出父类相关属性外，再输出grade。
     
         function Person(name, age) {
             this.name = name;
@@ -289,6 +289,8 @@
             Person.prototype.sayHello.apply(this, arguments);
             console.log(this.grade);
         };
+
+4. 以上js类，使用`ES6`方式实现，注意`super`关键词的使用（<ref://../es/es6-new-features.md.html>）。
 
 
 4. 调用与父类同名方法的方式有多种，如果希望用`this._super()`方式调用，应该怎么实现
@@ -333,7 +335,7 @@
 
 18. Function之apply与call的区别？
 
-19. 编写UMD方案
+19. 编写UMD方案，参考<ref://../frontend/umd.md.html>
 
 
 

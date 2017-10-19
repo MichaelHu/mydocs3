@@ -1069,7 +1069,7 @@ shimming
         require( "style-loader/url!file-loader!./file.css" );
 
 
-2. `css`: <https://github.com/webpack/css-loader>
+2. `css`: <https://github.com/webpack-contrib/css-loader>
 
     解析css文件，包括其中的`imports`和`url(...)`，并返回CSS文件的字符串内容
 

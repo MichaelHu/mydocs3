@@ -1,14 +1,20 @@
-# CommonJS Modules/1.1.1
+# commonjs
+
+> `CommonJS Modules/1.1.1`
 
 > A way to build up the JavaScript ecosystem for web servers, desktop and command line 
 > apps and in the browser.
 
-`CommonJS wiki:` <http://wiki.commonjs.org/wiki/CommonJS>
+## Resources
+
+* `CommonJS wiki:` <http://wiki.commonjs.org/wiki/CommonJS>
+* `amd`: <ref://./amd.md.html>
+* `umd`: <ref://./umd.md.html>
 
 
 ## require
 
-* require是一个函数
+* `require`是一个函数
     * 接收模块标识参数
     * 返回外部模块导出的API
     * 如果存在循环依赖，the foreign module may not have finished executing at the time it is 
