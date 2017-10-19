@@ -16,7 +16,7 @@
 * `Python 3`提供许多新特性
 * 第一个使用`scrapy`爬虫项目：<http://cuiqingcai.com/990.html> todo
 * `Anaconda`: <ref://./anaconda.md.html>
-* `Jupyter`: <http://jupyter.readthedocs.io/en/latest/> github: <https://github.com/jupyter/jupyter>
+* `Jupyter`: <ref://./jupyter.md.html>
 
 
 ### CLI
