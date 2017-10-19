@@ -2,6 +2,9 @@
 
 > @[style="color:green;font-size:18px"]Node Packaged Modules. 
 
+
+## Resources
+
 * site: <http://www.npmjs.org>
 * docs: <https://docs.npmjs.com>
 
@@ -404,6 +407,27 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
 安装压缩包：
 
     npm install ./package.tgz
+
+
+
+#### 关于git remote url
+
+    <protocol>://[<user>[:<password>]@]<hostname>[:<port>][:][/]<path>[#<commit-ish> | #semver:<semver>]
+
+举例如下：
+
+    npm install git+ssh://git@github.com:npm/npm.git#v1.0.27
+    npm install git+ssh://git@github.com:npm/npm#semver:^5.0
+    npm install git+https://isaacs@github.com/npm/npm.git
+    npm install git://github.com/npm/npm.git#v1.0.27
+    GIT_SSH_COMMAND='ssh -i ~/.ssh/custom_ident' npm install git+ssh://git@github.com:npm/npm.git
+
+与`git clone`的区别，比如针对仓库 `git@192.168.1.184:fm/ouka-bricks.git`：
+
+    git clone git@192.168.1.184:fm/ouka-bricks.git
+    npm install git+ssh://git@192.168.1.184:fm/ouka-bricks.git
+    npm install git+ssh://git@192.168.1.184:fm/ouka-bricks.git#master
+
 
 
 

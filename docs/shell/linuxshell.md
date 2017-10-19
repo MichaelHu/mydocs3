@@ -266,6 +266,19 @@ todo
 
 
 
+## 嵌入二进制文件
+
+在shell脚本`末尾`嵌入`二进制文件`，执行过程中将二进制文件单独输出成新文件，解压或者执行后，再删除。
+
+### Resources
+
+* 在shell 脚本中嵌入二进制可执行程序 <http://blog.chinaunix.net/uid-15084954-id-3368201.html>
+* shell脚本中嵌入二进制文件 <http://blog.chinaunix.net/uid-10540984-id-3262931.html>
+
+一般使用`tail -n +x file > abc`将二进制文件取出。`Anaconda`的安装文件就是一个例子，它是一个500+M的sh文件。
+
+
+
 ## echo带颜色文本
 
 > 参考：<http://www.cnblogs.com/lr-ting/archive/2013/02/28/2936792.html>
@@ -1162,6 +1175,35 @@ for `MAC`
 
 
 
+## tail
+
+    # 末尾10行
+    tail -n 10 <file>
+    # 从正数第10行开始到末尾
+    tail -n +10 <file>
+
+    # 末尾10字节
+    tail -c 10 <file>
+    # 从正数第10字节开始到末尾
+    tail -c +10 <file>
+
+    # 末尾10个512字节块
+    tail -b 10 <file>
+    # 从正数第10个512字节块开始到末尾
+    tail -b +10 <file>
+
+    # file的全部内容按行逆序输出
+    tail -r <file>
+    # file的末尾10行按行逆序输出
+    tail -n 10 -r <file>
+    # file的末尾10字节按行逆序输出
+    tail -c 10 -r <file>
+    # file的末尾10个512字节块按行逆序输出
+    tail -b 10 -r <file>
+
+支持`管道`，所以对输出内容按行逆序输出，非常方便。
+
+
 ## sed
 
 > sed是一个`流编辑`工具。
@@ -1182,14 +1224,24 @@ for `MAC`
     H: 将pattern space中的内容append到hold space\n后
     d: 删除pattern中的所有行，并读入下一新行到pattern中
     D: 删除multiline pattern中的第一行，不读入下一行
+    =: 输出当前行号后跟换行
+    N: 获取下一行输入到当前pattern space，并用换行分隔
+    l: 输出不可见字符，用反斜线开头后跟3位8进制数，每行用$结尾
+
+各命令之间使用`分号( ; )`分隔。
 
 
 ### 示例
+
+#### 获取filename
 
 举个例子，以下为从path中获取`filename`：
 
     $ echo http://258i.com/docs/markdown_res/js/scrollspy.js | sed -e 's/^.*\/\([^\/]*\)$/\1/g'
     scrollspy.js
+
+
+#### 对换行符的处理
 
 `处理过程`为获取一行，去掉换行符，放入模式空间，处理完以后再将换行符添加回去，放到标准输出中。
 
@@ -1198,15 +1250,35 @@ for `MAC`
 所以以上命令不能将文件的换行符改成其他字符。
 
 
+#### 不可见字符输出
+
 用`表意标记`将不可见字符输出到标准输出：
 
     sed -e 'l'
+    $ echo 123 | sed -e 'l'
+    123$
+    123
 
-`合并`行：
+#### N命令 
 
+> 读取下一行输入到当前`Pattern Space`，并用换行符( newline )分隔当前行与读入的下一行。注意`当前行号`会变化。
+
+`文件b`的内容：
+    a
+    b
+    c
+    d
+    e
+    f
+    hello
+    G
+
+调用以下命令：
     $ cat b | sed -e 'N;N;N;s/\n/|/g'
     a|b|c|d
     e|f|hello|G
+
+#### G命令
 
 为匹配行后面`添加`一个`换行符`：
 
@@ -1214,6 +1286,9 @@ for `MAC`
     a
 
     b
+
+
+#### sed正则
 
 sed的`正则（使用-E( mac )或-r( linux )）`接近`perl`的正则，比如反向引用`&`：
 
@@ -1226,6 +1301,9 @@ sed的`正则（使用-E( mac )或-r( linux )）`接近`perl`的正则，比如�
 
     <./pdf/a.pdf>
     <./pdf/c/d.pdf>
+
+
+#### 按行逆序输出
 
 将文件`按行逆序`输出，比如原文件为：
 
@@ -1243,7 +1321,11 @@ sed的`正则（使用-E( mac )或-r( linux )）`接近`perl`的正则，比如�
 
     sed '1!G;h;$!d' file
 
-当然，还有另外的办法，但这个办法是`比较简单`的。（`理解`：对于n行文本，`前n-1行`输出为空，`最后一行`输出逆序行）。该命令用于同`vim`的命令行结合，能对选中行按行号逆序排列，参考<ref://../vim/vim.md.html>
+使用`tail -r`命令来实现：
+
+    tail -r file
+
+当然，还有另外的办法，但这两个个办法是`比较简单`的。（`理解`：对于n行文本，`前n-1行`输出为空，`最后一行`输出逆序行）。该命令用于同`vim`的命令行结合，能对选中行按行号逆序排列，参考<ref://../vim/vim.md.html>
 
 sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://../encoding/character-escape.md.html>
 
