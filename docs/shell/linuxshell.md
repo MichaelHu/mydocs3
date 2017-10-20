@@ -275,7 +275,7 @@ todo
 * 在shell 脚本中嵌入二进制可执行程序 <http://blog.chinaunix.net/uid-15084954-id-3368201.html>
 * shell脚本中嵌入二进制文件 <http://blog.chinaunix.net/uid-10540984-id-3262931.html>
 
-一般使用`tail -n +x file > abc`将二进制文件取出。`Anaconda`的安装文件就是一个例子，它是一个500+M的sh文件。
+一般使用`tail -n +x file > abc`将二进制文件取出。`Anaconda`的安装文件就是一个例子( <ref://../python/anaconda.md.html> )，它是一个500+M的sh文件。
 
 
 

@@ -162,6 +162,30 @@ todo: `escape, unescape`
 
 
 
+## MutationObserver
+
+> todo
+
+    var mo = new MutationObserver( callback );
+    mo.observe( domTarget, { characterData: true, attribute: true } );
+
+* 170306 Vue源码详解之`nextTick`：`MutationObserver`只是浮云，`microtask`才是核心！<https://segmentfault.com/a/1190000008589736>
+
+
+## Microtask
+
+`Promise`内部的回调在当前Event Loop的`microtask`中执行；`setTimeout`的回调在下一个Event Loop中执行
+
+* `Event loop`: <https://www.w3.org/TR/html/webappapis.html#event-loops>
+* `task queue processing model` - 任务队列处理模型: <https://www.w3.org/TR/html/webappapis.html#event-loops>
+* 每个`Event loop`有一个或多个`task queue`，每个task对应这样一些工作：`Events`, `Parsing`, `Callbacks`, `Using a resource`, `Reacting to DOM manipulation`
+* 每个`Event loop`还对应一个`microtask queue`，一个microtask就是放在microtask queue上的task，有两种类型的microtask：`solitary callback microtasks`以及`compound microtasks`
+* 150817 Tasks, microtasks, queues and schedules <https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/> setTimeout, Promise, MutationObserver相关的的`微任务`的执行顺序在不通浏览器上可能存在不通表现，结论为：
+* 170220 Excuse me？这个前端面试在搞事！<https://zhuanlan.zhihu.com/p/25407758> `microtask`相关概念
+
+    
+
+
 
 
 ## Blob
@@ -177,4 +201,5 @@ todo
 
 ## Cache API
 todo
+
 

@@ -345,8 +345,9 @@ todo:
     # 提交更新到本地仓库
     git commit -m "COMMENT MESSAGE"
 
-    # 添加modifined的内容并提交到本地仓库
+    # 添加modified及deleted的内容（不包含未add的）并提交到本地仓库
     git commit -am "COMMENT MESSAGE"
+    git commit --all -m "COMMENT MESSAGE"
 
     # 更改上一次提交的日志
     git commit --amend -m "COMMENT MESSAGE"

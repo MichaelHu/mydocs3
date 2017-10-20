@@ -7,13 +7,22 @@
 
 ## Resources
 
-* `github`: <https://github.com/twbs/bootstrap>
-* `docs`: <http://getbootstrap.com>
+* `site`: <http://getbootstrap.com>
+* `github`: <https://github.com/twbs/bootstrap> <iframe src="http://258i.com/gbtn.html?user=twbs&repo=bootstrap&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe> 
+
+
+## Versions
+
+* v4.x <https://getbootstrap.com/docs/4.0/getting-started/introduction/>
+    * Reboot.css 默认box-sizing为`border-box`，使用rem，干掉多数元素的`margin-top`，`touch-action: manipulation`来加速移动端点击等，测试页面很好的展示了区别：<https://codepen.io/ncerminara/pen/RLMwmy>
+* v3.0.0 - v3.3.7 <https://getbootstrap.com/docs/3.3/>
+* v2.0.0 - v2.3.2 <https://getbootstrap.com/2.3.2/>
+* v1.0.0 - v1.4.0 
 
 
 ## Misc
 
-* CSS`预处理器`［Sass和less］；
+* CSS`预处理器`［ Sass, less, postcss ］
 * `一个框架任何设备`；
 * 拥有`各类特性`：文档、组件以及jQuery插件
 * `bootstrap 4`正在预发布版：<https://v4-alpha.getbootstrap.com>

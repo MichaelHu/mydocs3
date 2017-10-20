@@ -65,14 +65,16 @@ todo
 
 ## clip
 
+> A clipping region defines what portion of an element's border box is `visible`. 定义元素的可见部分。
+
 ### Resources
 
 * w3c: <https://www.w3.org/TR/2011/REC-CSS2-20110607/visufx.html#overflow-clipping>
 * 博客介绍：<http://www.zhangxinxu.com/wordpress/2011/04/css-clip-rect/>
 * 用css的clip属性制作环形进度条: <http://www.toutiao.com/a6459677884238791181>
 
-### 格式
 
+### 格式
 
 	clip: auto;
 	clip: inherit;
@@ -80,8 +82,8 @@ todo
 
 ### 特点
 
-* 只针对`绝对定位`的元素
-* 目前仅支持rect shape
+* √ 只针对`绝对定位`的元素
+* 目前仅支持`rect` shape
 
  <img src="./img/css-clip.png">
 
@@ -549,7 +551,7 @@ todo
 
 
 
-## CSS3特效
+## CSS3 Effects
 
 1. `animate.css`: <https://daneden.github.io/animate.css/> github: <https://github.com/daneden/animate.css> <iframe src="http://258i.com/gbtn.html?user=daneden&repo=animate.css&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 
@@ -567,6 +569,7 @@ todo
 
 5. `vivify`: <http://vivify.mkcreative.cz> 支持`67种`动画类  github: <https://github.com/Martz90/vivify> <iframe src="http://258i.com/gbtn.html?user=Martz90&repo=vivify&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 
+6. `css effects`: Image Effects with `CSS` <http://bennettfeely.com/image-effects/> 各类CSS实现的图片效果，支持多种特效：Pencil, Emboss, Watercolor, Colored Pencil, Chalkboard, Colored Chalkboard, Airbrush, Hallucination, Flannel, Low Ink, Collage, Mosaic, Infrared等
 
 
 ## 属性拾遗

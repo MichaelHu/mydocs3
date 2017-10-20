@@ -11,31 +11,32 @@
 ## Features
 
 * `复用`QA的测试用例，与QA测试用例的`更新`同步，QA必须可`参与`Task定义
-* 每个`任务`为一个文件，任务id为`文件名`
+* 每个`任务`为一个文件，任务id为`文件名`，文件名使用`t-N-desc`格式
 
 
 
 ## Tips
 
 * input获取渠道，目前支持3种：`即时配置`、`依赖其他task`、`计算型配置`
-* input到请求参数的转换
+* input到请求参数的转换，开始异步任务前执行转换
 * input依赖通过分析配置参数，进行自动构建
-* 先`创建`好task，再`按input`定义建立`依赖`关系
+* 先`创建`好task，再按`input定义`建立`依赖`关系
 * 任务定义
 
-        id              标识，全局唯一，改动有副作用
-        desc            描述
-        state           状态：WAITING, READY, EXECUTING, DONE
-        dependencies    依赖项
-        input           输入配置
-        request         请求配置
-        inputInfo       输入信息
-        requestInfo     请求信息
-        outputInfo      输出信息
-        exec()          执行体，执行后进入EXECUTING状态
-        init()          构建后进行初始化，主要包括依赖建立
-        isInputReady()  输入是否ready
-        addDeps()       添加依赖项
+        id                  标识，全局唯一，改动有副作用
+        desc                描述
+        state               状态：WAITING, READY, EXECUTING, DONE
+        dependencies        依赖项
+        input               输入配置
+        request             请求配置
+        inputInfo           输入信息
+        requestInfo         请求信息
+        outputInfo          输出信息
+        exec()              执行体，执行后进入EXECUTING状态
+        init()              构建后进行初始化，主要包括依赖建立
+        isInputReady()      输入是否ready
+        isDepInputReady()   输入是否ready
+        addDeps()           添加依赖项
 
 
 
@@ -247,6 +248,7 @@ from <ref://../graphics/canvas-network.md.html>
         t1.dispatch( 'statechange', { state: 'READY' } );
 
 * 如果input的两个`不同字段`同时都依赖`同一个task`，需要`避免`该task`两次执行`onready
+* 所有`函数回调字段`都以当前task对象为`context`
 
 以下为代码实现：
 
@@ -275,8 +277,9 @@ from <ref://../graphics/canvas-network.md.html>
              * Create a Task
              * @param {string} id                           - task id
              * @param {Object} [options]                    - task options
-             * @param {Object} options.request              - task request config 
+             * @param {string|Object} options.desc          - task description
              * @param {string|number} [options.prefix='']   - task id prefix，一般由TaskManager统一设置
+             * @param {Object} options.request              - task request config 
              * @param {Object} [options.input]              - task input config
              * @param {Object} [options.callback]           - task request callback
              */
@@ -309,6 +312,7 @@ from <ref://../graphics/canvas-network.md.html>
                 me.isTesting = opt.isTesting || false;
                 me.prefix = prefix;
                 me.id = id;
+                me.desc = opt.desc || '';
                 me.input = input;
                 me.request = request;
                 me.inputInfo = {};
@@ -447,13 +451,13 @@ from <ref://../graphics/canvas-network.md.html>
                 let oldSuccess = settings.success;
                 let oldError = settings.error;
                 settings.success = ( resp, textStatus, request ) => {
-                    me.outputInfo = oldSuccess( resp, textStatus, request );
+                    me.outputInfo = oldSuccess.bind( me )( resp, textStatus, request );
                     me.state = 'DONE';
                     me.dispatch( 'statechange' );
                     me.dispatch( 'done', me.outputInfo );
                 };
                 settings.error = ( xhr, textStatus, errorThrown ) => {
-                    oldError( xhr, textStatus, errorThrown );
+                    oldError.bind( me )( xhr, textStatus, errorThrown );
                     throw errorThrown;
                 };
                 $.ajax( settings.url, settings );
@@ -805,7 +809,7 @@ from <ref://../graphics/canvas-network.md.html>
                 let node = utils.extendOnly( 
                         { x: null, y: null, size: 5 }
                         , task
-                        , [ 'id', 'inputInfo', 'requestInfo' ]
+                        , [ 'id', 'desc', 'state', 'inputInfo', 'requestInfo' ]
                     );
                 nodes.push( node );
 
