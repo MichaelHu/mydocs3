@@ -216,6 +216,7 @@ todo
 ### Resources
 
 * Level 1: <http://www.w3.org/TR/css-flexbox-1/>
+* `flex-cheatsheet`: <http://yoksel.github.io/flex-cheatsheet/>
 * `Flexbox布局的正确使用姿势`: <https://segmentfault.com/a/1190000009932882> 
 
 > `弹性`布局
