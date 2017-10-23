@@ -1,6 +1,6 @@
 # ES6 new features
 
-> 2015年初发布ES6
+> `2015年初`发布ES6( ES2015 )
 
  <img src="./img/Ecma_RVB-003.jpg" height="60">
 
