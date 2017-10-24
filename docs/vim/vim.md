@@ -421,7 +421,7 @@
 ### Examples
 
     " visual mode下，对选中文本进行查询，特别是中文查询，省去输入中文
-    " 通过yank中转选中内容
+    " 通过yank中转选中内容，注意@z不要用大写
     :vmap ,s "zy:let @/ = @z<CR>
 
     " visual mode下，对选中内容注释/去注释
