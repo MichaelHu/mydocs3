@@ -2,35 +2,232 @@
 
 > 来自`:help eval`
 
-## 一、六种变量类型
+## 编译选项
 
-### 1.1 类型
+    +eval
 
-* Number
-* Float
-* String: 
+## 变量类型
 
-        "ab\txx\"--"
-        'x-z''a,c'
+### 六种普通类型
 
-* Funcref: 
+    Number
+        A 32 or 64 bit signed number. +num64
+        -123 0x10 0177 0b1011
 
-        function("strlen")
+    Float
+        123.456 1.15e-6 -1.1e3
 
-* List: 
+    String 
+        NUL-terminated 8-bit unsigned characters
+        "ab\txx\"--"  " 双引号内可以使用反斜线转义，可转义'\t', '\n'等
+        'x-z''a,c'    " 单引号内不可以使用反斜线转义，单引号本身用两个单引号进行转义
 
+    List 
+        有序序列
         [1, 2, ['a', 'b']]
 
-* Dictionary: 
-
+    Dictionary
+        关联无序序列
         {'blue': '#0000ff', 'red': "#ff0000"}
+
+    Funcref 
+        function("strlen")
+        " 函数绑定
+        function("callback", [arg], myDict)
+
+        :let Cb = function('Callback', [ 'foo' ], myDict )
+        :call Cb
+        " 等同于以下调用
+        :call myDict.Callback( 'foo' )
 
 
 `Number`和`String`之间依据使用场景自动转换。
 
+    Number 123      =>      String "123"
+    Number 0        =>      String "0"
+    Number -1       =>      String "-1"
+
+    String "456"    =>      Number 456
+    String "6ab"    =>      Number 6
+    String "aab"    =>      Number 0
+    String "0100"   =>      Number 64
+
+    :echo "0100" + 0
+    64
+    :echo str2nr( '0100' )
+    100
+    :echo str2nr( '0100', 8 )
+    64
+
+    :if "foo"
+    :" NOT executed
+
+    :if "8foo"
+    :" executed
+
+    :if !empty( "foo" )
+
+注意`Float`与`String`之间不会进行自动转换。
+    
 
 
-### 1.2 命名空间
+### 三种特殊类型
+
+    Special
+        v:false v:true v:none v:null
+
+    Job
+        用于job
+
+    Channel
+        用于channel
+
+
+### Funcref
+
+`函数引用`的`目的`，就是用一个其他的变量来保存对该函数的引用，后续可以像函数名一样使用
+
+    " 定义dict的子方法init，内部self指向dict本身，dict必须是已经存在的对象
+    " 如果init key已经存在，会报错，但可以通过添加`!`进行强行覆盖
+    :function dict.init() dict
+    :   let self.val = 0
+    :endfunction
+
+    :call dict.init()
+
+    :let func = string( Fn )    " 通过string()函数获得函数name
+    :let func
+
+    :let Fn = function( "MyFunc" )
+    :echo Fn()
+    :let r = call( Fn, mylist )
+
+
+#### Tips
+
+* 函数引用变量必须以`大写字母`, `s:`, `w:`, `t:` 或 `b:`开头，最后两种已经不支持（todo）
+* `:fu`或`:function`列出所有函数及其参数
+* 使用`setline()`往缓冲区输出内容
+* 使用`getline()`从缓冲区获取内容
+* 使用`:echo`命令往控制台输出内容
+
+
+
+#### 函数定义
+
+如下格式进行定义：
+
+    " range   - 接收range参数，如"a:firstline", "a:lastline"
+    " abort   - 有错误发生则退出函数
+    " dict    - 函数必须通过Dict的一个entry来调用，内部的self会设置为Dict本身
+    " closure - 闭包模式，内部函数能使用外部scope的变量
+    " !       - 是否强行覆盖已有函数名
+    :fu[!] {name}([arguments]) [range] [abort] [dict] [closure]
+
+* 参数引用，使用`a:`前缀，比如`a:name`, `a:age`
+
+
+#### 普通函数
+
+    :fu! Addd( a, b )
+    :   return a:a + a:b
+    :endfu
+
+    :echo Addd( 1, 3 )
+    4
+
+    :let F_Addd = function( 'Addd' )
+    :echo F_Addd( 4, 5 )
+    9
+
+
+#### 闭包函数
+
+    :function! Foo()
+    :   let x = 0
+    :   function! Bar() closure
+    :       let x+= 1
+    :       return x
+    :   endfunction 
+    :   return funcref( 'Bar' )
+    :endfunction
+
+    :let F = Foo()
+    :echo F()
+    1
+    :echo F()
+    2
+    :echo F()
+    3
+
+
+#### range函数
+
+    " 将每一行的字节数输出到标准输出
+    :fu! CharCount()
+    :   echo strlen( getline( '.' ) )
+    :endfu
+
+    " 将每一行替换成字节数
+    :fu! CharCount_w()
+    :   call setline( '.', strlen( getline( '.' ) ) )
+    :endfu
+
+    " todo：自处理range的函数
+    :fu! CharCount() range
+    :    echo a:firstline
+    :endfu
+         
+
+#### 函数调用
+
+    :[range]call {name}([arguments])
+
+* 最多支持`20`个参数
+* 返回值会被`忽略`
+* 调用有返回值的函数，`必须获取`其返回值，否则报错
+
+        " 会报错
+        append( line( '.' ), l:line )
+        " 正确方式为用变量获取返回值
+        let failed = append( line( '.' ), l:line )
+
+
+#### Examples
+
+##### 读取文件指定的行
+
+    " get lines from file, and append to the position after the cursor
+    " @param {string} file      - absolute file path
+    " @param {number} start     - the start line number
+    " @param {number} count     - the count of lines to read in
+    " @usage :call F_r( '/path/to/file', 5, 10 )
+    fu F_r( file, start, count ) abort
+        let lines = readfile( a:file, '', 10000 )
+        let i = 0
+        let cur = line( '.' )
+        echo 'total lines: ' . len( lines ) 
+        for l:line in lines
+            let i += 1
+            if i >= a:start && i < a:start + a:count
+                " echo i . l:line
+                let failed = append( cur, l:line )
+                let cur += 1
+            endif
+            if i >= a:start + a:count
+                break
+            endif
+        endfor
+        echo 'read lines: ' . ( i - a:start ) 
+    endfu
+
+
+
+
+
+
+
+### 变量前缀 - 命名空间
 
 > 开始于`let`， 销毁于`unlet`
 
@@ -41,12 +238,15 @@
 * `g:`前缀，全局变量
 * `l:`前缀，函数局部变量
 * `s:`前缀，vim script局部变量
-* `a:`前缀，函数参数，仅在函数内部
+* `a:`前缀，`函数参数`，仅在函数内部
 * `v:`前缀，全局变量，Vim预定义
 
 
 ### let命令
     
+    " 列出所有变量
+    :let
+
     :let {var-name} = {expr1}
     :let {var-name}[{idx}] = {expr1}
     ...
@@ -56,6 +256,33 @@
     :let [{name}, ..., ; {lastname}] += {expr1}  
     :let [{name}, ..., ; {lastname}] -= {expr1}  
 
+    " 环境变量
+    :let ${env-name} = {expr1}
+    :let ${env-name} .= {expr1}
+
+    " 寄存器
+    :let @{reg-name} = {expr1}
+    :let @{reg-name} .= {expr1}
+
+    " option
+    :let &{option-name} = {expr1}
+    :let &{option-name} .= {expr1}
+    :let &{option-name} += {expr1}
+    :let &{option-name} -= {expr1}
+
+    " local-option
+    :let &l:{option-name} = {expr1}
+    :let &l:{option-name} .= {expr1}
+    :let &l:{option-name} += {expr1}
+    :let &l:{option-name} -= {expr1}
+
+    " global-option
+    :let &g:{option-name} = {expr1}
+    :let &g:{option-name} .= {expr1}
+    :let &g:{option-name} += {expr1}
+    :let &g:{option-name} -= {expr1}
+
+
     " 例子
     :let i=5
     :let [a, b] = [1, 10]
@@ -64,8 +291,42 @@
     :echo b
 
 
+## 操作符
 
-## 二、Command-line
+    操作符      描述
+    ==============================
+    +           算术运算 - 加
+    .           字符串连接
+    .=          字符串连接并赋值 
+    %
+    ==
+    <=
+    >=
+    <
+    >
+    !=
+    &&
+    ||
+    |           命令分隔符，可将多行合并成一行
+
+* 不存在`++`, `--`等，每次赋值都需要用`let`命令
+
+
+### 例子
+
+    :echo 123 + 456
+    579
+    :echo 123 . 456
+    123456
+
+
+
+## Command-line
+
+### Tips
+
+*  每一行都是一个`命令`，`都以命令行命令开始`，在行内可以调用内建函数
+*  `:`前缀与命令中间可以带空格
 
 > 注意`命令行`与`函数`的区别
 
@@ -80,6 +341,53 @@
     line()
     col()
     append()
+
+
+### 命令列表
+
+#### 表达式命令
+
+总共`25`个表达式命令，用在每一行的`首部`。
+
+    :let
+    :unlet
+    :lockvar
+    :unlockvar
+    :if
+    :endif
+    :else
+    :elseif
+    :while
+    :endwhile
+    :for {var} in {list}
+    :endfor
+    :continue
+    :break
+    :try
+    :endtry
+    :catch
+    :finally
+    :throw
+    :echo
+    :echon
+    :echohl
+    :echomsg
+    :echoerr
+    :execute
+
+#### 函数相关
+
+`5个`函数相关命令。
+
+    :function
+    :endfunction
+    :delfunction
+    :return
+    :call
+
+#### 其他命令
+
+更多可以参考<ref://./vim.md.html>
 
 
 ### 条件语句
@@ -127,17 +435,7 @@
     :endwhile
 
 
-### 其他语句
-
-todo
-
-### Tips
-
-* 每一行都是一个命令，`都以命令行命令开始`，在行内可以调用内建函数
-* `:`前缀与命令中间可以带空格
-
-
-## 三、Built-in Functions
+## Built-in Functions
 
 > 查询内建函数概要用法：`:help functions`<br>
 > 查询内建函数具体用法：`:help funcname()`<br>
@@ -175,184 +473,11 @@ todo
 * string
 * 字符串拼接符：`.`
 
-### 3.1 列表常用函数
-
-    :let r = call(funcname, list)
-    :if empty(list)
-    :let l = len(list)
-    :let big = max(list)
-    :let small = min(list)
-    :let xs = count(list, 'x')
-    :let i = index(list, 'x')
-    :let lines = getline(1, 10)
-    :call append('$', lines)
-    :let list = split("a b c")
-    :let string = join(list, ', ')
-    :let s = string(list)
-    :call map(list, '">> " . v:val')
-
-将列表数据相加的简单办法：
-
-    :exe 'let sum = ' . join(list, ' + ')
-    :echo sum
-
-### 3.2 String manipulation
-
-    nr2char()               get a character by its ASCII value
-    char2nr()               get ASCII value of a character
-    str2nr()                convert a string to a Number
-    str2float()             convert a string to a Float
-    printf()                format a string according to % items
-    escape()                escape characters in a string with a '\'
-    shellescape()           escape a string for use with a shell command
-    fnameescape()           escape a file name for use with a Vim command
-    tr()                    translate characters from one set to another
-    strtrans()              translate a string to make it printable
-    tolower()               turn a string to lowercase
-    toupper()               turn a string to uppercase
-    match()                 position where a pattern matches in a string
-    matchend()              position where a pattern match ends in a string
-    matchstr()              match of a pattern in a string
-    matchlist()             like matchstr() and also return submatches
-    stridx()                first index of a short string in a long string
-    strridx()               last index of a short string in a long string
-    strlen()                length of a string
-    substitute()            substitute a pattern match with a string
-    submatch()              get a specific match in a ":substitute"
-    strpart()               get part of a string
-    expand()                expand special keywords
-    iconv()                 convert text from one encoding to another
-    byteidx()               byte index of a character in a string
-    repeat()                repeat a string multiple times
-    eval()                  evaluate a string expression
-
-
-### 3.3 List manipulation:
-
-    get()                   get an item without error for wrong index     
-    len()                   number of items in a List
-    empty()                 check if List is empty
-    insert()                insert an item somewhere in a List            
-    add()                   append an item to a List
-    extend()                append a List to a List
-    remove()                remove one or more items from a List          
-    copy()                  make a shallow copy of a List                 
-    deepcopy()              make a full copy of a List
-    filter()                remove selected items from a List             
-    map()                   change each List item 
-    sort()                  sort a List
-    reverse()               reverse the order of a List
-    split()                 split a String into a List
-    join()                  join List items into a String                 
-    range()                 return a List with a sequence of numbers
-    string()                String representation of a List
-    call()                  call a function with List as arguments
-    index()                 index of a value in a List
-    max()                   maximum value in a List
-    min()                   minimum value in a List
-    count()                 count number of times a value appears in a List
-    repeat()                repeat a List multiple times
-
-1. map()
-        
-        :call map(mylist, '"> " . v:val . " <"')
 
 
 
-### 3.4 Dictionary manipulation
 
-    get()                   get an entry without an error for a wrong key
-    len()                   number of entries in a Dictionary
-    has_key()               check whether a key appears in a Dictionary
-    empty()                 check if Dictionary is empty
-    remove()                remove an entry from a Dictionary
-    extend()                add entries from one Dictionary to another
-    filter()                remove selected entries from a Dictionary
-    map()                   change each Dictionary entry
-    keys()                  get List of Dictionary keys
-    values()                get List of Dictionary values
-    items()                 get List of Dictionary key-value pairs
-    copy()                  make a shallow copy of a Dictionary
-    deepcopy()              make a full copy of a Dictionary
-    string()                String representation of a Dictionary
-    max()                   maximum value in a Dictionary
-    min()                   minimum value in a Dictionary
-    count()                 count number of times a value appears
-
-   
-
-### 3.5 Floating point computation
-
-    float2nr()              convert Float to Number
-    abs()                   absolute value (also works for Number)
-    round()                 round off
-    ceil()                  round up
-    floor()                 round down
-    trunc()                 remove value after decimal point
-    log10()                 logarithm to base 10
-    pow()                   value of x to the exponent y
-    sqrt()                  square root
-    sin()                   sine
-    cos()                   cosine
-    atan()                  arc tangent  
-
-
-### 3.6 Variables
-
-    type()                  type of a variable
-    islocked()              check if a variable is locked
-    function()              get a Funcref for a function name
-    getbufvar()             get a variable value from a specific buffer
-    setbufvar()             set a variable in a specific buffer
-    getwinvar()             get a variable from specific window
-    gettabvar()             get a variable from specific tab page
-    gettabwinvar()          get a variable from specific window & tab page
-    setwinvar()             set a variable in a specific window
-    settabvar()             set a variable in a specific tab page
-    settabwinvar()          set a variable in a specific window & tab page
-    garbagecollect()        possibly free memory
-
-1. type()
-    * Number: 0
-    * String: 1
-    * Funcref: 2
-    * List: 3
-    * Dictionary: 4
-    * Float: 5
-
-
-### 3.7 Cursor and mark position
-
-    col()                   column number of the cursor or a mark
-    virtcol()               screen column of the cursor or a mark
-    line()                  line number of the cursor or mark
-    wincol()                window column number of the cursor
-    winline()               window line number of the cursor
-    cursor()                position the cursor at a line/column
-    getpos()                get position of cursor, mark, etc.
-    setpos()                set position of cursor, mark, etc.
-    byte2line()             get line number at a specific byte count
-    line2byte()             byte count at a specific line
-    diff_filler()           get the number of filler lines above a line
-
-1. col()
-
-        :echo col('.')      " the cursor position
-        :echo col('$')      " the end of the cursor line
-        :echo col("'x")     " position of mark x
-
-2. line()
-
-        :echo line('.')     " the cursor position
-        :echo line('$')     " the last line in the current buffer
-        :echo line("'x")    " position of mark x
-        :echo line('w0')    " first line visible in current window
-        :echo line('w$')    " last line visible in current window
-        :echo line('v')     " the start of the Visual area in visual mode, and the
-                            " cursor position when not in visual mode 
-
-
-### 3.8 Working with text in the current buffer
+### Working with text in the current buffer
 
     getline()               get a line or list of lines from the buffer
     setline()               replace a line in the buffer
@@ -404,7 +529,193 @@ todo
         :endwhile
 
 
-### 3.9 System functions and manipulation of files
+
+
+### String manipulation
+
+    nr2char()               get a character by its ASCII value
+    char2nr()               get ASCII value of a character
+    str2nr()                convert a string to a Number
+    str2float()             convert a string to a Float
+    printf()                format a string according to % items
+    escape()                escape characters in a string with a '\'
+    shellescape()           escape a string for use with a shell command
+    fnameescape()           escape a file name for use with a Vim command
+    tr()                    translate characters from one set to another
+    strtrans()              translate a string to make it printable
+    tolower()               turn a string to lowercase
+    toupper()               turn a string to uppercase
+    match()                 position where a pattern matches in a string
+    matchend()              position where a pattern match ends in a string
+    matchstr()              match of a pattern in a string
+    matchlist()             like matchstr() and also return submatches
+    stridx()                first index of a short string in a long string
+    strridx()               last index of a short string in a long string
+    strlen()                length of a string
+    substitute()            substitute a pattern match with a string
+    submatch()              get a specific match in a ":substitute"
+    strpart()               get part of a string
+    expand()                expand special keywords
+    iconv()                 convert text from one encoding to another
+    byteidx()               byte index of a character in a string
+    repeat()                repeat a string multiple times
+    eval()                  evaluate a string expression
+
+
+
+
+### Cursor and mark position
+
+    col()                   column number of the cursor or a mark
+    virtcol()               screen column of the cursor or a mark
+    line()                  line number of the cursor or mark
+    wincol()                window column number of the cursor
+    winline()               window line number of the cursor
+    cursor()                position the cursor at a line/column
+    getpos()                get position of cursor, mark, etc.
+    setpos()                set position of cursor, mark, etc.
+    byte2line()             get line number at a specific byte count
+    line2byte()             byte count at a specific line
+    diff_filler()           get the number of filler lines above a line
+
+1. col()
+
+        :echo col('.')      " the cursor position
+        :echo col('$')      " the end of the cursor line
+        :echo col("'x")     " position of mark x
+
+2. line()
+
+        :echo line('.')     " the cursor position
+        :echo line('$')     " the last line in the current buffer
+        :echo line("'x")    " position of mark x
+        :echo line('w0')    " first line visible in current window
+        :echo line('w$')    " last line visible in current window
+        :echo line('v')     " the start of the Visual area in visual mode, and the
+                            " cursor position when not in visual mode 
+
+
+
+
+
+### 列表常用函数
+
+    :let r = call(funcname, list)
+    :if empty(list)
+    :let l = len(list)
+    :let big = max(list)
+    :let small = min(list)
+    :let xs = count(list, 'x')
+    :let i = index(list, 'x')
+    :let lines = getline(1, 10)
+    :call append('$', lines)
+    :let list = split("a b c")
+    :let string = join(list, ', ')
+    :let s = string(list)
+    :call map(list, '">> " . v:val')
+
+将列表数据相加的简单办法：
+
+    :exe 'let sum = ' . join(list, ' + ')
+    :echo sum
+
+
+
+### List manipulation:
+
+    get()                   get an item without error for wrong index     
+    len()                   number of items in a List
+    empty()                 check if List is empty
+    insert()                insert an item somewhere in a List            
+    add()                   append an item to a List
+    extend()                append a List to a List
+    remove()                remove one or more items from a List          
+    copy()                  make a shallow copy of a List                 
+    deepcopy()              make a full copy of a List
+    filter()                remove selected items from a List             
+    map()                   change each List item 
+    sort()                  sort a List
+    reverse()               reverse the order of a List
+    split()                 split a String into a List
+    join()                  join List items into a String                 
+    range()                 return a List with a sequence of numbers
+    string()                String representation of a List
+    call()                  call a function with List as arguments
+    index()                 index of a value in a List
+    max()                   maximum value in a List
+    min()                   minimum value in a List
+    count()                 count number of times a value appears in a List
+    repeat()                repeat a List multiple times
+
+1. map()
+        
+        :call map(mylist, '"> " . v:val . " <"')
+
+
+
+### Dictionary manipulation
+
+    get()                   get an entry without an error for a wrong key
+    len()                   number of entries in a Dictionary
+    has_key()               check whether a key appears in a Dictionary
+    empty()                 check if Dictionary is empty
+    remove()                remove an entry from a Dictionary
+    extend()                add entries from one Dictionary to another
+    filter()                remove selected entries from a Dictionary
+    map()                   change each Dictionary entry
+    keys()                  get List of Dictionary keys
+    values()                get List of Dictionary values
+    items()                 get List of Dictionary key-value pairs
+    copy()                  make a shallow copy of a Dictionary
+    deepcopy()              make a full copy of a Dictionary
+    string()                String representation of a Dictionary
+    max()                   maximum value in a Dictionary
+    min()                   minimum value in a Dictionary
+    count()                 count number of times a value appears
+
+   
+
+### Floating point computation
+
+    float2nr()              convert Float to Number
+    abs()                   absolute value (also works for Number)
+    round()                 round off
+    ceil()                  round up
+    floor()                 round down
+    trunc()                 remove value after decimal point
+    log10()                 logarithm to base 10
+    pow()                   value of x to the exponent y
+    sqrt()                  square root
+    sin()                   sine
+    cos()                   cosine
+    atan()                  arc tangent  
+
+
+### Variables
+
+    type()                  type of a variable
+    islocked()              check if a variable is locked
+    function()              get a Funcref for a function name
+    getbufvar()             get a variable value from a specific buffer
+    setbufvar()             set a variable in a specific buffer
+    getwinvar()             get a variable from specific window
+    gettabvar()             get a variable from specific tab page
+    gettabwinvar()          get a variable from specific window & tab page
+    setwinvar()             set a variable in a specific window
+    settabvar()             set a variable in a specific tab page
+    settabwinvar()          set a variable in a specific window & tab page
+    garbagecollect()        possibly free memory
+
+1. type()
+    * Number: 0
+    * String: 1
+    * Funcref: 2
+    * List: 3
+    * Dictionary: 4
+    * Float: 5
+
+
+### System functions and manipulation of files
 
     glob()                  expand wildcards
     globpath()              expand wildcards in a number of directories
@@ -454,7 +765,7 @@ todo
         :endfor
 
 
-### 3.10 Date and Time
+### Date and Time
 
     getftime()              get last modification time of a file
     localtime()             get current time in seconds
@@ -481,7 +792,7 @@ todo
 
 
 
-### 3.11 Buffers, windows and the argument list
+### Buffers, windows and the argument list
 
     argc()                  number of entries in the argument list
     argidx()                current position in the argument list
@@ -522,7 +833,7 @@ todo
         :echo getbufline("", 10, 20)
 
 
-### 3.12 Command line
+### Command line
 
     getcmdline()            get the current command line
     getcmdpos()             get position of the cursor in the command line
@@ -540,7 +851,7 @@ todo
         :cmap <F7> <C-\>eescape(getcmdline(), ' \')<CR>
 
 
-### 3.13 Quickfix and location lists
+### Quickfix and location lists
 
     getqflist()             list of quickfix errors
     setqflist()             modify a quickfix list 
@@ -562,7 +873,7 @@ todo
 
 
 
-### 3.14 Syntax and highlighting
+### Syntax and highlighting
 
     clearmatches()          clear all matches defined by |matchadd()| and
                             the |:match| commands
@@ -584,7 +895,7 @@ todo
 todo ...
 
 
-### 3.15 Spelling
+### Spelling
 
     spellbadword()          locate badly spelled word at or after cursor
     spellsuggest()          return suggested spelling corrections
@@ -593,7 +904,7 @@ todo ...
 todo ...
 
 
-### 3.16 History
+### History
 
     histadd()               add an item to a history
     histdel()               delete an item from a history
@@ -603,7 +914,7 @@ todo ...
 todo ...
 
 
-### 3.17 Interactive
+### Interactive
 
     browse()                put up a file requester
     browsedir()             put up a directory requester
@@ -618,10 +929,10 @@ todo ...
     inputsave()             save and clear typeahead
     inputrestore()          restore typeahead
 
-`ONLY in` some GUI versions
+`ONLY in` some `GUI` versions
 
 
-### 3.18 GUI
+### GUI
 
     getfontname()           get name of current font being used
     getwinposx()            X position of the GUI Vim window
@@ -630,7 +941,7 @@ todo ...
 `ONLY in` some GUI versions
 
 
-### 3.19 Vim server
+### Vim server
 
     serverlist()            return the list of server names
     remote_send()           send command characters to a Vim server
@@ -645,7 +956,7 @@ todo ...
 
 
 
-### 3.20 Window size and position
+### Window size and position
 
     winheight()             get height of a specific window
     winwidth()              get width of a specific window
@@ -661,7 +972,7 @@ todo ...
 todo ...
 
 
-### 3.21 Various
+### Various
 
     mode()                  get current editing mode
     visualmode()            last visual mode used

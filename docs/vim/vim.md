@@ -1,6 +1,6 @@
 # vim
 
-2017-02-10, 2016-10-22, 2016-07-23
+2017-10-24, 2017-02-10, 2016-10-22, 2016-07-23
 , 2016-07-07, 2014-11-05 hudamin - 转载请注明出处
 
 > 向编辑神器`VIM`致敬！ 
@@ -12,6 +12,7 @@
 * vim scripts: <https://vim.sourceforge.io/scripts/index.php>
 * vim-scripts: <http://vim-scripts.org/vim/scripts.html> 
 * github vim-scripts: <https://github.com/vim-scripts>
+* vim-eval: <ref://./vim-eval.md.html>
 
 
 ## Features
@@ -25,7 +26,7 @@
 * integrates with many tools
 
 
-## 拎出来放在前面的内容
+## Useful Tips
 
 1. 编辑模式搞清楚，记住`normal, insert, visual, command-line`
 2. `normal`模式下，`单引号'`用于访问bookmark，`双引号"`用于设置下一delete，yank或者put操作使用的寄存器
@@ -41,7 +42,7 @@
 
 
 
-## 四种运行模式
+## 4 modes
 
 * Normal Mode
 * Visual Mode
@@ -86,8 +87,9 @@
     " option
     :help 'x'
 
-    " keyboard
-    :help <C-
+    " key board
+    :help key-notation
+    :help key-codes
 
 
 
@@ -365,7 +367,92 @@
 
 ## Maps
 
+### Resources
+
+通过以下方式获取常用帮助资源：
+
+    " map overview
+    :help map-overview
+
+    " 快捷按键推荐
+    :help map-which-keys
+
+    " 按键引用帮助
+    :help key-notation
+    :help :map-special-keys
+    :help :map-special-chars
+
+    " 比如<M-...>的快捷键，这种触发多字节快捷键的情况
+    :help map-multibyte
+
+    " Alt-组合键的使用
+    :help :map-alt-keys
+
+    " 字符按键引用
+    :help <Char>
+    :help <Char->
+
+
+### Usage
+
+    " 列出所有map指令
+    :map
+
+    " make sure function key 8 does nothing at all 
+    :map <F8> <Nop>
+    :map! <F8> <Nop>
+
     :map <F8> <Esc>:g/^#/<CR>
+
+    " 多字节情况的解决办法，暂无法调通，可能由于:help map-alt-keys的问题
+    :set enc=latin1
+    :map! <M-C> <Esc>:reg<CR>
+    :set enc=utf-8
+
+    " 字符数字编码方式
+    :map <Char-0xdf> <Esc>:echo 1.23e5<CR>
+    :map <S-Char-0x72> <Esc>:echo 'shift-r'<CR>
+
+    " use mapleader variablR
+    :let mapleader = ","
+    :map <Leader>A <Esc>:reg<CR>
+
+
+### Examples
+
+    " visual mode下，对选中文本进行查询，特别是中文查询，省去输入中文
+    " 通过yank中转选中内容
+    :vmap ,s "Zy:let @/ = @Z<CR>
+
+    " visual mode下，对选中内容注释/去注释
+    " 1. range部分的`'<,'>`会自动带上，不要重复输入
+    " 2. 末尾的`/clear search successfully!<CR>`用于清空搜索条件
+    :vmap ,c :s/^\([ \t]*\)\(.*\)$/\1\/\/ \2/g<CR>/clear search successfully!<CR>
+    " 3. 更优雅的清空搜索条件
+    :vmap ,c :s/^\([ \t]*\)\(.*\)$/\1\/\/ \2/g<CR>:let @/ = ''<CR>
+    :vmap ,C :s/^\([ \t]*\)\/\/ \(.*\)$/\1\2/g<CR>:let @/ = ''<CR>
+
+    " visual / normal / Select mode下，清空搜索条件
+    :map ,<Char-0x20> :let @/ = ''<CR>
+
+    " normal mode下，获取当前buffer的全路径
+    :nmap ,f :echo getcwd() . '/' . getreg( '%' )<CR>
+
+
+### Tips
+
+* `CTRL-K`用于自动识别快捷键按键引用
+* `Alt` ( `Options` )组合键在`Terminal`下的兼容性问题，导致`<M-..>`或`<A-..>`可能无法使用
+* 比如`Alt-s`实际上在Mac下输出`ß`，可以直接使用该字符来map
+
+        " 可能不可用
+        :map <M-s> foo
+        " 换成这种方式
+        :map ß foo
+    或者使用`字符数字编码`方式：
+        :map <Char-0xdf> foo
+
+* `mapleader`模式，可以启用`统一快捷键前缀`，扩展性很好，推荐使用。推荐`,`, `_`作为前缀。
 
 
 
@@ -400,7 +487,7 @@
         :una <buffer> FF
 
 3. 仅限于某种模式的简写，同map一样，支持`:cab[breviate]`, `:iab[breviate]`
-4. 简写后面输入`空格`或者`Tab`，会进行替换。如果要`阻止`替换，可以再输入空格或者Tab前输入`CTRL-V` 
+4. 简写后面输入`空格`或者`Tab`，会进行替换。如果要`阻止`替换，可以在输入空格或者Tab前输入`CTRL-V` 
         
 
 
@@ -570,7 +657,7 @@ idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文
 
     :let lines = getline(1, '$') | for i in lines | echo "> " . i | endfor 
 
-但是，以下命令将`|`作为其参数，所以不能用`|`作为命令分隔符。
+但是，有些命令则不支持命令分隔符，比如`:argdo`, `:autocmd`, `:function`等。它们将`|`作为其参数，所以不能用`|`作为命令分隔符。有如下命令：
 
     :argdo
     :autocmd
@@ -677,17 +764,38 @@ idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文
 
 ## Registers
 
-9种类型的寄存器，共48个：
+### Get help
 
-1. 未命名寄存器`""`
+    :help registers
+
+
+### Registers
+
+`9种`类型的`寄存器`，共`48`个：
+
+1. 未命名寄存器，双引号寄存器`""`
 2. 10个数字寄存器`"0` - `"9`
-3. 小删除寄存器`"-`
+3. 小删除寄存器，存储`少于一行`的删除：`"-`
 4. 26个命名寄存器`"a` - `"z`或者`"A` - `"Z`
 5. 4个只读寄存器`":`, `".`, `"%`, `"#`
+    * `".` - 存储最近插入的内容
+    * `"%` - 当前文件名
+
+            " 输出当前文件名寄存器的内容
+            :echo @%
+            " 输出当前文件的全路径
+            :echo getcwd() . '/' . getreg( '%' )
+
+    * `":` - 最近执行的命令行
+    * `"#` - alternate file name
+
 6. 表达式寄存器`"=`
 7. selection and drop 寄存器`"*`, `"+`, `"~`
-8. 黑洞寄存器`"_`
+8. 黑洞寄存器`"_`，往其中写内容，但什么都不会发生；往外读取是，什么都读不到。用于删除内容，不希望影响其他寄存器的时候，可以指定该寄存器
 9. 上一检索模式寄存器`"/`
+
+
+### Examples
 
 特殊寄存器举例如下：
 
