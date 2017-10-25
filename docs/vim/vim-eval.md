@@ -110,6 +110,9 @@
 * 使用`setline()`往缓冲区输出内容
 * 使用`getline()`从缓冲区获取内容
 * 使用`:echo`命令往控制台输出内容
+* 使用`system()`执行shell命令，并获取返回结果
+* 使用寄存器传递数据
+* 使用特殊寄存器`触发`事件，比如`@/`
 
 
 
@@ -221,6 +224,19 @@
         echo 'read lines: ' . ( i - a:start ) 
     endfu
 
+
+##### 获取当前buffer全路径
+
+    " get the full path of current buffer, and put it into mac clipboard 
+    " @usage :call F_current_buffer_fullpath()
+    fu F_current_buffer_fullpath() abort
+        let curFile = getreg( '%' )
+        if match( curFile, "^/" ) != 0
+            let curFile = getcwd() . '/' . curFile
+        endif
+        echo 'Path: ' . curFile
+        call system( 'echo -n ' . curFile . ' | pbcopy' )
+    endfu
 
 
 

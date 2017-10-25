@@ -435,8 +435,20 @@
     " visual / normal / Select mode下，清空搜索条件
     :map ,<Char-0x20> :let @/ = ''<CR>
 
-    " normal mode下，获取当前buffer的全路径
+    " v1. normal mode下，获取当前buffer的全路径
     :nmap ,f :echo getcwd() . '/' . getreg( '%' )<CR>
+    " v2. normal mode下，获取当前buffer的全路径，解决非当前目录下buffer本就是绝对路径的问题
+    :nmap ,f :let curFile = getreg( '%' ) \| let index = match( curFile, "^/" ) \| if index != 0 \| let curFile = getcwd() . '/' . curFile \| endif \| echo curFile<CR> 
+    " v3. normal mode下，获取当前buffer的全路径，并复制到mac剪贴板
+    :nmap ,f :let curFile = getreg( '%' ) \| if match( curFile, "^/" ) != 0 \| let curFile = getcwd() . '/' . curFile \| endif \| echo 'Path: ' . curFile \| call system( 'echo -n ' . curFile . ' \| pbcopy' )<CR> 
+    " v4. 使用function的方式，避免变量污染，代码可读性也更强，函数实现在<ref://./vim-eval.md.html>
+    :nmap ,f :call F_current_buffer_fullpath()<CR>
+
+    " normal mode下，在资源管理器中打开当前目录
+    :nmap ,o :call system( 'open `pwd`' )<CR>
+
+    " normal mode下，读取文件指定行
+    :nmap ,r :call F_r( '
 
 
 ### Tips
@@ -453,6 +465,8 @@
         :map <Char-0xdf> foo
 
 * `mapleader`模式，可以启用`统一快捷键前缀`，扩展性很好，推荐使用。推荐`,`, `_`作为前缀。
+* map命令的映射部分，如果是一系列用`|`分隔的命令，则注意需要对`|`进行`转义`。 
+* map命令的映射部分，创建的变量默认为`全局变量`，有污染的可能，推荐用`function`
 
 
 
