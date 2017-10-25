@@ -264,15 +264,37 @@
 
     /{pattern}
 
+
+
+
 ### Replacing
 
     :[range]s/{pattern}/{substitute}/[modifier] 
 
-例如：
+#### modifiers
+
+可通过`:help :s_flags`获取详细帮助。
+
+    flag    description
+    ======================================
+    &       必须作为第一个flag，用于保持上一次的flag
+    c       confirm each substitution
+    e       查询模式失败，不显示错误信息
+    i       ignore case for the pattern
+    I       case-sensitive
+    g       replace all occurrences in the line
+    n       仅显示匹配数，不执行替换
+    p       显示最后替换行
+    #       显示最后替换行，并前置行号
+
+
+#### Examples
 
     :%s/^\(#\+\) \(\d\+\.*\)\+/\1/g 
 
 将类似`## 1 ...`, `## 2.3 ...`, `### 3.3.3 ...`中的数字索引部分去掉，获得`## ...`, `### ...`
+
+
 
 
 
