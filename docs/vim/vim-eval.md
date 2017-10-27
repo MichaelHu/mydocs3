@@ -112,6 +112,7 @@
 * 使用`getline()`从缓冲区获取内容
 * 使用`:echo`命令往控制台输出内容
 * 使用`system()`执行shell命令，并获取返回结果
+* 使用`:normal`, `:silent`等，扩展command line模式，可以在该模式下运行`normal模式`下的命令。但目前所知，这些命令只能在`命令行模式下生效`，而在`函数中`调用则`不生效`。
 * 使用寄存器传递数据
 * 使用特殊寄存器`触发`事件，比如`@/`
 
@@ -239,6 +240,21 @@
         call system( 'echo -n ' . curFile . ' | pbcopy' )
     endfu
 
+
+##### 将选中文本复制到mac剪贴板
+
+> 针对当前`缓冲区`的操作
+
+    " copy the selected text under visual mode into mac clipboard
+    " @usage "zy:call F_copy_selected_text()
+    fu F_copy_selected_text() abort
+        let text = getreg( 'z' )
+        let tmpFile = '/tmp/vim-selected-text'
+        let text = substitute( text, '\%x00', '\r', 'g' )
+        call writefile( [ text ], tmpFile, 'b' )
+        call system( 'cat ' . tmpFile . ' | pbcopy' )
+        echo 'copy successfully'
+    endfu
 
 
 
@@ -759,6 +775,29 @@
     hostname()              name of the system
     readfile()              read a file into a List of lines
     writefile()             write a List of lines into a file
+
+
+#### writefile()
+
+> 将列表list的内容写入到fname文件中
+
+    writefile( {list}, {fname} [, {flags}])
+
+* 列表的每一项必须为`string`或`number`，组装时每一项之间用`换行符( 0x0a )`分隔，写文件时将所有`换行符`替换成`NUL( 0x00 )`
+* 若flags为`'b'`，则组装时最后一个列表项不会添加换行符；否则，最后一项也会添加换行符
+* 写入文件时，如果需要每个列表项分行展示，需要为提前为每个列表项插入`回车符( 0x0c )`
+* 寄存器的包含的多行内容，是用`换行符( 0x0a )`分隔的，若将寄存器内容作为`一个列表项`写到文件中，所有的`换行符`将被替换成`NUL( 0x00 )`，导致获取文件内容时，发现换行丢失
+
+以下将包含`多行文本`的寄存器z的内容写到文件，确保不出现换行丢失，详细参考我的`.vimrc`文件中将选择内容增加到剪贴板部分，在函数`F_copy_selected_text`中实现：
+
+    let text = getreg( 'z' )
+    " 手动插入回车符，注意不是换行符
+    let text = substitute( text, '\%x00', '\r', 'g' )
+    call writefile( [ text ], '/tmp/vim-reg-file', 'b' )
+
+
+
+#### Examples
 
 1. glob({expr} [, {flag}])
 

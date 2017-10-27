@@ -13,6 +13,7 @@
 * vim-scripts: <http://vim-scripts.org/vim/scripts.html> 
 * github vim-scripts: <https://github.com/vim-scripts>
 * vim-eval: <ref://./vim-eval.md.html>
+* `VimAwesome` - 插件聚合站点 <https://vimawesome.com>
 
 
 ## Features
@@ -1131,6 +1132,8 @@ command line模式的行注释。
     :exe "normal \<c-w>\<c-w>"
 
 `:norm`后直接输入`命令`，而不同于`:exe`，输入的是命令`字符串`
+
+> 目前所知，在`函数中`调用norm命令，不生效。参考我的`.vimrc`中`F_copy_selected_text`部分的实现。
 
 
 
