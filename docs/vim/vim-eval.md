@@ -132,6 +132,28 @@
 * 参数引用，使用`a:`前缀，比如`a:name`, `a:age`
 
 
+#### 函数参数
+
+* 获取帮助：`:help function-argument`
+* 可以用`名称`命名函数参数
+* 内部使用`a:`前缀引用函数参数，`本地变量`定义后可直接使用，如果引用`全局变量`，需要用`g:`前缀
+* 最多支持`20`个参数
+* 支持`可选参数列表`，用`...`表示
+
+        引用        含义
+        =================================
+        a:0         可选参数个数
+        a:1         第一个可选参数
+        a:000       可选参数列表
+
+以下例子输出所有的可选参数：
+
+    for item in a:000
+        echo item
+    endfor
+
+
+
 #### 普通函数
 
     :fu! Addd( a, b )
@@ -251,10 +273,41 @@
         let text = getreg( 'z' )
         let tmpFile = '/tmp/vim-selected-text'
         let text = substitute( text, '\%x00', '\r', 'g' )
+        let lineCount = len( split( text, '\r', 1 ) )
+        " compute accurate linecount
+        if strridx( text, "\r" ) == strlen( text ) - 1
+            let lineCount = lineCount - 1
+        endif
         call writefile( [ text ], tmpFile, 'b' )
         call system( 'cat ' . tmpFile . ' | pbcopy' )
-        echo 'copy successfully'
+        echo 'copy ' . lineCount .' lines successfully'
     endfu
+
+
+
+##### 将选中文本增量复制到mac剪贴板
+
+    " increment-copy selected text under visual mode into mac clipboard 
+    " @usage "zy:call F_inc_copy_selected_text()
+    fu F_inc_copy_selected_text( ... ) abort
+        let text = getreg( 'z' )
+        let tmpFile = '/tmp/vim-inc-selected-text'
+        let text = substitute( text, '\%x00', '\r', 'g' )
+        let lineCount = len( split( text, '\r', 1 ) )
+        " compute accurate linecount
+        if strridx( text, "\r" ) == strlen( text ) - 1
+            let lineCount = lineCount - 1
+        endif
+        let flag = 'a'
+        if a:0 > 0 && a:1 == 1
+            let flag = ''
+        endif
+        call writefile( [ text ], tmpFile, flag )
+        call system( 'cat ' . tmpFile . ' | pbcopy' )
+        echo 'inc copy ' . lineCount .' lines successfully'
+    endfu
+
+
 
 
 
@@ -594,6 +647,12 @@
     repeat()                repeat a string multiple times
     eval()                  evaluate a string expression
 
+#### strridx()
+
+    strridx({haystack}, {needle} [, {start}]) 
+
+* 注意：`needle`是字符串，`不是pattern`，所以要查找回车符，需要用"\r"而不是'\r'
+* `split()`, `match()`等都是使用pattern的
 
 
 
@@ -679,6 +738,26 @@
     min()                   minimum value in a List
     count()                 count number of times a value appears in a List
     repeat()                repeat a List multiple times
+
+#### split()
+
+将`字符串`按指定模式分隔符进行分割，返回`List`结构。
+
+    split( {expr} [, {pattern} [, {keepempty}]])
+
+* 未提供pattern，默认使用空白符分割
+* `pattern`同vim search，是一个字符串
+* 布尔`keepempty`参数，能保留空匹配项
+
+举例如下：
+
+    :echo split( ':b:c', ':' )
+    [ 'b', 'c' ]
+    :echo split( ':b:c', ':', 1 )
+    [ '', 'b', 'c' ]
+
+
+#### Examples
 
 1. map()
         
@@ -775,6 +854,29 @@
     hostname()              name of the system
     readfile()              read a file into a List of lines
     writefile()             write a List of lines into a file
+
+
+#### readfile()
+
+> 将文件fname的内容按行读入到list中
+    
+    " @param {string} fname
+    " @param {string} binary
+    " @param {number} max
+    readfile({fname} [, {binary} [, {max}]])
+
+* 读取时所有的`0x00`会被替换成`换行符NL`
+* 若`binary`参数`包含'b'`：
+    * 若最后一行以`换行符NL( 0x0a )`结尾，则会额外增加一个空列表项
+    * `回车符CR( 0x0c )`不会被移除
+* 若`binary`参数`不包含'b'`：
+    * `CR NL`会被替换成`NL`
+    * 最后一行是否以`换行符NL( 0x0a )`结尾，都不会额外增加一个空列表项
+    * When 'encoding' is Unicode any UTF-8 byte order mark is removed from the text.
+    
+
+
+    
 
 
 #### writefile()

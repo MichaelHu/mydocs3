@@ -35,6 +35,26 @@
 
 ## 右下角弹窗提示
 
+### components update
+
     The follwing components are ready to update: Android Emulator, Google Repository, Intel x86
     Emulator Accelerator (HAXM installer), Android SDK Platform 26, Google Play Intel x86 Atom
     System Image
+
+### Platform and Plugin Updates
+
+    Android Stuido if ready to update
+
+点击`update`链接，自动update
+
+
+## Messages
+
+    Gradle 'sophon-mobile-hybrid' project refresh failed
+        Error: Failed to find Build Tools revision 26.0.2
+        Install Build Tools 26.0.2 and sync project
+
+其中的Build Tools即是`Android SDK Build-Tools 26.0.2`，以上提示，直接点击链接`自动安装`即可。
+
+
+
