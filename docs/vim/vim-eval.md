@@ -1,10 +1,17 @@
 # vim-eval
 
-> 来自`:help eval`
+> vim programming
+
+## Resources
+
+* 帮助：`:help eval`
+* vim - <ref://./vim.md.html>
+
 
 ## 编译选项
 
     +eval
+
 
 ## 变量类型
 
