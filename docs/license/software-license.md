@@ -1,24 +1,32 @@
 # software license
 
-> A software license is a legal instrument (usually by way of contract law, with or without printed material) governing the use or redistribution of software.  
+## Definition
+
+> A software license is a `legal instrument` (usually by way of contract law, with or without printed material) governing the use or redistribution of software.  
 
 * 软件许可证
 * 一种`法律文件`，通常以契约法的形式，打印材料可有可无
 * 约束软件的`使用`和`分发`
 
+
+## Resources
+
 wikipedia: <https://en.wikipedia.org/wiki/Software_license>
+
 
 ## 许可证赋予的权限
 
  <img src="./img/rights-in-copyright.png">
 
+> `relinquish`: 放弃；<br>`FOSS` ( Free and Open Source Software )，免费开源软件，2001年起，由联合国教科文组织正式启用。
+
 五个等级：
 
-* Public Domain
-* Non-Protective FOSS License
-* Protective FOSS License
+* Public Domain - All rights relinquished 不保留任何权利
+* Non-Protective FOSS License - 非保护性免费开源软件许可证
+* Protective FOSS License - 保护性免费开源软件许可证
 * Proprietary License
-* Trade Secret
+* Trade Secret - 商业机密
 
 
 ## 软件许可证和版权法

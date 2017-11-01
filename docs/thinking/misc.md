@@ -1,5 +1,14 @@
 # misc
 
+## 双关词现象
+
+近期各类媒体文章都喜欢采用`双关词`（暂且这么命名），比如：
+
+    风(se)景(se)如(fa)画(dou)
+    研(zao)究(lun)之(zi)旅
+
+
+
 ## DINK
 
 `DINK`: Double Income No Kids
