@@ -168,6 +168,7 @@ import.js:
 * 浅谈ES6中`super`关键字 <http://www.cnblogs.com/liutie1030/p/5997446.html>
 * `Note`: `class`也是具有`块级作用域`的关键字
 * 如果带`extends`关键词进行`继承`，那么在`constructor`中，`super()`需在`this`关键词可用`之前`完成调用
+* 类字段 - class field
 
 
 
@@ -194,6 +195,33 @@ import.js:
 * 可以在对象字面量里面定义`原型`（`__proto__`）
 * 定义方法可以不用`function`关键字
 * 直接调用父类方法
+
+
+
+## 计算属性名
+
+> Computed property names
+
+<https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer#Computed_property_names>
+
+    var i = 0;
+    var a = {
+        [ 'foo' + ++i ]: i
+        , [ 'foo' + ++i ]: i
+        , [ 'foo' + ++i ]: i
+    };
+
+    console.log(a.foo1); // 1
+    console.log(a.foo2); // 2
+    console.log(a.foo3); // 3
+
+
+    var param = 'size';
+    var config = {
+        [ param ]: 12
+    };
+
+    console.log( config ); // { size: 12 }
 
 
 

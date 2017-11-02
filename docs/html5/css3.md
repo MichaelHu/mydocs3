@@ -9,7 +9,10 @@
 ## Resources
 
 * w3c css [ `the latest` ]: <https://www.w3.org/TR/CSS/>
-* css 2.1: <https://www.w3.org/TR/CSS2/>
+* CSS1 <https://www.w3.org/TR/CSS1/>
+* CSS2.1 <https://www.w3.org/TR/CSS2/>
+* CSS2.2 <https://www.w3.org/TR/CSS22/>
+* CSS3 <https://www.w3.org/TR/CSS/>
 
 
 ## rem
@@ -21,9 +24,116 @@
 
 > Align the vertical midpoint of the box with the baseline of the parent box plus half the x-height of the parent.
 
+* 深度参考：<ref://./css-fonts.md.html>
 * <https://www.w3.org/TR/CSS2/visudet.html#propdef-vertical-align>
 * Deep dive CSS: font metrics, line-height and vertical-align <http://iamvdo.me/en/blog/css-font-metrics-line-height-and-vertical-align>
 * 深入了解CSS字体度量，行高和vertical-align <https://www.w3cplus.com/css/css-font-metrics-line-height-and-vertical-align.html>
+
+
+## 文本处理相关
+
+### white-space
+
+> w3 css 2: <https://www.w3.org/TR/CSS22/text.html#white-space-prop>
+
+    值              描述
+    ==============================================================================
+    normal          默认，合并空白，word边界到达容器宽度会换行
+    nowrap          合并空白，文本不换行，即使word边界达到容器宽度也不会换行
+    inherit
+    pre             保留空白，遇到换行符才换行
+    pre-wrap        保留空白，word边界到达容器宽度或遇到换行符会换行
+    pre-line        合并空白，word边界到达容器宽度或遇到换行符会换行
+
+
+举例如下：
+
+    @[data-script="html editable"]<div style="width:300px; margin-bottom:20px; 
+        padding: 10px; font-size: 12px; 
+        word-break: normal;
+        word-wrap: normal;
+        white-space: pre;
+        background:#eee; color:#31a354;">
+
+    normal          默认，合并空白，word边界到达容器宽度会换行
+    nowrap          合并空白，文本不换行，即是word边界达到容器宽度也不会换行
+    inherit
+    pre             保留空白，遇到换行符才换行
+    pre-wrap        保留空白，word边界到达容器宽度或遇到换行符会换行
+    pre-line        合并空白，word边界到达容器宽度或遇到换行符会换行
+
+    </div>
+
+
+### word-wrap
+
+> 各类浏览器都支持，连`IE 5.5`都支持，兼容性非常好。
+
+描述`是否允许`浏览器在word内断句换行。
+
+    值              描述
+    ==============================================================================
+    normal          默认
+    break-word      允许在长单词或url等长词内换行
+
+* 在w3c上并没有关于`word-wrap`以及`word-break`的相关规范文档，它们属于浏览器厂商间的约定，很早期的浏览器就已经有了
+* 注意：`word-wrap`并不是`word-break`的开关
+* 参考：<http://www.cnblogs.com/2050/archive/2012/08/10/2632256.html>
+
+
+### word-break
+
+> 除了Opera的早期版本不支持，其他基本都支持，兼容性非常好，连`IE 5.5`都支持。
+
+描述`如何`在word内断句换行。
+
+    值              描述
+    ==============================================================================
+    normal          默认
+    break-all       允许在单词内换行，比word-wrap: break-word;更进一步，节省空间
+    keep-all        只能在半角空格或连字符处换行
+
+举例如下：
+
+    @[data-script="html editable"]<div style="width:300px; margin-bottom:20px; 
+        padding: 10px; font-size: 12px; 
+        white-space: normal;
+        background:#eee; color:#31a354;">
+        <div style="word-wrap: normal; word-break: normal;">
+    简单文本：ok normal
+    loooooooooooooooooooooooooooooooooo-ooooooooooooooooooooooooooong
+        </div>
+        <hr>
+        <div style="word-wrap: normal; word-break: break-all;">
+    简单文本：ok normal
+    loooooooooooooooooooooooooooooooooo-ooooooooooooooooooooooooooong
+        </div>
+        <hr>
+        <div style="word-wrap: break-word; word-break: normal;">
+    简单文本：ok normal
+    loooooooooooooooooooooooooooooooooo-ooooooooooooooooooooooooooong
+        </div>
+        <hr>
+        <div style="word-wrap: break-word; word-break: break-all;">
+    简单文本：ok normal
+    loooooooooooooooooooooooooooooooooo-ooooooooooooooooooooooooooong
+        </div>
+        <hr>
+        <div style="word-wrap: normal; word-break: keep-all;">
+    简单文本：ok normal
+    loooooooooooooooooooooooooooooooooo-ooooooooooooooooooooooooooong
+        </div>
+    </div>
+
+
+
+### word-spacing & letter-spacing
+
+> w3 ref: <https://www.w3.org/TR/CSS22/text.html#spacing-props>
+
+todo
+
+
 
 
 ## 伪元素&伪类
@@ -60,6 +170,9 @@ todo
 
 * 为什么input不支持伪元素(:after,:before)？ <https://www.zhihu.com/question/21296044>
 * 170918 你所不知的 CSS ::before 和 ::after `伪元素`用法 <http://blog.dimpurr.com/css-before-after/>
+
+
+
 
 
 

@@ -5,6 +5,7 @@
 
 ## Resources
 
+* Docs [ `171102`添加，react启用`.org`新域名 ]: <https://reactjs.org/docs/hello-world.html>
 * Reactjs: <http://facebook.github.io/react/docs/getting-started.html>
 * Github: <https://github.com/facebook/react>
 * Flux: <https://facebook.github.io/flux/docs/overview.html>
@@ -39,18 +40,22 @@
 <script src="http://258i.com/static/build/babel/babel.min.js"></script>
 
 
-## 初识
+## Features
+
+### 设计理念
+
+> Thinking about how the UI should look at any given moment rather than how to change it over time eliminates a whole class of bugs.
+
+> 思考UI该如何表现，而不是如何改变，能避免很多问题。
+
+* Just the UI：`MVC`中的`V层`
+* Virtual DOM：高`性能`，更`简单`的编程模型
+* Data Flow：`单向`数据流
+
+> `JSX`是React的一大创新亮点，js和html混写的方式极大提高编码效率
 
 
-### 三大特点
-
-1. Just the UI：`MVC`中的`V层`
-2. Virtual DOM：高`性能`，更`简单`的编程模型
-3. Data Flow：`单向`数据流
-
-
-
-### top-level APIs
+### Top-level APIs
 
 重要的几个`API`：
 
@@ -59,7 +64,13 @@
 * ReactDOM.render()
 
 
-### 重要的概念
+
+
+
+
+## Concepts
+
+### Basic Concepts
 
 * `Component`: `Class`
 * Component Instance: `new Component`得到的
@@ -69,9 +80,222 @@
 * `ref`: 遇`HTML Element`，代表的是`DOM对象`；遇自定义组件，则代表的是`Component Instance`
 * `Virtual DOM`: 按需更新DOM。
 
-> Thinking about how the UI should look at any given moment rather than how to change it over time eliminates a whole class of bugs.
 
-> 思考UI该如何表现，而不是如何改变，能避免很多问题。
+### Components
+
+> `Components` let you split the UI into independent, reusable pieces, and think about each piece in isolation.
+* UI拆分成`独立的`、`可重用`的部分
+* 每个组件作为一个独立的整体来考虑
+* 概念上与js的`function`类似，接收input（ `props` ），获得`React elements`，描述在屏幕上展示的内容
+* 所以有`函数式`组件与`类`组件，前者处理纯粹的输入输出，后者能处理更复杂的交互逻辑
+* 函数名或者组件类名可以作为jsx的tag使用
+
+> All React components must act like `pure functions` with respect to their props.
+* 组件的`纯粹函数`特性：不修改输入，对于同样的输入总会产生同样的输出
+* 换句话说，props是`read-only`的
+
+
+### JSX
+
+jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有一些特殊的地方。
+
+1. `内联`样式的写法，使用`驼峰`键值的对象，就像设置`element.style.x`一样 
+2. `if-else`不要在`属性`部分使用，因为key-value的`value`部分无法使用`if-else`语句。可用`三元操作符`代替。或者将if-else放在jsx代码块之外；或者定义一个闭包函数直接执行。
+3. `false`作为`属性`部分和`内容`部分的区别：`属性`部分，输出字符串`"false"`；`内容`部分，输出为`空` 
+4. 组件的`render()`只能返回一个节点，而不能是多个节点；如果有多个节点，必须要将这些节点包裹在一个父级节点内
+5. jsx不能使用`<!-- ... -->`进行注释
+6. `this.props.children`的类型。如果存在多个孩子节点，则表现为Array类型；如果仅有一个孩子节点，则表现为仅有的孩子节点本身。
+7. `this.props.children`在组件的`render()`方法中使用，用于将孩子节点渲染出来。
+8. 以下代码看似能省的`import React from 'react';`实际上不能省：
+
+		// import React from 'react';
+		import ReactDOM from 'react-dom';
+		import Hello from './components/Hello';
+
+		ReactDOM.render(
+			<Hello name="hudamin" />
+			, document.getElementById( 'wrapper' )
+		);
+
+	原因是`<Hello name="hudamin" />`通过babel编译后，会生成`React.createElement(...)`的代码，直接引用了`React`。
+
+9. `this`关键字:
+	* 在`constructor`, `render`等预定义的方法中，可以直接使用`this`；其他`非预定义方法`，使用this关键字时，是一个`null`对象
+	* `箭头`函数对this关键字的支持，直接使用`定义时`的上下文       
+
+
+
+### State
+
+#### 正确使用state
+
+1. Do Not Modify State Directly
+    * `constructor`是唯一一个可以对`this.state`赋值的地方
+    * 其他地方，只能通过`this.setState( ... )`改变state的值
+2. State Updates May Be Asynchronous
+
+        this.setState( ( prevState, props ) => ( {
+            counter: prevState.counter + props.increment
+        } ) );
+
+3. State Updates are Merged
+
+
+
+#### 向下的数据流
+
+* `top-down` or `unidirectional`，自上而下或单向的数据流
+* 任何state只能由特定的组件所拥有，不能在组件外被观测到
+* 如果把组件树当作是props的瀑布流，那么树上每个组件的状态就是额外的支流，与父组件下传的props汇聚，再通过子组件的props往下传递
+
+
+#### 状态级别上提
+
+<https://reactjs.org/docs/lifting-state-up.html>
+
+
+
+### Events
+
+1. dom元素的事件是`全小写`的，而jsx事件是`camel pattern`的
+2. dom元素属性传递的是`字符串`，jsx传递的是`函数`
+3. jsx不能像dom元素一样，通过`return false`来阻止默认行为，只能通过调用`preventDefault()`方法来实现
+4. 使用类方法作为handler，传递的是类方法的引用，而不是直接执行，所以在执行时，类方法内部的this是undefined，而不是指向类实例。需要在`constructor`中做类方法的主动绑定。
+
+        class Toggle extends React.Component {
+          constructor(props) {
+            super(props);
+            this.state = {isToggleOn: true};
+
+            // This binding is necessary to make `this` work in the callback
+            this.handleClick = this.handleClick.bind(this);
+          }
+          ...
+        }
+
+    或者使用`类字段`：
+
+        class Toggle extends React.Component {
+            ...
+            handleClick = ( e ) => {
+                console.log( 'this is: ', this );
+            }
+            ...
+        }
+
+    还有一种方式，在jsx的handler字段中直接使用`箭头函数`：
+
+        <button onClick={(e) => this.handleClick( e )}>
+            Click Me
+        </button>
+
+    最后一种方式`不推荐`，因为其每次都进行`新的绑定`，并传递给子组件，导致子组件的`re-render`，不利于性能
+
+5. 如果要`传递参数`给handler，反而需要上面的第三种方式：
+
+        <button onClick={(e) => this.deleteRow( id, e )}>Delete Row</button>
+        <button onClick={this.deleteRow.bind( this, id )}>Delete Row</button>
+
+    上方两种写法等价。
+
+
+
+
+### Conditional Rendering
+
+> 条件渲染
+
+* 使用`if-else`语句按分支返回elements
+* 使用`内部变量`保存中间elements
+* `inline-if`方式：使用`&&`操作符，利用了false作为内容部分输出为空，作为属性部分输出为"false"的特性
+* `inline-if-else`方式：使用`三元操作符`
+* `render()`方法通过`return null`，阻止组件被渲染
+
+
+
+### Lists and Keys
+
+1. 渲染多个同类型组件，使用`.map()`
+
+        function NumberList(props) {
+          const numbers = props.numbers;
+          const listItems = numbers.map((number) =>
+            <li>{number}</li>
+          );
+          return (
+            <ul>{listItems}</ul>
+          );
+        }
+
+2. key用于帮助React定位哪些项目发生变化、被添加或者被移除，其目的仅在于为React`提供hint`，而不会传入Component，如果Component内部确实需要于key同样的值，需要使用另外的`prop name`传入
+3. key仅在`外围数组`的上下文中才有意义，以下是`错误`的用法：
+
+        function ListItem(props) {
+          const value = props.value;
+          return (
+            // Wrong! There is no need to specify the key here:
+            <li key={value.toString()}>
+              {value}
+            </li>
+          );
+        }
+
+        function NumberList(props) {
+          const numbers = props.numbers;
+          const listItems = numbers.map((number) =>
+            // Wrong! The key should have been specified here:
+            <ListItem value={number} />
+          );
+          return (
+            <ul>
+              {listItems}
+            </ul>
+          );
+        }
+
+        const numbers = [1, 2, 3, 4, 5];
+        ReactDOM.render(
+          <NumberList numbers={numbers} />,
+          document.getElementById('root')
+        );
+
+4. key在`兄弟节点`中必须唯一，但不必要全局唯一
+5. jsx的`{}`结构可以包含任何expression，可以充分利用该特性，比如在里面直接使用`.map()`方法
+
+
+
+### Forms
+
+> `controlled components`: 受控组件；`uncontrolled components`: 非受控组件
+
+1. 统一了`input`, `textarea`, `select`的使用风格，React内部在处理这些标签时，做了一些`特殊处理`
+2. `textarea`放弃使用标签内部文本作为编辑内容，`select`放弃在option中使用selected，它们都统一使用`value`属性，与input一致，保持使用接口的`统一性`
+3. `受控组件`：使用`onChange`获取新的value，通过`this.setState()`触发更新，使用`value={this.state.xxx}`设置对应DOM内的值，默认都是`受控`状态，也是推荐的方式
+4. 对于`受控组件`来说，直接设置value属性为某个值（非null和undefined），将`锁定`input，而用户无法改变内容
+
+        // locked
+        ReactDOM.render( <input value="hi" />, mountNode );
+        ReactDOM.render( <input value="" />, mountNode );
+
+        // editable
+        ReactDOM.render( <input value={null} />, mountNode );
+        ReactDOM.render( <input value={undefined} />, mountNode );
+
+        // grammar error
+        ReactDOM.render( <input value={undefined} />, mountNode );
+
+5. `非受控组件`，这种模式适用于从其他项目迁移到React的情况。与受控组件不同，非受控组件由DOM自身来控制组件显示的内容，它通过添加input DOM的ref引用，在代码中通过直接获取input DOM的值来组装表单的值
+
+        ReactDOM.render( <input ref={(input) => this.input = input } />
+
+6. `不设置`输入组件的`value`属性，输入组件也将进入非受控模式
+
+        // editable
+        ReactDOM.render( <input />, mountNode );
+
+7. 非受控组件支持使用`defaultValue`属性接收`默认值`
+
+
 
 
 
@@ -245,35 +469,6 @@ onClick
 
 
 
-### jsx注意事项
-
-jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有一些特殊的地方。
-
-1. `内联`样式的写法，使用`驼峰`键值的对象，就像设置`element.style.x`一样 
-1. `if-else`不要在`属性`部分使用，因为key-value的`value`部分无法使用`if-else`语句。可用`三元操作符`代替。或者将if-else放在jsx代码块之外；或者定义一个闭包函数直接执行。
-1. `false`作为`属性`部分和`内容`部分的区别：`属性`部分，输出字符串`"false"`；`内容`部分，输出为`空` 
-1. 组件的`render()`只能返回一个节点，而不能是多个节点；如果有多个节点，必须要将这些节点包裹在一个父级节点内
-1. jsx不能使用`<!-- ... -->`进行注释
-1. `this.props.children`的类型。如果存在多个孩子节点，则表现为Array类型；如果仅有一个孩子节点，则表现为仅有的孩子节点本身。
-
-2. `this.props.children`在组件的`render()`方法中使用，用于将孩子节点渲染出来。
-3. 以下代码看似能省的`import React from 'react';`实际上不能省：
-
-		// import React from 'react';
-		import ReactDOM from 'react-dom';
-		import Hello from './components/Hello';
-
-		ReactDOM.render(
-			<Hello name="hudamin" />
-			, document.getElementById( 'wrapper' )
-		);
-
-	原因是`<Hello name="hudamin" />`通过babel编译后，会生成`React.createElement(...)`的代码，直接引用了`React`。
-
-4. `this`关键字:
-	* 在`constructor`, `render`等预定义的方法中，可以直接使用`this`；其他`非预定义方法`，使用this关键字时，是一个`null`对象
-	* `箭头`函数对this关键字的支持        
-
 
 
 #### 演示一
@@ -321,6 +516,11 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
         // about `if-else`
         ReactDOM.render(
             <div id={ 5 > 1 ? 'yes' : 'no'}>use ternary expression instead of if-else</div>
+            , mountNodeIfElse
+        );
+
+        ReactDOM.render(
+            <input value="" />
             , mountNodeIfElse
         );
     })();
