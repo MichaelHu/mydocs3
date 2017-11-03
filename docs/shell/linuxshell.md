@@ -280,6 +280,15 @@ todo
 
 
 
+## printf
+
+> todo
+
+    printf [-v var] format [arguments]
+
+    $ printf "protocol=https\nhost=github.com\n"
+
+
 ## echo带颜色文本
 
 > 参考：<http://www.cnblogs.com/lr-ting/archive/2013/02/28/2936792.html>
@@ -1270,7 +1279,7 @@ for `MAC`
     # file的末尾10个512字节块按行逆序输出
     tail -b 10 -r <file>
 
-支持`管道`，所以对输出内容按行逆序输出，非常方便。
+支持`管道`，所以对输出内容按行逆序输出，非常方便。vim通过扩展命令`:[range]!command`可以将选中内容通过管道传给tail处理，实现相关功能。
 
 
 ## sed

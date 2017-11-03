@@ -13,13 +13,65 @@
 ## Resources
 
 * `site`: <https://www.python.org>
+* language reference - 3: <https://docs.python.org/3/reference/index.html>
+* library reference - 3: <https://docs.python.org/3/library/index.html>
+* built-in types -3: <https://docs.python.org/3/library/stdtypes.html>
+* built-in functions - 3: <https://docs.python.org/3/library/functions.html>
 * `Python 3`提供许多新特性
 * 第一个使用`scrapy`爬虫项目：<http://cuiqingcai.com/990.html> todo
 * `Anaconda`: <ref://./anaconda.md.html>
 * `Jupyter`: <ref://./jupyter.md.html>
 
 
-### CLI
+## Built-in Types
+
+    str
+        class str( object='' )
+        class str( object=b'', encoding='utf-8', errors='strict' )
+
+    ...
+
+
+## Built-in Functions
+
+    abs()
+    all()
+    any()
+    ascii()
+    bin()
+    ...
+    dict()
+    help()
+    min()
+    setattr()
+    all()
+    ...
+    open()
+    ord()
+    pow()
+    print()
+    property()
+    range()
+    repr()
+    reversed()
+    round()
+    set()
+    slice()
+    sorted()
+    staticmethod()
+    str()
+    sum()
+    sum()
+    super
+    tuple()
+    type()
+    vars()
+    zip()
+    __import__()
+
+
+
+## CLI
 
     hudamin@local python $ python
     Python 2.7.10 (default, Jul 30 2016, 19:40:32)
@@ -27,7 +79,7 @@
     Type "help", "copyright", "credits" or "license" for more information.
     >>>
 
-### Demos
+## Demos
 
     # Python 3: Fibonacci series up to n
     >>> def fib(n):
