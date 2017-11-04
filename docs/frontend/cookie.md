@@ -5,7 +5,7 @@
 
 ## Resources
 
-* rfc: <https://tools.ietf.org/html/rfc6265>
+* `rfc 6265` - HTTP State Management Mechanism: <https://tools.ietf.org/html/rfc6265>
 
 
 ## Syntax
@@ -20,9 +20,9 @@
                     ; "optional" whitespace
     obs-fold      = CRLF
 
-* `;` 开头的为注释
-* `cookie-pair`对应User Agent从`Set-Cookie`响应头中获取的`cookie-name`和`cookie-value`
-* `User Agent`通过`Cookie`请求头，将cookie-string发送给服务器
+* `';'` 开头的为注释，`'; '`用于cookie-pair的`分隔符`
+* `cookie-pair`对应User Agent从`Set-Cookie`「响应头」中获取的`cookie-name`和`cookie-value`
+* `User Agent`通过`Cookie`「请求头」，将cookie-string发送给服务器
 
 
 
@@ -68,6 +68,7 @@ cookie串由`'; '`分隔每个cookie，每个cookie按`name=value`的方式保�
 
     name=<value>[; expires=<date>][; domain=<domain>][; path=<path>][; secure][; HttpOnly] 
 
+属性名称`不区分大小写`( case-insensitive )，比如`domain`和`Domain`都可以。
 
 
 
@@ -82,11 +83,26 @@ cookie串由`'; '`分隔每个cookie，每个cookie按`name=value`的方式保�
 
 ### 属性默认值
 
-* `domain`，默认为`location.hostname`，而不是location.host，也即`默认不包含端口号`
+* `domain`，默认为`location.hostname`，而不是location.host，因为location.host可能包含端口号，而domain是`不包含端口号`的
 * `path`，默认为当前路径，比如当前为`/static/abc/d.html`，则path为`/static/abc`。路径不存在，cookie设置不成功
 * `expires`，默认为当前session有效
 
-> 关于domain属性前导点号的解释：<https://tools.ietf.org/html/rfc6265#section-5.2.3>，处理过程中会`忽略前导点号`。
+#### Resources
+
+* 关于domain属性`前导点号`的解释：<https://tools.ietf.org/html/rfc6265#section-5.2.3>，处理过程中会`忽略前导点号`。
+* domain的`规范`定义( rfc1034 )：<https://tools.ietf.org/html/rfc1034#section-3.5>，字段的`首字符必须为letter`
+
+        <domain> ::= <subdomain> | " "
+        <subdomain> ::= <label> | <subdomain> "." <label>
+        <label> ::= <letter> [ [ <ldh-str> ] <let-dig> ]
+        <ldh-str> ::= <let-dig-hyp> | <let-dig-hyp> <ldh-str>
+        <let-dig-hyp> ::= <let-dig> | "-"
+        <let-dig> ::= <letter> | <digit>
+        <letter> ::= any one of the 52 alphabetic characters A through Z in upper 
+            case and a through z in lower case
+        <digit> ::= any one of the ten digits 0 through 9
+    
+* domain的`扩展`定义( rfc1123 )：<https://tools.ietf.org/html/rfc1123#page-13> 对字段首字符必须为letter进行扩展，扩展后`首字符可以为数字`，所以domain就可以包含`ip地址`，或者类似`163.com`之类的domain
 
 
 

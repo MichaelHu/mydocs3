@@ -97,16 +97,20 @@
 
 ### JSX
 
-jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有一些特殊的地方。
+jsx只是一个`句法糖`，目的是简化`React.createElement( component, props, ...children )`函数的编写。在使用jsx的时候，有一些特殊的地方。
 
-1. `内联`样式的写法，使用`驼峰`键值的对象，就像设置`element.style.x`一样 
-2. `if-else`不要在`属性`部分使用，因为key-value的`value`部分无法使用`if-else`语句。可用`三元操作符`代替。或者将if-else放在jsx代码块之外；或者定义一个闭包函数直接执行。
-3. `false`作为`属性`部分和`内容`部分的区别：`属性`部分，输出字符串`"false"`；`内容`部分，输出为`空` 
-4. 组件的`render()`只能返回一个节点，而不能是多个节点；如果有多个节点，必须要将这些节点包裹在一个父级节点内
-5. jsx不能使用`<!-- ... -->`进行注释
-6. `this.props.children`的类型。如果存在多个孩子节点，则表现为Array类型；如果仅有一个孩子节点，则表现为仅有的孩子节点本身。
-7. `this.props.children`在组件的`render()`方法中使用，用于将孩子节点渲染出来。
-8. 以下代码看似能省的`import React from 'react';`实际上不能省：
+1. jsx: `xml` + `{}`，最终会编译成js语法
+1. jsx的标签名(type)可以包含点号`'.'`，比如`<MyComponents.DatePicker color="blue" />`
+1. 运行时确定的jsx type，可将其先保存到大写开头的变量中，再在jsx中使用
+1. 内建组件都以小写开头，`用户定义组件`必须以`大写`开头
+2. `内联`样式的写法，使用`驼峰`键值的对象，就像设置`element.style.x`一样 
+3. `if-else`不要在`属性`部分使用，因为key-value的`value`部分无法使用`if-else`语句。可用`三元操作符`代替。或者将if-else放在jsx代码块之外；或者定义一个闭包函数直接执行。
+4. `false`作为`属性`部分和`内容`部分的区别：`属性`部分，输出字符串`"false"`；`内容`部分，输出为`空` 
+5. 组件的`render()`只能返回一个节点，而不能是多个节点；如果有多个节点，必须要将这些节点包裹在一个父级节点内
+6. jsx不能使用`<!-- ... -->`进行注释
+7. `this.props.children`的类型。如果存在多个孩子节点，则表现为Array类型；如果仅有一个孩子节点，则表现为仅有的孩子节点本身。
+8. `this.props.children`在组件的`render()`方法中使用，用于将孩子节点渲染出来。
+1. `React`必须在上下文中，因为jsx会翻译成`React.createElement(...)`，以下代码看似能省的`import React from 'react';`实际上不能省：
 
 		// import React from 'react';
 		import ReactDOM from 'react-dom';
@@ -119,9 +123,10 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
 
 	原因是`<Hello name="hudamin" />`通过babel编译后，会生成`React.createElement(...)`的代码，直接引用了`React`。
 
-9. `this`关键字:
+10. `this`关键字:
 	* 在`constructor`, `render`等预定义的方法中，可以直接使用`this`；其他`非预定义方法`，使用this关键字时，是一个`null`对象
 	* `箭头`函数对this关键字的支持，直接使用`定义时`的上下文       
+
 
 
 
@@ -295,6 +300,63 @@ jsx只是一个`句法糖`，简化代码的编写。在使用jsx的时候，有
 
 7. 非受控组件支持使用`defaultValue`属性接收`默认值`
 
+
+
+
+### 组合与继承
+
+> React has a powerful composition model, and we recommend `using composition instead of inheritance` to reuse code `between components`.
+
+* `组件间`UI功能代码的复用，推荐使用`组合`而不是继承
+* React为组件`组合`提供的机制：
+    * `{props.children}`
+    * `jsx`对象可以通过prop传递，因为Element本身是object
+    组件通过在内部设置一些`hole`，来放置其他组件，以达到组合其他组件的目的
+* 组件间需要复用`非UI功能`的代码，推荐将这部分代码`抽取`到独立实现的function、object或class，再由需要复用代码的组件`import`进来使用
+
+一些例子：
+
+    // 通过{props.children}接收子组件
+    function Cont1( props ) {
+        return ( 
+            <div>
+                {this.props.children}
+            </div>
+        );
+    }
+
+    // 挖两个坑，接收通过属性传入的Element
+    function Cont2( props ) {
+        return ( 
+            <div>
+                <header>{this.props.header}</header> 
+                <div>{this.props.body}</div>
+            </div>
+        );
+    }
+
+    // 通过子元素方式传入子组件
+    function Cont3( props ) {
+        return (
+            <Cont1>
+                <div>
+                    ....
+                </div>
+            </Cont1>
+        );
+    }
+
+    // 通过属性传入子组件 
+    function Cont4( props ) {
+        return (
+            <Cont2
+                header={<Header />}
+                body={
+                    <Cont3 ... />
+                }
+                />
+        );
+    }
 
 
 
