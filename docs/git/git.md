@@ -1138,17 +1138,34 @@ When we start mixing branches and commits, we will see how these two features co
 
 ### 创建stash
 
+    # todo
+    git stash [push [-p|--patch] [-k|--[no-]keep-index] [-q|--quiet]
+            [-u|--include-untracked] [-a|--all] [-m|--message <message>]]
+            [--] [<pathspec>...]]
+
     git stash 
-    git stash save <message>
+    git stash -- [<pathspec>...]
+    git stash save [<message>]
+
+#### Examples
+
+    $ git stash                                 # 暂存当前所有修改
+    $ git stash save 'bugfix: 1. ..., 2. ...'   # 暂存当前所有修改，自定义修改描述
+    $ git stash -- file1 path2                  # 暂存当前指定文件、路径下的修改
+
 
 ### 应用stash
 
-    git stash pop
-    git stash apply
+    git stash pop [<stash>]
+    git stash apply [<stash>]
 
 ### 删除stash
 
-    git stash drop <stashname>
+    git stash drop [<stashname>]
+
+### 清空所有stash
+
+    git stash clear
 
 
 

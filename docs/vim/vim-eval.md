@@ -33,7 +33,7 @@
         有序序列
         [1, 2, ['a', 'b']]
 
-    Dictionary
+    Dictionary - 与js object非常类似
         关联无序序列
         {'blue': '#0000ff', 'red': "#ff0000"}
 
@@ -658,7 +658,7 @@
 
     strridx({haystack}, {needle} [, {start}]) 
 
-* 注意：`needle`是字符串，`不是pattern`，所以要查找回车符，需要用"\r"而不是'\r'
+* 注意：`needle`是字符串，`不是pattern`，所以要查找回车符，需要用`"\r"`而不是`'\r'`
 * `split()`, `match()`等都是使用pattern的
 
 

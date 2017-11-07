@@ -5,7 +5,8 @@
 
 > No programming language is perfect. There is not even a single best language; there are only languages well suited or perhaps poorly suited for particular purposes.   -- Herbert Mayer
 
-2017-10
+2017-11
+, 2017-10
 , 2017-5
 , 2017-4
 , 2017-1
@@ -17,7 +18,7 @@
 ## .bashrc和.bash_profile
 
 * `.bashrc`与`session`相关，每新建一个session都会执行，`su`命令切换，也会执行
-* `.bash_profile`与`登录`相关，用户登录后会执行一次.bash_profile
+* `.bash_profile`与`登录`相关，用户登录后会执行一次`.bash_profile`
 
 
 ## $相关 
@@ -31,6 +32,140 @@
     $?                  # exit status，可能是命令、函数或脚本本身的exit status
     $$                  # 当前脚本的pid
     $!                  # 上一后台运行的任务的pid
+
+
+
+## -相关
+
+> `'-'`的一些特殊使用场景
+
+* 接收上级`管道`传递的输出信息
+        cat file | vim -
+        git diff | vim -
+        curl <url> | cat file1 - file2 > output
+* 结束接收`option`输入 
+        git checkout <commit> -- <filename> 
+        git stash -- <pathspec>
+
+
+
+## IO Redirection
+
+### File Descriptor
+
+> 标准文件描述符
+
+    fd          desc
+    ==========================
+    0           stdin
+    1           stdout
+    2           stderr
+    &           stdout and stderr
+    /dev/null   null
+
+> 其他`&n, &-`，todo
+
+
+### Tips
+
+* `>, >>, <, <<`与文件描述符（`不是文件名`）相连接的时候，注意`不能有空格`！
+* 文件描述符若在`右侧`，需要添加`&`前缀。
+
+
+
+### Examples
+
+描述符的重设置`作用范围`，使用`exec`是全局的，其他都是临时的。
+
+1. basics
+
+        1> filename
+        1>> filename
+        2> filename
+        2>> filename
+        &> filename
+        &>> filename
+        &> /dev/null
+
+        # stderr 指向 stdout 
+        2>&1
+
+        0< filename
+        < filename
+
+        grep search-word < filename
+        
+2. `[j]<>filename` 
+
+    打开文件用于读写，并将该文件赋值给描述符j。如果filename不存在，则创建之。
+    如果没有提供描述符j，则默认使用0，即stdin
+
+        echo 1234567890 > File
+        exec 3<>File
+        read -n 4<&3
+        echo -n . >&3
+        exec 3>&-
+        cat File
+    
+3. 关闭文件描述符
+
+        # 关闭输入描述符n
+        n<&-
+
+        # 关闭stdin
+        0<&-
+        <&-
+
+        # 关闭输出描述符n
+        n>&-
+
+        # 关闭stdout
+        1>&-
+        >&-
+
+        cat /etc/passwd >&-
+        cat: standard output: Bad file descriptor
+
+4. 多个IO重定向可合并
+
+        command < input-file > output-file
+        command1 | command2 | command3 > output-file
+
+
+5. 多路输出流`可重定`向至一个文件
+
+        ls -yz >> command.log 2>&1
+            
+    以上代码可将错误信息也输出到command.log。但是，以下代码却不可以，`注意区别`：
+
+        ls -yz 2>&1 >> command.log
+
+    如果是`管道`，又是另一种情况了：
+
+        ls -yz | less 2>&1
+
+    以上代码less中不会接收到错误信息，以下代码可以：
+
+        ls -yz 2>&1 | less 
+
+    说白了，就是`重定向`和`管道`的区别。
+
+6. `Child processes inherit open file descriptors. This is why pipes work`. To prevent 
+    an fd from being inherited, close it.
+
+    以下代码`只重定向`stderr到pipe：
+
+        exec 3>&1
+        ls -l 2>&1 >&3 3>&- | grep bad 3>&-
+        exec 3>&-
+
+    暂时还看不懂，todo
+
+7. process substitution
+
+        ( command_list ) >
+        < ( command_list )
+
 
 
 ## 内部变量
@@ -543,117 +678,25 @@ todo
 
 
 
-## IO重定向
-
-* 1 - stdout
-* 2 - stderr
-* & - stdout and stderr
-* `>, >>, <, <<, &n, &-, /dev/null`
-
-
-
-### Examples
-
-> `>, >>, <, <<`与文件描述符（不是文件名）相连接的时候，注意`不能有空格`！文件描述符
-> 若在右侧，需要添加`&`前缀。
-
-描述符的重设置`作用范围`，使用`exec`是全局的，其他都是临时的。
-
-1. basics
-
-        1> filename
-        1>> filename
-        2> filename
-        2>> filename
-        &> filename
-        &>> filename
-        &> /dev/null
-
-        # stderr 指向 stdout 
-        2>&1
-
-        0< filename
-        < filename
-
-        grep search-word < filename
-        
-2. `[j]<>filename` 
-
-    打开文件用于读写，并将该文件赋值给描述符j。如果filename不存在，则创建之。
-    如果没有提供描述符j，则默认使用0，即stdin
-
-        echo 1234567890 > File
-        exec 3<>File
-        read -n 4<&3
-        echo -n . >&3
-        exec 3>&-
-        cat File
-    
-3. 关闭文件描述符
-
-        # 关闭输入描述符n
-        n<&-
-
-        # 关闭stdin
-        0<&-
-        <&-
-
-        # 关闭输出描述符n
-        n>&-
-
-        # 关闭stdout
-        1>&-
-        >&-
-
-        cat /etc/passwd >&-
-        cat: standard output: Bad file descriptor
-
-4. 多个IO重定向可合并
-
-        command < input-file > output-file
-        command1 | command2 | command3 > output-file
-
-
-5. 多路输出流可重定向至一个文件
-
-        ls -yz >> command.log 2>&1
-            
-    以上代码可将错误选项信息也输出到command.log。但是，以下代码却不可以，`注意区别`：
-
-        ls -yz 2>&1 >> command.log
-
-    `如果是管道，又是另一种情况了：`
-
-        ls -yz | less 2>&1
-
-    以上代码less中不会接收到错误信息，以下代码可以：
-
-        ls -yz 2>&1 | less 
-
-    具体原因暂不明白，注意区别。
-
-6. `Child processes inherit open file descriptors. This is why pipes work`. To prevent 
-    an fd from being inherited, close it.
-
-    以下代码`只重定向`stderr到pipe：
-
-        exec 3>&1
-        ls -l 2>&1 >&3 3>&- | grep bad 3>&-
-        exec 3>&-
-
-
 ## Here Documents
 
 > 在命令行中使用匿名文档
 
-格式如下：
+### Syntax
 
     <<EndOfMessage
     ...
     ...
     EndOfMessage
 
-1. 直接输出
+* 起始标签与结束标签`可自定义`，但`必须一致`，比如`EOF`, `HEREDOC`
+* 起始标签前边需加上`<<`，不需要首列开始，`<<`与标签文本间可以包含0或多个空格
+* 结束标签必须`首列开始`，且`单独一行`。也即前后都不能有空白字符
+
+
+### Examples
+
+1. 直接输出，其中`$NAME`会进行`变量替换`。
 
         cat <<EOF
             Hello, World!
@@ -662,11 +705,8 @@ todo
             No
         EOF
 
-    注意，EOF`前后`不能有空白字符，否则不被视为结束符。
 
-    `$NAME`会进行变量替换。
-
-2. 不带参数替换的Here Document，只需将起始标志符用`单引号扩起来`
+2. 不带参数替换的Here Document，只需将起始标志符用`单引号扩起来`，`$NAME`原样输出。
 
         cat <<'EOF'
             Hello, World!
@@ -676,7 +716,7 @@ todo
         EOF
 
 
-3. 捕获Here文档内容进入管道，使用命令组合：
+3. 捕获Here文档内容进入`管道`，使用`命令组合`：
 
         (
         cat <<'EOF'
@@ -687,7 +727,18 @@ todo
         EOF
         ) > output_file
 
-4. 捕获Here文档内容进入变量，使用命令组合：
+    或者使用`backtick`：
+
+        echo `
+        cat <<'EOF'
+            Hello, World!
+            My name is $NAME
+            Yes
+            No
+        EOF
+        ` > output_file
+
+4. 捕获Here文档内容进入变量，使用`命令组合`：
 
         STRING=$(
         cat <<EOF
@@ -697,6 +748,17 @@ todo
             No
         EOF
         )
+
+    或者使用`backtick`：
+
+        STRING=`
+        cat <<EOF
+            Hello, World!
+            My name is $NAME
+            Yes
+            No
+        EOF
+        `
 
 5. 使用Here文档，提供交互指令
 
@@ -1087,6 +1149,8 @@ gtop: <https://github.com/aksakalli/gtop>，node实现的终端可视化监控�
 
 ## xargs
 
+### Syntax 
+
     xargs [options] [utility [argument ...]]
 
     # 未提供utility，默认为echo
@@ -1103,12 +1167,27 @@ gtop: <https://github.com/aksakalli/gtop>，node实现的终端可视化监控�
     # 每次调用utility，取整行作为参数，使用%作为替换参数
     ls -t | xargs -I % echo % - %
 
+### Tips
 
 * `-n`与`-0`互斥
 * `-I`已经包含`-0`，不能同时使用
+* 只能支持一个命令( utility )的执行，不支持使用命令分隔符分隔多个命令，使每个参数同时提供给多个命令。命令分隔符要么通过`backslash`转义作为命令的一部分，要么作为xargs命令和后续命令的分隔符：
 
+        # 转义命令分隔符，后面部分作为前一个echo命令的参数
+        $ cat file | xargs -I % echo % \&\& echo 123
 
-### 文件批量更换后缀
+        # && 分隔xargs和后一个echo命令，先执行完xargs，再执行echo 123
+        $ cat file | xargs -I % echo % && echo 123
+
+* 若确实要通过xargs命令，且一次执行多条命令，可以`组合xargs命令`，先`组装命令文本`，再通过bash执行
+
+        $ cat file | xargs -I % echo echo % \&\& echo 123 | sh -x
+
+    
+
+### Examples
+
+#### 文件批量更换后缀
 
     ls -t \
         | grep '.sketch' \
@@ -1117,6 +1196,26 @@ gtop: <https://github.com/aksakalli/gtop>，node实现的终端可视化监控�
         | sh -x
 
 其中`mv`部分，使用`双引号`包围，避免文件名包含空白字符的情况。注意使用`反斜线`转义。
+
+
+#### 多命令执行 
+
+    echo `cat << EOF
+    js/graph-layout
+    js/graph-data
+    EOF
+    ` \
+        | xargs -n 1 echo \
+        | xargs -I % echo pushd "%" \&\& sh build.sh \&\& popd \
+        | sh -x
+
+* 使用`HereDoc`，支持在脚本内部按行的方式提供参数列表
+* 第一个xargs命令，确保`每次只取一个`参数 
+* 第二个xargs命令，进行命令`字符串的拼装`，以支持取一次参数，输送给`多个命令`执行
+* 最终通过`pipe`输出到shell执行
+* 相比for命令，能精确控制参数的分隔使用`换行符`，不受参数内部包含的空白字符影响
+
+
 
 
 ## curl
@@ -1940,3 +2039,5 @@ output：
 
 * `ABS`: Advanced Bash Scripting <ref://./pdf/ABS-Guide.pdf>
 * `ss64`: <https://ss64.com/bash/>
+* Linux Command Cheat Sheet - <https://www.tecmint.com/linux-commands-cheat-sheet/>
+
