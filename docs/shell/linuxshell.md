@@ -414,6 +414,54 @@ todo
 一般使用`tail -n +x file > abc`将二进制文件取出。`Anaconda`的安装文件就是一个例子( <ref://../python/anaconda.md.html> )，它是一个500+M的sh文件。
 
 
+## diff
+
+### Syntax
+
+    $ diff file-1 file-2
+
+    # c - change, 左边文件的第1,2行变成了右边文件的第1行
+    1,2c1
+    < ...
+    < ...
+    ---
+    > ...
+
+    # a - append, 左边文件的第347行后，增加了两行，对应右边文件的第326,327行
+    347a326,327
+    >
+    >
+
+### Examples
+
+    file-1:
+    32144cffdc4a05d1a361f15c87bcdae9cefb2794
+    83af91487527f7bc1817d44c907914b7fcdafdc6
+    3e123731b40c4515e7c607d3e4476519dbff8079
+
+    file-2:
+    c04ec28af72b0050e2a26e02380a64420834e2ac
+    566f77e769a5e1d6f1a1c069261a6173be87af52
+    b7512f28c2057c6d64f1ab632c8f924889eb4c01
+    32144cffdc4a05d1a361f15c87bcdae9cefb2794
+    89b3aa51f46411819f210bd6a1bb426e7c46d0d0
+    8c0d42e7845e6e19aa3c019291056de02a99a683
+    83af91487527f7bc1817d44c907914b7fcdafdc6
+    f8158b05b053083125ae7f98635546aada5ca620
+
+    $ diff file-1 file-2
+    0a1,3
+    > c04ec28af72b0050e2a26e02380a64420834e2ac
+    > 566f77e769a5e1d6f1a1c069261a6173be87af52
+    > b7512f28c2057c6d64f1ab632c8f924889eb4c01
+    1a5,6
+    > 89b3aa51f46411819f210bd6a1bb426e7c46d0d0
+    > 8c0d42e7845e6e19aa3c019291056de02a99a683
+    3c8
+    < 3e123731b40c4515e7c607d3e4476519dbff8079
+    ---
+    > f8158b05b053083125ae7f98635546aada5ca620
+
 
 ## printf
 

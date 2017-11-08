@@ -38,6 +38,10 @@
 5. `insert`模式下，`CTRL-N`或者`CTRL-P`能用于输入`补全`提示
 6. `:help`在线帮助，很对不同查询对象使用不同语法，比如查询`options`，则将option用`单引号`包起来。
 7. `normal`模式，`CTRL-L`刷新屏幕
+8. 一些特殊字符的展示：
+
+        ^M      x0d，也就是carriage-return，回车符
+        ^@      x00
 
 
 
@@ -272,6 +276,53 @@
 
     :[range]s/{pattern}/{substitute}/[modifier] 
 
+对于`回车 - carriage return`(0x0c)、`换行 - newline`(0x0a)的处理：
+* 换行符在pattern中用`\n`表示，在substitute中用`\r`或`<CR>`表示，用`C-V <Enter>`输入`<CR>`，命令行上显示`^M`
+* 回车符在pattern中用`\%x0d`表示，在sutstitute中用`\<CR>`表示，用`C-V <Enter>`输入`<CR>`，命令行上显示`\^M`
+* substitute中的`\n`实际上是`<NL>`，代表0x00, vim中显示`^@`
+
+
+#### substitution
+
+> 获取帮助： `:help sub-replace-special` , `:help sub-replace-expression`
+
+    magic       action
+    ================================================================
+    &           全匹配串( the whole matched pattern )
+    \0          idem（同上）
+    \1          第一个子模式匹配串
+    \2          第二个子模式匹配串
+    ...
+    \9          第九个子模式匹配串
+    ~           使用上一个替换串来替换（待验证）
+    \\          反斜线
+    \u          下一个字符变成大写
+    \U          后面的字符都变成大写，直到\e或\E
+    \l          下一个字符变成大写
+    \L          后面的字符都变成大写，直到\e或\E
+    \e, \E      \u, \U, \l, \L的结尾
+    \=          替换成表达式执行的结果，匹配串的内容通过submatch( [0-9] )获得
+    <CR>        替换成换行符，使用`<C-v> <Enter>`输入
+    \<CR>       替换成回车符
+    \t          <Tab>
+    \b          <BS>
+
+举例：
+
+    " 将换行符替换成新行，且包含$HOME变量的值  
+    :s@\n@\="\r" . expand( "$HOME" ) . "\r"@
+
+    " 将所有的`####`替换成`#4`
+    :%s@#\+@\="#" . strlen( submatch( 0 ) )@g
+    :%s/#\+/\="#" . strlen( submatch( 0 ) )/g
+
+    " 将<NL>替换成换行符
+    :%s/\%x00/\r/g
+
+注意：使用`\=`时，替换的分隔符不能出现在表达式中，可用`@`或`/`
+
+
+
 #### modifiers
 
 可通过`:help :s_flags`获取详细帮助。
@@ -287,6 +338,7 @@
     n       仅显示匹配数，不执行替换
     p       显示最后替换行
     #       显示最后替换行，并前置行号
+
 
 
 #### Examples

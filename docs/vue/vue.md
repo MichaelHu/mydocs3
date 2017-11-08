@@ -270,6 +270,8 @@ Instance Methods / Events
         {{ message.split('').reverse().join('') }}
         <div v-bind:id="'list-' + id"></div>
 
+* 属性只能用`v-bind`语法绑定，不能使用js表达式
+
 ### Directives
         v-if
     Arguments
@@ -387,7 +389,7 @@ filters定义：
 > v-for
 
     <ul id="example-1">
-        <li v-for-"item in items">
+        <li v-for="item in items">
             {{ item.message }}
         </li>
     </ul>
@@ -462,7 +464,7 @@ filters定义：
 
         父子组件关系：props down, events up
 
-        one-way data flow，单向数据流，自组件避免直接修改父组件下传的属性，有两种解决办法，data function或computed属性
+        one-way data flow，单向数据流，子组件避免直接修改父组件下传的属性，有两种解决办法，data function或computed属性
 
         prop validation
             props: {

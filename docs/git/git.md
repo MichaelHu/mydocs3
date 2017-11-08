@@ -522,6 +522,10 @@ other目录下的object对象`全都是blob类型`的，但可能对应真实的
 
 ## git merge
 
+> Join two or more `development histories` together
+
+* 合并两个或多个`开发历史`
+* 同`cherry-pick`的基于单个commit`改动量`的轻量级操作区分开
 
 ### 命令
 
@@ -1200,6 +1204,8 @@ When we start mixing branches and commits, we will see how these two features co
 
 ## git rev-list
 
+> Lists commit objects in reverse chronological order （时间逆序排列）
+
     git rev-list --all
 
     git rev-list --timestamp --max-count=5 --all
@@ -1248,9 +1254,11 @@ When we start mixing branches and commits, we will see how these two features co
 
 It's a very straightforward way of saying that you would like to `copy a series of commits below your current location (HEAD)`. 
 
-> 复制一系列的commit到当前的工作目录中。
+> 复制一系列的commit到当前的工作目录中，需和`merge`区别开，cherry-pick合并指定commit的`改动量`，而`merge`则是合并指定commit指向的`整个版本历史`，cherry-pick是`轻量级`操作，merge是`重量级`操作。
 
     git cherry-pick <commit1> <commit2>...
+    git cherry-pick --abort
+    git cherry-pick --continue
 
  <img src="./img/git-cherry-pick-step-1.png">
 
@@ -1271,7 +1279,10 @@ It's a very straightforward way of saying that you would like to `copy a series 
     git fetch
     git cherry-pick origin/master
 
-可以cherry-pick一个`分支`，这也容易理解。
+可以cherry-pick一个`分支`，这也容易理解，实际上cherry-pick的还是分支的`HEAD commit`。
+
+
+
 
 
 
