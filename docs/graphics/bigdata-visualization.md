@@ -146,7 +146,7 @@ site: <https://bigdata.163yun.com/youdata>
 * 客户端产品
 * 连接数据库
 
-<video controls src="https://secure.brightcove.com/services/mobile/streaming/index/master.m3u8?videoId=5115811843001&secure=true">
+<video controls src="https://secure.brightcove.com/services/mobile/streaming/index/master.m3u8?videoId=5115811843001&secure=true"></video>
 
 
 

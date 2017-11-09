@@ -28,7 +28,8 @@
     $*                  # 参数列表本身，作为一个字符串看待
     $@                  # 同$*，但每个参数都是一个字符串，作为多个字符串看待，传递过程中不会进行解析和扩展
 
-    ${}
+    ${}                 # 比$parameter兼容性更好的变量替换：${parameter} 
+    $()                 # 命令替换，收集命令的执行结果 
     $?                  # exit status，可能是命令、函数或脚本本身的exit status
     $$                  # 当前脚本的pid
     $!                  # 上一后台运行的任务的pid
@@ -46,6 +47,8 @@
 * 结束接收`option`输入 
         git checkout <commit> -- <filename> 
         git stash -- <pathspec>
+* 特殊含义
+        curl -o- <url>          # 用`-`代替文件名，强行将内容写到stdout
 
 
 
@@ -320,6 +323,17 @@
     /path/to/file3
     /path/to/file4"
     for i in $FILES; do echo $i; done
+
+    for i in $(
+    cat <<EOF
+    /path/to/file1
+    /path/to/file2
+    /path/to/file3
+    /path/to/file4
+    EOF
+    ); do echo $i; done
+
+    for i in {1..10}; do echo $i; done
 
 
 ### 空白字符作为列表分割
@@ -1268,13 +1282,16 @@ gtop: <https://github.com/aksakalli/gtop>，node实现的终端可视化监控�
 
 ## curl
 
-命令行发起网络请求，支持HTTP(S)/FTP等协议。
+命令行发起网络请求，支持`HTTP(S)/FTP`等协议。
 
     # 内容输出到文件，文件名从url中计算
     $ curl -O <url>
 
     # 内容输出到文件，文件名由<file>指定
     $ curl -o <file> <url>
+    # 内容强行输出到stdout
+    $ curl -o - <url>
+    $ curl -o- <url>
 
     # 支持重定向
     $ curl -L <url>
@@ -1295,7 +1312,15 @@ gtop: <https://github.com/aksakalli/gtop>，node实现的终端可视化监控�
     $ curl -R <url>
     $ curl --remote-time <url>
 
+    # 多文档获取
+    $ curl -o a http://a.example.com -o b http://b.example.com
+    $ curl http://a.example.com http://b.example.com -o a -o b 
 
+    # 多文档获取，文件名支持变量替换
+    $ curl "http://www.{baidu,258i}.com" -o "f_#1.txt"
+    $ curl "http://{news,video}.baidu.com" -o "f_#1.txt"
+    # 多变量替换
+    $ curl http://{site,host}.host[1-5].com -o "#1_#2"
 
 ## grep
 
@@ -1745,7 +1770,7 @@ sed有`perl` style的扩展正则功能，vim只有`magic`方式的`初级正则
 
 1. "`\+`", "`\s`"
 2. `单引号`括住的命令中`不能`带`单引号`，使用"`\'`"也不行
-3. `双引号`括住的命令中可以带`双引号`，当然包括`单引号`。也即反斜线转义在双引号中有效。
+3. `双引号`括住的命令中可以带`双引号`，当然包括`单引号`。也即`反斜线转义`在双引号中有效。
     建议都`使用`双引号
 
 

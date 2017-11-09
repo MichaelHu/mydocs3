@@ -86,7 +86,7 @@ mac下进行`-g`安装，出现`EACCES`错误，原因是对`/usr/local/lib/node
 
 ## nvm
 
-> Node Version Manager - Simple bash script to manage multiple active node.js versions
+> Node `Version` Manager - Simple `bash script` to manage multiple active node.js versions
 
 * github: <https://github.com/creationix/nvm> <iframe src="http://258i.com/gbtn.html?user=creationix&repo=nvm&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>   
 
