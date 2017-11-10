@@ -187,7 +187,7 @@ options列表
         render
         renderError
 
-    Lifecycle Hooks
+    Lifecycle Hooks - 都可作为config一级属性
         beforeCreate
         created
         beforeMount

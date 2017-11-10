@@ -274,6 +274,7 @@ todo:
 
     # 设定时间格式
     git log --date=format:"%Y-%m-%d %H:%M:%S"
+    git log --data=iso
 
     # 从commit1到commit2之间的提交日志，不包含commit1
     git log commit1..commit2
@@ -289,7 +290,7 @@ todo:
 
 ### 有用日志信息Merge
 
-> `Merge字`段，提示该分支的merge信息，在分析日志的时候，可以追溯其合并的分支
+> `Merge`字段，提示该分支的merge信息，在分析日志的时候，可以追溯其合并的分支
 
 如下命令输出的`Merge: 88e579f 04ece21`，表明了commit `314d8b0`合并了`88e579f`以及`04ece21 ( master分支 )`。
 
@@ -1007,6 +1008,9 @@ Because there is `no storage / memory overhead` with making many branches, it's 
 
 When we start mixing branches and commits, we will see how these two features combine. For now though, just remember that a branch essentially says `"I want to include the work of this commit and all parent commits."`
 
+* 建分支是一个`非常轻量`的操作，基本没有额外开销，只是指向特定Commit的`指针`而已
+* `尽早`建分支，`常用`分支
+
 
 ### 分支列表
 
@@ -1015,6 +1019,9 @@ When we start mixing branches and commits, we will see how these two features co
 
     # 列出远程分支
     git branch -r
+
+    # 列出远程未合并分支，--no-merged必须在-r后面
+    git branch -r --no-merged
 
     # 本地&远程都列出
     git branch -a
@@ -1072,7 +1079,13 @@ When we start mixing branches and commits, we will see how these two features co
     git branch -rD <branchname>
 
 注：远程分支的删除属于`伪删除`，它的作用在于删除以后，通过`git branch -r`不再列出。
-`真删除`远程分支，需要使用`git push <repo> :<branchname>`。
+`真正删除`远程分支，需要使用`git push <repo> :<branchname>`。
+
+* `git pull`命令，不加任何参数，默认会将`所有远程分支`都拉到本地，以`origin/*`方式引用，可用`git branch -r`列出本地引用的远程分支
+* 运行`git push origin :branch-a`，将在远程仓库中删除`branch-a`分支，同时本地的远程分支引用`origin/branch-a`也会删除；如果是团队内其他成员运行命令删除远程分支的，那么另外成员的本地远程分支引用将仍然存在，及时运行`git pull`也不会更新，这就会导致本地的远程分支引用与实际远程分支存在差异，此时可以将本地的远程分支引用都删除，重新`git pull`
+
+        $ git branch -r | xargs -I % git branch -Dr %
+        $ git pull
 
 
 ### 重命名分支
@@ -1091,6 +1104,22 @@ When we start mixing branches and commits, we will see how these two features co
     # bugFix指向master分支的爷爷commit
     git branch -f bugFix master^^
 
+
+
+### Examples
+
+> 列出git`远程分支`及其`最新提交时间`，并按`时间逆序`显示。
+
+    for i in $(git branch -r|grep -v 'HEAD'); do \
+        git log -1 --date=iso $i \
+        | grep 'Date:' \
+        | sed -e 's/^Date: *//g' \
+        | sed -e 's/+0800//g' \
+        | awk -v branch=$i '{printf "%s %s\n", $0, branch}'; \
+        done \
+    | sort -r
+
+可参考：`git-myscript/git/git.sh`
 
 
 

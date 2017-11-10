@@ -164,6 +164,19 @@
 
     [2addr]s/regular expression/replacement/flags
 
+#### pattern
+
+`regular expression`部分有两种模式：`简单正则`，`扩展正则`。
+* `简单正则`：默认情况下为简单正则。比如`+`, `{n,m}`等都是不支持的
+* `扩展正则`：扩展正则基本上可以使用`Perl正则兼容`的格式，但需要添加以下`开关选项`
+
+        platform        switch option
+        ================================
+        Mac             -E
+        Linux           -r, --regexp-extended
+
+#### replacement
+
 其中的`replacement`部分：
     
     &       匹配正则的整个字符串

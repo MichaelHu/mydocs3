@@ -486,6 +486,30 @@ todo
     $ printf "protocol=https\nhost=github.com\n"
 
 
+## say
+
+> 有趣的命令，仅限mac
+
+    say [-v voice] [-r rate] [-o outfile [audio format options] | -n name:port | -a device] [-f file | string ...]
+
+* 能将跟在后面的文本朗读出来
+* 支持选择不同声音，使用`-v voice`选项
+* 支持管道输入，方便阅读大段文本
+* 支持输出成`.tiff`音频文件，使用`-o outfile`，还可以支持其他音频格式，比如`-o outfile.mp4`
+* 可以在`长耗时`的命令执行完毕时，发出语音提示
+
+### 参考文章
+
+* Hacker News: <https://news.ycombinator.com/item?id=10143143>
+* 让 Mac 命令行说话 <https://segmentfault.com/a/1190000004986696>
+
+### Examples
+
+    $ say u r handsome.
+    $ say -o u-r-handsome.mp4 u r handsome.
+    
+
+
 ## echo带颜色文本
 
 > 参考：<http://www.cnblogs.com/lr-ting/archive/2013/02/28/2936792.html>
@@ -1645,13 +1669,16 @@ sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://.
 ### 常用语法
 
 	# 取特定字段
-	line_count=`wc -l file | awk '{print $1}'`
+	$ line_count=`wc -l file | awk '{print $1}'`
 	
 	# 格式化输出
-	awk '/pattern/{printf "..%s..%s..", $2, $1}' file
+	$ awk '/pattern/{printf "..%s..%s..", $2, $1}' file
 	
     # 为每一行添加行号
-    awk 'BEGIN{k=1}{printf("%d %s\n",k,$0)}' file
+    $ awk 'BEGIN{k=1}{printf("%d %s\n",k,$0)}' file
+
+    # 外部变量传入
+    $ awk -v var1=value1 '{printf "-%s-", var1}'
 
 
 ### pattern格式
@@ -1671,6 +1698,19 @@ sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://.
 * `双引号`内部`各层命令`涉及的`特殊字符`的`转义`，在上面两个命令体现非常强烈。
 	其中，`$c`的`$`进行了`转义`，使其`延迟`到system命令执行时才做替换，而不是在第一层双引号解析时就进行替换。
 
+
+### Examples
+
+列出git`远程分支`及其`最新提交时间`，并按`时间逆序`显示。
+
+    for i in $(git branch -r|grep -v 'HEAD'); do \
+        git log -1 --date=iso $i \
+        | grep 'Date:' \
+        | sed -e 's/^Date: *//g' \
+        | sed -e 's/+0800//g' \
+        | awk -v branch=$i '{printf "%s %s\n", $0, branch}'; \
+        done \
+    | sort -r
 
 
 
@@ -1719,6 +1759,20 @@ sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://.
 参考<http://www.cnblogs.com/allenblogs/archive/2011/05/19/2051136.html>
 
 
+
+
+## cowsay
+
+> `ASCII`文字版本的小牛图片，类似功能的还有`ponysay`
+
+    # 显示小牛图片，将message嵌在里面输出
+    $ cowsay message
+
+    # 列出可选图片列表
+    $ cowsay -l
+
+    # 选择turkey图片
+    $ cowsay -f turkey message
 
 
 

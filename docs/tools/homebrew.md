@@ -5,7 +5,7 @@
 ## Resources
 
 * `site`: <https://brew.sh>
-* `github`: <https://github.com/Homebrew/brew>
+* `github`: <https://github.com/Homebrew/brew> <iframe src="http://258i.com/gbtn.html?user=Homebrew&repo=brew&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
 * `docs`: <https://github.com/Homebrew/brew/docs>
 * `cookbook`: <https://github.com/Homebrew/brew/blob/master/docs/Formula-Cookbook.md>
 
@@ -109,5 +109,7 @@
       mkdir -p /Users/hudamin/.local/lib/python2.7/site-packages
       echo 'import site; site.addsitedir("/usr/local/lib/python2.7/site-packages")' >> /Users/hudamin/.local/lib/python2.7/site-packages/homebrew.pth
     ...
+
+
 
 
