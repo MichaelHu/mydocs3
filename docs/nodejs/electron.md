@@ -4,7 +4,7 @@
 
 ## Description
 
-* 优秀编辑器`Atom`是使用`electron`的主要代表
+* 优秀编辑器`Atom`是使用`electron`的主要代表，还有MS的`Visual Studio Code`
 * 你建立的站点，都可以搬到桌面应用里
 * `electron-prebuild`是electron的核心产出
 * `Microsoft`, `Facebook`, `Slack`, and `Docker`等公司都在使用
@@ -15,16 +15,28 @@
 * github：<https://github.com/electron/electron> <iframe src="http://258i.com/gbtn.html?user=electron&repo=electron&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 * 文档：<http://electron.atom.io/docs/>
 * 使用Electron构建的APP（有头有脸的`120+`）：<http://electron.atom.io/apps/>
+* releases: <https://electron.atom.io/releases/>
+    * 2017-10-10 1.7.9
+    * ...
+    * 2016-05-09 1.0.0 
+    * ...
+    * 2015-12-25 0.35.5
 
 
 ## Installation
 
-    npm install electron-prebuild -g
+    # latest version
+    $ npm install --save-dev electron 
+    $ ./node_modules/.bin/electron .
+
+    # older versions
+    $ npm install electron-prebuild -g
 
 
 ## 问题
 
 * 如何禁用Chrome的快捷键，比如刷新、调起开发者工具等
+* 如何使用tab打开新窗口
 
 
 ## Quick Start

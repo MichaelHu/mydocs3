@@ -29,6 +29,7 @@
         "ab\txx\"--"  " 双引号内可以使用反斜线转义，可转义'\t', '\n'等
         'x-z''a,c'    " 单引号内不可以使用反斜线转义，单引号本身用两个单引号进行转义
 
+
     List 
         有序序列
         [1, 2, ['a', 'b']]
@@ -75,6 +76,33 @@
     :if !empty( "foo" )
 
 注意`Float`与`String`之间不会进行自动转换。
+
+
+#### String
+
+> 获得帮助： `:help string`
+
+* 双引号字符串"string"
+        \...
+        \..
+        \.
+        \x..
+        \x.
+        \X..
+        \X.
+        \u....
+        \U....
+        \b
+        \e
+        \f
+        \n
+        \r
+        \t
+        \\
+        \"
+        \<xxx>
+
+* 单引号字符串'string'
     
 
 
@@ -115,11 +143,12 @@
 * 函数引用变量必须以`大写字母`, `s:`, `w:`, `t:` 或 `b:`开头，最后两种已经不支持（todo）
 * 命令语句用换行分隔，如在单行内，则用`|`分隔；类比一下，shell语句也用换行分隔，单行内，使用`;`分隔
 * `:fu`或`:function`列出所有函数及其参数
-* 使用`setline()`往缓冲区输出内容
+* 使用`range`函数，处理需要在每行之间`共享上下文`的情况，可参考`~/.vimrc`中`F_prefix_line_number`的实现
+* 使用`setline()`, `append()`等往缓冲区输出内容
 * 使用`getline()`从缓冲区获取内容
 * 使用`:echo`命令往控制台输出内容
 * 使用`system()`执行shell命令，并获取返回结果
-* 使用`:normal`, `:silent`等，扩展command line模式，可以在该模式下运行`normal模式`下的命令。但目前所知，这些命令只能在`命令行模式下生效`，而在`函数中`调用则`不生效`。
+* 使用`:normal`, `:silent`等，扩展command line模式，可以在该模式下运行`normal模式`下的命令。但目前所知，这些命令只能在`命令行模式下生效`，而在`函数中`调用则`不生效`。或许`:exe {expr1} ...`命令会更强大，可以在函数内调用
 * 使用寄存器传递数据
 * 使用特殊寄存器`触发`事件，比如`@/`
 
@@ -211,6 +240,8 @@
     :fu! CharCount() range
     :    echo a:firstline
     :endfu
+
+参考`~/.vimrc`的`F_prefix_line_number()`实现
          
 
 #### 函数调用
@@ -233,27 +264,54 @@
 
     " get lines from file, and append to the position after the cursor
     " @param {string} file      - absolute file path
-    " @param {number} start     - the start line number
-    " @param {number} count     - the count of lines to read in
-    " @usage :call F_r( '/path/to/file', 5, 10 )
+    " @param {number} start     - the start line number which starts from 1, it
+    "                             can be negative
+    " @param {number} count     - the count of lines to read in, '$' stands for
+    "                             `total - start + 1`
+    " @usage    :call F_r( '/path/to/file', 5, 10 )
+    "           :call F_r( '/path/to/file', -30, 10 )
+    "           :call F_r( '/path/to/file', 20, '$' )
+    "           :call F_r( '/path/to/file', -5, '$' )
     fu F_r( file, start, count ) abort
-        let lines = readfile( a:file, '', 10000 )
-        let i = 0
-        let cur = line( '.' )
-        echo 'total lines: ' . len( lines ) 
+        " let lines = readfile( a:file, '', 10000 )
+        let lines = readfile( a:file )
+        let start_line = a:start
+        let line_count = a:count
+        let cur_read_line = 1
+        let cur_append_line = line( '.' )
+        let total = len( lines )
+        echo 'total lines: ' . total
+
+        " normalize start_line
+        " if start is negative, from the last `0 - start` line
+        if start_line < 0
+            let start_line = start_line % total
+            let start_line = total + start_line + 1
+        elseif start_line == 0
+            let start_line = 1
+        endif
+
+        " normalize line_count
+        if line_count == '$' || line_count > total - start_line + 1
+            let line_count = total - start_line + 1 
+        endif
+
+
+
         for l:line in lines
-            let i += 1
-            if i >= a:start && i < a:start + a:count
-                " echo i . l:line
-                let failed = append( cur, l:line )
-                let cur += 1
+            if cur_read_line >= start_line && cur_read_line < start_line + line_count
+                " echo cur_read_line . l:line
+                call append( cur_append_line, l:line )
+                let cur_append_line += 1
             endif
-            if i >= a:start + a:count
+            if cur_read_line >= start_line + line_count
                 break
             endif
+            let cur_read_line += 1
         endfor
-        echo 'read lines: ' . ( i - a:start ) 
+        echo 'read lines: ' . ( cur_read_line - start_line ) 
     endfu
+
 
 
 ##### 获取当前buffer全路径
@@ -312,6 +370,62 @@
         call writefile( [ text ], tmpFile, flag )
         call system( 'cat ' . tmpFile . ' | pbcopy' )
         echo 'inc copy ' . lineCount .' lines successfully'
+    endfu
+
+
+
+
+##### 为有序列表添加数字下标
+
+    " prefix line number for selected lines, like '<line number>. xxxx'
+    fu F_prefix_line_number() range abort
+        let cur_line = a:firstline
+        let item_index = 1
+        while cur_line <= a:lastline 
+            let text = getline( cur_line )
+            let new_text = substitute( text, '^[0-9]\+\. ', '', 'g' )
+            let need_substitute = match( new_text, '^[^ \t]' ) == 0
+            if need_substitute
+                let new_text = substitute( new_text, '^\([^ \t]\)', item_index . '. \1', 'g' )
+                call setline( cur_line, new_text )
+                let item_index += 1
+            endif
+            let cur_line += 1 
+        endwhile
+    endfu
+
+
+
+
+##### 根据文件类型获取注释标记
+
+    " get comment label according to filetype of current buffer
+    fu F_get_comment_label() abort
+        " get filetype option
+        let filetype = &ft
+        if filetype == 'javascript' 
+            return '// '
+        elseif filetype == 'sh'
+            return '# '
+        elseif filetype == 'vim'
+            return '" '
+        else
+            return ''
+        endif
+    endfu
+
+
+
+##### 根据文件类型去除注释标记 
+
+    " uncomment according to filetype of current buffer
+    fu F_uncomment() abort
+        let commentLabel = F_get_comment_label() 
+        let lineText = getline( '.' )
+        if match( lineText, '^[\t ]*' . commentLabel ) == 0 
+            let lineText = substitute( lineText, commentLabel, '', 'g' )
+            call setline( '.', lineText )
+        endif
     endfu
 
 
@@ -391,6 +505,11 @@
     +           算术运算 - 加
     .           字符串连接
     .=          字符串连接并赋值 
+    +=          算数运算 - 加
+    -=
+    %=
+    /=
+    *=
     %
     ==
     <=
@@ -467,6 +586,31 @@
     :echomsg
     :echoerr
     :execute
+
+* 注意，没有提供`:switch`命令
+
+
+##### execute命令
+
+> 获得帮助：`:help :exe`
+
+    :exe[cute] {expr1} ..
+
+将`{expr1}`表达式获得的字符串作为Ex command执行
+* 多个expr`组装`成字符串时，自动使用`空格`隔开；如果不希望有空格，则使用`.`将多个字符串连接起来
+* 可用于封装那些不接受`|`的命令，使得可在这些命令后添加其他命令
+        :exe '!ls' | echo 'theend'
+        :exe '!ps aux' | echo 'success'
+    以上命令可以在执行完外部命令，还可以执行vim命令
+* `:exe`还能提供一种便利，使得你在vim脚本中执行`:normal`命令时不需要输入控制字符
+        :exe "normal ixxx\<Esc>"
+* 使用时，需要注意字符串在特定场景中的转义，比如`文件名`，在Command-line或外部shell命令行环境下的转义：`fnameescape`与`shellescape()`
+        :exe "e " . fnameescape( filename )
+        :exe "!ls " . shellescape( filename, 1 )
+* `:exe`, `:echo`, `:echon`都不能直接跟注释，但可以在先跟上`|`，再跟注释
+         :echo "foo" | "this is a comment
+
+
 
 #### 函数相关
 
@@ -586,40 +730,46 @@
     searchpairpos()         find the other end of a start/skip/end
     searchdecl()            search for the declaration of a name
 
-1. getline({lnum} [, {end}])
 
-        :echo getline(1)
-        :echo getline('.')
-        :echo getline('$')
-        :echo getline('.', '$')
-        :echo getline(1, '$')
+#### getline()
+
+    getline({lnum} [, {end}])
+
+    :echo getline(1)
+    :echo getline('.')
+    :echo getline('$')
+    :echo getline('.', '$')
+    :echo getline(1, '$')
 
 
-        :let start = line('.')
-        " search the last non-blank line
-        :let end = search("^$") - 1
-        :let lines = getline(start, end)
+    :let start = line('.')
+    " search the last non-blank line
+    :let end = search("^$") - 1
+    :let lines = getline(start, end)
 
-2. search({pattern} [, {flags} [, {stopline} [, {timeout}]]])
 
-    pattern是一个regexp，其开启`ignorecase`, `smartcase` and `magic`
+#### search()
 
-    以下代码循环参数列表中列出的所有文件，并做替换更新。
+    search({pattern} [, {flags} [, {stopline} [, {timeout}]]])
 
-        :let n = 1
-        :while n <= argc()      " loop over all files in arglist
-        :  exe "argument " . n
-        :  " start at the last char in the file and wrap for the
-        :  " first search to find match at start of file
-        :  normal G$
-        :  let flags = "w"
-        :  while search("foo", flags) > 0
-        :    s/foo/bar/g
-        :    let flags = "W"
-        :  endwhile
-        :  update               " write the file if modified
-        :  let n = n + 1
-        :endwhile
+pattern是一个regexp，其开启`ignorecase`, `smartcase` and `magic`
+
+以下代码循环参数列表中列出的所有文件，并做替换更新。
+
+    :let n = 1
+    :while n <= argc()      " loop over all files in arglist
+    :  exe "argument " . n
+    :  " start at the last char in the file and wrap for the
+    :  " first search to find match at start of file
+    :  normal G$
+    :  let flags = "w"
+    :  while search("foo", flags) > 0
+    :    s/foo/bar/g
+    :    let flags = "W"
+    :  endwhile
+    :  update               " write the file if modified
+    :  let n = n + 1
+    :endwhile
 
 
 
@@ -654,12 +804,58 @@
     repeat()                repeat a string multiple times
     eval()                  evaluate a string expression
 
+
+
 #### strridx()
 
     strridx({haystack}, {needle} [, {start}]) 
 
 * 注意：`needle`是字符串，`不是pattern`，所以要查找回车符，需要用`"\r"`而不是`'\r'`
 * `split()`, `match()`等都是使用pattern的
+
+
+#### stridx()
+
+
+#### match()
+
+    match({expr}, {pat}[, {start}[, {count}]]) 
+
+比如`取消注释`的函数实现：
+
+    " uncomment according to filetype of current buffer
+    fu F_uncomment() abort
+        let commentLabel = F_get_comment_label() 
+        let lineText = getline( '.' )
+        if match( lineText, '^[\t ]*' . commentLabel ) == 0 
+            let lineText = substitute( lineText, commentLabel, '', 'g' )
+            call setline( '.', lineText )
+        endif
+    endfu
+
+
+
+#### eval()
+
+    " Numbers
+    :echo string( 123 )
+    :echo eval( '123' )
+    123
+
+    " Floats
+    :echo eval( '123.456' )
+    123.456
+
+    " Funcref
+    :let F_comment_label = function( 'F_get_comment_label' )
+    :echo eval( 'F_comment_label' )
+    F_get_comment_label
+
+* 是`string()`的反函数，支持Numbers, Floats, Strings以及它们的组合，同时支持Funcref
+* 与`:exe`的区别，一个是命令，一个是函数；而且它们的功能也迥异
+
+
+
 
 
 
@@ -677,50 +873,28 @@
     line2byte()             byte count at a specific line
     diff_filler()           get the number of filler lines above a line
 
-1. col()
+#### col()
 
-        :echo col('.')      " the cursor position
-        :echo col('$')      " the end of the cursor line
-        :echo col("'x")     " position of mark x
+    :echo col('.')      " the cursor position
+    :echo col('$')      " the end of the cursor line
+    :echo col("'x")     " position of mark x
 
-2. line()
+#### line()
 
-        :echo line('.')     " the cursor position
-        :echo line('$')     " the last line in the current buffer
-        :echo line("'x")    " position of mark x
-        :echo line('w0')    " first line visible in current window
-        :echo line('w$')    " last line visible in current window
-        :echo line('v')     " the start of the Visual area in visual mode, and the
-                            " cursor position when not in visual mode 
-
-
+    :echo line('.')     " the cursor position
+    :echo line('$')     " the last line in the current buffer
+    :echo line("'x")    " position of mark x
+    :echo line('w0')    " first line visible in current window
+    :echo line('w$')    " last line visible in current window
+    :echo line('v')     " the start of the Visual area in visual mode, and the
+                        " cursor position when not in visual mode 
 
 
 
-### 列表常用函数
-
-    :let r = call(funcname, list)
-    :if empty(list)
-    :let l = len(list)
-    :let big = max(list)
-    :let small = min(list)
-    :let xs = count(list, 'x')
-    :let i = index(list, 'x')
-    :let lines = getline(1, 10)
-    :call append('$', lines)
-    :let list = split("a b c")
-    :let string = join(list, ', ')
-    :let s = string(list)
-    :call map(list, '">> " . v:val')
-
-将列表数据相加的简单办法：
-
-    :exe 'let sum = ' . join(list, ' + ')
-    :echo sum
 
 
 
-### List manipulation:
+### List manipulation
 
     get()                   get an item without error for wrong index     
     len()                   number of items in a List
@@ -746,6 +920,30 @@
     count()                 count number of times a value appears in a List
     repeat()                repeat a List multiple times
 
+
+#### 列表函数用法
+
+    :let r = call(funcname, list)
+    :if empty(list)
+    :let l = len(list)
+    :let big = max(list)
+    :let small = min(list)
+    :let xs = count(list, 'x')
+    :let i = index(list, 'x')
+    :let lines = getline(1, 10)
+    :call append('$', lines)
+    :let list = split("a b c")
+    :let string = join(list, ', ')
+    :let s = string(list)
+    :call map(list, '">> " . v:val')
+
+将列表数据相加的简单办法：
+
+    :exe 'let sum = ' . join(list, ' + ')
+    :echo sum
+
+
+
 #### split()
 
 将`字符串`按指定模式分隔符进行分割，返回`List`结构。
@@ -764,11 +962,9 @@
     [ '', 'b', 'c' ]
 
 
-#### Examples
-
-1. map()
+#### map()
         
-        :call map(mylist, '"> " . v:val . " <"')
+    :call map(mylist, '"> " . v:val . " <"')
 
 
 
@@ -825,13 +1021,18 @@
     settabwinvar()          set a variable in a specific window & tab page
     garbagecollect()        possibly free memory
 
-1. type()
-    * Number: 0
-    * String: 1
-    * Funcref: 2
-    * List: 3
-    * Dictionary: 4
-    * Float: 5
+#### type()
+
+    type( {expr} )
+
+    value               type
+    ==========================================
+    0                   Number
+    1                   String
+    2                   Funcref
+    3                   List
+    4                   Dictrionary
+    5                   Float
 
 
 ### System functions and manipulation of files
@@ -905,29 +1106,27 @@
     call writefile( [ text ], '/tmp/vim-reg-file', 'b' )
 
 
+#### glob()
 
-#### Examples
+    glob({expr} [, {flag}])
 
-1. glob({expr} [, {flag}])
-
-        :echo glob("*.md")
+    :echo glob( "*.md" )
         
 
-2. globpath({path}, {expr} [, {flag}])
+#### globpath()
 
-        :echo globpath(".", "**/*.md")
+    globpath( {path}, {expr} [, {flag}] )
 
-3. system({expr} [, {input}])
+    :echo globpath( ".", "**/*.md" )
 
-        :echo system("date")
 
-4. readfile({fname} [, {binary} [, {max}]])
+#### system()
 
-    return value: `List`
+    system( {expr} [, {input}] )
 
-        :for line in readfile(fname, '', 10)
-        :   if line =~ 'Date' | echo line | endif
-        :endfor
+    :echo system( "date" )
+
+
 
 
 ### Date and Time
@@ -938,22 +1137,31 @@
     reltime()               get the current or elapsed time accurately
     reltimestr()            convert reltime() result to a string
 
-1. getftime({fname})
+#### getftime()
 
-        :echo getftime(@%)
-        1415090230
+    getftime({fname})
 
-2. strftime({format} [, {time}])
+    :echo getftime( @% )
+    1415090230
 
-    {format}乍一看与shell之date的format一样。
 
-        :let t = getftime(@%)
-        :echo strftime("%c", t)
-        :echo strftime("%Y%m%d %T", t)
+#### strftime()
 
-3. localtime()
+    strftime({format} [, {time}])
+
+`{format}`乍一看与shell之date的format一样。
+
+    :let t = getftime(@%)
+    :echo strftime("%c", t)
+    :echo strftime("%Y%m%d %T", t)
+
+#### localtime()
     
-        :echo localtime()
+    :echo localtime()
+    1510573684
+
+
+
 
 
 
@@ -976,26 +1184,44 @@
     getbufline()            get a list of lines from the specified buffer
 
 
-1. bufname({expr})
+#### bufname()
 
-        " name of current buffer
-        :bufname("")
-        :bufname("%")
+    bufname({expr})
 
-        " name of the alternate buffer
-        :bufname("#")
+    " name of current buffer
+    :echo bufname("")
+    :echo bufname("%")
 
-        :bufname(3)
+    " name of the alternate buffer
+    :echo bufname("#")
 
-2. bufnr({expr} [, {create}]))
+    " name of buffer whose id is 3
+    :echo bufname(3)
 
-        :echo bufnr(bufname(""))
+    " name of buffer match the pattern
+    :echo bufname( 'eval' )
 
-3. getbufline({expr}, {lnum} [, {end}])
+* 若是string，则进行模式匹配，返回匹配的buffer name，若有多个项匹配，则返回空字符串
 
-    {expr}同bufname
 
-        :echo getbufline("", 10, 20)
+#### bufnr()
+
+    bufnr({expr} [, {create}]))
+
+    :echo bufnr(bufname(""))
+
+
+#### getbufline()
+
+    getbufline({expr}, {lnum} [, {end}])
+
+    :echo getbufline("", 10, 20)
+
+* `{expr}`同bufname()
+* 针对`已加载`的buffer，若未加载，则返回空List
+* `已加载`的含义为：已在窗口中打开
+
+
 
 
 ### Command line
@@ -1006,14 +1232,27 @@
     getcmdtype()            return the current command-line type 
 
 
-1. getcmdline()
+#### getcmdline()
 
-    返回当前的命令行，仅当命令行正在编辑的时候有效。这时需要使用
-    `c_CTRL-\_e` 或者 `c_CTRL-R_=`
+返回当前的命令行，仅当命令行正在编辑的时候有效。这时需要使用
+`c_CTRL-\_e` 或者 `c_CTRL-R_=`
 
-    例如：
+例如：
 
-        :cmap <F7> <C-\>eescape(getcmdline(), ' \')<CR>
+    :cmap <F7> <C-\>eescape(getcmdline(), ' \')<CR>
+
+帮助参考：`:help getcmdline()`, `:help c_CTRL-\_e`
+
+    :cmap <F7> <C-\>eAppendSome()<CR>
+    :func AppendSome()
+       :let cmd = getcmdline() . " Some()"
+       :" place the cursor on the )
+       :call setcmdpos(strlen(cmd))
+       :return cmd
+    :endfunc
+
+> todo，尚未看懂
+
 
 
 ### Quickfix and location lists
@@ -1024,16 +1263,16 @@
     setloclist()            modify a location list
 
 
-1. getqflist()
+#### getqflist()
 
-        :echo getqflist()
+    :echo getqflist()
 
-2. getloclist({nr}) 
+#### getloclist({nr}) 
 
-    returns a list with all the entries in the location list for window {nr}.
-    when {nr} is zero the current window is used.
+returns a list with all the entries in the location list for window {nr}.
+when {nr} is zero the current window is used.
 
-        :echo getloclist(0)
+    :echo getloclist(0)
 
 
 
@@ -1097,6 +1336,9 @@ todo ...
 `ONLY in` some `GUI` versions
 
 
+
+
+
 ### GUI
 
     getfontname()           get name of current font being used
@@ -1104,6 +1346,8 @@ todo ...
     getwinposy()            Y position of the GUI Vim window
 
 `ONLY in` some GUI versions
+
+
 
 
 ### Vim server
@@ -1121,6 +1365,9 @@ todo ...
 
 
 
+
+
+
 ### Window size and position
 
     winheight()             get height of a specific window
@@ -1129,10 +1376,12 @@ todo ...
     winsaveview()           get view of current window
     winrestview()           restore saved view of current window
 
-1. winheight({nr}
+#### winheight()
 
-        :echo winheight(0)
-        48
+    winheight({nr})
+
+    :echo winheight(0)
+    48
 
 todo ...
 
@@ -1165,137 +1414,145 @@ todo ...
     mzeval()                evaluate |MzScheme| expression
 
 
-1. `getpid()`
+#### getpid()
 
-        :echo getpid()
-        874
+    getpid()
 
-2. `has({feature})`
+    :echo getpid()
+    874
 
-    the result is a Number, which is 1 if the feature {feature} is supported, zero otherwise.
+
+#### has()
+
+    has({feature})
+
+the result is a Number, which is 1 if the feature {feature} is supported, zero otherwise.
     
-    show feature list, type:
-
-        :help feature-list
-
-    `example 1:`
-
-        :if has("multi_byte")
-        :    digraph oe 339
-        :elseif &encoding == "iso-8859-15"
-        :    digraph oe 189
-        :endif 
+    " show feature list, type:
+    :help feature-list
 
 
-    `example 2:`
-
-        :if v:version > 602 || v:version == 602 && has("patch148")
-
-    `example 3: setting-guifont`
-
-        :if has("gui_running")
-        :    if has("gui_gtk2")
-        :        :set guifont=Luxi\ Mono\ 12
-        :    elseif has("x11")
-        :        " Also for GTK 1
-        :        :set guifont=*-lucidatypewriter-medium-r-normal-*-*-180-*-*-m-*-*
-        :    elseif has("gui_win32")
-        :        :set guifont=Luxi_Mono:h12:cANSI
-        :    endif       
-        :endif 
-
-    `example 4:`
-
-        :if has("multi_byte_encoding")
-        ...
-
-3. `mode([expr])`
-
-        :echo mode() 
-        n
-
-    mode lists:
-
-        n       Normal
-        no      Operator-pending        
-        v       Visual by character
-        V       Visual by line 
-        CTRL-V  Visual blockwise
-        s       Select by character
-        S       Select by line          
-        CTRL-S  Select blockwise 
-        i       Insert 
-        R       Replace |R|
-        Rv      Virtual Replace |gR|
-        c       Command-line
-        cv      Vim Ex mode |gQ|
-        ce      Normal Ex mode |Q|
-        r       Hit-enter prompt
-        rm      The -- more -- prompt
-        r?      A |:confirm| query of some sort
-        !       Shell or external command is executing
+    " example 1
+    :if has("multi_byte")
+    :    digraph oe 339
+    :elseif &encoding == "iso-8859-15"
+    :    digraph oe 189
+    :endif 
 
 
-4. `exists()`
+    " example 2
+    :if v:version > 602 || v:version == 602 && has("patch148")
 
-    the result is a Number, which is non-zero if {expr} is defined, zero otherwise.
+    " example 3: setting-guifont
+    :if has("gui_running")
+    :    if has("gui_gtk2")
+    :        :set guifont=Luxi\ Mono\ 12
+    :    elseif has("x11")
+    :        " Also for GTK 1
+    :        :set guifont=*-lucidatypewriter-medium-r-normal-*-*-180-*-*-m-*-*
+    :    elseif has("gui_win32")
+    :        :set guifont=Luxi_Mono:h12:cANSI
+    :    endif       
+    :endif 
 
-    {expr}是字符串，可以包含以下内容：
+    " example 4
+    :if has("multi_byte_encoding")
+    ...
 
-    * &option-name ：判断option是否存在 
-    * +option-name ：判断option是否生效
-    * $ENVNAME
-    * *funcname
-    * varname
 
-    判断函数是否存在：
+#### mode([expr])
 
-        :if exists('*funcname') 
-        : ...
-        :endif
+    mode([expr])
 
-    切换语法高亮功能：
-    
-        :if exists("g:syntax_on") | syntax off | else | syntax enable | endif
+    :echo mode() 
+    n
 
-    将该功能制作成map：
+##### mode lists
+
+    value   mode
+    =================================
+    n       Normal
+    no      Operator-pending        
+    v       Visual by character
+    V       Visual by line 
+    CTRL-V  Visual blockwise
+    s       Select by character
+    S       Select by line          
+    CTRL-S  Select blockwise 
+    i       Insert 
+    R       Replace |R|
+    Rv      Virtual Replace |gR|
+    c       Command-line
+    cv      Vim Ex mode |gQ|
+    ce      Normal Ex mode |Q|
+    r       Hit-enter prompt
+    rm      The -- more -- prompt
+    r?      A |:confirm| query of some sort
+    !       Shell or external command is executing
+
+
+#### exists()
+
+    exists()
+
+the result is a Number, which is non-zero if {expr} is defined, zero otherwise.
+
+{expr}是字符串，可以包含以下内容：
+
+    format              description
+    ==============================================
+    &option-name        判断option是否存在 
+    +option-name        判断option是否生效
+    $ENVNAME
+    *funcname
+    varname
+
+
+    " Example 1: if function exists
+    :if exists('*funcname') 
+    : ...
+    :endif
+
+    " toggle syntax highlight 
+    :if exists("g:syntax_on") | syntax off | else | syntax enable | endif
+
+    " use a map
+    :nmap <F9> :if exists("g:syntax_on") <Bar>
+            \   syntax off <Bar>
+            \ else <Bar>
+            \   syntax enable <Bar>
+            \ endif <CR>
+
+
+    " To test for presence of buffer-local autocommands use the |exists()| function
+    :if exists("#CursorHold#<buffer=12>") | ... | endif
+    :if exists("#CursorHold#<buffer>") | ... | endif    " for current buffer
+
+    " Other 1
+    :if exists("did_load_filetypes")
+    :  finish
+    :endif
+
+    " Other 2
+    :if exists("g:loaded_typecorr")
+    :   finish
+    :endif
+    :let g:loaded_typecorr = 1
+
         
-        :nmap <F9> :if exists("g:syntax_on") <Bar>
-                \   syntax off <Bar>
-                \ else <Bar>
-                \   syntax enable <Bar>
-                \ endif <CR>
+#### taglist()
+
+    taglist({expr})
 
 
-    To test for presence of buffer-local autocommands use the |exists()| function
-    as follows:
 
-        :if exists("#CursorHold#<buffer=12>") | ... | endif
-        :if exists("#CursorHold#<buffer>") | ... | endif    " for current buffer
+#### tagfiles()
 
-        :if exists("did_load_filetypes")
-        :  finish
-        :endif
+#### getreg()
 
-    判断：
+    :redi @a | sil ls | redi END | echo getreg('a')
 
-        :if exists("g:loaded_typecorr")
-        :   finish
-        :endif
-        :let g:loaded_typecorr = 1
-
-        
-
-
-5. `taglist({expr})`
-
-6. `tagfiles()`
-
-7. `getreg()`
-
-        :redi @a | sil ls | redi END | echo getreg('a')
-
-    `静默`执行列出当前buffers，并将列表输入`寄存器a`，最终`输出`寄存器a的内容。
+`静默`执行列出当前buffers，并将列表输入`寄存器a`，最终`输出`寄存器a的内容。
 
         
 

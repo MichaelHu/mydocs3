@@ -47,13 +47,27 @@
 
 
 
-## 4 modes
+## Modes
+
+> 获取帮助：`:help vim-modes`
+
+### 6种主要模式
 
 * Normal Mode
 * Visual Mode
+* Select Mode
 * Insert Mode
 * Command-line Mode
+* Ex mode，与Normal Mode类似，主要区别在于该模式执行完一行命令后，仍然停留在当前模式种，要退出该模式，需输入`:visual`命令
 
+### 6种额外模式
+
+* Operator-pending Mode
+* Replace Mode
+* Virtual Replace Mode
+* Insert Normal Mode
+* Insert Visual Mode
+* Insert Select Mode
     
 
 
@@ -302,8 +316,11 @@
     \L          后面的字符都变成大写，直到\e或\E
     \e, \E      \u, \U, \l, \L的结尾
     \=          替换成表达式执行的结果，匹配串的内容通过submatch( [0-9] )获得
+                ，也可以用在substitute()函数的substitute部分中
     <CR>        替换成换行符，使用`<C-v> <Enter>`输入
+    \r          同<CR>
     \<CR>       替换成回车符
+    \n          替换成<NL>字符，注意不是换行符
     \t          <Tab>
     \b          <BS>
 
@@ -467,6 +484,10 @@
     :help <Char>
     :help <Char->
 
+* Mapping keys in Vim - Tutorial (Part 1) <http://vim.wikia.com/wiki/Mapping_keys_in_Vim_-_Tutorial_(Part_1)>
+* Mapping keys in Vim - Tutorial (Part 2) <http://vim.wikia.com/wiki/Mapping_keys_in_Vim_-_Tutorial_(Part_2)>
+* Mapping keys in Vim - Tutorial (Part 3) <http://vim.wikia.com/wiki/Mapping_keys_in_Vim_-_Tutorial_(Part_3)>
+
 
 ### Usage
 
@@ -506,6 +527,9 @@
     " 3. 更优雅的清空搜索条件
     :vmap ,c :s/^\([ \t]*\)\(.*\)$/\1\/\/ \2/g<CR>:let @/ = ''<CR>
     :vmap ,C :s/^\([ \t]*\)\/\/ \(.*\)$/\1\2/g<CR>:let @/ = ''<CR>
+    " 4. 支持文件类型判断
+    vmap <Leader>c :s/^\([ \t]*\)\(.*\)$/\= submatch(1) . F_get_comment_label() . submatch(2)/g<CR>:let @/ = ''<CR>
+
 
     " visual / normal / Select mode下，清空搜索条件
     :map ,<Char-0x20> :let @/ = ''<CR>
@@ -548,6 +572,9 @@
         :map <Leader>aa ...
 
     以上map能work，但是会导致第一个map的`反应变慢`
+* vmap，若通过visual mode选中文本行，在触发快捷键，这时会传入range，如果对应命令不支持range，则会报错：`E481: No range allowed`，比如：
+        :vmap <Leader>l :let g_inc_num = 0
+* 按行处理文本，推荐的思路是使用`函数`：简单方式，直接处理当前行，更新当前行；复杂一点但也功能更强大的方式，引入range支持，在函数内自行处理range，这样各行之间可以共用上下文信息，比如递增行号。参考：`~/.vimrc`的`F_prefix_line_number()`实现
 
 
 
@@ -886,6 +913,7 @@ idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文
 
 6. 表达式寄存器`"=`
 7. selection and drop 寄存器`"*`, `"+`, `"~`
+    * `"*` - 剪贴板内容
 8. 黑洞寄存器`"_`，往其中写内容，什么都不会发生；往外读取是，什么都读不到。用于删除内容，不希望影响其他寄存器的时候，可以指定该寄存器，比如：`"_d`, `"_x`
 9. 上一检索模式寄存器`"/`
 
@@ -1181,7 +1209,7 @@ command line模式的行注释。
 
 ### 执行normal命令 
 
-扩展`command line`，允许此种模式下执行`normal mode`的命令。
+扩展`command line`，允许`command mode`下执行`normal mode`的命令。
 
     :norm dd
 
@@ -1189,9 +1217,14 @@ command line模式的行注释。
 
     :exe "normal \<c-w>\<c-w>"
 
-`:norm`后直接输入`命令`，而不同于`:exe`，输入的是命令`字符串`
 
-> 目前所知，在`函数中`调用norm命令，不生效。参考我的`.vimrc`中`F_copy_selected_text`部分的实现。
+> 目前所知，在`函数中`调用:norm命令，不生效。参考我的`.vimrc`中`F_copy_selected_text`部分的实现。
+
+#### 与execute的区别
+
+* `:norm`后直接输入`命令`，而不同于`:exe`，输入的是命令`字符串`
+* `:norm`允许在Command-line模式下运行Normal模式下的命令；`:exe`允许在将字符串表示的命令作为Ex Commands执行
+* [ maybe ]，`:norm`在函数内无法使用，但`:exe`可在函数种使用
 
 
 

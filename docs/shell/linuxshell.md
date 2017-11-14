@@ -507,6 +507,11 @@ todo
 
     $ say u r handsome.
     $ say -o u-r-handsome.mp4 u r handsome.
+
+    # 粤语
+    $ say  --voice="Sin-ji" 男演员穿蓝制服女演员穿棉制服蓝制服是棉制服棉制服是蓝制服男演员穿蓝棉制服女演员穿棉蓝制服
+    # 普通话绕口令
+    $ say -r 400 男演员穿蓝制服女演员穿棉制服蓝制服是棉制服棉制服是蓝制服男演员穿蓝棉制服女演员穿棉蓝制服
     
 
 
@@ -1374,7 +1379,7 @@ gtop: <https://github.com/aksakalli/gtop>，node实现的终端可视化监控�
     $ grep -r --exclude=GLOB 'hello' .
     $ grep -r --exclude-from=listfile 'hello' .
 
-仅查找特定文件：
+仅查找特定文件，`--include=...`的`=`不能省略：
 
     $ grep --include=GLOB 'hello'
     $ grep --include=*.md -r 'cors'
@@ -1720,25 +1725,128 @@ sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://.
 
 > 目录、文件查找
 
-    find . -type f
-    find . -type f -name ".*.swp" -exec rm {} \;
-    find . -inum 35806669 -exec rm {} \;
+    find [-H | -L | -P] [-EXdsx] [-f path] path ... [expression]
+    find [-H | -L | -P] [-EXdsx] -f path [path ...] [expression]
+
+* 针对递归遍历的每一个文件，执行`expression`
+* 每个expression都会返回`布尔值`，使用`运算符`连接，`默认`为`-and`的关系，-and可以省略
+* 查找路径的指定`不属于`expression部分
+* expression部分由下列`Primaries`和`Operands`组成
+* 提及的可能作为命令分隔符的部分`特殊字符`，需要转义，比如`(, ), ;`等，使用`反斜线`或`引号`转义
+
+
+### Primaries
+
+    option                          description
+    ============================================================================================
+    -Bmin n
+    -Bnewer file
+    -Btime n
+    -acl
+    -amin n
+    -anewer file
+    -atime n[smhdw]                 最后访问时间为ceil计算后的值，单位可指定，未指定默认为天
+    -cmin n                         最后修改时间为ceil计算后的值，单位为分钟
+    -cnewer file
+    -ctime n[smhdw]                 最后修改时间为ceil计算后的值，单位可指定，未指定默认为天
+    -d                              同depth
+    -delete                         删除找到的文件或目录，总是返回true
+    -depth                          总是返回true
+    -depth n                        当文件相对于起始目录的深度为n时，返回true
+    -empty                          当前文件或目录为空时返回true
+    -exec utility [argument ...] ;
+    -exec utility [argument ...] {} +
+                                    针对找到的每个文件执行指定命令，必须用;或+结尾，为了和
+                                    命令分隔符区分开，使用时需要将;或+转义，用\;, \+或";", "+"
+                                    ；使用";"与"+"的区别在于输出内容是按行还是按空格分隔
+    -execdir utility [argument ...] ;
+    -execdir utility [argument ...] {} +
+                                    同-exec，唯一不同在于命令执行目录为找到的文件所在的父目录
+    -flags [-|+]flags,notflags
+    -fstype type
+    -gid gname
+    -group gname
+    -ignore_readdir_race
+    -ilname pattern
+    -iname pattern
+    -inum n
+    -ipath pattern
+    -iregex pattern
+    -iwholename pattern
+    -links n
+    -lname pattern
+    -ls
+    -maxdepth n
+    -mindepth n
+    -mmin n
+    -mnewer file
+    -mount
+    -mtime n[smhdw]
+    -name pattern
+    -newer file
+    -newerXY file
+    -nogroup
+    -noignore_readdir_race
+    -noleaf
+    -nouser
+    -ok utility [argument ...];     同-exec，唯一不同在于该命令执行需要用户确认
+    -okdir utility [argument ...] ; 同-execdir，唯一不同在于该命令执行需要用户确认
+    -path pattern
+    -perm [-|+]mode
+    -print
+    -print0
+    -prune
+    -regex pattern
+    -samefile name
+    -size n[ckMGTP]
+    -type f|b|c|d|l|p|s
+    -uid uname
+    -user uname
+    -wholename pattern
+    -xattr
+    -xattrname name
+
+
+### Operators
+
+    ( expression )
+    ! expression
+    -not expression
+    -false
+    -true
+    expression -and expression
+    expression expression
+    expression -or expression
+
+
+### Examples
+
+    # 递归查找所有文件
+    $ find . -type f
+
+    # 递归查找当前目录下的.swp文件并且删除
+    $ find . -type f -name ".*.swp" -exec rm {} \;
+
+    # 递归查找当前目录下inode为35806669的文件并且删除
+    $ find . -inum 35806669 -exec rm {} \;
 
 `windows`下的对应命令是`dir /b /s <file>`
 
-找出当前目录下`修改时间为24小时之内`的文件：
+    # 找出当前目录下修改时间为24小时之内的文件：
+    $ find . -type f -mtime 0
 
-    find . -type f -mtime 0
+    # 找出当前目录下修改时间大于30天的文件：
 
-找出当前目录下`修改时间大于30天`的文件：
+    $ for (( d=30; d<1000; d++ )); do find . -type f -mtime $d; done
+    $ for d in {30..999}; do find . -type f -mtime $d; done
 
-    for (( d=30; d<1000; d++ )); do find . -type f -mtime $d; done
+    # 通过inode值删除文件，适用于无法输入中文的情况：
 
-通过`inode值`删除文件，适用于无法输入中文的情况：
+    $ ls -i                                   # 找到对应文件的inode值
+    $ find . -inum xxxxxxx -exec rm {} \;     # 通过inode删除
 
-    ls -i                                   # 找到对应文件的inode值
-    find . -inum xxxxxxx -exec rm {} \;     # 通过inode删除
-
+    # 递归查找src目录下的深度为2的*.js文件或修改时间为24小时内的.scss文件
+    $ find ./src -type f \( -name '*.js' -depth 2 -or -name '*.scss' -mtime 0 \)
 
 
 
