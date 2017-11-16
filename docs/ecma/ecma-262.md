@@ -28,7 +28,7 @@
 
 TC39将提议分为`5类`：
 
-* `Stage 0` Strawman: just an idea, possible Babel plugin
+* `Stage 0` Strawman: just an idea, possible Babel plugin. ( 比如class field, 171114 )
 * `Stage 1` Proposal: this is worth working on.
 * `Stage 2` Draft: initial spec.
 * `Stage 3` Candidate: complete spec and initial browser implementations.

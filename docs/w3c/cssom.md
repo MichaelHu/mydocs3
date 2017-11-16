@@ -70,7 +70,9 @@
 <div id="test_60" class="test" style="position:relative; border: 1px solid red;">
 <div class="test-panel" style="
     height: 100px; 
-    border: 1px solid green; 
+    padding: 5px;
+    box-sizing: content-box;
+    border: 5px solid green; 
     background-color: #17becf;
     text-align: center;
     font-size: 80px;

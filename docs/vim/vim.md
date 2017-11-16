@@ -950,6 +950,12 @@ idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文
 
 > `a-z` for buffer markers, `A-Z0-9` for file markers
 
+### Features
+
+* marker不是保存在内存中，而是`持久化到文件`中，所以可以跨`session`、`progress`共享
+* register同marker
+
+
 ### Normal mode commands
 
 `Set marker`
@@ -993,6 +999,9 @@ idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文
     :marks {args}               list all the marks those are mentioned in {args}
     :delm[arks] {marks}         delete the specified marks. Marks that can be deleted include A-Z and 0-9
     :delm[arks]!                delete all marks for the current buffer, but not marks A-Z or 0-9
+
+
+
 
 
 

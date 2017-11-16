@@ -14,7 +14,24 @@
 
 ## Features
 
-* When inserted using the `document.write()` method, script elements execute (typically blocking further script execution or HTML parsing), but when inserted using `innerHTML` and `outerHTML` attributes, they `do not execute` at all.
+* script标签作为`innerHTML`或`outerHTML`的内容或者部分内容设置，不会执行其内部的脚本。但通过`document.write()`方式输出，会阻塞执行。 When inserted using the `document.write()` method, script elements execute (typically blocking further script execution or HTML parsing), but when inserted using `innerHTML` and `outerHTML` attributes, they `do not execute` at all. 
+
+        document.write( '<script' + '>alert( 123 )</' + 'script>' );
+
+* 可以通过`appendChild()`方式添加的script对象，通过`innerText`属性设置脚本内容：
+
+        var script = document.createElement( 'script' );
+        script.innerText = 'alert( 123 )';
+        document.body.appendChild( script );
+
+    或者通过`src`属性添加脚本来源：
+
+        var script = document.createElement( 'script' );
+        document.body.appendChild( script );
+        script.src = 'http://example.com/js/script.js';
+
+    对于同一个script对象来说，innerText或src只能`设置一次`。
+
 * `src为空`、或者`url解析失败`等，会在script element本身触发一个`simple event`：`error`，该事件不会冒泡
 * 外部脚本执行成功，会触发`load`
 * `ie6-8`不触发`error`事件，readystatechange事件也只有loading/loaded事件，无法捕获error

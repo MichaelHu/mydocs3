@@ -4,6 +4,10 @@
 
 Web sites are made of lots of things -- frameworks, libraries, assets, and utilities. Bower manage all these things for you.
 
+## Features
+
+* 版本识别基于`git tag`
+
 
 ## 常用命令
 

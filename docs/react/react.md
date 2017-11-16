@@ -106,10 +106,10 @@ jsx只是一个`句法糖`，目的是简化`React.createElement( component, pro
 5. `内联`样式的写法，使用`驼峰`键值的对象，就像设置`element.style.x`一样 
 6. `if-else`不要在`属性`部分使用，因为key-value的`value`部分无法使用`if-else`语句。可用`三元操作符`代替。或者将if-else放在jsx代码块之外；或者定义一个闭包函数直接执行。
 7. `false`作为`属性`部分和`内容`部分的区别：`属性`部分，输出字符串`"false"`；`内容`部分，输出为`空` 
-8. 组件的`render()`只能返回一个节点，而不能是多个节点；如果有多个节点，必须要将这些节点包裹在一个父级节点内
+8. 组件的`render()`只能返回一个节点，而不能是多个节点；如果有多个节点，必须要将这些节点包裹在一个父级节点内，该限制在`React 16`中已经移除
 9. jsx不能使用`<!-- ... -->`进行注释
 10. `this.props.children`的类型。如果存在多个孩子节点，则表现为Array类型；如果仅有一个孩子节点，则表现为仅有的孩子节点本身。
-11. `this.props.children`在组件的`render()`方法中使用，用于将孩子节点渲染出来。
+11. `this.props.children`在组件的`render()`方法中使用，用于将孩子节点渲染出来，通过它实现`组件嵌套`
 12. `React`必须在上下文中，因为jsx会翻译成`React.createElement(...)`，以下代码看似能省的`import React from 'react';`实际上不能省：
 
 		// import React from 'react';
@@ -178,7 +178,7 @@ jsx只是一个`句法糖`，目的是简化`React.createElement( component, pro
           ...
         }
 
-    或者使用`类字段`：
+    或者使用`类字段`（需要开启babel `stage-0` presets, 171114）：
 
         class Toggle extends React.Component {
             ...
