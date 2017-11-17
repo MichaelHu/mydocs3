@@ -39,6 +39,7 @@
 
 ## 个人站点
 
+* 候振宇L4 <http://www.cnblogs.com/sskyy/>
 * D3作者Mike Bostock的个人博客 <https://bost.ocks.org/mike/>
 * 鑫空间，鑫生活 高质量前端技术博客 <http://www.zhangxinxu.com>
 * 极限前端，博主( Ouven )为前腾讯IMWEB团队成员 <http://jixianqianduan.com>
