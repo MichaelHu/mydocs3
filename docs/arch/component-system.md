@@ -90,13 +90,48 @@
 * `drag`状态用于「`box整体拖动`」；`capture-hover`, `hover`, `resize`三个状态用于「`box边框拖动`」；两种拖动操作需`独立响应`mousemove事件
 * `resize`状态由Focused的box边框附近的mousedown事件触发，由document的mouseup事件终结
 * `capture-hover`状态下会判断鼠标是否移动到Focused的box边框附近，如果是的话，则进入hover状态。它是优先级最低的状态，只要不是drag, hover或resize状态，都处在capture-hover状态中，当drag,hover或resize的触发条件发生，即刻取消当前状态进入对应状态。
-* `hover`状态下，根据鼠标与border的相对位置，鼠标`cursor`在以下状态间切换，以下状态下触发的mousedown，将会使状态进入`resize`状态：
+* `hover`状态下，根据鼠标与border的相对位置，鼠标`cursor`在以下状态间切换，处于下方列出状态下触发的`mousedown`，将会使状态进入`resize`状态：
 
         e-resize, s-resize, se-resize, w-resize, sw-resize
 
 * `capture-hover`和`hover`状态都只局限于box之上的`mousemove`，而不是document的mousemove，使用后者的话，在计算鼠标样式以及后续点击操作的处理都会遇到困难。这种实现方案的缺憾为只能在`边框内边缘`显示resize鼠标样式。
 * 如果鼠标悬停在header，且离border很近的地方，这时如果触发mousedown，则可能进入dragging也可能进入resize，程序需要避免这种`歧义性`。我们采用的办法是，header区域的border不参与hover状态判断。
 
+
+### 171118
+
+* `hover`状态下，box上的`mousedown`事件，需要`阻止冒泡`，避免触发document的mousedown，从而响应focus处理
+* `resize`过程的状态流转：
+
+                           ======================               
+                                  disabled                      
+                           ======================
+                            |                 ^             
+        enable hover        |                 |    disable hover            
+                            v                 |             
+                           ======================               
+                                capture_hover                      
+                           ======================
+                            |         ^       ^              
+        border near by      |         | border| far away    
+                            v         |       |              
+                           =============      |             
+                               hover          |                    
+                           =============      |             
+                            |                 |             
+        box mousedown       |                 |    
+                            v                 |             
+                           =============      |             
+                               resize         |                     
+                           =============      |             
+                            |                 |             
+        document mousemove  |                 | document mouseup
+                            v                 |             
+                           =====================                    
+                                  resizing                              
+                           =====================                    
+
+* `todo`： `drag`、`focus`、`resize`这三种操作需要独立开，同时将它们之间需要一并考虑的地方理清楚。目前实现还有一些小bug
 
 
 
@@ -148,19 +183,34 @@
 
 ### js
 
-    @[data-script="babel"]class Box extends React.Component {
+    @[data-script="babel"]const STATE_DISTABLED = 1;
+    const STATE_CAPTURE_HOVER = 2;
+    const STATE_HOVER = 3;
+    const STATE_RESIZABLE = 4;
+    const STATE_RESIZING = 5;
+
+    class Box extends React.Component {
 
         constructor( props ) {
             super( props );
 
             this.isFocused = 0;
             this.isDragging = 0;
-            this.isCaptureHover = 0;
-            this.isHover = 0;
             /**
-             * 5种缩放状态: e-resize, s-resize, se-resize, w-resize, sw-resize
+             * state                desc 
+             * =================================
+             * DISABLED             disabled
+             * CAPTURE_HOVER        捕获hover
+             * HOVER                进入响应区
+             * RESIZABLE            可缩放状态   
+             * RESIZING             正在缩放
              */
-            this.isResizing = 0;
+            this.resizeState = STATE_DISTABLED;
+            /**
+             * 5种缩放类型: e-resize, s-resize, se-resize, w-resize, sw-resize
+             */
+
+            setInterval( () => console.log( this.resizeState ), 500 );
         }
 
         render() {
@@ -191,15 +241,6 @@
             );
         }
 
-        enableHover = () => {
-            let box = this.refs.box;
-            document.addEventListener(
-                'mousemove'
-                , this.on_capture_hover
-                , false
-            );
-        }
-
         enableDraggable = () => {
             let log = this.props.log;
             let header = this.refs.header;
@@ -211,15 +252,23 @@
             );
         }
 
+        enableHover = () => {
+            let box = this.refs.box;
+
+            this.resizeState = STATE_CAPTURE_HOVER;
+
+            document.addEventListener(
+                'mousemove'
+                , this.on_capture_hover
+                , false
+            );
+        }
+
         enableResize = ( type ) => {
             let box = this.refs.box;
             console.log( 'enableResize ' + type );
 
-            box.addEventListener(
-                'mousedown'
-                , this.on_start_resize
-                , false
-            );
+            this.resizeState = STATE_HOVER;
 
             box.addEventListener(
                 'mousedown'
@@ -229,57 +278,74 @@
         }
 
         disableResize = () => {
+            let box = this.refs.box;
             console.log( 'disableResize' );
+
+            this.resizeState = STATE_CAPTURE_HOVER;
+
+            box.removeEventListener(
+                'mousedown'
+                , this.on_start_resize
+                , false
+            );
         }
 
         on_capture_hover = ( e ) => {
             let box = this.refs.box;
 
-            if ( !this.isFocused ) {
+            if ( !this.isFocused || this.isDragging ) {
                 _resetDefault();
                 return;
             }
 
+            let header = this.refs.header;
             let parentBox = box.parentNode;
-            let boundingRect = box.getBoundingClientRect();
+            let headerRect = header.getBoundingClientRect();
+            let boxRect = box.getBoundingClientRect();
             let vx = e.clientX;
             let vy = e.clientY;
-            let cx = vx - boundingRect.left;
-            let cy = vy - boundingRect.top;
+            let cx = vx - boxRect.left;
+            let cy = vy - boxRect.top;
 
             let threshold = 10;
-            let xRightHit = Math.abs( cx - boundingRect.width ) < threshold;
-            // let xRightInnerHit = xRightHit && cx <= boundingRect.width;
-            // let xRightOuterHit = xRightHit && cx > boundingRect.width;
+            let xRightHit = Math.abs( cx - boxRect.width ) < threshold;
+            // let xRightInnerHit = xRightHit && cx <= boxRect.width;
+            // let xRightOuterHit = xRightHit && cx > boxRect.width;
             let xLeftHit = Math.abs( cx ) < threshold;
             // let xLeftInnerHit = xLeftHit && cx >= 0;
             // let xLeftOuterHit = xLeftHit && cx < 0;
-            let yBottomHit = Math.abs( cy - boundingRect.height ) < threshold;
-            // let yBottomInnerHit = yBottomHit && cy <= boundingRect.height;
-            // let yBottomOuterHit = yBottomHit && cy > boundingRect.height;
+            let yBottomHit = Math.abs( cy - boxRect.height ) < threshold;
+            // let yBottomInnerHit = yBottomHit && cy <= boxRect.height;
+            // let yBottomOuterHit = yBottomHit && cy > boxRect.height;
             let yTopHit = Math.abs( cy ) < threshold;
             // let yTopInnerHit = yTopHit && cy >= 0;
             // let yTopOuterHit = yTopHit && cy < 0;
+            let onHeader = cy >= 0 && cy <= headerRect.height
+                    && cx >=0 && cx <= boxRect.width;
 
             let resizeType;
-            if ( xRightHit && yBottomHit ){
-                resizeType = 'se-resize';
-            }
-            else if ( xRightHit ) {
-                resizeType = 'e-resize';
-            } 
-            else if ( yBottomHit ) {
-                resizeType = 's-resize';
-            } 
-            else if ( xLeftHit && yBottomHit ) {
-                resizeType = 'sw-resize';
-            }
-            else if ( xLeftHit ) {
-                resizeType = 'w-resize';
+            if ( !onHeader ) {
+                if ( xRightHit && yBottomHit ){
+                    resizeType = 'se-resize';
+                }
+                else if ( xRightHit ) {
+                    resizeType = 'e-resize';
+                } 
+                else if ( yBottomHit ) {
+                    resizeType = 's-resize';
+                } 
+                else if ( xLeftHit && yBottomHit ) {
+                    resizeType = 'sw-resize';
+                }
+                else if ( xLeftHit ) {
+                    resizeType = 'w-resize';
+                }
+                else {
+                    resizeType = null;
+                }
             }
             else {
                 resizeType = null;
-                _resetDefault();
             }
 
             if ( !resizeType ) {
@@ -297,7 +363,47 @@
         }
 
         on_start_resize = ( e ) => {
-            console.log( 'start resize' );
+            this.resizeState = STATE_RESIZABLE; 
+
+            document.addEventListener(
+                'mousemove'
+                , this.on_border_resizing
+                , false
+            );
+
+            document.addEventListener(
+                'mouseup'
+                , this.on_border_stop_resizing
+                , false
+            );
+
+            e.stopPropagation();
+        }
+
+        on_border_resizing = ( e ) => {
+            this.resizeState = STATE_RESIZING;
+            console.log( 'border resizing' );
+        }
+
+        on_border_stop_resizing = ( e ) => {
+
+            // this.resizeState = STATE_CAPTURE_HOVER;
+            this.disableResize();
+
+            console.log( 'border stop resizing' );
+
+            document.removeEventListener(
+                'mousemove'
+                , this.on_border_resizing
+                , false
+            );
+
+            document.removeEventListener(
+                'mouseup'
+                , this.on_border_stop_resizing
+                , false
+            );
+
         }
 
         on_process_focus = ( e ) => {
@@ -343,10 +449,9 @@
 
             document.addEventListener(
                 'mouseup'
-                , this.on_header_dragend
+                , this.on_header_stop_dragging
                 , false
             );
-
         }
 
         on_header_dragging  = ( e ) => {
@@ -388,7 +493,7 @@
             box.style.top = ny + 'px';
         }
 
-        on_header_dragend = ( e ) => {
+        on_header_stop_dragging = ( e ) => {
             let log = this.props.log;
             let header = this.refs.header;
             let box = this.refs.box;
@@ -407,7 +512,6 @@
             );
 
             this.isDragging = 0;
-
         }
 
     }
