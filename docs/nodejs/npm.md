@@ -178,7 +178,7 @@ cnpm支持除`publish`之外的所有命令。
 * 官方地址：http://registry.npmjs.org/
 * 镜像地址：http://skimdb.npmjs.com/registry
 
-服务器使用`CouchDB`数据库，couchapp的代码托管在github上：http://github.com/npm/npm-registry-couchapp。
+服务器使用`CouchDB`数据库，couchapp的代码托管在github上：<http://github.com/npm/npm-registry-couchapp>。
 服务器提供好用的`RESTful API`，举例如下：
 
     $ curl http://registry.npmjs.org
@@ -214,8 +214,7 @@ todo
 
 ### 包范围（scope）
 
-2014-09-13日以后，公共地址上的registry开始支持范围限定包。
-npm客户端自动兼容非范围包与范围包的处理。
+`2014-09-13`以后，公共地址上的registry开始支持范围限定包。npm客户端自动兼容非范围包与范围包的处理。
 
 命名方式同包名（package name）：`url安全的字符，不以逗号或下划线开头`。
 
@@ -224,8 +223,8 @@ npm客户端自动兼容非范围包与范围包的处理。
     @somescope/somepackagename
 
 `包安装位置：`
-1. 非scope包路径： node_modules/packagename
-2. 那么，scope包路径为： node_modules/@myorg/packagename
+1. 非scope包路径： `node_modules/packagename`
+2. 那么，scope包路径为： `node_modules/@myorg/packagename`
 
 
 `安装方式：`
@@ -265,7 +264,7 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
     npm publish <folder> [--tag <tag>]
 
 > Once a package is published with a given name and version, that specific 
-> name and version combination can never be used again, even if it is removed with npm-unpublish(1).
+> name and version combination can never be used again, even if it is removed with `npm-unpublish`.
 
 一旦发布，不可再用。
 

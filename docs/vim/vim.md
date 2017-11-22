@@ -13,6 +13,7 @@
 * vim-scripts: <http://vim-scripts.org/vim/scripts.html> 
 * github vim-scripts: <https://github.com/vim-scripts>
 * vim-eval: <ref://./vim-eval.md.html>
+* `vim-tuning` - vim脚本、插件等编写 <ref://./vim-tuning.md.html>
 * `VimAwesome` - 插件聚合站点 <https://vimawesome.com>
 
 
@@ -25,6 +26,82 @@
 * support for hundreds of programming languages and file formats
 * powerful search and replace
 * integrates with many tools
+
+
+## Starting Vim
+
+### command line
+
+    vim filename
+    cat file | vim -
+    vim -q {errorfile}
+
+### options
+
+    --help, -h
+    --version
+    --noplugin
+    --startuptime {fname}
+    --literal
+    +[num]
+    +/{pat}
+    +{command}
+    -c {command}
+        vim "+set si" main.c
+        vim -c "set ff=dos" -c wq mine.mak
+    --cmd {command}
+    -S {file}                                   -c "source {file}"
+    -r, -L                                      Recovery mode
+    -R                                          Readonly mode
+    -m                                          Modifications not allowed to be written 
+    -M                                          Modifications not allowed
+    -Z                                          Restricted mode. All commands that make use of an external
+                                                shell are disabled
+    -g                                          Start Vim in GUI mode
+    -v                                          Start Ex in Vi mode
+    -e                                          Start Vim in Ex mode Q
+    -E                                          Start Vim in improved Ex mode gQ
+    -s                                          Silent or batch mode. :print, :list, :number, :set is
+                                                displayed to stdout 
+    -b                                          Binary mode
+    -l                                          Lisp mode
+    -A                                          Arabic mode
+    -F                                          Farsi mode
+    -H                                          Hebrew mode
+    -V[N]                                       Verbose
+    -v[N]{filename}
+    -D                                          Debuging
+    -C                                          Compatible mode
+    -N                                          Not compatible mode
+    -y                                          Easy mode.
+    -n                                          No swap file will be used
+    -o[N]
+    -O[N]
+    -p[N]
+    -T {terminal}                               Set the terminal type to "terminal"
+    --not-a-term
+    --ttyfail
+    -d                                          Start in diff mode
+    -d {device}
+    -dev {device}
+    -f
+    --nofork
+    -u {vimrc}
+    -U {gvimrc}
+    -i {viminfo}
+    -x
+    -X
+    -s {scriptin}                               The script file "scriptin" is read. the same as 
+                                                ":source! {scriptin}
+    -w {number}
+    -w{number}                                  Set the window option to {number}
+    -w {scriptout}                              All the characters that you type are recorded in the file 
+                                                "scriptout", until you exit vim.
+
+    todo ...
+
+
+
 
 
 ## Useful Tips
@@ -597,7 +674,7 @@
     :una[bbreviate]
 
 
-### 特征说明
+### Tips
 
 1. 映射`目标`部分可以含有`空白`。
 2. 简写可以只针对特定buffer，使用`<buffer>`选项
@@ -866,6 +943,45 @@ idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文
 
 ## Args and ArgsDo
 
+### Syntax
+
+    " print the argument list, with the current file in square brackets
+    :ar[gs] 
+
+    " this fails when changes have been made and vim does not want to abandon the current buffer
+    :ar[gs] [++opt] [+cmd] {arglist}
+
+    " discard any changes to the current buffer
+    :ar[gs]! [++opt] [+cmd] {arglist}
+
+    :[range]argdo[!] {cmd}
+    :[count]arge[dit][!] [++opt] [+cmd] {name}
+    :[count]arga[dd] {name} ..
+    " add current buffer name to the argumet list
+    :[count]arga[dd]
+    :argd[elete] {pattern} ..
+    :[range]argd[elete]
+        :10,$argd
+        :$argd
+        :%argd
+    :[count]argu[ment] [count] [++opt] [+cmd]
+    :[count]argu[ment]! [count] [++opt] [+cmd]
+    :[count]n[ext] [++opt] [+cmd]
+    :[count]n[ext]! [++opt] [+cmd]
+    :[count]N[ext] [++opt] [+cmd]
+    :[count]N[ext]! [++opt] [+cmd]
+    :[count]prev[ious] [count] [++opt] [+cmd]
+    :rew[ind] [++opt] [+cmd]
+    :rew[ind]! [++opt] [+cmd]
+    :fir[st][!] [++opt] [+cmd]
+    :la[st][!] [++opt] [+cmd]
+    :[count]wn[ext][!] [++opt] {file}
+    :[count]wN[ext][!] [++opt] {file}
+    :[count]wp[revious][!] [++opt] {file}
+
+
+### Examples
+
 替换整个目录（包含子目录）下的js文件中的`<`为`&lt;`
 
     :args **/*.js
@@ -877,7 +993,28 @@ idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文
     :args *.c
     :argdo set ff=unix | update
 
+将data目录下的`所有.txt文件`全部转换成为`字符串`，并赋值给`var g_case_data`变量：
+
+    :args data/*.txt
+    :argdo %d | let lines = @" | let lines = 'var g_case_data = ' . json_encode( lines ) . ';' | call setline( '.', lines ) | up
+
+
 类似的还有`:bufdo`和`:windo`。
+
+
+
+
+## bufdo and windo
+
+对所有buffer和windows执行命令。
+
+    :bufdo set fenc= | update
+    :windo set nolist nofoldcolumn | normal zn
+
+1. 重置所有buffer的`fenc`并更新。结果就是所有buffer将使用`encoding`的编码（编码转换成功的话）。
+2. 所有窗口设置`nolist`和`nofoldcolumn`，并关闭折叠`zn`。   
+
+
 
 
 
@@ -895,7 +1032,7 @@ idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文
 
 `9种`类型的`寄存器`，共`48`个：
 
-1. 未命名寄存器，双引号寄存器`""`
+1. 未命名寄存器，双引号寄存器`""`，y, d, x等操作的改变内容都会存放在该寄存器中
 2. 10个数字寄存器`"0` - `"9`
 3. 小删除寄存器，存储`少于一行`的删除：`"-`
 4. 26个命名寄存器`"a` - `"z`或者`"A` - `"Z`，尽量使用`小写`。
@@ -1245,8 +1382,7 @@ command line模式的行注释。
 
 ### 执行外部命令 
 
-当前buffer的内容可以通过range选择，`pipe`到外部命令，外部命令的输出结果会`替换`当前
-buffer中通过range`选中的`内容。
+当前buffer的内容可以通过`range`选择，`pipe`到外部命令，外部命令的输出结果会`替换`当前buffer中通过range`选中的`内容。
 
     :[range]!{command}
 
@@ -1259,14 +1395,16 @@ buffer中通过range`选中的`内容。
     :%!bc -l
     :'<,'>!awk '/^.*$/{printf "\%s = \%d\n",$0,$1 + $3}'
     :'<,'>!sed -e '1\!G;h;$\!d'
+    :'<,'>!tail -r
 
 1. 当前buffer内容用外部`xxd命令`转换后并`替换`
-2. 当前buffer第1到100行内容，用外部命令`grep`过滤出以`#`开头的行，并`替换`
+2. 当前buffer第1到100行内容，用外部命令`grep`过滤出以`#`开头的行，并`替换`，注意`#`需要转义
 3. 选中内容用外部`sed`命令进行内容替换，并用替换后内容替换
 4. 选中内容用外部`sort`命令进行排序，并替换
 5. 所有行内容作为数学算式由外部命令`bc`进行计算，并用返回的计算结果替换
 6. 选中行的第一个与第三个数`相加`，并`追加`到行末尾，注意`%`需要转义
 7. 将选中的所有行`按行号逆序`输出，并替换，注意`!`需要转义。相关参考：<ref://../shell/linuxshell.md.html>中关于`sed`命令的部分。
+8. 同上，`更简单`的按行号逆序输出
 
 
 
@@ -1298,6 +1436,14 @@ buffer中通过range`选中的`内容。
     :redi => var
     :redi END
 
+#### Tips
+
+* 可至`文件`、`寄存器`、`变量`等，有多种选择
+* `:redi END`之后，再去获取内容，比如在`:redi END`之前，相关变量内容是取不到的
+
+
+#### Examples
+
 `例1`，将`buffer list`输出到当前文档中:
 
     :redi @a | sil ls | redi END | norm "ap
@@ -1319,19 +1465,6 @@ buffer中通过range`选中的`内容。
     :set keywordprg
     keywordprg=man -s
 
-
-
-
-
-## bufdo 与 windo
-
-对所有buffer和windows执行命令。
-
-    :bufdo set fenc= | update
-    :windo set nolist nofoldcolumn | normal zn
-
-1. 重置所有buffer的`fenc`并更新。结果就是所有buffer将使用`encoding`的编码（编码转换成功的话）。
-2. 所有窗口设置`nolist`和`nofoldcolumn`，并关闭折叠`zn`。   
 
 
 

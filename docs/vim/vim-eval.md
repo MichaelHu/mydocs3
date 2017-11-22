@@ -1276,6 +1276,24 @@ when {nr} is zero the current window is used.
 
 
 
+### Insert mode completion
+
+    complete()          set found matches
+    complete_add()      add to found matches
+    complete_check()    check if completion should be aborted
+    pumvisible()        check if the popup menu is displayed
+
+
+
+
+### Folding
+
+    foldclosed()        check for a closed fold at a specific line
+    foldclosedend()     like foldclosed() but return the last line
+    foldlevel()         check for the fold level at a specific line
+    foldtext()          generate the line displayed for a closed fold
+    foldtextresult()    get the text displayed for a closed fold
+
 
 ### Syntax and highlighting
 
@@ -1384,6 +1402,96 @@ todo ...
     48
 
 todo ...
+
+
+
+
+### Mappings
+
+    hasmapto()              check if a mapping exists
+    mapcheck()              check if a matching mapping exists
+    maparg()                get rhs of a mapping
+    wildmenumode()          check if the wildmode is active
+
+
+
+
+### Testing
+
+    assert_equal()              assert that two expressions values are equal
+    assert_notequal()           assert that two expressions values are not equal
+    assert_inrange()            assert that an expression is inside a range
+    assert_match()              assert that a pattern matches the value
+    assert_notmatch()           assert that a pattern does not match the value
+    assert_false()              assert that an expression is false
+    assert_true()               assert that an expression is true
+    assert_exception()          assert that a command throws an exception
+    assert_fails()              assert that a function call fails
+    test_alloc_fail()           make memory allocation fail
+    test_autochdir()            enable 'autochdir' during startup
+    test_disable_char_avail()   test without typeahead
+    test_garbagecollect_now()   free memory right now
+    test_null_channel()         return a null Channel
+    test_null_dict()            return a null Dict
+    test_null_job()             return a null Job
+    test_null_list()            return a null List
+    test_null_partial()         return a null Partial function
+    test_null_string()          return a null String
+
+
+
+
+### Inter-process communication
+
+    ch_canread()        check if there is something to read
+    ch_open()           open a channel
+    ch_close()          close a channel
+    ch_close_in()       close the in part of a channel
+    ch_read()           read a message from a channel
+    ch_readraw()        read a raw message from a channel
+    ch_sendexpr()       send a JSON message over a channel
+    ch_sendraw()        send a raw message over a channel
+    ch_evalexpr()       evaluates an expression over channel
+    ch_evalraw()        evaluates a raw string over channel
+    ch_status()         get status of a channel
+    ch_getbufnr()       get the buffer number of a channel
+    ch_getjob()         get the job associated with a channel
+    ch_info()           get channel information
+    ch_log()            write a message in the channel log file
+    ch_logfile()        set the channel log file
+    ch_setoptions()     set the options for a channel
+    json_encode()       encode an expression to a JSON string
+    json_decode()       decode a JSON string to Vim types
+    js_encode()         encode an expression to a JSON string
+    js_decode()         decode a JSON string to Vim types
+
+
+#### json_encode()
+
+    json_encode( {expr} )
+    json_decode( {expr} )
+    js_encode( {expr} )
+    js_decode( {expr} )
+
+
+### Jobs
+
+    job_start()         start a job
+    job_stop()          stop a job
+    job_status()        get the status of a job
+    job_getchannel()    get the channel used by a job
+    job_info()          get information about a job
+    job_setoptions()    set options for a job
+
+
+
+### Timers
+
+    timer_start()       create a timer
+    timer_pause()       pause or unpause a timer
+    timer_stop()        stop a timer
+    timer_stopall()     stop all timers
+    timer_info()        get information about timers
 
 
 ### Various

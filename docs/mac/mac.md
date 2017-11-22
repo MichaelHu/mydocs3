@@ -2,6 +2,25 @@
 
 > mac使用小提示
 
+
+## Mac OS Versions
+
+    macOS High Sierra           10.13       2017-6-5
+    macOS Sierra                10.12       2016-09-20
+    OS X El Capitan             10.11       2015
+    OS X Yosemite               10.10       2014-06-03
+    OS X Mavericks              10.9        2013-06-10
+    OS X Mountain Lion          10.8        2012-07-25
+    Mac OS X Lion               10.7        2010-10-20
+    Mac OS X Snow Leopard       10.6        2008-06-09
+    Mac OS X Leopard            10.5        2006-08-07
+    Mac OS X Tiger              10.4        2005-04-29
+    Mac OS X Panther            10.3        2002-10-24
+    Mac OS X Jaguar             10.2        2002-08-24
+    Mac OS X Puma               10.1        2001-09-25
+    Mac OS X Cheetah            10.0        2001-03-24
+
+
 ## CTRL-H
 
 `H` - `Hide`: `窗口隐藏`，注意与`窗口最小化`的区别
@@ -61,6 +80,16 @@
     Œ„´‰ˇÁ¨ˆØ∏”’»
     ÅÍÎÏ˝ÓÔÒÚÆ
     ¸˛Ç◊ı˜Â¯˘¿
+
+
+## 恢复iPad mini 2 
+
+> 忘记锁屏密码，需要iTunes恢复。
+
+* 按住`Home`和`电源键`，等待出现iTunes + USB界面
+* 恢复iPad，更新最新iTunes以及最新OS，以及重启PC，还有数据线直连主机，连接头的清理等都可能影响恢复或更新。
+
+
 
 
 

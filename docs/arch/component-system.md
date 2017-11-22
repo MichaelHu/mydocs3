@@ -62,7 +62,7 @@
 
 * 事件处理函数命名规则：
         React事件       onClick, onMouseDown, onDragStart, ...
-        原生事件        on_click, on_mousedown, on_dragstart, ...
+        其他事件        on_click, on_mousedown, on_dragstart, ...
 * `focus`状态，`mousedown`事件触发focus状态的变化，mousedown事件注册在`document`上，每个Box组件判断target是否为`dom子树`上的节点来决定focus状态的切换
 * 边框拖动功能
     * hover阶段，展示可启动功能，通过鼠标cursor的类型来提示
@@ -135,6 +135,32 @@
 
 
 
+
+### 171121
+
+* `focus`, `drag`, `resize`三种操作对应的事件处理函数，需要有`命名规则`：
+
+        on_focus
+
+        on_header_drag_start
+        on_header_dragging
+        on_header_drag_end
+
+        on_capture_hover
+        on_border_resize_start
+        on_border_resizing
+        on_border_resize_end
+
+
+
+### 171122
+
+* 两种布局模式，`平铺`与`层叠`
+* box负责`下一级`子box的`尺寸仲裁`
+
+
+
+
 ## Box
 
 ### css
@@ -183,11 +209,20 @@
 
 ### js
 
-    @[data-script="babel"]const STATE_DISTABLED = 1;
-    const STATE_CAPTURE_HOVER = 2;
-    const STATE_HOVER = 3;
-    const STATE_RESIZABLE = 4;
-    const STATE_RESIZING = 5;
+    @[data-script="babel"]/**
+     * state                desc 
+     * =================================
+     * DISABLED             disabled
+     * CAPTURE_HOVER        捕获hover
+     * HOVER                进入响应区
+     * RESIZABLE            可缩放状态   
+     * RESIZING             正在缩放
+     */
+    const RESIZE_STATE_DISTABLED = 1;
+    const RESIZE_STATE_CAPTURE_HOVER = 2;
+    const RESIZE_STATE_HOVER = 3;
+    const RESIZE_STATE_RESIZABLE = 4;
+    const RESIZE_STATE_RESIZING = 5;
 
     class Box extends React.Component {
 
@@ -196,21 +231,7 @@
 
             this.isFocused = 0;
             this.isDragging = 0;
-            /**
-             * state                desc 
-             * =================================
-             * DISABLED             disabled
-             * CAPTURE_HOVER        捕获hover
-             * HOVER                进入响应区
-             * RESIZABLE            可缩放状态   
-             * RESIZING             正在缩放
-             */
-            this.resizeState = STATE_DISTABLED;
-            /**
-             * 5种缩放类型: e-resize, s-resize, se-resize, w-resize, sw-resize
-             */
-
-            setInterval( () => console.log( this.resizeState ), 500 );
+            this.resizeState = RESIZE_STATE_DISTABLED;
         }
 
         render() {
@@ -236,7 +257,7 @@
         enableFocus = () => {
             document.addEventListener(
                 'mousedown'
-                , this.on_process_focus
+                , this.on_focus
                 , false
             );
         }
@@ -247,7 +268,7 @@
 
             header.addEventListener(
                 'mousedown'
-                , this.on_start_drag
+                , this.on_header_drag_start
                 , false
             );
         }
@@ -255,7 +276,7 @@
         enableHover = () => {
             let box = this.refs.box;
 
-            this.resizeState = STATE_CAPTURE_HOVER;
+            this.resizeState = RESIZE_STATE_CAPTURE_HOVER;
 
             document.addEventListener(
                 'mousemove'
@@ -268,11 +289,11 @@
             let box = this.refs.box;
             console.log( 'enableResize ' + type );
 
-            this.resizeState = STATE_HOVER;
+            this.resizeState = RESIZE_STATE_HOVER;
 
             box.addEventListener(
                 'mousedown'
-                , this.on_start_resize
+                , this.on_border_resize_start
                 , false
             );
         }
@@ -281,15 +302,132 @@
             let box = this.refs.box;
             console.log( 'disableResize' );
 
-            this.resizeState = STATE_CAPTURE_HOVER;
+            this.resizeState = RESIZE_STATE_CAPTURE_HOVER;
 
             box.removeEventListener(
                 'mousedown'
-                , this.on_start_resize
+                , this.on_border_resize_start
                 , false
             );
         }
 
+        /***********************************************
+         * handlers for focus
+         */
+        on_focus = ( e ) => {
+            let target = e.target;
+            let box = this.refs.box;
+            let curElement = target;
+
+            while( curElement
+                && curElement.parentNode != box ) {
+                curElement = curElement.parentNode;
+            }
+
+            if ( !curElement ) {
+                $( box ).removeClass( 'box_focus' );
+                this.isFocused = 0;
+            }
+            else {
+                $( box ).addClass( 'box_focus' );
+                this.isFocused = 1;
+            }
+        }
+
+        /***********************************************
+         * handlers for drag
+         */
+        on_header_drag_start = ( e ) => {
+            let log = this.props.log;
+            let box = this.refs.box;
+            let parentBox = box.parentNode;
+            let header = this.refs.header;
+
+            this.isDragging = 1;
+
+            this._dragParams = {
+                vx: e.clientX
+                , vy: e.clientY
+                , ox: parseFloat( box.style.left ) || 0
+                , oy: parseFloat( box.style.top ) || 0
+            };
+
+            document.addEventListener(
+                'mousemove'
+                , this.on_header_dragging
+                , false
+            );
+
+            document.addEventListener(
+                'mouseup'
+                , this.on_header_drag_end
+                , false
+            );
+        }
+
+        on_header_dragging  = ( e ) => {
+            let log = this.props.log;
+            let box = this.refs.box;
+            let parentBox = box.parentNode;
+            let header = this.refs.header;
+            let _p = this._dragParams;
+            let dx = e.clientX - _p.vx;
+            let dy = e.clientY - _p.vy;
+            let nx = _p.ox + dx;
+            let ny = _p.oy + dy;
+
+            let pComputedStyle = getComputedStyle( parentBox );
+            let pw = parseFloat( pComputedStyle[ 'width' ] );
+            let ph = parseFloat( pComputedStyle[ 'height' ] );
+            let boxSizing = pComputedStyle[ 'box-sizing' ];
+            let pBorderLeftWidth = parseFloat( pComputedStyle[ 'border-left-width' ] );
+            let pBorderRightWidth = parseFloat( pComputedStyle[ 'border-right-width' ] );
+            let pBorderTopWidth = parseFloat( pComputedStyle[ 'border-top-width' ] );
+            let pBorderBottomWidth = parseFloat( pComputedStyle[ 'border-bottom-width' ] );
+            let pPaddingLeft = parseFloat( pComputedStyle[ 'padding-left' ] );
+            let pPaddingRight = parseFloat( pComputedStyle[ 'padding-right' ] );
+            let pPaddingBottom = parseFloat( pComputedStyle[ 'padding-bottom' ] );
+            let pPaddingTop = parseFloat( pComputedStyle[ 'padding-top' ] );
+            let pContentWidth = boxSizing == 'content-box' 
+                    ? pw 
+                    : pw - pPaddingLeft - pPaddingRight - pBorderLeftWidth - pBorderRightWidth; 
+            let pContentHeight = boxSizing == 'content-box' 
+                    ? ph 
+                    : ph - pPaddingTop - pPaddingBottom - pBorderTopWidth - pBorderBottomWidth; 
+            
+            if ( nx < 0 ) nx = 0;
+            if ( ny < 0 ) ny = 0;
+            if ( nx > pContentWidth - 10 ) nx = pContentWidth - 10;
+            if ( ny > pContentHeight - 10 ) ny = pContentHeight - 10;
+
+            box.style.left = nx + 'px';
+            box.style.top = ny + 'px';
+        }
+
+        on_header_drag_end = ( e ) => {
+            let log = this.props.log;
+            let header = this.refs.header;
+            let box = this.refs.box;
+            let parentBox = box.parentNode;
+
+            document.removeEventListener(
+                'mousemove'
+                , this.on_header_dragging
+                , false
+            );
+
+            document.removeEventListener(
+                'mouseup'
+                , this.on_header_drag_end
+                , false
+            );
+
+            this.isDragging = 0;
+        }
+
+        /***********************************************
+         * handlers for resize
+         */
         on_capture_hover = ( e ) => {
             let box = this.refs.box;
 
@@ -362,8 +500,8 @@
             }
         }
 
-        on_start_resize = ( e ) => {
-            this.resizeState = STATE_RESIZABLE; 
+        on_border_resize_start = ( e ) => {
+            this.resizeState = RESIZE_STATE_RESIZABLE; 
 
             document.addEventListener(
                 'mousemove'
@@ -373,7 +511,7 @@
 
             document.addEventListener(
                 'mouseup'
-                , this.on_border_stop_resizing
+                , this.on_border_resize_end
                 , false
             );
 
@@ -381,13 +519,13 @@
         }
 
         on_border_resizing = ( e ) => {
-            this.resizeState = STATE_RESIZING;
+            this.resizeState = RESIZE_STATE_RESIZING;
             console.log( 'border resizing' );
         }
 
-        on_border_stop_resizing = ( e ) => {
+        on_border_resize_end = ( e ) => {
 
-            // this.resizeState = STATE_CAPTURE_HOVER;
+            // this.resizeState = RESIZE_STATE_CAPTURE_HOVER;
             this.disableResize();
 
             console.log( 'border stop resizing' );
@@ -400,118 +538,10 @@
 
             document.removeEventListener(
                 'mouseup'
-                , this.on_border_stop_resizing
+                , this.on_border_resize_end
                 , false
             );
 
-        }
-
-        on_process_focus = ( e ) => {
-            let target = e.target;
-            let box = this.refs.box;
-            let curElement = target;
-
-            while( curElement
-                && curElement.parentNode != box ) {
-                curElement = curElement.parentNode;
-            }
-
-            if ( !curElement ) {
-                $( box ).removeClass( 'box_focus' );
-                this.isFocused = 0;
-            }
-            else {
-                $( box ).addClass( 'box_focus' );
-                this.isFocused = 1;
-            }
-        }
-
-        on_start_drag = ( e ) => {
-            let log = this.props.log;
-            let box = this.refs.box;
-            let parentBox = box.parentNode;
-            let header = this.refs.header;
-
-            this.isDragging = 1;
-
-            this._dragParams = {
-                vx: e.clientX
-                , vy: e.clientY
-                , ox: parseFloat( box.style.left ) || 0
-                , oy: parseFloat( box.style.top ) || 0
-            };
-
-            document.addEventListener(
-                'mousemove'
-                , this.on_header_dragging
-                , false
-            );
-
-            document.addEventListener(
-                'mouseup'
-                , this.on_header_stop_dragging
-                , false
-            );
-        }
-
-        on_header_dragging  = ( e ) => {
-            let log = this.props.log;
-            let box = this.refs.box;
-            let parentBox = box.parentNode;
-            let header = this.refs.header;
-            let _p = this._dragParams;
-            let dx = e.clientX - _p.vx;
-            let dy = e.clientY - _p.vy;
-            let nx = _p.ox + dx;
-            let ny = _p.oy + dy;
-
-            let pComputedStyle = getComputedStyle( parentBox );
-            let pw = parseFloat( pComputedStyle[ 'width' ] );
-            let ph = parseFloat( pComputedStyle[ 'height' ] );
-            let boxSizing = pComputedStyle[ 'box-sizing' ];
-            let pBorderLeftWidth = parseFloat( pComputedStyle[ 'border-left-width' ] );
-            let pBorderRightWidth = parseFloat( pComputedStyle[ 'border-right-width' ] );
-            let pBorderTopWidth = parseFloat( pComputedStyle[ 'border-top-width' ] );
-            let pBorderBottomWidth = parseFloat( pComputedStyle[ 'border-bottom-width' ] );
-            let pPaddingLeft = parseFloat( pComputedStyle[ 'padding-left' ] );
-            let pPaddingRight = parseFloat( pComputedStyle[ 'padding-right' ] );
-            let pPaddingBottom = parseFloat( pComputedStyle[ 'padding-bottom' ] );
-            let pPaddingTop = parseFloat( pComputedStyle[ 'padding-top' ] );
-            let pContentWidth = boxSizing == 'content-box' 
-                    ? pw 
-                    : pw - pPaddingLeft - pPaddingRight - pBorderLeftWidth - pBorderRightWidth; 
-            let pContentHeight = boxSizing == 'content-box' 
-                    ? ph 
-                    : ph - pPaddingTop - pPaddingBottom - pBorderTopWidth - pBorderBottomWidth; 
-            
-            if ( nx < 0 ) nx = 0;
-            if ( ny < 0 ) ny = 0;
-            if ( nx > pContentWidth - 10 ) nx = pContentWidth - 10;
-            if ( ny > pContentHeight - 10 ) ny = pContentHeight - 10;
-
-            box.style.left = nx + 'px';
-            box.style.top = ny + 'px';
-        }
-
-        on_header_stop_dragging = ( e ) => {
-            let log = this.props.log;
-            let header = this.refs.header;
-            let box = this.refs.box;
-            let parentBox = box.parentNode;
-
-            document.removeEventListener(
-                'mousemove'
-                , this.on_header_dragging
-                , false
-            );
-
-            document.removeEventListener(
-                'mouseup'
-                , this.on_header_dragend
-                , false
-            );
-
-            this.isDragging = 0;
         }
 
     }
