@@ -113,9 +113,10 @@
     ga, g8, g CTRL-G, gk, gj, gq, gqq`，
     你知道几个？会用几个？
 5. `insert`模式下，`CTRL-N`或者`CTRL-P`能用于输入`补全`提示
-6. `:help`在线帮助，很对不同查询对象使用不同语法，比如查询`options`，则将option用`单引号`包起来。
-7. `normal`模式，`CTRL-L`刷新屏幕
-8. 一些特殊字符的展示：
+6. `command line`模式下，`CTRL-V`能用于输入特殊字符，比如`<C-V><Enter> `将输入`回车符<CR>`，命令行上显示`^M`
+7. `:help`在线帮助，很对不同查询对象使用不同语法，比如查询`options`，则将option用`单引号`包起来。
+8. `normal`模式，`CTRL-L`刷新屏幕
+9. 一些特殊字符的展示：
 
         ^M      x0d，也就是carriage-return，回车符
         ^@      x00
@@ -368,7 +369,7 @@
     :[range]s/{pattern}/{substitute}/[modifier] 
 
 对于`回车 - carriage return`(0x0c)、`换行 - newline`(0x0a)的处理：
-* 换行符在pattern中用`\n`表示，在substitute中用`\r`或`<CR>`表示，用`C-V <Enter>`输入`<CR>`，命令行上显示`^M`
+* 换行符在pattern中用`\n`表示，在substitute中用`\r`或`<CR>`表示，用`C-V <Enter>`输入`<CR>`，命令行上显示`^M`，这与`sed`的`s命令`存在区别，sed中换行符使用`\n`
 * 回车符在pattern中用`\%x0d`表示，在sutstitute中用`\<CR>`表示，用`C-V <Enter>`输入`<CR>`，命令行上显示`\^M`
 * substitute中的`\n`实际上是`<NL>`，代表0x00, vim中显示`^@`
 
@@ -397,7 +398,7 @@
     <CR>        替换成换行符，使用`<C-v> <Enter>`输入
     \r          同<CR>
     \<CR>       替换成回车符
-    \n          替换成<NL>字符，注意不是换行符
+    \n          替换成<NL>字符，!!注意不是换行符
     \t          <Tab>
     \b          <BS>
 

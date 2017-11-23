@@ -428,6 +428,102 @@ todo
 一般使用`tail -n +x file > abc`将二进制文件取出。`Anaconda`的安装文件就是一个例子( <ref://../python/anaconda.md.html> )，它是一个500+M的sh文件。
 
 
+
+## Here Documents
+
+> 在命令行中使用匿名文档
+
+### Syntax
+
+    <<EndOfMessage
+    ...
+    ...
+    EndOfMessage
+
+* 起始标签与结束标签`可自定义`，但`必须一致`，比如`EOF`, `HEREDOC`
+* 起始标签前边需加上`<<`，不需要首列开始，`<<`与标签文本间可以包含0或多个空格
+* 结束标签必须`首列开始`，且`单独一行`。也即前后都不能有空白字符
+
+
+### Examples
+
+1. 直接输出，其中`$NAME`会进行`变量替换`。
+
+        cat <<EOF
+            Hello, World!
+            My name is $NAME
+            Yes
+            No
+        EOF
+
+
+2. 不带参数替换的Here Document，只需将`起始标志符`用`单引号`包围起来，`$NAME`原样输出。
+
+        cat <<'EOF'
+            Hello, World!
+            My name is $NAME
+            Yes
+            No
+        EOF
+
+
+3. 捕获Here文档内容进入`管道`，使用`命令组合`：
+
+        (
+        cat <<'EOF'
+            Hello, World!
+            My name is $NAME
+            Yes
+            No
+        EOF
+        ) > output_file
+
+    或者使用`backtick`：
+
+        echo `
+        cat <<'EOF'
+            Hello, World!
+            My name is $NAME
+            Yes
+            No
+        EOF
+        ` > output_file
+
+4. 捕获Here文档内容进入变量，使用`命令组合`：
+
+        STRING=$(
+        cat <<EOF
+            Hello, World!
+            My name is $NAME
+            Yes
+            No
+        EOF
+        )
+
+    或者使用`backtick`：
+
+        STRING=`
+        cat <<EOF
+            Hello, World!
+            My name is $NAME
+            Yes
+            No
+        EOF
+        `
+
+5. 使用Here文档，提供交互指令
+
+        rm docs.tar.gz
+        tar zcvf docs.tar.gz docs
+        ftp username@ftp.server.com <<EOF
+        cd wwwroot
+        ls
+        put docs.tar.gz
+        EOF
+
+
+
+
 ## diff
 
 ### Syntax
@@ -769,100 +865,6 @@ todo
     cat /etc/issue
     # 适用于redhat
     cat /etc/redhat-release
-
-
-
-## Here Documents
-
-> 在命令行中使用匿名文档
-
-### Syntax
-
-    <<EndOfMessage
-    ...
-    ...
-    EndOfMessage
-
-* 起始标签与结束标签`可自定义`，但`必须一致`，比如`EOF`, `HEREDOC`
-* 起始标签前边需加上`<<`，不需要首列开始，`<<`与标签文本间可以包含0或多个空格
-* 结束标签必须`首列开始`，且`单独一行`。也即前后都不能有空白字符
-
-
-### Examples
-
-1. 直接输出，其中`$NAME`会进行`变量替换`。
-
-        cat <<EOF
-            Hello, World!
-            My name is $NAME
-            Yes
-            No
-        EOF
-
-
-2. 不带参数替换的Here Document，只需将起始标志符用`单引号扩起来`，`$NAME`原样输出。
-
-        cat <<'EOF'
-            Hello, World!
-            My name is $NAME
-            Yes
-            No
-        EOF
-
-
-3. 捕获Here文档内容进入`管道`，使用`命令组合`：
-
-        (
-        cat <<'EOF'
-            Hello, World!
-            My name is $NAME
-            Yes
-            No
-        EOF
-        ) > output_file
-
-    或者使用`backtick`：
-
-        echo `
-        cat <<'EOF'
-            Hello, World!
-            My name is $NAME
-            Yes
-            No
-        EOF
-        ` > output_file
-
-4. 捕获Here文档内容进入变量，使用`命令组合`：
-
-        STRING=$(
-        cat <<EOF
-            Hello, World!
-            My name is $NAME
-            Yes
-            No
-        EOF
-        )
-
-    或者使用`backtick`：
-
-        STRING=`
-        cat <<EOF
-            Hello, World!
-            My name is $NAME
-            Yes
-            No
-        EOF
-        `
-
-5. 使用Here文档，提供交互指令
-
-        rm docs.tar.gz
-        tar zcvf docs.tar.gz docs
-        ftp username@ftp.server.com <<EOF
-        cd wwwroot
-        ls
-        put docs.tar.gz
-        EOF
 
 
 

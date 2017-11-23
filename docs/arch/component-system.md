@@ -7,8 +7,8 @@
 @import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
 </style>
 <script src="http://258i.com/static/build/babel/babel.min.js"></script> 
-<script src="http://258i.com/static/bower_components/react/react.min.js"></script>
-<script src="http://258i.com/static/bower_components/react/react-dom.min.js"></script>
+<script src="http://258i.com/static/bower_components/react/react.js"></script>
+<script src="http://258i.com/static/bower_components/react/react-dom.js"></script>
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 
 
@@ -159,6 +159,12 @@
 * box负责`下一级`子box的`尺寸仲裁`
 
 
+### 171123
+
+* arbitrate, arbitration - 仲裁
+* Box接收子Box的size变化请求，仲裁计算后，下发给子Box
+* Box自身size变化，仲裁计算后，下发给子Box
+* 父子Box存在`耦合交互`，须同React-Router实现类似，使用`context`进行父子通信
 
 
 ## Box
@@ -223,15 +229,23 @@
     const RESIZE_STATE_HOVER = 3;
     const RESIZE_STATE_RESIZABLE = 4;
     const RESIZE_STATE_RESIZING = 5;
+    let cuid = 1;
 
     class Box extends React.Component {
 
-        constructor( props ) {
+        constructor( props, context ) {
             super( props );
 
+            this.cuid = cuid++;
             this.isFocused = 0;
             this.isDragging = 0;
             this.resizeState = RESIZE_STATE_DISTABLED;
+
+            console.log( context.arbitrator );
+        }
+
+        getChildContext() {
+            return { arbitrator: this.cuid };
         }
 
         render() {
@@ -287,7 +301,6 @@
 
         enableResize = ( type ) => {
             let box = this.refs.box;
-            console.log( 'enableResize ' + type );
 
             this.resizeState = RESIZE_STATE_HOVER;
 
@@ -300,7 +313,6 @@
 
         disableResize = () => {
             let box = this.refs.box;
-            console.log( 'disableResize' );
 
             this.resizeState = RESIZE_STATE_CAPTURE_HOVER;
 
@@ -520,7 +532,6 @@
 
         on_border_resizing = ( e ) => {
             this.resizeState = RESIZE_STATE_RESIZING;
-            console.log( 'border resizing' );
         }
 
         on_border_resize_end = ( e ) => {
@@ -528,7 +539,6 @@
             // this.resizeState = RESIZE_STATE_CAPTURE_HOVER;
             this.disableResize();
 
-            console.log( 'border stop resizing' );
 
             document.removeEventListener(
                 'mousemove'
@@ -548,6 +558,14 @@
     
     Box.defaultProps = {
         log: console.log
+    };
+
+    Box.contextTypes = {
+        arbitrator: React.PropTypes.number
+    };
+
+    Box.childContextTypes = {
+        arbitrator: React.PropTypes.number
     };
 
     window.Box = Box;
@@ -574,8 +592,13 @@
                 >
                 <Box 
                     styles={{ height: '120px', width: '220px' }}
-                    log={s.append_show}        
-                    />
+                    log={s.append_show}
+                    >        
+                    <Box 
+                        styles={{ height: '100px', width: '100px' }}
+                        log={s.append_show}        
+                        />
+                </Box>
                 <Box 
                     styles={{ height: '160px', width: '200px' }}
                     log={s.append_show}        
