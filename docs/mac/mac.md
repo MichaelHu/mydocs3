@@ -2,6 +2,17 @@
 
 > mac使用小提示
 
+<style type="text/css">
+pre.special-chars {
+    border: none;
+}
+pre.special-chars code {
+    letter-spacing: 15px;
+    font: normal normal 100 20px/26px Courier;
+    color: #ff7f0e;
+}
+</style>
+
 
 ## Mac OS Versions
 
@@ -19,6 +30,11 @@
     Mac OS X Jaguar             10.2        2002-08-24
     Mac OS X Puma               10.1        2001-09-25
     Mac OS X Cheetah            10.0        2001-03-24
+
+
+## macOS High Sierra更新
+
+* `Caps lock`按钮默认用于中英文输入法切换；`长按`用于大小写切换
 
 
 ## CTRL-H
@@ -62,21 +78,21 @@
 
 ### 不按修饰健
 
-    `1234567890-=
+    @[class="special-chars"]`1234567890-=
     qwertyuiop[]\
     asdfghjkl;'
     zxcvbnm,./
 
 ### 按下alt
 
-    `¡™£¢∞§¶•ªº–≠
+    @[class="special-chars"]`¡™£¢∞§¶•ªº–≠
     œ∑´®†¥¨ˆøπ“‘«
     åß∂ƒ©˙∆˚¬…æ
     Ω≈ç√∫˜µ≤≥÷
 
 ### 按下alt + shift
 
-    `⁄€‹›ﬁﬂ‡°·‚—±
+    @[class="special-chars"]`⁄€‹›ﬁﬂ‡°·‚—±
     Œ„´‰ˇÁ¨ˆØ∏”’»
     ÅÍÎÏ˝ÓÔÒÚÆ
     ¸˛Ç◊ı˜Â¯˘¿
