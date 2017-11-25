@@ -228,7 +228,7 @@
 
 * `resize`事件响应，需触发box及子孙box的尺寸重计算
 * `arbitrator`需要管理子box列表，每个列表项包含：
-        box: { x: ..., y: ..., w: ..., h: ... }
+        box: { left: ..., top: ..., width: ..., height: ... }
         , adjBoxes: {
             e: [ box1, ... ]
             , s: [ box1, ... ]
@@ -249,6 +249,7 @@
         }
 
         register( subBox ) {
+            console.log( 'register ' + subBox.cuid );
         }
 
         onResize() {
@@ -333,13 +334,30 @@
 
         constructor( props, context ) {
             super( props );
+            let  me = this;
 
-            this.cuid = cuid++;
-            this.isFocused = 0;
-            this.isDragging = 0;
-            this.resizeState = RESIZE_STATE_DISTABLED;
-            this.arbitrator = new Arbitrator();
-            this.parentArbitrator = context.arbitrator;
+            me.cuid = cuid++;
+            me.top = props.top || 0;
+            me.left = props.left || 0;
+            me.width = props.width || 100;
+            me.height = props.height || 50;
+            me.styles = {
+                top: me.top + 'px'
+                , left: me.left + 'px'
+                , width: me.width + 'px'
+                , height: me.height + 'px'
+            };
+
+            me.isFocused = 0;
+            me.isDragging = 0;
+            me.resizeState = RESIZE_STATE_DISTABLED;
+
+            me.arbitrator = new Arbitrator();
+            me.parentArbitrator = context.arbitrator;
+
+            if ( me.parentArbitrator ) {
+                me.parentArbitrator.register( me );
+            }
 
             console.log( context.arbitrator );
         }
@@ -350,7 +368,7 @@
 
         render() {
             return (
-                <div className="box" style={this.props.styles} ref="box">
+                <div className="box" style={this.styles} ref="box">
                     <div className="box__header" ref="header">Title</div>
                     <div className="box__content">
                         { this.props.children }
@@ -512,6 +530,8 @@
             if ( nx > pContentWidth - 10 ) nx = pContentWidth - 10;
             if ( ny > pContentHeight - 10 ) ny = pContentHeight - 10;
 
+            this.left = nx;
+            this.top = ny;
             box.style.left = nx + 'px';
             box.style.top = ny + 'px';
         }
@@ -686,27 +706,14 @@
     @[data-script="babel"](function(){
 
         var s = fly.createShow('#test_Box');
-        s.show(1);
-        s.append_show(2);
+        s.show( 'testing' );
 
         ReactDOM.render( 
-            <Box 
-                styles={{ height: '260px', width: '400px' }}
-                log={s.append_show}        
-                >
-                <Box 
-                    styles={{ height: '120px', width: '220px' }}
-                    log={s.append_show}
-                    >        
-                    <Box 
-                        styles={{ height: '100px', width: '100px' }}
-                        log={s.append_show}        
-                        />
+            <Box height="260" width="400">
+                <Box height="120" width="220">        
+                    <Box height="80" width="100" />
                 </Box>
-                <Box 
-                    styles={{ height: '160px', width: '200px' }}
-                    log={s.append_show}        
-                    />
+                <Box height="160" width="200" />
             </Box>
             , document.querySelector( '#test_Box .test-panel' ) 
         );
