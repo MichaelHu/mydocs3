@@ -14,7 +14,20 @@ CONNECT指令后，进行二进制的数据读取即可。
 
 
 
+## squid
 
+vps服务器：虚拟专享服务器
+
+    http://www.squid-cache.org/Versions/v3/3.3/squid-3.3.13.tar.bz2
+
+    http://www.squid-cache.org/Versions/v3/3.4/
+    http://www.squid-cache.org/Versions/v3/3.4/squid-3.4.14-20160509-r13240.tar.bz2
+    http://www.squid-cache.org/Versions/v3/3.4/cfgman/
+
+    $ ./configure --help
+    $ ./configure --prefix=/home/hudamin/softwares/squid
+    $ make
+    $ make install
 
 
 

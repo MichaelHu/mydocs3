@@ -224,6 +224,47 @@
 * 同级box的层叠顺序，须引入z-index，获得focus的box是否需要拉到最前面？
 
 
+### 171125
+
+* `resize`事件响应，需触发box及子孙box的尺寸重计算
+* `arbitrator`需要管理子box列表，每个列表项包含：
+        box: { x: ..., y: ..., w: ..., h: ... }
+        , adjBoxes: {
+            e: [ box1, ... ]
+            , s: [ box1, ... ]
+            , w: [ box1, ... ]
+            , n: [ box1, ... ]
+            , se: [ box1, ... ]
+            , sw: [ box1, ... ]
+        }
+
+
+
+## Arbitrator
+
+子box尺寸仲裁中心
+
+    @[data-script="babel"]class Arbitrator {
+        constructor( box, options ) {
+        }
+
+        register( subBox ) {
+        }
+
+        onResize() {
+            console.log( 'onResize' );
+        }
+
+        onSubBoxResize() {
+            console.log( 'onSubBoxResize' );
+        }
+    }
+
+    window.Arbitrator = Arbitrator;
+
+
+
+
 ## Box
 
 ### css
@@ -297,12 +338,14 @@
             this.isFocused = 0;
             this.isDragging = 0;
             this.resizeState = RESIZE_STATE_DISTABLED;
+            this.arbitrator = new Arbitrator();
+            this.parentArbitrator = context.arbitrator;
 
             console.log( context.arbitrator );
         }
 
         getChildContext() {
-            return { arbitrator: this.cuid };
+            return { arbitrator: this.arbitrator };
         }
 
         render() {
@@ -589,6 +632,8 @@
 
         on_border_resizing = ( e ) => {
             this.resizeState = RESIZE_STATE_RESIZING;
+            this.parentArbitrator 
+                && this.parentArbitrator.onSubBoxResize();
         }
 
         on_border_resize_end = ( e ) => {
@@ -618,14 +663,16 @@
     };
 
     Box.contextTypes = {
-        arbitrator: React.PropTypes.number
+        arbitrator: React.PropTypes.instanceOf( Arbitrator )
     };
 
     Box.childContextTypes = {
-        arbitrator: React.PropTypes.number
+        arbitrator: React.PropTypes.instanceOf( Arbitrator )
     };
 
     window.Box = Box;
+
+
 
 
 
