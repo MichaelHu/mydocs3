@@ -1241,6 +1241,51 @@ gtop: <https://github.com/aksakalli/gtop>，node实现的终端可视化监控�
     github.com mail is handled by 10 ALT3.ASPMX.L.GOOGLE.com.
 
 
+### hostname
+
+    mac
+        hostname [-fs] [name-of-host]
+    linux
+        hostname [-v]
+        hostname [-v] [-d|-f|-s|-a|-i|-y|-A|-I]
+        hostname [-v] {hostname|-F file}
+
+主要在`linux`下使用，比如：
+
+    $ hostname [-i|--ip-address]        # 显示ip地址
+    $ hostname [-I|--allip-address]     # 显示所有关联的ip地址
+
+    
+
+
+### ping
+
+> send `ICMP ECHO_REQUEST` packets to network hosts
+
+
+    ping [ -LRUbdfnqrvVaAB]  [ -c count]  [ -i interval]  [ -l preload]  \
+        [ -p pattern]  [ -s packetsize]  [ -t ttl]  [ -w deadline]  [ -F flowlabel]  \
+        [ -I interface]  [ -M hint]  [ -Q tos]  [ -S sndbuf]  [ -T timestamp option]  \
+        [  -W timeout]  [ hop ...]  destination
+
+    $ ping baidu.com
+
+* `ICMP`协议
+* 常用于测试目标机器的`连通性`
+
+    
+### telnet
+
+> user interface to the `TELNET` protocol
+
+    telnet [-8EFKLacdfrx] [-X authtype] [-b hostalias] [-e escapechar] [-k realm] \
+        [-l user] [-n tracefile] [host [port]]
+
+    $ telnet 132.148.22.238 3128
+
+* `telnet`协议，相较ssh协议，其明文传输安全性得不到保障，现已基本被ssh取代
+* 常用语测试目标机器的`网络端口`是否打开
+
 
 
 ## xargs
