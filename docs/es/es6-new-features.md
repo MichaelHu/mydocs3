@@ -113,9 +113,10 @@ import.js:
 
 * 参数部分与`=>`之间不能有换行
 * `this`关键字在函数体中能直接体现当前上下文的this，不同于function内的this
-* 简单情况下`()`与`{}`可以省略。省略`{}`时，`return`关键字也可省略
+* 简单情况下`()`与`{}`可以省略。省略`{}`时，`return`关键字也可省略（实际上`必须省略`）
         
         a => a + 5                          // (), {}, return都省略
+        a => return a + 5                   // 此处的return是不合法的，必须省略
         ( a, b ) => a + b                   // 省略{}, return
         ( a, b ) => { name: a, age: b }     // 错误写法：返回值包含{}，不能省略{}以及return
         ( a, b ) => {                       // 正确写法，都不能省略
@@ -168,7 +169,8 @@ import.js:
 * 浅谈ES6中`super`关键字 <http://www.cnblogs.com/liutie1030/p/5997446.html>
 * `Note`: `class`也是具有`块级作用域`的关键字
 * 如果带`extends`关键词进行`继承`，那么在`constructor`中，`super()`需在`this`关键词可用`之前`完成调用
-* 类字段 - class field
+* 如果类没有继承自其他类，那么就`不能`在constructor中使用`super()`
+* 类字段 - class field ( babel presets: `stage-0` )
 
 
 

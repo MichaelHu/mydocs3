@@ -100,7 +100,7 @@
 
 ### 171118
 
-* `hover`状态下，box上的`mousedown`事件，需要`阻止冒泡`，避免触发document的mousedown，从而响应focus处理
+* <s>`hover`状态下，box上的`mousedown`事件，需要`阻止冒泡`，避免触发document的mousedown，从而响应focus处理</s>
 * `resize`过程的状态流转：
 
                            ======================               
@@ -240,25 +240,119 @@
 
 
 
+### 171128
+
+* box的resize可能触发`兄弟box`的resize，以及`子box`的resize，但不能触发`父box`的resize；父box充当尺寸仲裁
+* `Arbitrator.onResize()` - 对应的box发生size变化时调用
+* `Arbitrator.onSubBoxResize()` - 子box发生size变化时调用
+* `Arbitrator.resize()` - 对子box进行尺寸仲裁
+* 在`box-a`上操作边的拖动，以进行resize，此时的响应过程：
+    * box-a若存在`parentAribitrator`，由box-a调用`parentArbitrator.onSubBoxResize()`；若box不存在parentArbitrator，则不响应
+    * `parentArbitrator`计算获得新的size后，通过触发子box的`Arbitrator.onResize()`派发给所有子box，其间，`box-a`作为子box之一，也用新的size调用`Arbitrator.onResize()`，若box-a包含子box，arbitrator将根据新的size计算所有子box的新size，并派发给所有子box
+
+* `resize`调用过程：
+
+        resize
+            parentArbitrator.onSubBoxResize()
+                parentArbitrator.resize()
+                    subBox1.arbitrator.onResize()
+                    subBox2.arbitrator.onResize()
+                        subBox2.arbitrator.resize()
+                            subBox2_1.arbitrator.onResize()
+                            subBox2_2.arbitrator.onResize()
+                            ...
+                            subBox2_n.arbitrator.onResize()
+                    ...
+                    subBoxn.arbitrator.onResize()
+
+* `初始化`调用过程：
+
+        rootArbitrator.onResize()
+            rootArbitrator.resize()
+                subBox1.arbitrator.onResize()
+                subBox2.arbitrator.onResize()
+                    subBox2.arbitrator.resize()
+                        subBox2_1.arbitrator.onResize()
+                        subBox2_2.arbitrator.onResize()
+                        ...
+                        subBox2_n.arbitrator.onResize()
+                ...
+                subBoxn.arbitrator.onResize()
+
+
+
 ## Arbitrator
 
-子box尺寸仲裁中心
+> box尺寸仲裁中心
+
+* 通过`arbitrator.register()`方法注册子box，内部使用数据结构保存对子box的引用
+* componentDidMount事件中，由`root box`调用其对应`arbitrator.initializeSubBoxLayout()`执行子box的布局初始化
+* box支持`props.isRootBox`属性，声明当前box为root box；通过root box特性，可以中断context中的`arbitrator链`
+
+
+### 代码实现
 
     @[data-script="babel"]class Arbitrator {
         constructor( box, options ) {
+            if ( ! box instanceof Box ) {
+                throw Error( 'Arbitrator constructor: box must be instance of Box' );
+            }
+            this.box = box;
+            this.subBoxLayoutInitialized = false;
+            this.subBoxes = [];
+            this.adjBoxes = {};
         }
 
         register( subBox ) {
+            if ( ! subBox instanceof Box ) {
+                throw Error( 'Arbitrator register(): subBox must be instance of Box' );
+            }
             console.log( 'register ' + subBox.cuid );
+            this.subBoxes.push( subBox );
+        }
+
+        initializeSubBoxLayout() {
+            if ( this.subBoxes.length ) {
+                console.log( 
+                    'initializeSubBoxLayout: '
+                    + this.subBoxes.map( ( box ) => 'box ' + box.cuid )
+                        .join( '; ' )
+                );
+            }
+            this.subBoxLayoutInitialized = true;
+        }
+
+        arbitrateSubBoxLayout() {
+            console.log(
+                'arbitrateSubBoxLayout: '
+                + this.subBoxes.map( ( box ) => 'box ' + box.cuid )
+                    .join( '; ' )
+            );
+        }
+
+        resize() {
+            if ( !this.subBoxLayoutInitialized ) {
+                this.initializeSubBoxLayout();
+            }
+            else {
+                this.arbitrateSubBoxLayout();
+            }
+            console.log( 'resize arbitration: on box ' + this.box.cuid );
+            this.subBoxes.forEach( ( box ) => {
+                box.arbitrator.onResize();
+            } );
         }
 
         onResize() {
-            console.log( 'onResize' );
+            console.log( 'onResize: on box ' + this.box.cuid );
+            this.resize();
         }
 
         onSubBoxResize() {
-            console.log( 'onSubBoxResize' );
+            console.log( 'onSubBoxResize: on box ' + this.box.cuid );
+            this.resize();
         }
+
     }
 
     window.Arbitrator = Arbitrator;
@@ -347,19 +441,22 @@
                 , width: me.width + 'px'
                 , height: me.height + 'px'
             };
+            me.isRootBox = props.isRootBox || 0;
 
             me.isFocused = 0;
             me.isDragging = 0;
             me.resizeState = RESIZE_STATE_DISTABLED;
 
-            me.arbitrator = new Arbitrator();
-            me.parentArbitrator = context.arbitrator;
+            me.arbitrator = new Arbitrator( me );
+            if ( ! me.isRootBox ) {
+                me.parentArbitrator = context.arbitrator;
+            }
 
             if ( me.parentArbitrator ) {
                 me.parentArbitrator.register( me );
             }
 
-            console.log( context.arbitrator );
+            // console.log( context.arbitrator );
         }
 
         getChildContext() {
@@ -378,9 +475,15 @@
         }
 
         componentDidMount() {
-            this.enableDraggable();
-            this.enableFocus();
-            this.enableHover();
+            let me = this;
+
+            // initialize
+            if ( me.isRootBox ) {
+                me.arbitrator.onResize();
+            }
+            me.enableDraggable();
+            me.enableFocus();
+            me.enableHover();
         }
 
         componentWillUnmount() {
@@ -647,7 +750,7 @@
                 , false
             );
 
-            e.stopPropagation();
+            // e.stopPropagation();
         }
 
         on_border_resizing = ( e ) => {
@@ -709,7 +812,7 @@
         s.show( 'testing' );
 
         ReactDOM.render( 
-            <Box height="260" width="400">
+            <Box height="260" width="400" isRootBox>
                 <Box height="120" width="220">        
                     <Box height="80" width="100" />
                 </Box>
