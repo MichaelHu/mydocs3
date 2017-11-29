@@ -183,12 +183,12 @@
         包含子box数，及对应的默认布局：
             L x C
 
-            L * L       ->      L x ( L + 1 ), L >= 1
-            =========================================
-            1 * 1       ->      1 x 2
-            2 * 1.x     ->      2 x 3
-            3 * 2.x     ->      3 x 4
-            4 * 3.x     ->      4 x 5
+            L * ( L - 1 ).x     ->      L x ( L + 1 ), L >= 1
+            ===================================================
+            1 * 1               ->      1 x 2
+            2 * 1.x             ->      2 x 3
+            3 * 2.x             ->      3 x 4
+            4 * 3.x             ->      4 x 5
             
         1个box，则4边贴壁
         2个box，默认为左右布局
@@ -281,6 +281,78 @@
 
 
 
+### 171129
+
+* `window.resize`事件响应，确保box的size属性与DOM相匹配
+* 初始化布局逻辑
+    * 先获取`subBoxGrid`结构
+    * 计算每个subBox的`left, top, width, height`属性
+    * 触发每个subBox的`onResize()`
+* box content高度获取及更新
+* `平铺`模式下，header的drag需要disable掉 
+
+
+### 171130
+
+* `resize`逻辑开发及调试
+
+
+
+## utils
+
+    @[data-script="babel-loose"]var utils = ( function() {
+
+        function extend( target, ...sources ) {
+            for ( let i = 0; i < sources.length; i++ ) {
+                let source = sources[ i ];
+                for ( let key in source ) {
+                    if ( source.hasOwnProperty( key ) ) {
+                        target[ key ] = source[ key ];
+                    }
+                }
+            }
+            return target;
+        }
+
+        function extendOnly( target, ...others ) {
+            let len = others.length 
+                , sources = [].slice.call( others, 0, len - 1 )
+                , keys = others[ len - 1 ] 
+                ;
+            for ( let i = 0; i < sources.length; i++ ) {
+                let source = sources[ i ];
+                for ( let key in source ) {
+                    if ( source.hasOwnProperty( key ) && keys.indexOf( key ) >= 0 ) {
+                        target[ key ] = source[ key ];
+                    }
+                }
+            }
+            return target;
+        }
+
+        function defaults( target, ...sources ) {
+            for ( let i = 0; i < sources.length; i++ ) {
+                let source = sources[ i ];
+                for ( let key in source ) {
+                    if ( source.hasOwnProperty( key ) && target[ key ] == undefined ) {
+                        target[ key ] = source[ key ];
+                    }
+                }
+            }
+            return target;
+        }
+
+        return {
+            extend
+            , extendOnly
+            , defaults
+        };
+
+    } )();
+
+
+
+
 ## Arbitrator
 
 > box尺寸仲裁中心
@@ -294,13 +366,15 @@
 
     @[data-script="babel"]class Arbitrator {
         constructor( box, options ) {
-            if ( ! box instanceof Box ) {
+            let me = this;
+            me.opt = options || {};
+            if ( ! me.opt.debug && ! box instanceof Box ) {
                 throw Error( 'Arbitrator constructor: box must be instance of Box' );
             }
-            this.box = box;
-            this.subBoxLayoutInitialized = false;
-            this.subBoxes = [];
-            this.adjBoxes = {};
+            me.box = me.opt.debug ? { width: 300, height: 300, top: 0, left: 0 } : box;
+            me.subBoxLayoutInitialized = false;
+            me.subBoxes = [];
+            me.adjBoxes = {};
         }
 
         register( subBox ) {
@@ -312,14 +386,100 @@
         }
 
         initializeSubBoxLayout() {
-            if ( this.subBoxes.length ) {
+            let me = this;
+            if ( me.subBoxes.length ) {
                 console.log( 
                     'initializeSubBoxLayout: '
-                    + this.subBoxes.map( ( box ) => 'box ' + box.cuid )
+                    + me.subBoxes.map( ( box ) => 'box ' + box.cuid )
                         .join( '; ' )
                 );
             }
-            this.subBoxLayoutInitialized = true;
+            
+            me.getDefaultLayout();
+            me.subBoxLayoutInitialized = true;
+        }
+
+        getDefaultLayout( total ) {
+            let me = this;
+            total = total || me.subBoxes.length;
+
+            let grid = me.getSubBoxGrid( total );
+            let lineCount = grid.length;
+            let contWidth = me.box.width;
+            let contHeight = me.box.contentHeight;
+            let lineHeight = contHeight / lineCount;
+            let j = 0;
+            let layoutData = [];
+
+            console.log( 'Arbitrator.getDefaultLayout(): on box ' + me.box.cuid );
+
+            if ( me.opt.debug ) {
+                while( j < total ) {
+                    let coords = getCoords( j );
+                    let params = getBoxParams( coords );
+                    layoutData.push( params );
+                    j++;
+                } 
+            }
+            else {
+                me.subBoxes.forEach( ( box, index ) => {
+                    let coords = getCoords( index );
+                    let params = getBoxParams( coords );
+                    layoutData.push( params );
+                    utils.extend( box, params );
+                } );
+            }
+
+            return layoutData;
+
+            function getBoxParams( coords ) {
+                let { ln, col } = coords;
+                let left, top, width, height;
+                let colWidth = contWidth / grid[ ln ];  
+                left = colWidth * col;
+                top = lineHeight * ln;
+                width = colWidth;
+                height = lineHeight;
+                return { left, top, width, height };
+            }
+            
+            function getCoords( index ) {
+                let ln = 0, col = 0;
+                let i = 0, colsOfLine;
+                while ( ln < lineCount && i <= index ) {
+                    colsOfLine = grid[ ln ];
+                    col = 0;
+                    while( col < colsOfLine && i <= index ) {
+                        if( i == index ) {
+                            return { ln, col };
+                        }
+                        i++;
+                        col++;
+                    }
+                    ln++;
+                }
+            }
+        }
+
+        getSubBoxGrid( total ) {
+            let me = this;
+            total = total || me.subBoxes.length;
+            let lineCount = Math.floor( Math.sqrt( total ) );
+            if ( lineCount * ( lineCount + 1 ) < total ) {
+                lineCount++;
+            }
+            let lines = [];
+            let i = lineCount;
+            while( i > 0 ) {
+                lines.push( lineCount - 1 );
+                i--;
+            }
+            let j = lineCount * ( lineCount - 1 ) + 1;
+            while ( j++ <= total ) {
+                lines[ i ]++;
+                i = ( i + 1 ) % lineCount;
+            }
+            return lines;
         }
 
         arbitrateSubBoxLayout() {
@@ -344,8 +504,10 @@
         }
 
         onResize() {
-            console.log( 'onResize: on box ' + this.box.cuid );
-            this.resize();
+            let me = this;
+            console.log( 'onResize: on box ' + me.box.cuid );
+            me.box.updateParams();
+            me.resize();
         }
 
         onSubBoxResize() {
@@ -359,6 +521,55 @@
 
 
 
+### ut
+
+<div id="test_ut_arbitrator" class="test">
+<div class="test-container">
+
+    @[data-script="babel editable"](function(){
+
+        var s = fly.createShow('#test_ut_arbitrator');
+        var ar = new Arbitrator( null, { debug: 1 } );
+        s.show( 'testing getSubBoxGrid():' );
+
+        var cases = [
+                "ar.getSubBoxGrid( 1 ).join( ',' ) == '1'" 
+                , "ar.getSubBoxGrid( 2 ).join( ',' ) == '2'" 
+                , "ar.getSubBoxGrid( 3 ).join( ',' ) == '2,1'" 
+                , "ar.getSubBoxGrid( 4 ).join( ',' ) == '2,2'" 
+                , "ar.getSubBoxGrid( 5 ).join( ',' ) == '3,2'" 
+                , "ar.getSubBoxGrid( 6 ).join( ',' ) == '3,3'" 
+                , "ar.getSubBoxGrid( 7 ).join( ',' ) == '3,2,2'" 
+                , "ar.getSubBoxGrid( 8 ).join( ',' ) == '3,3,2'" 
+                , "ar.getSubBoxGrid( 9 ).join( ',' ) == '3,3,3'" 
+                , "ar.getSubBoxGrid( 12 ).join( ',' ) == '4,4,4'" 
+                , "ar.getSubBoxGrid( 18 ).join( ',' ) == '5,5,4,4'" 
+                , "ar.getSubBoxGrid( 28 ).join( ',' ) == '6,6,6,5,5'" 
+            ];
+
+        cases.forEach( ( kase ) => {
+            s.append_show( eval( kase ), kase );
+        } );
+
+        s.append_show( '\ntesting getDefaultLayout():' );
+        var layout = ar.getDefaultLayout( 5 );
+        s.append_show( layout.length == 5, 'layout.length == 5' );
+        s.append_show( layout[ 0 ].left === 0 && layout[ 0 ].top === 0
+                , 'item 0: left == 0 && top == 0' );
+        s.append_show( layout[ 0 ].width === 100 && layout[ 0 ].height === 150
+                , 'item 0: width == 100 && height == 150' );
+        s.append_show( layout[ 3 ].left === 0 && layout[ 3 ].top === 150
+                , 'item 3: left == 0 && top == 150' );
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
 
 ## Box
 
@@ -367,7 +578,7 @@
     @[data-script="html"]<style type="text/css">
         .box-container {
             position: relative;
-            height: 300px;
+            height: 500px;
             overflow: hidden;
             background-color: #333;
         }
@@ -467,7 +678,7 @@
             return (
                 <div className="box" style={this.styles} ref="box">
                     <div className="box__header" ref="header">Title</div>
-                    <div className="box__content">
+                    <div className="box__content" ref="content">
                         { this.props.children }
                     </div>
                 </div>
@@ -487,6 +698,20 @@
         }
 
         componentWillUnmount() {
+        }
+
+        updateParams() {
+            let me = this;
+            console.log( 'Box.updateParams(): on box ' + me.cuid );
+            let box = me.refs.box;
+            let content = me.refs.content;
+
+            box.style.left = me.left + 'px';
+            box.style.top = me.top + 'px';
+            box.style.width = me.width + 'px';
+            box.style.height = me.height + 'px';
+
+            me.contentHeight = content.offsetHeight; 
         }
 
         enableFocus = () => {
@@ -812,7 +1037,7 @@
         s.show( 'testing' );
 
         ReactDOM.render( 
-            <Box height="260" width="400" isRootBox>
+            <Box height="300" width="500" isRootBox>
                 <Box height="120" width="220">        
                     <Box height="80" width="100" />
                 </Box>
