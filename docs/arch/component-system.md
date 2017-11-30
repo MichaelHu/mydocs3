@@ -971,15 +971,15 @@
                 if ( xRightHit && yBottomHit ){
                     resizeType = 'se-resize';
                 }
+                else if ( xLeftHit && yBottomHit ) {
+                    resizeType = 'sw-resize';
+                }
                 else if ( xRightHit ) {
                     resizeType = 'e-resize';
                 } 
                 else if ( yBottomHit ) {
                     resizeType = 's-resize';
                 } 
-                else if ( xLeftHit && yBottomHit ) {
-                    resizeType = 'sw-resize';
-                }
                 else if ( xLeftHit ) {
                     resizeType = 'w-resize';
                 }
@@ -997,6 +997,7 @@
             }
             else {
                 // box.style.cursor = resizeType;
+                _resetDefault();
                 $( box ).addClass( 'box_' + resizeType );
                 this.enableResize( resizeType );
             }
