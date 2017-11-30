@@ -21,6 +21,7 @@
 * MUX - 百度用户体验中心: <http://mux.baidu.com>
 * 饿了么前端知乎专栏：<https://zhuanlan.zhihu.com/ElemeFE>
 * 百度AI开放平台 <http://ai.baidu.com>
+* FEG - 网易FEG前端团队 <http://feg.netease.com>
 
 ## 技术站点
 

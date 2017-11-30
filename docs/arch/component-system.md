@@ -100,7 +100,7 @@
 
 ### 171118
 
-* <s>`hover`状态下，box上的`mousedown`事件，需要`阻止冒泡`，避免触发document的mousedown，从而响应focus处理</s>
+* `hover`状态下，<s>box上的`mousedown`事件，需要`阻止冒泡`，避免触发document的mousedown，从而响应focus处理</s>，需要阻止`默认行为`，主要避免后续的mousemove触发图片或文本等的选中或拖放行为
 * `resize`过程的状态流转：
 
                            ======================               
@@ -295,6 +295,16 @@
 ### 171130
 
 * `resize`逻辑开发及调试
+* 限制：`border`本身不作为元素的`响应区`，`padding`会作为响应区
+* `!重要`：box`不设置border`样式，一律使用`border: none;`，另外的角度将，box作为`framebox`，无外边距、边框、内边距是合适的。
+* `resize`的鼠标样式若只是设置在box上，若box内部有其他元素，且有默认`鼠标样式`，则无法显示正确鼠标样式。所以需要使用`设置class`的方式，不仅设置box本身，还设置box的`子孙元素`，比如：
+
+        .box_w-resize {
+            cursor: w-resize;
+        }
+        .box_w-resize * {
+            cursor: w-resize;
+        }
 
 
 
@@ -586,10 +596,42 @@
             position: absolute;
             top: 0;
             left: 0;
-            border: 1px solid #ccc;
+            /* border: 10px solid #ccc; */
+            border: none;
         }
         .box_focus {
             box-shadow: 0px 0px 2px 1px #ff7f0e;
+        }
+        /* cursor style */
+        .box_se-resize {
+            cursor: se-resize;
+        }
+        .box_se-resize * {
+            cursor: se-resize;
+        }
+        .box_sw-resize {
+            cursor: sw-resize;
+        }
+        .box_sw-resize * {
+            cursor: sw-resize;
+        }
+        .box_e-resize {
+            cursor: e-resize;
+        }
+        .box_e-resize * {
+            cursor: e-resize;
+        }
+        .box_s-resize {
+            cursor: s-resize;
+        }
+        .box_s-resize * {
+            cursor: s-resize;
+        }
+        .box_w-resize {
+            cursor: w-resize;
+        }
+        .box_w-resize * {
+            cursor: w-resize;
         }
         .box__header {
             position: absolute;
@@ -789,6 +831,7 @@
             else {
                 $( box ).addClass( 'box_focus' );
                 this.isFocused = 1;
+                console.log( 'mousedown on box: ' + this.cuid );
             }
         }
 
@@ -900,8 +943,10 @@
             let parentBox = box.parentNode;
             let headerRect = header.getBoundingClientRect();
             let boxRect = box.getBoundingClientRect();
+            // viewport coords
             let vx = e.clientX;
             let vy = e.clientY;
+            // content coords
             let cx = vx - boxRect.left;
             let cy = vy - boxRect.top;
 
@@ -951,12 +996,20 @@
                 this.disableResize();
             }
             else {
-                box.style.cursor = resizeType;
+                // box.style.cursor = resizeType;
+                $( box ).addClass( 'box_' + resizeType );
                 this.enableResize( resizeType );
             }
 
             function _resetDefault() {
-                box.style.cursor = 'default';
+                // box.style.cursor = 'default';
+                [ 
+                    'se-resize', 'e-resize'
+                    , 's-resize', 'sw-resize', 'w-resize'
+                ]
+                .map( item => 'box_' + item ) 
+                .forEach( item => $( box ).removeClass( item ) )
+                ;
             }
         }
 
@@ -976,6 +1029,8 @@
             );
 
             // e.stopPropagation();
+            // prevent selection of text or image triggered by mousemove
+            e.preventDefault(); 
         }
 
         on_border_resizing = ( e ) => {
@@ -1037,11 +1092,22 @@
         s.show( 'testing' );
 
         ReactDOM.render( 
-            <Box height="300" width="500" isRootBox>
-                <Box height="120" width="220">        
-                    <Box height="80" width="100" />
+            <Box height="400" width="500" isRootBox>
+                <Box>        
+                    <Box height="80" width="100"><img src="./img/even/IMG_7983.JPG.jpg" /></Box>
+                    <Box height="80" width="100"><img src="./img/even/IMG_7988.JPG.jpg" /></Box>
                 </Box>
-                <Box height="160" width="200" />
+                <Box>        
+                    <Box height="80" width="100"><img src="./img/even/IMG_7989.JPG.jpg" /></Box>
+                    <Box height="80" width="100"><img src="./img/even/IMG_7990.JPG.jpg" /></Box>
+                    <Box height="80" width="100"><img src="./img/even/IMG_7993.JPG.jpg" /></Box>
+                </Box>
+                <Box>        
+                    <Box height="80" width="100"><img src="./img/even/IMG_7994.JPG.jpg" /></Box>
+                    <Box height="80" width="100"><img src="./img/even/IMG_7997.JPG.jpg" /></Box>
+                    <Box height="80" width="100"><img src="./img/even/IMG_8001.JPG.jpg" /></Box>
+                    <Box height="80" width="100"><img src="./img/even/IMG_8003.JPG.jpg" /></Box>
+                </Box>
             </Box>
             , document.querySelector( '#test_Box .test-panel' ) 
         );
