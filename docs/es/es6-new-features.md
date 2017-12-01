@@ -1,4 +1,4 @@
-# ES6 new features
+# es6 new features
 
 > `2015年初`发布ES6( ES2015 )
 
@@ -10,6 +10,42 @@
 * `ecma-262`: <ref://../ecma/ecma-262.md.html>
 * mozilla es6: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/New_in_JavaScript/ECMAScript_6_support_in_Mozilla>
 * 实时转码DEMO：<http://google.github.io/traceur-compiler/demo/repl.html>
+
+
+## es6 outline 
+
+    Scope
+    Conformance
+    Normative references
+    Overview
+    Notational Conventions
+    ECMAScript Data Types and Values
+    Abstract Operations
+    Executable Code and Execution Contexts
+    Ordinary and Exotic Objects Behaviours
+     ECMAScript Language: Source Code
+     ECMAScript Language: Lexical Grammar
+     ECMAScript Language: Expressions 
+     ECMAScript Language: Statements and Declarations 
+     ECMAScript Language: Functions and Classes
+     ECMAScript Language: Scripts and Modules
+    Error Handling and Language Extensions
+    ECMAScript Standard Built-in Objects
+    The Global Object
+    Fundamental Objects
+    Numbers and Dates
+    Text Processing
+    Indexed Collections
+    Keyed Collection
+    Structured Data
+    Control Abstraction Objects
+    Reflection
+    Annex A Grammar Summary
+    Annex B Additional ECMAScript Features for Web Browsers
+    Annex C The Strict Mode of ECMAScript
+    Annex D Corrections and Clarifications in ECMAScript 2015 with Possible Compatibility Impact
+    Annex E Additions and Changes That Introduce Incompatibilities with Prior Editions
+
 
 
 ## import & export

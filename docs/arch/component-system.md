@@ -224,7 +224,7 @@
 * 同级box的层叠顺序，须引入z-index，获得focus的box是否需要拉到最前面？
 
 
-### 171125
+### 171125 - adjBoxes
 
 * `resize`事件响应，需触发box及子孙box的尺寸重计算
 * `arbitrator`需要管理子box列表，每个列表项包含：
@@ -307,6 +307,16 @@
         }
 
 
+### 171201
+
+* 如何保存子box的layout？需要满足即使容器尺寸变化，也能按某种规则还原。`四元组` ( top, left, width, height )
+    * 每个box保存自身的四元组
+    * arbitrator根据子box的四元组列表获取adjBoxes，使用`Arbitrator.getAdjBoxes()`实现
+    * 在新的父容器尺寸下，计算并更新四元组；或接收子box的变化请求，计算并更新四元组
+
+* 如何表达resize请求？
+
+
 
 ## utils
 
@@ -360,6 +370,13 @@
 
     } )();
 
+    function assert( expr ) {
+        if ( ! expr ) {
+            alert( 'assertion failed' );
+        }
+        return expr;
+    }
+
 
 
 
@@ -381,7 +398,8 @@
             if ( ! me.opt.debug && ! box instanceof Box ) {
                 throw Error( 'Arbitrator constructor: box must be instance of Box' );
             }
-            me.box = me.opt.debug ? { width: 300, height: 300, top: 0, left: 0 } : box;
+            me.box = me.opt.debug 
+                ? { width: 300, height: 320, contentHeight: 300, left: 0 } : box;
             me.subBoxLayoutInitialized = false;
             me.subBoxes = [];
             me.adjBoxes = {};
@@ -391,7 +409,7 @@
             if ( ! subBox instanceof Box ) {
                 throw Error( 'Arbitrator register(): subBox must be instance of Box' );
             }
-            console.log( 'register ' + subBox.cuid );
+            console.log( 'register ' + subBox._uuid );
             this.subBoxes.push( subBox );
         }
 
@@ -400,7 +418,7 @@
             if ( me.subBoxes.length ) {
                 console.log( 
                     'initializeSubBoxLayout: '
-                    + me.subBoxes.map( ( box ) => 'box ' + box.cuid )
+                    + me.subBoxes.map( ( box ) => 'box ' + box._uuid )
                         .join( '; ' )
                 );
             }
@@ -421,7 +439,7 @@
             let j = 0;
             let layoutData = [];
 
-            console.log( 'Arbitrator.getDefaultLayout(): on box ' + me.box.cuid );
+            console.log( 'Arbitrator.getDefaultLayout(): on box ' + me.box._uuid );
 
             if ( me.opt.debug ) {
                 while( j < total ) {
@@ -495,9 +513,77 @@
         arbitrateSubBoxLayout() {
             console.log(
                 'arbitrateSubBoxLayout: '
-                + this.subBoxes.map( ( box ) => 'box ' + box.cuid )
+                + this.subBoxes.map( ( box ) => 'box ' + box._uuid )
                     .join( '; ' )
             );
+        }
+
+        getAdjBoxes( subBoxes ) {
+            let me = this;
+            let adjBoxes = {};
+            subBoxes = subBoxes || me.subBoxes;
+
+            if ( me.opt.debug ) {
+                let _uuid = 1;
+                subBoxes.forEach( box => {
+                    box._uuid = _uuid++;
+                } );
+            }
+
+            subBoxes.forEach( ( box ) => {
+                let _uuid = box._uuid;
+                let { top, left, width, height } = box;
+                let abs = adjBoxes[ _uuid ] = {};
+
+                subBoxes.forEach( ( subBox ) => {
+
+                    if ( _uuid == subBox ) { return; }
+                    let { top: sTop, left: sLeft, width: sWidth, height: sHeight } = subBox;
+
+                    // console.log( { top, left, width, height, sTop, sLeft, sWidth, sHeight } );
+
+                    if ( sLeft == left + width 
+                            && (
+                                sTop >= top && sTop <= top + height
+                                || sTop + sHeight >= top && sTop + sHeight <= top + height
+                            )
+                        ) {
+                        abs[ 'e' ] = abs[ 'e' ] || [];
+                        abs[ 'e' ].push( subBox );
+                    } 
+                    else if ( sLeft + sWidth == left
+                            && (
+                                sTop >= top && sTop <= top + height
+                                || sTop + sHeight >= top && sTop + sHeight <= top + height
+                            )
+                        ) {
+                        abs[ 'w' ] = abs[ 'w' ] || [];
+                        abs[ 'w' ].push( subBox );
+                    }
+                    else if ( sTop == top + height
+                            && (
+                                sLeft >= left && sLeft <= left + width
+                                || sLeft + sWidth >= left && sLeft + sWidth <= left + width
+                            )
+                        ) {
+                        abs[ 's' ] = abs[ 's' ] || [];
+                        abs[ 's' ].push( subBox );
+                    }
+                    else if ( sTop + sHeight == top
+                            && (
+                                sLeft >= left && sLeft <= left + width
+                                || sLeft + sWidth >= left && sLeft + sWidth <= left + width
+                            )
+                        ) {
+                        abs[ 'n' ] = abs[ 'n' ] || [];
+                        abs[ 'n' ].push( subBox );
+                    }
+
+                } );
+
+            } );
+
+            return adjBoxes;
         }
 
         resize() {
@@ -507,7 +593,7 @@
             else {
                 this.arbitrateSubBoxLayout();
             }
-            console.log( 'resize arbitration: on box ' + this.box.cuid );
+            console.log( 'resize arbitration: on box ' + this.box._uuid );
             this.subBoxes.forEach( ( box ) => {
                 box.arbitrator.onResize();
             } );
@@ -515,13 +601,13 @@
 
         onResize() {
             let me = this;
-            console.log( 'onResize: on box ' + me.box.cuid );
+            console.log( 'onResize: on box ' + me.box._uuid );
             me.box.updateParams();
             me.resize();
         }
 
         onSubBoxResize() {
-            console.log( 'onSubBoxResize: on box ' + this.box.cuid );
+            console.log( 'onSubBoxResize: on box ' + this.box._uuid );
             this.resize();
         }
 
@@ -558,18 +644,23 @@
             ];
 
         cases.forEach( ( kase ) => {
-            s.append_show( eval( kase ), kase );
+            s.append_show( eval( 'assert( ' + kase  + ' )' ), kase );
         } );
 
         s.append_show( '\ntesting getDefaultLayout():' );
         var layout = ar.getDefaultLayout( 5 );
-        s.append_show( layout.length == 5, 'layout.length == 5' );
-        s.append_show( layout[ 0 ].left === 0 && layout[ 0 ].top === 0
+        s.append_show( assert( layout.length == 5 ), 'layout.length == 5' );
+        s.append_show( assert( layout[ 0 ].left === 0 && layout[ 0 ].top === 0 )
                 , 'item 0: left == 0 && top == 0' );
-        s.append_show( layout[ 0 ].width === 100 && layout[ 0 ].height === 150
+        s.append_show( assert( layout[ 0 ].width === 100 && layout[ 0 ].height === 150 )
                 , 'item 0: width == 100 && height == 150' );
-        s.append_show( layout[ 3 ].left === 0 && layout[ 3 ].top === 150
+        s.append_show( assert( layout[ 3 ].left === 0 && layout[ 3 ].top === 150 )
                 , 'item 3: left == 0 && top == 150' );
+
+        s.append_show( '\ntesting getAdjBoxes():' );
+        var adjBoxes = ar.getAdjBoxes( layout );
+        console.log( adjBoxes );
+        // s.append_show( assert( adjBoxes.length == 5 ), 'adjBoxes.length == 5' );
 
     })();
 
@@ -675,7 +766,7 @@
     const RESIZE_STATE_HOVER = 3;
     const RESIZE_STATE_RESIZABLE = 4;
     const RESIZE_STATE_RESIZING = 5;
-    let cuid = 1;
+    let _uuid = 1;
 
     class Box extends React.Component {
 
@@ -683,7 +774,7 @@
             super( props );
             let  me = this;
 
-            me.cuid = cuid++;
+            me._uuid = _uuid++;
             me.top = props.top || 0;
             me.left = props.left || 0;
             me.width = props.width || 100;
@@ -744,7 +835,7 @@
 
         updateParams() {
             let me = this;
-            console.log( 'Box.updateParams(): on box ' + me.cuid );
+            console.log( 'Box.updateParams(): on box ' + me._uuid );
             let box = me.refs.box;
             let content = me.refs.content;
 
@@ -831,7 +922,7 @@
             else {
                 $( box ).addClass( 'box_focus' );
                 this.isFocused = 1;
-                console.log( 'mousedown on box: ' + this.cuid );
+                console.log( 'mousedown on box: ' + this._uuid );
             }
         }
 
@@ -996,14 +1087,12 @@
                 this.disableResize();
             }
             else {
-                // box.style.cursor = resizeType;
                 _resetDefault();
                 $( box ).addClass( 'box_' + resizeType );
                 this.enableResize( resizeType );
             }
 
             function _resetDefault() {
-                // box.style.cursor = 'default';
                 [ 
                     'se-resize', 'e-resize'
                     , 's-resize', 'sw-resize', 'w-resize'
@@ -1029,9 +1118,11 @@
                 , false
             );
 
-            // e.stopPropagation();
+
             // prevent selection of text or image triggered by mousemove
             e.preventDefault(); 
+
+            // e.stopPropagation();
         }
 
         on_border_resizing = ( e ) => {
@@ -1093,21 +1184,21 @@
         s.show( 'testing' );
 
         ReactDOM.render( 
-            <Box height="400" width="500" isRootBox>
+            <Box height="400" width="600" isRootBox>
                 <Box>        
-                    <Box height="80" width="100"><img src="./img/even/IMG_7983.JPG.jpg" /></Box>
-                    <Box height="80" width="100"><img src="./img/even/IMG_7988.JPG.jpg" /></Box>
+                    <Box><img src="./img/even/IMG_7983.JPG.jpg" /></Box>
+                    <Box><img src="./img/even/IMG_7988.JPG.jpg" /></Box>
                 </Box>
-                <Box>        
-                    <Box height="80" width="100"><img src="./img/even/IMG_7989.JPG.jpg" /></Box>
-                    <Box height="80" width="100"><img src="./img/even/IMG_7990.JPG.jpg" /></Box>
-                    <Box height="80" width="100"><img src="./img/even/IMG_7993.JPG.jpg" /></Box>
+                <Box>   
+                    <Box><img src="./img/even/IMG_7989.JPG.jpg" /></Box>
+                    <Box><img src="./img/even/IMG_7990.JPG.jpg" /></Box>
+                    <Box><img src="./img/even/IMG_7993.JPG.jpg" /></Box>
                 </Box>
-                <Box>        
-                    <Box height="80" width="100"><img src="./img/even/IMG_7994.JPG.jpg" /></Box>
-                    <Box height="80" width="100"><img src="./img/even/IMG_7997.JPG.jpg" /></Box>
-                    <Box height="80" width="100"><img src="./img/even/IMG_8001.JPG.jpg" /></Box>
-                    <Box height="80" width="100"><img src="./img/even/IMG_8003.JPG.jpg" /></Box>
+                <Box>   
+                    <Box><img src="./img/even/IMG_7994.JPG.jpg" /></Box>
+                    <Box><img src="./img/even/IMG_7997.JPG.jpg" /></Box>
+                    <Box><img src="./img/even/IMG_8001.JPG.jpg" /></Box>
+                    <Box><img src="./img/even/IMG_8003.JPG.jpg" /></Box>
                 </Box>
             </Box>
             , document.querySelector( '#test_Box .test-panel' ) 

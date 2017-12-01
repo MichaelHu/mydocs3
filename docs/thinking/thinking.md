@@ -14,6 +14,17 @@
 > Stick to the end.
 
 
+## 2017-12-01
+
+> 世界记录诞生记
+
+<img src="./img/is-he-successful-171201.png">
+
+* <ref://./video/is-he-successful.mp4>
+* 他是成功的吗？
+
+
+
 ## 2017-11-25
 
 > 需要提升`描述能力`
