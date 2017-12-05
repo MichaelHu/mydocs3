@@ -317,6 +317,37 @@
 * 如何表达resize请求？
 
 
+### 171205
+
+* 新的box尺寸，根据当前子box四元组列表与新box尺寸的相对关系，重新计算新的子box四元组列表，并更新
+        记新的box尺寸为( w', h' )
+        从子box四元组列表获取所占区域尺寸，记为( w, h )
+        若w' > w，则将子box的宽度进行等比例放大
+        若h' > h，则将子box的高度进行等比例放大
+        若w' < w，则将子box的宽度进行等比例缩小
+        若h' < h，则将子box的高度进行等比例缩小
+* 接收到子box的尺寸变化请求`R( target, direction, dx, dy )`，计算其相邻box以及受影响box的新四元组，并更新
+        direction       dx      dy      desc
+        ====================================================================
+        e               5       0       东向变化，变宽5px
+        e               -5      0       东向变化，变窄5px
+        w               5       0       西向变化，变宽5px
+        w               -5      0       西向变化，变窄5px
+        s               0       5       南向变化，变高5px
+        s               0       -5      南向变化，变矮5px
+        se              5       5       东南向变化，变宽5px，变高5px
+        se              -5      -5      东南向变化，变窄5px，变矮5px
+        se              -5      5       东南向变化，变窄5px，变高5px
+        se              5       -5      东南向变化，变宽5px，变矮5px
+        sw              5       5       东西向变化，变宽5px，变高5px
+        sw              -5      -5      东西向变化，变窄5px，变矮5px
+        sw              -5      5       东西向变化，变窄5px，变高5px
+        sw              5       -5      东西向变化，变宽5px，变矮5px
+
+
+
+* 尺寸请求可能失败
+
 
 ## utils
 
@@ -659,8 +690,10 @@
 
         s.append_show( '\ntesting getAdjBoxes():' );
         var adjBoxes = ar.getAdjBoxes( layout );
-        console.log( adjBoxes );
-        // s.append_show( assert( adjBoxes.length == 5 ), 'adjBoxes.length == 5' );
+        s.append_show( assert( adjBoxes[ '1' ][ 'e' ].length == 1 )
+                , 'adjBoxes[ "1" ][ "e" ].length == 1' );
+        s.append_show( assert( adjBoxes[ '4' ][ 'n' ].length == 2 )
+                , 'adjBoxes[ "4" ][ "n" ].length == 2' );
 
     })();
 
