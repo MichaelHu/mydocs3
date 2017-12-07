@@ -55,13 +55,15 @@
 
 ## 2017-07-13
 
-<http://ucren.com>，前同事黄志龙的技术blog，涉及游戏／算法／偏门hack等，干货较多。
+<http://ucren.com>，前同事黄志龙的技术blog，涉及`游戏／算法／偏门hack`等，干货较多。
 
 * `a`标签的`download`属性，支持纯前端方案将文件保存至本地
         content.addEventListener( 'change', function self(){
-            saveBtn.setAttribute( 'href', 'data:text/paint; utf-8,' + content.value );
+            saveBtn.setAttribute( 'href', 'data:text/plain; utf-8,' + content.value );
             return self;
         }() );
+
+    参考链接：<http://ucren.com/blog/archives/473> - `web 另类方法实现“另存为”功能`
 
 * 抽奖程序特效等
 

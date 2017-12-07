@@ -5,7 +5,8 @@
 
 > No programming language is perfect. There is not even a single best language; there are only languages well suited or perhaps poorly suited for particular purposes.   -- Herbert Mayer
 
-2017-11
+2017-12
+, 2017-11
 , 2017-10
 , 2017-5
 , 2017-4
@@ -19,6 +20,21 @@
 
 * `.bashrc`与`session`相关，每新建一个session都会执行，`su`命令切换，也会执行
 * `.bash_profile`与`登录`相关，用户登录后会执行一次`.bash_profile`
+
+
+## 关于批处理
+
+* `for`循环中的命令序列，能保证上一命令执行完成后再启动下一命令，它支持使用vim`人工批量编辑文件`，比如：
+
+        for i in {1..10}; do vim $i/README.md; done
+
+    以上命令能保证人工编辑好对应README.md且保存退出vim后，再启动下一条vim命令。
+
+* 使用bash命令解析器直接解析，就如同命令行中连续输入两条vim命令一样，无法在第一条vim命令编辑完成，并保存退出后再执行第二条vim命令，比如：
+
+        for i in {1..10}; do echo vim $i/README.md; done | sh -x
+
+    以上命令是无法实现人工批量编辑文件目的的。
 
 
 ## $相关 
@@ -305,26 +321,38 @@
 
 ### 语法说明
 
-    for (( a=9; a>=1; a-- )); do git stash drop stash@{$a}; done
+    $ for (( a=9; a>=1; a-- )); do git stash drop stash@{$a}; done
+
+    $ for i in {1..3}; do echo $i; done
+    1
+    2
+    3
 
     for i in `cat file.lst`; do
         wc -l $i
     done
 
-    for i in abc "b c d"; do echo $i; done
+    $ for i in abc "b c d"; do echo $i; done
+    abc
+    b c d
 
-    for i in "/path/to/file1
+    $ for i in "/path/to/file1
     /path/to/file2
     /path/to/file3
     /path/to/file4"; do echo $i; done
+    /path/to/file1 /path/to/file2 /path/to/file3 /path/to/file4
 
     FILES="/path/to/file1
     /path/to/file2
     /path/to/file3
     /path/to/file4"
-    for i in $FILES; do echo $i; done
+    $ for i in $FILES; do echo $i; done
+    /path/to/file1
+    /path/to/file2
+    /path/to/file3
+    /path/to/file4
 
-    for i in $(
+    $ for i in $(
     cat <<EOF
     /path/to/file1
     /path/to/file2
@@ -332,8 +360,10 @@
     /path/to/file4
     EOF
     ); do echo $i; done
-
-    for i in {1..10}; do echo $i; done
+    /path/to/file1
+    /path/to/file2
+    /path/to/file3
+    /path/to/file4
 
 
 ### 空白字符作为列表分割
@@ -369,6 +399,7 @@
     awk '{print $0}' a.list
     awk '{printf("-%s-\n", $0)}' a.list
     awk '{printf("echo -%s-\n", $0)}' a.list | sh -x
+
 
 
 

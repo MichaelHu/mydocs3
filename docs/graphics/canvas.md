@@ -21,6 +21,28 @@
 
 
 
+## Canvas Performance
+
+### Tips
+
+* `预绘制`。在不可见的Canvas中预先绘制好小的重复对象，再通过drawImage绘制
+* 避免使用`浮点坐标`
+* 不要在`drawImage`中对图片进行scale
+* 复杂场景中，使用`多层画布`
+* 静态背景可用`DIV+CSS`方式，作为canvas的下层，避免绘制大图片
+* 使用`CSS transforms`对画布进行scaling，这比GPU要快
+* `批量`化画布绘制操作，比如折线绘制，先生成路径再一次性stroke
+* 避免使用`shadowBlur`属性
+* 尽可能减少绘制文本
+* 使用`requestAnimationFrame`代替`setInterval`
+
+### Resources
+
+* MDN - Optimizing canvas <https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas>
+* html5rocks - Improving HTML5 Canvas Performance <https://www.html5rocks.com/en/tutorials/canvas/performance/>
+
+
+
 
 ## Canvas Element基础
 

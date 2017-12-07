@@ -320,33 +320,141 @@
 ### 171205
 
 * 新的box尺寸，根据当前子box四元组列表与新box尺寸的相对关系，重新计算新的子box四元组列表，并更新
+
         记新的box尺寸为( w', h' )
         从子box四元组列表获取所占区域尺寸，记为( w, h )
         若w' > w，则将子box的宽度进行等比例放大
         若h' > h，则将子box的高度进行等比例放大
         若w' < w，则将子box的宽度进行等比例缩小
         若h' < h，则将子box的高度进行等比例缩小
-* 接收到子box的尺寸变化请求`R( target, direction, dx, dy )`，计算其相邻box以及受影响box的新四元组，并更新
+
+* 接收到子box的尺寸变化请求`R( target, type, dx, dy )`，计算其相邻box以及受影响box的新四元组，并更新
         direction       dx      dy      desc
-        ====================================================================
+        =============================================================================
         e               5       0       东向变化，变宽5px
         e               -5      0       东向变化，变窄5px
-        w               5       0       西向变化，变宽5px
-        w               -5      0       西向变化，变窄5px
+        w               5       0       西向变化，变宽5px，位置左移5px
+        w               -5      0       西向变化，变窄5px，位置右移5px
         s               0       5       南向变化，变高5px
         s               0       -5      南向变化，变矮5px
         se              5       5       东南向变化，变宽5px，变高5px
         se              -5      -5      东南向变化，变窄5px，变矮5px
         se              -5      5       东南向变化，变窄5px，变高5px
         se              5       -5      东南向变化，变宽5px，变矮5px
-        sw              5       5       东西向变化，变宽5px，变高5px
-        sw              -5      -5      东西向变化，变窄5px，变矮5px
-        sw              -5      5       东西向变化，变窄5px，变高5px
-        sw              5       -5      东西向变化，变宽5px，变矮5px
+        sw              5       5       东西向变化，变宽5px，位置左移5px，变高5px
+        sw              -5      -5      东西向变化，变窄5px，位置右移5px，变矮5px
+        sw              -5      5       东西向变化，变窄5px，位置右移5px，变高5px
+        sw              5       -5      东西向变化，变宽5px，位置左移5px，变矮5px
 
 
 
 * 尺寸请求可能失败
+
+
+
+### 171206
+
+* resize过程中，确保`鼠标样式`不发生改变，比如当前正处于`se方向`的resize，resize过程中鼠标移到了`下边框`，这时鼠标样式仍然是se-resize，而不是s-resize
+
+* `resizeType` - 当前尺寸变化类型，有5种，包括：`e-resize, s-resize, w-resize, sw-resize, se-resize`
+* `arbitrateSubBoxLayout()` - 对子box的尺寸进行仲裁
+
+    * 父容器尺寸发生变化，需对`子box树`进行`等比例缩放`，执行`processRatioResize( box )`
+
+            processRatioResize( box )
+                记box的tobe尺寸为S
+                执行c = box.checkParams( S )，若c == false，则返回false
+
+                记子box的现实总占用空间为S'
+                若S == S'，返回true
+
+                记缩放比例ratio = S / S'
+                记子box列表为L
+                针对列表L的每一个元素b
+                    执行p = processRatioResize( b )
+                    若p == false，则退出循环并返回false
+                返回true
+
+            若processRatioResize( box )返回true，则执行box.arbitrator.onResize()更新box子树的尺寸;
+            若返回false，则表明仲裁失败，不作任何变化
+
+
+    * 若有一个`子box`发起了resize请求`R`，则执行`processResizeRequest( R )`
+             
+            processResizeRequest( R )
+                
+                将box记入已计算过新尺寸的集合中
+                获取直接受影响且未计算过新尺寸的相邻子box集合B
+                针对B集合的每一个元素b
+                    计算b的新尺寸：s' = getNewSize( b )
+                    若s'为null，表明无法resize，退出当前循环
+                    若成功获得s'，则计算针对b的resize请求R'，并调用processResizeRequest( R' )，获得返回值s"
+                    若s"为false，退出当前循环
+                若上述循环非正常退出（s'为null或s"为false），则返回true；否则返回false
+                
+            若processResizeRequest( box )返回true，则更新所有子box的四元组，并调用子box的onResize()；
+            若返回false，表明仲裁失败，不作任何变化
+
+* 关于`processRatioResize( box )`和`processResizeRequest( R )`：
+    * `前者`针对box尺寸变化，需要对其`子box树`进行调整的情况
+    * `后者`针对box有尺寸变化请求，需要对其兄弟box尺寸进行仲裁的情况 
+    * `前者`在初次渲染，根box尺寸与子box不匹配时；以及resize请求过程中，box变化需要子box树统一变化时都会调用
+    * `后者`主要在box发起resize请求时，对其兄弟box之间的尺寸进行仲裁时调用。后者执行过程中会调用前者
+
+
+
+### 171207
+
+* `getTotalSpace()` - 获取子box所占的空间`S( left, top, width, height )`
+
+        right_max = Max( left_1 + width_1, left_2 + width_2, ..., left_n + width_n )
+        bottom_max = Max( top_1 + height_1, top_2 + height_2, ..., top_n + height_n )
+        left = Min( left_1, left_2, ..., left_n )
+        top = Min( top_1, top_2, ..., top_n )
+        width = right_max - left
+        height = bottom_max - top
+
+* `processRatioResize()` - 执行子box的`等比例`缩放，先计算出`ratio`，再将所有子box的四元组同时`乘以ratio`，具体执行过程见前文所述
+
+* resize请求的`传递`，比如：子box 1发出`e-resize`的请求，在处理该请求的时候，其在`e方向`上的相邻box的`w方向`都会受该resize请求的影响并作出调整，同时发出`w-resize`的请求。这个过程就完成了resize请求的传递。
+
+* 等比例缩放，用户resize请求都有可能`不成功`
+
+* 使用`tobe_`前缀作为新尺寸的`暂存`，以便针对尺寸的更新进行测试，若更新失败，可以取消当前更新请求；是否接受新的尺寸更新，由`box自身提供判断逻辑`（ onResize(), updateParams() ），并通过`返回值`来表达是否更新成功。
+
+*  `父子重叠边`的resize，应直接触发`父box`的resize，表现在代码里，主要有以下几处`特殊实现`：
+
+        enableResize = ( type ) => {
+            ...
+
+            // capture phase
+            box.addEventListener(
+                'mousedown'
+                , me.on_border_resize_start
+                , true
+            );
+        }
+
+        disableResize = () => {
+            ...
+
+            // capture phase
+            box.removeEventListener(
+                'mousedown'
+                , this.on_border_resize_start
+                , true
+            );
+        }
+
+        on_border_resize_start = ( e ) => {
+            ...
+            // only triggered on the parent box
+            // make sure resizing be on the border of the most bottom box 
+            e.stopPropagation();
+            ...
+        }
+
+
 
 
 ## utils
@@ -541,7 +649,7 @@
             return lines;
         }
 
-        arbitrateSubBoxLayout() {
+        arbitrateSubBoxLayout( params ) {
             console.log(
                 'arbitrateSubBoxLayout: '
                 + this.subBoxes.map( ( box ) => 'box ' + box._uuid )
@@ -617,12 +725,12 @@
             return adjBoxes;
         }
 
-        resize() {
+        resize( params ) {
             if ( !this.subBoxLayoutInitialized ) {
-                this.initializeSubBoxLayout();
+                this.initializeSubBoxLayout( params );
             }
             else {
-                this.arbitrateSubBoxLayout();
+                this.arbitrateSubBoxLayout( params );
             }
             console.log( 'resize arbitration: on box ' + this.box._uuid );
             this.subBoxes.forEach( ( box ) => {
@@ -633,13 +741,15 @@
         onResize() {
             let me = this;
             console.log( 'onResize: on box ' + me.box._uuid );
+            // update box params
             me.box.updateParams();
             me.resize();
         }
 
-        onSubBoxResize() {
-            console.log( 'onSubBoxResize: on box ' + this.box._uuid );
-            this.resize();
+        onSubBoxResize( params ) {
+            // console.log( 'onSubBoxResize: from box ' + this.box._uuid );
+            // console.log( params );
+            this.resize( params );
         }
 
     }
@@ -912,14 +1022,16 @@
         }
 
         enableResize = ( type ) => {
-            let box = this.refs.box;
+            let me = this;
+            let box = me.refs.box;
 
-            this.resizeState = RESIZE_STATE_HOVER;
+            me.resizeState = RESIZE_STATE_HOVER;
+            me.resizeType = type;
 
             box.addEventListener(
                 'mousedown'
-                , this.on_border_resize_start
-                , false
+                , me.on_border_resize_start
+                , true
             );
         }
 
@@ -931,7 +1043,7 @@
             box.removeEventListener(
                 'mousedown'
                 , this.on_border_resize_start
-                , false
+                , true
             );
         }
 
@@ -1058,8 +1170,21 @@
         on_capture_hover = ( e ) => {
             let box = this.refs.box;
 
-            if ( !this.isFocused || this.isDragging ) {
-                _resetDefault();
+            if ( 
+
+                !this.isFocused 
+                || this.isDragging 
+                || ( 
+                    this.resizeState != RESIZE_STATE_CAPTURE_HOVER 
+                    && this.resizeState != RESIZE_STATE_HOVER 
+                )
+                
+                ) {
+            
+                if ( this.resizeState != RESIZE_STATE_RESIZING 
+                    && this.resizeState != RESIZE_STATE_RESIZABLE ) {
+                    _resetDefault();
+                }
                 return;
             }
 
@@ -1137,7 +1262,36 @@
         }
 
         on_border_resize_start = ( e ) => {
-            this.resizeState = RESIZE_STATE_RESIZABLE; 
+            let me = this;
+
+            me.resizeState = RESIZE_STATE_RESIZABLE; 
+            // offset: [0, 10]
+            me._resizeParams = { offsetX: 0, offsetY: 0 };
+
+            let vx = e.clientX;
+            let vy = e.clientY;
+            let boundingRect = me.refs.box.getBoundingClientRect();
+            let cx = vx - boundingRect.left;
+            let cy = vy - boundingRect.top;
+            switch( me.resizeType ) {
+                case 'e-resize': 
+                    me._resizeParams.offsetX = boundingRect.width - cx; 
+                    break;
+                case 's-resize': 
+                    me._resizeParams.offsetY = boundingRect.height - cy; 
+                    break;
+                case 'w-resize': 
+                    me._resizeParams.offsetX = cx; 
+                    break;
+                case 'se-resize': 
+                    me._resizeParams.offsetX = boundingRect.width - cx; 
+                    me._resizeParams.offsetY = boundingRect.height - cy; 
+                    break;
+                case 'sw-resize': 
+                    me._resizeParams.offsetX = cx; 
+                    me._resizeParams.offsetY = boundingRect.height - cy; 
+                    break;
+            }
 
             document.addEventListener(
                 'mousemove'
@@ -1151,17 +1305,66 @@
                 , false
             );
 
+            console.log( 'mousedown on box: ' + me._uuid )
 
             // prevent selection of text or image triggered by mousemove
             e.preventDefault(); 
 
-            // e.stopPropagation();
+            // make sure resizing be on the border of the most bottom box 
+            e.stopPropagation();
         }
 
         on_border_resizing = ( e ) => {
-            this.resizeState = RESIZE_STATE_RESIZING;
-            this.parentArbitrator 
-                && this.parentArbitrator.onSubBoxResize();
+            let me = this;
+
+            let boundingRect = me.refs.box.getBoundingClientRect();
+            let vx = e.clientX;
+            let vy = e.clientY;
+            let vTop = boundingRect[ 'top' ];
+            let vLeft = boundingRect[ 'left' ];
+            let cx = vx - vLeft; 
+            let cy = vy - vTop;
+            let dx = cx - me.width;
+            let dy = cy - me.height;
+
+            me.resizeState = RESIZE_STATE_RESIZING;
+
+            switch( me.resizeType ) {
+                case 'e-resize':
+                    dx += me._resizeParams.offsetX;
+                    dy = 0;
+                    break;
+                case 's-resize':
+                    dy += me._resizeParams.offsetY;
+                    dx = 0;
+                    break;
+                case 'w-resize':
+                    dx = -cx;
+                    dx += me._resizeParams.offsetX;
+                    dy = 0;
+                    break;
+                case 'se-resize':
+                    dx += me._resizeParams.offsetX;
+                    dy += me._resizeParams.offsetY;
+                    break;
+                case 'sw-resize':
+                    dx = -cx;
+                    dx += me._resizeParams.offsetX;
+                    dy += me._resizeParams.offsetY;
+                    break;
+            }
+
+            console.log( 'resizing on box: ' + me._uuid );
+
+            return;
+
+            me.parentArbitrator 
+                && me.parentArbitrator.onSubBoxResize( {
+                    target: me._uuid
+                    , type: me.resizeType
+                    , dx: dx
+                    , dy: dy
+                } );
         }
 
         on_border_resize_end = ( e ) => {

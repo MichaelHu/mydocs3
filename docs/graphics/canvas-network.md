@@ -1623,13 +1623,14 @@ todo：hover层渲染／节点hover／拖动／动画
 
 ### 其他
 
+* 绘制`30w`规模的图谱，Safari从按下Start到绘制完毕且按钮归位，所花时间`4.x秒`；Chrome所画时间却需要`20+秒`。从Performance分析，花在`GPU`的时间很长。`todo`: 为什么两者有这么大区别？Chrome下该如何优化？
 * 总的来说，一个`不成熟`的结论像是：Chrome针对`可视区外`的大量绘制做了优化，相反Safari针对`可视区内`的大量绘制做了优化
 * 绘制`line`, `rect`时，两者性能差别不大
 
 
 <div id="test_canvas_perf" class="test">
 <div class="test-container">
-<div class="canvas-wrapper" style="height:500px; width:600px;"></div>
+<div class="canvas-wrapper" style="height:500px; width:600px; transform: translateZ( 0 );"></div>
 <div class="test-console"></div>
 
     @[data-script="babel editable"](function(){

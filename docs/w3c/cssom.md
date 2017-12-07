@@ -214,7 +214,8 @@
 
 ### 关于ClientRect
 
-包含`六大`属性，分别为：top, right, bottom, left, width, height，其尺寸规则与css3提供的`clip`类似。<ref://../html5/css3.md.html>
+* 包含`六大`属性，分别为：top, right, bottom, left, width, height，其尺寸规则与css3提供的`clip`类似。<ref://../html5/css3.md.html>
+* 其中`top, right, left, bottom`都是`viewport`坐标
 
 
 ### 关于一个TypeError
