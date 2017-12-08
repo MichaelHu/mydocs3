@@ -1630,7 +1630,7 @@ todo：hover层渲染／节点hover／拖动／动画
 
 <div id="test_canvas_perf" class="test">
 <div class="test-container">
-<div class="canvas-wrapper" style="height:500px; width:600px; transform: translateZ( 0 );"></div>
+<div class="canvas-wrapper" style="height:500px; width:600px"></div>
 <div class="test-console"></div>
 
     @[data-script="babel editable"](function(){

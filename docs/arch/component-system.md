@@ -354,14 +354,23 @@
 
 ### 171206
 
+> changelog: 171208, 171207
+
 * resize过程中，确保`鼠标样式`不发生改变，比如当前正处于`se方向`的resize，resize过程中鼠标移到了`下边框`，这时鼠标样式仍然是se-resize，而不是s-resize
 
 * `resizeType` - 当前尺寸变化类型，有5种，包括：`e-resize, s-resize, w-resize, sw-resize, se-resize`
 * `arbitrateSubBoxLayout()` - 对子box的尺寸进行仲裁
 
-    * 父容器尺寸发生变化，需对`子box树`进行`等比例缩放`，执行`processRatioResize( box )`
+    * 父容器尺寸发生变化，需对`子box树`进行`等比例缩放`，若成功执行`probeRatioResize( box )`，则触发实际更新，如下：
 
-            processRatioResize( box )
+            调用p = probeRatioResize( box )
+            若p == true
+                box.arbitrator.onResize( { useTobe: 1 } ) 
+
+
+        以下为`probeRatioResize算法描述`：
+
+            probeRatioResize( box )
                 记box的tobe尺寸为S
                 执行c = box.checkParams( S )，若c == false，则返回false
 
@@ -371,35 +380,56 @@
                 记缩放比例ratio = S / S'
                 记子box列表为L
                 针对列表L的每一个元素b
-                    执行p = processRatioResize( b )
-                    若p == false，则退出循环并返回false
+                    计算b的tobe尺寸，S_tobe = S_now * ratio
+                    执行p = probeRatioResize( b )
+                    若p == false
+                        退出并返回false
                 返回true
 
-            若processRatioResize( box )返回true，则执行box.arbitrator.onResize()更新box子树的尺寸;
-            若返回false，则表明仲裁失败，不作任何变化
+
+        `一些Tips`:
+            a. tobe尺寸计算，使用`tobe_`前缀的四元组进行计算，若不存在，则使用不带前缀的四元组
+            b. 关于等比例缩放的ratio，它是一个`二维向量`，分为`xRatio`和`yRatio`
 
 
-    * 若有一个`子box`发起了resize请求`R`，则执行`processResizeRequest( R )`
+    * 若有一个`子box`发起了resize请求`R`，需先判断是否可以满足该请求再执行更新。先执行`probeResizeRequest( R )`，若执行成功，则触发实际更新，如下：
+
+            调用p = probeResizeRequest( R )
+            若p == true
+                this.box.arbitrator.onResize( { useTobe: 1 } ) 
+
+
+        以下为`probeResizeRequest算法描述`：
              
-            processResizeRequest( R )
-                
+            probeResizeRequest( R )
+                记box = getBoxFromRequest( R )
+                根据R计算box的tobe尺寸: s = getTobeSize( R )
+                若s为null
+                    退出并返回false
+                计算p = probeRatioResize( box )
+                若p == false
+                    退出并返回false
                 将box记入已计算过新尺寸的集合中
                 获取直接受影响且未计算过新尺寸的相邻子box集合B
                 针对B集合的每一个元素b
-                    计算b的新尺寸：s' = getNewSize( b )
-                    若s'为null，表明无法resize，退出当前循环
-                    若成功获得s'，则计算针对b的resize请求R'，并调用processResizeRequest( R' )，获得返回值s"
-                    若s"为false，退出当前循环
-                若上述循环非正常退出（s'为null或s"为false），则返回true；否则返回false
-                
-            若processResizeRequest( box )返回true，则更新所有子box的四元组，并调用子box的onResize()；
-            若返回false，表明仲裁失败，不作任何变化
+                    计算针对b的resize请求R'
+                    调用s' = probeResizeRequest( R' )
+                    若s'为false
+                        退出并返回false
+                返回true
 
-* 关于`processRatioResize( box )`和`processResizeRequest( R )`：
+                
+        `一些Tips`:
+            a. 分为两阶段，第一阶段为试探阶段，使用`tobe_`前缀记录新四元组；第二阶段为应用
+                阶段，将tobe尺寸变为真实尺寸
+
+
+* 关于`probeRatioResize( box )`和`probeResizeRequest( R )`：
     * `前者`针对box尺寸变化，需要对其`子box树`进行调整的情况
     * `后者`针对box有尺寸变化请求，需要对其兄弟box尺寸进行仲裁的情况 
     * `前者`在初次渲染，根box尺寸与子box不匹配时；以及resize请求过程中，box变化需要子box树统一变化时都会调用
     * `后者`主要在box发起resize请求时，对其兄弟box之间的尺寸进行仲裁时调用。后者执行过程中会调用前者
+
 
 
 
@@ -414,13 +444,13 @@
         width = right_max - left
         height = bottom_max - top
 
-* `processRatioResize()` - 执行子box的`等比例`缩放，先计算出`ratio`，再将所有子box的四元组同时`乘以ratio`，具体执行过程见前文所述
+* `probeRatioResize()` - 执行子box的`等比例`缩放，先计算出`ratio`，再将所有子box的四元组同时`乘以ratio`，具体执行过程见前文所述
 
 * resize请求的`传递`，比如：子box 1发出`e-resize`的请求，在处理该请求的时候，其在`e方向`上的相邻box的`w方向`都会受该resize请求的影响并作出调整，同时发出`w-resize`的请求。这个过程就完成了resize请求的传递。
 
 * 等比例缩放，用户resize请求都有可能`不成功`
 
-* 使用`tobe_`前缀作为新尺寸的`暂存`，以便针对尺寸的更新进行测试，若更新失败，可以取消当前更新请求；是否接受新的尺寸更新，由`box自身提供判断逻辑`（ onResize(), updateParams() ），并通过`返回值`来表达是否更新成功。
+* 使用`tobe_`前缀作为新尺寸的`暂存`，以便针对尺寸的更新进行测试，若更新失败，可以取消当前更新请求；是否接受新的尺寸更新，由`box自身提供判断逻辑`（ checkParams() ），并通过`返回值`来表达是否更新成功。
 
 *  `父子重叠边`的resize，应直接触发`父box`的resize，表现在代码里，主要有以下几处`特殊实现`：
 
@@ -453,6 +483,24 @@
             e.stopPropagation();
             ...
         }
+
+
+
+### 171208
+
+* 调整并完善`arbitrateSubBoxLayout()`算法逻辑的描述，开始代码实现
+* 包含以下方法的实现：
+
+        Arbitrator.arbitrateSubBoxLayout()
+        Arbitrator.probeRatioResize()
+        Arbitrator.probeResizeRequest()
+        Arbitrator.getBoxFromRequest( request )
+        Arbitrator.getTobeSize( request )
+        Arbitrator.getTotalSpace( options )
+
+* 如何发现代码的不合理？ 比如`Arbitrator.onSubBoxResize()`内部调用了`Arbitrator.resize()`
+* `复杂代码逻辑`的实现方法，先通过`伪代码`详细`描述及论证`好算法逻辑，再`自顶向下`实现代码，过程中可使用`函数桩`代替下级方法。从程序骨架逐步完善，最终行程最终完整代码。
+* `while循环`的编写容易漏掉`自变量`的变化，导致首次运行出现`死循环`，而for循环的`固有编写格式`包含自变量的变化，能更好避免初次死循环
 
 
 
@@ -649,12 +697,19 @@
             return lines;
         }
 
+
+
         arbitrateSubBoxLayout( params ) {
+            let me = this;
             console.log(
-                'arbitrateSubBoxLayout: '
+                'arbitrateSubBoxLayout on box [ ' + this.box._uuid + ' ]: '
                 + this.subBoxes.map( ( box ) => 'box ' + box._uuid )
                     .join( '; ' )
             );
+
+            if ( me.probeResizeRequest( params ) ) {
+                me.box.arbitrator.onResize( { useTobe: 1 } );
+            }
         }
 
         getAdjBoxes( subBoxes ) {
@@ -725,31 +780,63 @@
             return adjBoxes;
         }
 
-        resize( params ) {
-            if ( !this.subBoxLayoutInitialized ) {
-                this.initializeSubBoxLayout( params );
+        probeResizeRequest( request ) {
+            let me = this;
+            let box = me.getBoxFromRequest( request ); 
+            console.log( 'probeResizeRequest from box ' + box._uuid );
+            return true;
+        }
+
+        probeRatioResize() {}
+
+        getBoxFromRequest( request ) {
+            let i = 0;
+            let boxes = this.subBoxes;
+            while( i < boxes.length ) {
+                if ( boxes[ i ]._uuid == request.target ) {
+                    return boxes[ i ];
+                }
+                i++;
             }
-            else {
-                this.arbitrateSubBoxLayout( params );
+            return false;
+        }
+
+        getTobeSize( request ) {}
+        getTotalSpace( options ) {}
+
+        resize( options ) {
+            var opt = options || {};
+
+            if ( opt.useTobe ) {
+                console.log( 'resize subboxes using tobe-size' );
             }
-            console.log( 'resize arbitration: on box ' + this.box._uuid );
+            else if ( !this.subBoxLayoutInitialized ) {
+                this.initializeSubBoxLayout( options );
+            }
+
             this.subBoxes.forEach( ( box ) => {
-                box.arbitrator.onResize();
+                box.arbitrator.onResize( options );
             } );
         }
 
-        onResize() {
+        getTobeSize( request ) {
+        }
+
+        onResize( options ) {
             let me = this;
             console.log( 'onResize: on box ' + me.box._uuid );
             // update box params
-            me.box.updateParams();
-            me.resize();
+            me.box.updateParams( options );
+            me.resize( options );
         }
 
         onSubBoxResize( params ) {
             // console.log( 'onSubBoxResize: from box ' + this.box._uuid );
             // console.log( params );
-            this.resize( params );
+            if ( !params ) {
+                throw Error( 'onSubBoxResize( params ): params undefined' );
+            }
+            this.arbitrateSubBoxLayout( params );
         }
 
     }
@@ -976,11 +1063,25 @@
         componentWillUnmount() {
         }
 
-        updateParams() {
+        checkParams() {
+            console.log( 'checkParams' );
+            return true;
+        }
+
+        updateParams( options ) {
             let me = this;
+            let opt = options || {};
             console.log( 'Box.updateParams(): on box ' + me._uuid );
             let box = me.refs.box;
             let content = me.refs.content;
+
+            if ( opt.useTobe ) {
+                // even if useTobe is set, maybe there is no tobe-size
+                me.left = me.tobe_left || me.left;
+                me.top = me.tobe_top || me.top;
+                me.width = me.tobe_width || me.width;
+                me.height = me.tobe_height || me.height;
+            }
 
             box.style.left = me.left + 'px';
             box.style.top = me.top + 'px';
@@ -1355,8 +1456,6 @@
             }
 
             console.log( 'resizing on box: ' + me._uuid );
-
-            return;
 
             me.parentArbitrator 
                 && me.parentArbitrator.onSubBoxResize( {
