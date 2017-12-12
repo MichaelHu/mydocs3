@@ -168,7 +168,7 @@
 
 
 
-### 171124
+### 171124 - defaultLayout
 
 * `arbitrator`类，管理多个内含矩形的布局，( x, y, w, h )
 * 层叠排布
@@ -352,9 +352,9 @@
 
 
 
-### 171206
+### 171206 - algorithm
 
-> changelog: 171208, 171207
+> changelog: 171212, 171208, 171207
 
 * resize过程中，确保`鼠标样式`不发生改变，比如当前正处于`se方向`的resize，resize过程中鼠标移到了`下边框`，这时鼠标样式仍然是se-resize，而不是s-resize
 
@@ -372,13 +372,15 @@
 
             probeRatioResize( box )
                 记box的tobe尺寸为S
-                执行c = box.checkParams( S )，若c == false，则返回false
+                执行c = box.checkParams( S )，若c == false，则退出返回false
+
+                若不存在子box，则退出并返回true
 
                 记子box的现实总占用空间为S'
                 若S == S'，返回true
 
                 记缩放比例ratio = S / S'
-                记子box列表为L
+                记box的子box列表为L
                 针对列表L的每一个元素b
                     计算b的tobe尺寸，S_tobe = S_now * ratio
                     执行p = probeRatioResize( b )
@@ -541,7 +543,7 @@
 * `getAffectedBoxes( request, resizedBoxes )` - 根据resize请求的描述，获得对应的`受影响的且未resize过`的邻接box集合
 
 
-### 171212
+### 171212 - resize调通
 
 * 更名：`getAdjBoxes()` -> `getAdjInfoForSubBoxes()`，因为`getAdjBoxes()`容易理解成获取当前Arbitrator对应的box的邻接box
 
@@ -564,7 +566,12 @@
 
 * `se-resize`、`sw-resize`，实际上是对一个`顶点拖动`，该顶点`最多涉及4条边`的变化
 * `se-resize`, `sw-resize`, `ne-resize`, `nw-resize`都属于`顶点拖动`，前两者能通过`手动拖动`触发，后两者只能通过`resize请求传递`获得
-
+* 必须要考虑的问题 ( todo )：
+    * 补充算法详细描述，使用图片描述
+    * `误差处理`，邻接box计算、resize请求传递等都需要进行equal比较，小数类型的值进行比较，需要进行误差处理。以及拖动title整体移动box，与另外的box靠近到一定程度，可以作为新的邻接box联动。
+    * title处理，比如可以不设置title，或者自定义title的样式
+    * `性能`，比如对resizing事件派发频率进行限制等
+    * `drag-and-drop`功能 
 
 
 
@@ -774,7 +781,7 @@
             let resizedBoxes = {};
             resizedBoxes.__version = Date.now();
             if ( me.probeResizeRequest( params, resizedBoxes ) ) {
-                // me.box.arbitrator.onResize( { useTobe: 1 } );
+                me.box.arbitrator.onResize( { useTobe: 1 } );
             }
         }
 
@@ -913,6 +920,7 @@
 
             let p = me.probeRatioResize( box );
             if ( !p ) {
+                console.log( 'probeResizeRequest: can not be resized' );
                 return false;
             }
             let affectedBoxes = me.getAffectedBoxes( request, resizedBoxes );
@@ -1080,7 +1088,37 @@
             return transferedRequest;
         }
 
-        probeRatioResize() {
+        probeRatioResize( box ) {
+            let me = this;
+            let { tobe_width, tobe_height, width, height } = box;
+
+            if ( ! box.checkParams() ) {
+                return false;
+            }
+
+            if ( ! me.subBoxes.length ) {
+                return true;
+            }
+
+            // let totalSpace = box.arbitrator.getTotalSpace();
+            console.log( { tobe_width, tobe_height, width, height } );
+
+            let xRatio = tobe_width / width;
+            let yRatio = tobe_height / height;
+            console.log( { xRatio, yRatio } );
+            let subBoxes = box.arbitrator.subBoxes;
+            let i = 0, subBox;
+            while( i < subBoxes.length ) {
+                subBox = subBoxes[ i ];
+                subBox.tobe_left = subBox.left * xRatio;
+                subBox.tobe_width = subBox.width * xRatio;
+                subBox.tobe_top = subBox.top * yRatio;
+                subBox.tobe_height = subBox.height * yRatio;
+                if ( ! me.probeRatioResize( subBox ) ) {
+                    return false;
+                }
+                i++;
+            }
             return true;
         }
 
@@ -1099,7 +1137,6 @@
         getTobeSize( request ) {
             let me = this;
             let box = me.getBoxFromRequest( request ); 
-            console.log( request );
 
             box.tobe_left = box.left;
             box.tobe_top = box.top;
@@ -1112,17 +1149,32 @@
                 case 's-resize':
                     box.tobe_height = box.height + request.dy;
                     break;
-                case 'se-resize':
-                    box.tobe_width = box.width + request.dx;
-                    box.tobe_height = box.height + request.dy;
-                    break;
                 case 'w-resize':
                     box.tobe_width = box.width + request.dx;
                     box.tobe_left = box.left - request.dx;
                     break;
+                case 'n-resize':
+                    box.tobe_height = box.height + request.dy;
+                    box.tobe_top = box.top - request.dy;
+                    break;
+                case 'se-resize':
+                    box.tobe_width = box.width + request.dx;
+                    box.tobe_height = box.height + request.dy;
+                    break;
                 case 'sw-resize':
                     box.tobe_width = box.width + request.dx;
                     box.tobe_height = box.height + request.dy;
+                    box.tobe_left = box.left - request.dx;
+                    break;
+                case 'ne-resize':
+                    box.tobe_width = box.width + request.dx;
+                    box.tobe_height = box.height + request.dy;
+                    box.tobe_top = box.top - request.dy;
+                    break;
+                case 'nw-resize':
+                    box.tobe_width = box.width + request.dx;
+                    box.tobe_height = box.height + request.dy;
+                    box.tobe_top = box.top - request.dy;
                     box.tobe_left = box.left - request.dx;
                     break;
             }
@@ -1134,7 +1186,30 @@
                 , tobe_left, tobe_top, tobe_width, tobe_height };
         }
 
-        getTotalSpace( options ) {}
+        getTotalSpace( options ) {
+            let me = this;
+            let right = 0, bottom = 0, left = Infinity, top = Infinity;
+            if ( ! me.subBoxes.length ) {
+                return null;
+            }
+            me.subBoxes.forEach( box => {
+                if ( box.left + box.width > right ) {
+                    right = box.left + box.width;
+                }
+                if ( box.top + box.height > bottom ) {
+                    bottom = box.top + box.height;
+                }
+                if ( box.left < left ) {
+                    left = box.left;
+                }
+                if ( box.top < top ) {
+                    top = box.top;
+                }
+            } );
+            let width = right - left;
+            let height = bottom - top;
+            return { width, height };
+        }
 
         resize( options ) {
             var opt = options || {};
@@ -1238,7 +1313,7 @@
     @[data-script="html"]<style type="text/css">
         .box-container {
             position: relative;
-            height: 500px;
+            height: 800px;
             overflow: hidden;
             background-color: #333;
         }
@@ -1848,7 +1923,7 @@
         s.show( 'testing' );
 
         ReactDOM.render( 
-            <Box height="400" width="600" isRootBox>
+            <Box height="780" width="611" isRootBox>
                 <Box>        
                     <Box><img src="./img/even/IMG_7993.JPG.jpg" /></Box>
                     <Box><img src="./img/even/IMG_7994.JPG.jpg" /></Box>
