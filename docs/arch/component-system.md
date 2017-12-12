@@ -311,7 +311,7 @@
 
 * 如何保存子box的layout？需要满足即使容器尺寸变化，也能按某种规则还原。`四元组` ( top, left, width, height )
     * 每个box保存自身的四元组
-    * arbitrator根据子box的四元组列表获取adjBoxes，使用`Arbitrator.getAdjBoxes()`实现
+    * arbitrator根据子box的四元组列表获取adjBoxes，使用`Arbitrator.getAdjInfoForSubBoxes()`实现
     * 在新的父容器尺寸下，计算并更新四元组；或接收子box的变化请求，计算并更新四元组
 
 * 如何表达resize请求？
@@ -361,7 +361,7 @@
 * `resizeType` - 当前尺寸变化类型，有5种，包括：`e-resize, s-resize, w-resize, sw-resize, se-resize`
 * `arbitrateSubBoxLayout()` - 对子box的尺寸进行仲裁
 
-    * 父容器尺寸发生变化，需对`子box树`进行`等比例缩放`，若成功执行`probeRatioResize( box )`，则触发实际更新，如下：
+    * `父box`尺寸发生变化时，对`子box树`进行`等比例缩放`：若成功执行`probeRatioResize( box )`，表明可以等比例缩放，此时可以触发`实际更新`，如下：
 
             调用p = probeRatioResize( box )
             若p == true
@@ -392,7 +392,7 @@
             b. 关于等比例缩放的ratio，它是一个`二维向量`，分为`xRatio`和`yRatio`
 
 
-    * 若有一个`子box`发起了resize请求`R`，需先判断是否可以满足该请求再执行更新。先执行`probeResizeRequest( R )`，若执行成功，则触发实际更新，如下：
+    * 若有一个`子box`发起了resize请求`R`，需判断该resize请求引发的`兄弟box及子孙box`的resize能否满足：先执行`probeResizeRequest( R )`，若执行成功，则触发`实际更新`，如下：
 
             调用p = probeResizeRequest( R )
             若p == true
@@ -401,7 +401,7 @@
 
         以下为`probeResizeRequest算法描述`：
              
-            probeResizeRequest( R )
+            probeResizeRequest( R, resizedBoxes )
                 记box = getBoxFromRequest( R )
                 根据R计算box的tobe尺寸: s = getTobeSize( R )
                 若s为null
@@ -409,11 +409,12 @@
                 计算p = probeRatioResize( box )
                 若p == false
                     退出并返回false
-                将box记入已计算过新尺寸的集合中
+                将box记入已计算过新尺寸的集合resizedBoxes
                 获取直接受影响且未计算过新尺寸的相邻子box集合B
+                将集合B的每个相邻子box记入resizedBoxes
                 针对B集合的每一个元素b
                     计算针对b的resize请求R'
-                    调用s' = probeResizeRequest( R' )
+                    调用s' = probeResizeRequest( R', resizedBoxes )
                     若s'为false
                         退出并返回false
                 返回true
@@ -422,6 +423,8 @@
         `一些Tips`:
             a. 分为两阶段，第一阶段为试探阶段，使用`tobe_`前缀记录新四元组；第二阶段为应用
                 阶段，将tobe尺寸变为真实尺寸
+            b. resize请求传递路径较短的优先，以上集合B获取以后，立即将其内含子box添加入resizedBoxes
+                ，能确保请求传递路径短的请求被执行
 
 
 * 关于`probeRatioResize( box )`和`probeResizeRequest( R )`：
@@ -501,6 +504,67 @@
 * 如何发现代码的不合理？ 比如`Arbitrator.onSubBoxResize()`内部调用了`Arbitrator.resize()`
 * `复杂代码逻辑`的实现方法，先通过`伪代码`详细`描述及论证`好算法逻辑，再`自顶向下`实现代码，过程中可使用`函数桩`代替下级方法。从程序骨架逐步完善，最终行程最终完整代码。
 * `while循环`的编写容易漏掉`自变量`的变化，导致首次运行出现`死循环`，而for循环的`固有编写格式`包含自变量的变化，能更好避免初次死循环
+
+
+### 171211
+
+
+* `getTobeSize( request )` - 根据resize请求的描述，获得对应box的新尺寸
+
+        type            dx      dy      tobe-size
+        =============================================================================
+        e-resize        5       0       width += 5 
+        e-resize        -5      0       width += -5
+        w-resize        5       0       left -= 5, width += 5
+        w-resize        -5      0       left -= -5, width += -5
+        s-resize        0       5       height += 5
+        s-resize        0       -5      height += -5
+        se-resize       5       5       width += 5, height += 5
+        se-resize       -5      -5      width += -5, height += -5
+        se-resize       -5      5       width += -5, height += 5
+        se-resize       5       -5      width += 5, height += -5
+        sw-resize       5       5       left -= 5, width += 5, height += 5
+        sw-resize       -5      -5      left -= -5, width += -5, height += -5
+        sw-resize       -5      5       left -= -5, width += -5, height += 5
+        sw-resize       5       -5      left -= 5, width += 5, height += -5
+
+    综上，计算公式为：
+
+        type            tobe-size
+        =============================================================================
+        e-resize        width += dx        
+        s-resize        height += dy
+        se-resize       width += dx, height += dy
+        w-resize        left -= dx, width += dx
+        sw-resize       left -= dx, width += dx, height += dy
+
+* `getAffectedBoxes( request, resizedBoxes )` - 根据resize请求的描述，获得对应的`受影响的且未resize过`的邻接box集合
+
+
+### 171212
+
+* 更名：`getAdjBoxes()` -> `getAdjInfoForSubBoxes()`，因为`getAdjBoxes()`容易理解成获取当前Arbitrator对应的box的邻接box
+
+* `getTransferedRequest( request, direction, transferedBox )` - 获取传递的resize请求
+
+        initial request     transfered requests         extra requests
+        ================================================================================
+        e( dx, 0 )          w( -dx, 0 ) 
+        w( dx, 0 )          e( -dx, 0 )
+        s( 0, dy )          n( 0, -dy )
+        n( 0, dy )          s( 0, -dy )
+        se( dx, dy )        n( 0, -dy ), w( -dx, 0 )    ne( dx, -dy ), sw( -dx, dy )
+        sw( dx, dy )        n( 0, -dy ), e( -dx, 0 )    nw( dx, -dy ), se( -dx, dy ) 
+        ne( dx, dy )        s( 0, -dy ), w( -dx, 0 )    se( dx, -dy ), nw( -dx, dy )
+        nw( dx, dy )        s( 0, -dy ), e( -dx, 0 )    sw( dx, -dy ), ne( -dx, dy )
+
+    `Tips:`
+    * `单字母`request，表示由边触发的resize请求；`双字母`request，表示由顶点触发的resize请求
+    * 单字母request，只能传递一种request；而双字母request，可以传递多种request，根据顶点拖动所影响的边的情况传递不同种类的request
+
+* `se-resize`、`sw-resize`，实际上是对一个`顶点拖动`，该顶点`最多涉及4条边`的变化
+* `se-resize`, `sw-resize`, `ne-resize`, `nw-resize`都属于`顶点拖动`，前两者能通过`手动拖动`触发，后两者只能通过`resize请求传递`获得
+
 
 
 
@@ -707,12 +771,14 @@
                     .join( '; ' )
             );
 
-            if ( me.probeResizeRequest( params ) ) {
-                me.box.arbitrator.onResize( { useTobe: 1 } );
+            let resizedBoxes = {};
+            resizedBoxes.__version = Date.now();
+            if ( me.probeResizeRequest( params, resizedBoxes ) ) {
+                // me.box.arbitrator.onResize( { useTobe: 1 } );
             }
         }
 
-        getAdjBoxes( subBoxes ) {
+        getAdjInfoForSubBoxes( subBoxes ) {
             let me = this;
             let adjBoxes = {};
             subBoxes = subBoxes || me.subBoxes;
@@ -737,36 +803,36 @@
                     // console.log( { top, left, width, height, sTop, sLeft, sWidth, sHeight } );
 
                     if ( sLeft == left + width 
-                            && (
-                                sTop >= top && sTop <= top + height
-                                || sTop + sHeight >= top && sTop + sHeight <= top + height
+                            && ! (
+                                sTop >= top + height
+                                || sTop + sHeight <= top
                             )
                         ) {
                         abs[ 'e' ] = abs[ 'e' ] || [];
                         abs[ 'e' ].push( subBox );
                     } 
                     else if ( sLeft + sWidth == left
-                            && (
-                                sTop >= top && sTop <= top + height
-                                || sTop + sHeight >= top && sTop + sHeight <= top + height
+                            && ! (
+                                sTop >= top + height
+                                || sTop + sHeight <= top
                             )
                         ) {
                         abs[ 'w' ] = abs[ 'w' ] || [];
                         abs[ 'w' ].push( subBox );
                     }
                     else if ( sTop == top + height
-                            && (
-                                sLeft >= left && sLeft <= left + width
-                                || sLeft + sWidth >= left && sLeft + sWidth <= left + width
+                            && ! (
+                                sLeft >= left + width
+                                || sLeft + sWidth <= left
                             )
                         ) {
                         abs[ 's' ] = abs[ 's' ] || [];
                         abs[ 's' ].push( subBox );
                     }
                     else if ( sTop + sHeight == top
-                            && (
-                                sLeft >= left && sLeft <= left + width
-                                || sLeft + sWidth >= left && sLeft + sWidth <= left + width
+                            && ! (
+                                sLeft >= left + width
+                                || sLeft + sWidth <= left
                             )
                         ) {
                         abs[ 'n' ] = abs[ 'n' ] || [];
@@ -780,14 +846,243 @@
             return adjBoxes;
         }
 
-        probeResizeRequest( request ) {
+        getAffectedBoxes( request, resizedBoxes ) {
+            if ( !resizedBoxes ) {
+                throw Error( 'getAffectedBoxes: resizedBoxes not defined' );
+            }
+            let me = this;
+            let boxId = request.target;
+            let adjBoxes = me.getAdjInfoForSubBoxes();
+            let boxes = [];
+            switch( request.type ) {
+                case 'e-resize':
+                    _addBoxes( 'e' );
+                    break;
+                case 's-resize':
+                    _addBoxes( 's' );
+                    break;
+                case 'w-resize':
+                    _addBoxes( 'w' );
+                    break;
+                case 'n-resize':
+                    _addBoxes( 'n' );
+                    break;
+                case 'se-resize':
+                    _addBoxes( 's' );
+                    _addBoxes( 'e' );
+                    break;
+                case 'sw-resize':
+                    _addBoxes( 's' );
+                    _addBoxes( 'w' );
+                    break;
+                case 'ne-resize':
+                    _addBoxes( 'n' );
+                    _addBoxes( 'e' );
+                    break;
+                case 'nw-resize':
+                    _addBoxes( 'n' );
+                    _addBoxes( 'w' );
+                    break;
+            }
+
+            function _addBoxes( type ) {
+                ( adjBoxes[ boxId ][ type ] || [] ).forEach( box => {
+                    if ( !resizedBoxes[ box._uuid ] ) {
+                        boxes.push( { type, box } );
+                    }
+                } );
+            }
+
+            return boxes;
+        }
+
+        probeResizeRequest( request, resizedBoxes ) {
+            if ( !resizedBoxes ) {
+                throw Error( 'probeResizeRequest: resizedBoxes not defined' );
+            }
+
+            resizedBoxes[ request.target ] = 1;
+
             let me = this;
             let box = me.getBoxFromRequest( request ); 
+            let tobeSize = me.getTobeSize( request );
             console.log( 'probeResizeRequest from box ' + box._uuid );
+            if ( !tobeSize ) {
+                return false;
+            }
+
+            let p = me.probeRatioResize( box );
+            if ( !p ) {
+                return false;
+            }
+            let affectedBoxes = me.getAffectedBoxes( request, resizedBoxes );
+
+            console.log( 'affectedBoxes: ' + affectedBoxes.map( box => box.type + '|' + box.box._uuid ).join( ', ' ) );
+
+            affectedBoxes.forEach( item => resizedBoxes[ item.box._uuid ] = 1 );
+
+            let i = 0, item, transferedRequest;
+            while( i < affectedBoxes.length ) {
+                item = affectedBoxes[ i ];
+                console.log( item.type + '|' + item.box._uuid );
+                transferedRequest = me.getTransferedRequest( request, item.type, item.box );
+                if ( ! me.probeResizeRequest( transferedRequest, resizedBoxes ) ) {
+                    return false;    
+                }
+                i++;
+            } 
+
             return true;
         }
 
-        probeRatioResize() {}
+        getTransferedRequest( request, direction, transferedBox ) {
+            let box = this.getBoxFromRequest( request );
+            let r, transferedRequest;
+
+            r = utils.extend( {}, request );
+            r.target = transferedBox._uuid;
+
+            switch( request.type ) {
+                case 'e-resize': 
+                    if ( 'e' == direction ) {
+                        r.type = 'w-resize';
+                        r.dx = -r.dx;
+                        transferedRequest = r;
+                    }
+                    break;
+                case 'w-resize': 
+                    if ( 'w' == direction ) {
+                        r.type = 'e-resize';
+                        r.dx = -r.dx;
+                        transferedRequest = r;
+                    }
+                    break;
+                case 's-resize': 
+                    if ( 's' == direction ) {
+                        r.type = 'n-resize';
+                        r.dy = -r.dy;
+                        transferedRequest = r;
+                    }
+                    break;
+                case 'n-resize': 
+                    if ( 'n' == direction ) {
+                        r.type = 's-resize';
+                        r.dy = -r.dy;
+                        transferedRequest = r;
+                    }
+                    break;
+                case 'se-resize':
+                    if ( 'e' == direction ) {
+                        if ( box.top + box.height == transferedBox.top + transferedBox.height ) {
+                            r.type = 'sw-resize';
+                            r.dx = -r.dx;
+                        }
+                        else {
+                            r.type = 'w-resize';
+                            r.dx = -r.dx;
+                            r.dy = 0;
+                        }
+                        transferedRequest = r;
+                    }
+                    if ( 's' == direction ) {
+                        if ( box.left + box.width == transferedBox.left + transferedBox.width ) {
+                            r.type = 'ne-resize';
+                            r.dy = -r.dy;
+                        }
+                        else {
+                            r.type = 'n-resize';
+                            r.dx = 0;
+                            r.dy = -r.dy;
+                        }
+                        transferedRequest = r;
+                    }
+                    break;
+                case 'sw-resize':
+                    if ( 'w' == direction ) {
+                        if ( box.top + box.height == transferedBox.top + transferedBox.height ) {
+                            r.type = 'se-resize';
+                            r.dx = -r.dx;
+                        }
+                        else {
+                            r.type = 'e-resize';
+                            r.dx = -r.dx;
+                            r.dy = 0;
+                        }
+                        transferedRequest = r;
+                    }
+                    if ( 's' == direction ) {
+                        if ( box.left == transferedBox.left ) {
+                            r.type = 'nw-resize';
+                            r.dy = -r.dy;
+                        }
+                        else {
+                            r.type = 'n-resize';
+                            r.dx = 0;
+                            r.dy = -r.dy;
+                        }
+                        transferedRequest = r;
+                    }
+                    break;
+                case 'ne-resize':
+                    if ( 'e' == direction ) {
+                        if ( box.top == transferedBox.top ) {
+                            r.type = 'nw-resize';
+                            r.dx = -r.dx;
+                        }
+                        else {
+                            r.type = 'w-resize';
+                            r.dx = -r.dx;
+                            r.dy = 0;
+                        }
+                        transferedRequest = r;
+                    }
+                    if ( 'n' == direction ) {
+                        if ( box.left + box.width == transferedBox.left + transferedBox.width ) {
+                            r.type = 'se-resize';
+                            r.dy = -r.dy;
+                        }
+                        else {
+                            r.type = 's-resize';
+                            r.dx = 0;
+                            r.dy = -r.dy;
+                        }
+                        transferedRequest = r;
+                    }
+                    break;
+                case 'nw-resize':
+                    if ( 'w' == direction ) {
+                        if ( box.top == transferedBox.top ) {
+                            r.type = 'ne-resize';
+                            r.dx = -r.dx;
+                        }
+                        else {
+                            r.type = 'e-resize';
+                            r.dx = -r.dx;
+                            r.dy = 0;
+                        }
+                        transferedRequest = r;
+                    }
+                    if ( 'n' == direction ) {
+                        if ( box.left == transferedBox.left ) {
+                            r.type = 'sw-resize';
+                            r.dy = -r.dy;
+                        }
+                        else {
+                            r.type = 's-resize';
+                            r.dx = 0;
+                            r.dy = -r.dy;
+                        }
+                        transferedRequest = r;
+                    }
+                    break;
+            }
+
+            return transferedRequest;
+        }
+
+        probeRatioResize() {
+            return true;
+        }
 
         getBoxFromRequest( request ) {
             let i = 0;
@@ -801,7 +1096,44 @@
             return false;
         }
 
-        getTobeSize( request ) {}
+        getTobeSize( request ) {
+            let me = this;
+            let box = me.getBoxFromRequest( request ); 
+            console.log( request );
+
+            box.tobe_left = box.left;
+            box.tobe_top = box.top;
+            box.tobe_width = box.width;
+            box.tobe_height = box.height;
+            switch( request.type ) {
+                case 'e-resize':
+                    box.tobe_width = box.width + request.dx;
+                    break;
+                case 's-resize':
+                    box.tobe_height = box.height + request.dy;
+                    break;
+                case 'se-resize':
+                    box.tobe_width = box.width + request.dx;
+                    box.tobe_height = box.height + request.dy;
+                    break;
+                case 'w-resize':
+                    box.tobe_width = box.width + request.dx;
+                    box.tobe_left = box.left - request.dx;
+                    break;
+                case 'sw-resize':
+                    box.tobe_width = box.width + request.dx;
+                    box.tobe_height = box.height + request.dy;
+                    box.tobe_left = box.left - request.dx;
+                    break;
+            }
+
+            let { left, top, width, height
+                , tobe_left, tobe_top, tobe_width, tobe_height } = box;
+
+            return { left, top, width, height
+                , tobe_left, tobe_top, tobe_width, tobe_height };
+        }
+
         getTotalSpace( options ) {}
 
         resize( options ) {
@@ -817,9 +1149,6 @@
             this.subBoxes.forEach( ( box ) => {
                 box.arbitrator.onResize( options );
             } );
-        }
-
-        getTobeSize( request ) {
         }
 
         onResize( options ) {
@@ -885,8 +1214,8 @@
         s.append_show( assert( layout[ 3 ].left === 0 && layout[ 3 ].top === 150 )
                 , 'item 3: left == 0 && top == 150' );
 
-        s.append_show( '\ntesting getAdjBoxes():' );
-        var adjBoxes = ar.getAdjBoxes( layout );
+        s.append_show( '\ntesting getAdjInfoForSubBoxes():' );
+        var adjBoxes = ar.getAdjInfoForSubBoxes( layout );
         s.append_show( assert( adjBoxes[ '1' ][ 'e' ].length == 1 )
                 , 'adjBoxes[ "1" ][ "e" ].length == 1' );
         s.append_show( assert( adjBoxes[ '4' ][ 'n' ].length == 2 )
@@ -1521,19 +1850,21 @@
         ReactDOM.render( 
             <Box height="400" width="600" isRootBox>
                 <Box>        
-                    <Box><img src="./img/even/IMG_7983.JPG.jpg" /></Box>
-                    <Box><img src="./img/even/IMG_7988.JPG.jpg" /></Box>
+                    <Box><img src="./img/even/IMG_7993.JPG.jpg" /></Box>
+                    <Box><img src="./img/even/IMG_7994.JPG.jpg" /></Box>
                 </Box>
                 <Box>   
                     <Box><img src="./img/even/IMG_7989.JPG.jpg" /></Box>
                     <Box><img src="./img/even/IMG_7990.JPG.jpg" /></Box>
-                    <Box><img src="./img/even/IMG_7993.JPG.jpg" /></Box>
+                    <Box><img src="./img/even/IMG_7988.JPG.jpg" /></Box>
                 </Box>
                 <Box>   
-                    <Box><img src="./img/even/IMG_7994.JPG.jpg" /></Box>
+                    <Box><img src="./img/even/IMG_7983.JPG.jpg" /></Box>
                     <Box><img src="./img/even/IMG_7997.JPG.jpg" /></Box>
                     <Box><img src="./img/even/IMG_8001.JPG.jpg" /></Box>
                     <Box><img src="./img/even/IMG_8003.JPG.jpg" /></Box>
+                    <Box><img src="./img/even/IMG_8004.JPG.jpg" /></Box>
+                    <Box><img src="./img/even/IMG_8005.JPG.jpg" /></Box>
                 </Box>
             </Box>
             , document.querySelector( '#test_Box .test-panel' ) 
