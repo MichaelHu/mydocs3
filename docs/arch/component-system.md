@@ -242,6 +242,8 @@
 
 ### 171128
 
+> changelog: 171213
+
 * box的resize可能触发`兄弟box`的resize，以及`子box`的resize，但不能触发`父box`的resize；父box充当尺寸仲裁
 * `Arbitrator.onResize()` - 对应的box发生size变化时调用
 * `Arbitrator.onSubBoxResize()` - 子box发生size变化时调用
@@ -250,20 +252,23 @@
     * box-a若存在`parentAribitrator`，由box-a调用`parentArbitrator.onSubBoxResize()`；若box不存在parentArbitrator，则不响应
     * `parentArbitrator`计算获得新的size后，通过触发子box的`Arbitrator.onResize()`派发给所有子box，其间，`box-a`作为子box之一，也用新的size调用`Arbitrator.onResize()`，若box-a包含子box，arbitrator将根据新的size计算所有子box的新size，并派发给所有子box
 
-* `resize`调用过程：
+* `resize`请求调用过程：
 
         resize
             parentArbitrator.onSubBoxResize()
-                parentArbitrator.resize()
-                    subBox1.arbitrator.onResize()
-                    subBox2.arbitrator.onResize()
-                        subBox2.arbitrator.resize()
-                            subBox2_1.arbitrator.onResize()
-                            subBox2_2.arbitrator.onResize()
-                            ...
-                            subBox2_n.arbitrator.onResize()
-                    ...
-                    subBoxn.arbitrator.onResize()
+                parentArbitrator.arbitrateSubBoxLayout()
+                    parentArbitrator.probeResizeRequest()
+                        parentArbitrator.onResize( { usetTobe: 1 } )
+                            parentArbitrator.resize()
+                                subBox1.arbitrator.onResize()
+                                subBox2.arbitrator.onResize()
+                                    subBox2.arbitrator.resize()
+                                        subBox2_1.arbitrator.onResize()
+                                        subBox2_2.arbitrator.onResize()
+                                        ...
+                                        subBox2_n.arbitrator.onResize()
+                                ...
+                                subBoxn.arbitrator.onResize()
 
 * `初始化`调用过程：
 
@@ -296,7 +301,7 @@
 
 * `resize`逻辑开发及调试
 * 限制：`border`本身不作为元素的`响应区`，`padding`会作为响应区
-* `!重要`：box`不设置border`样式，一律使用`border: none;`，另外的角度将，box作为`framebox`，无外边距、边框、内边距是合适的。
+* `!重要`：box`不设置border`样式，一律使用`border: none;`，另外的角度讲，box作为`framebox`，无外边距、边框、内边距是合适的。
 * `resize`的鼠标样式若只是设置在box上，若box内部有其他元素，且有默认`鼠标样式`，则无法显示正确鼠标样式。所以需要使用`设置class`的方式，不仅设置box本身，还设置box的`子孙元素`，比如：
 
         .box_w-resize {
@@ -354,11 +359,10 @@
 
 ### 171206 - algorithm
 
-> changelog: 171212, 171208, 171207
+> changelog: 171213, 171212, 171208, 171207
 
 * resize过程中，确保`鼠标样式`不发生改变，比如当前正处于`se方向`的resize，resize过程中鼠标移到了`下边框`，这时鼠标样式仍然是se-resize，而不是s-resize
-
-* `resizeType` - 当前尺寸变化类型，有5种，包括：`e-resize, s-resize, w-resize, sw-resize, se-resize`
+* `resizeType` - 当前尺寸变化类型，共有`8种`，包括：`e-resize, s-resize, w-resize, sw-resize, se-resize, n-resize, ne-resize, nw-resize`。显示header的情况下，前5种可用；不显示header的情况下，全部可用
 * `arbitrateSubBoxLayout()` - 对子box的尺寸进行仲裁
 
     * `父box`尺寸发生变化时，对`子box树`进行`等比例缩放`：若成功执行`probeRatioResize( box )`，表明可以等比例缩放，此时可以触发`实际更新`，如下：
@@ -390,8 +394,10 @@
 
 
         `一些Tips`:
+
             a. tobe尺寸计算，使用`tobe_`前缀的四元组进行计算，若不存在，则使用不带前缀的四元组
             b. 关于等比例缩放的ratio，它是一个`二维向量`，分为`xRatio`和`yRatio`
+            c. 注意tobe尺寸需要`及时清理`
 
 
     * 若有一个`子box`发起了resize请求`R`，需判断该resize请求引发的`兄弟box及子孙box`的resize能否满足：先执行`probeResizeRequest( R )`，若执行成功，则触发`实际更新`，如下：
@@ -427,6 +433,7 @@
                 阶段，将tobe尺寸变为真实尺寸
             b. resize请求传递路径较短的优先，以上集合B获取以后，立即将其内含子box添加入resizedBoxes
                 ，能确保请求传递路径短的请求被执行
+            c. 注意tobe尺寸需要`及时清理`
 
 
 * 关于`probeRatioResize( box )`和`probeResizeRequest( R )`：
@@ -575,6 +582,44 @@
 
 
 
+### 171213 - optmization
+
+* 添加`deviation`，用于数值计算时的允许误差
+*  `tobe_`属性在`实际应用`或者`测试失败`后，需要`及时清理`，未及时清理，可能导致后续操作产生`混乱`
+* 为resize operation添加`debounce`，仅当x或y方向的变化`不小于2`时才触发resize计算
+* 计算`ratio向量`时，由于存在header，`yRatio`的计算需要考虑`header的高度`：
+
+        ...
+        let headerHeight = height - contentHeight; 
+        let yRatio = ( tobe_height - headerHeight ) / ( height - headerHeight );
+        ...
+        while( i < subBoxes.length ) {
+            subBox = subBoxes[ i ];
+            subBox.tobe_left = subBox.left * xRatio;
+            subBox.tobe_width = subBox.width * xRatio;
+            subBox.tobe_top = subBox.top * yRatio;
+            subBox.tobe_height = subBox.height * yRatio;
+            ...
+        }
+
+* rootBox的尺寸样式支持通过外界CSS来控制，内部需要有机制计算根box的size：window.onresize事件，
+* 默认为`无header模式`，使用`showHeader`属性来开启header模式
+* `无header模式`下，可以支持`n-resize`, `ne-resize`, `nw-resize`
+* `选中态`不明显问题，目前使用shadow，很容易被邻近的box遮挡：
+    * 综合考虑后，考虑使用`focus遮罩层`，当focus状态下，遮罩层以`圆角实线框`样式盖在选中box上，目的是显示清楚所有被选中的box
+    * 遮罩层对原有事件系统透明，不响应鼠标事件（`pointer-events: none;`）
+    * 由于box支持多层嵌套，使用简单的后代选择器（descendant selector）无法精确控制单个box的行为，需要使用`子元素选择器`（child selector）
+* `Box.checkParams()`至少有一个最基本实现：`宽高都不能小于 3 * borderThreshold`
+* `showUUID`属性用于调试模式下，展示box对应的uuid
+* `console日志`梳理及格式化，区分`unitTest`和`debug`两种模式。支持`仅在根box配置一次`debug属性，即可在所有子孙box上开启debug模式：
+
+        ...
+        // support: only configures on the root box
+        me.isDebug = me.parentArbitrator && me.parentArbitrator.isDebug
+            || props.debug || 0;
+        ...
+
+
 
 ## utils
 
@@ -620,10 +665,16 @@
             return target;
         }
 
+        function equal( a, b, deviation ) {
+            deviation = deviation | 0;
+            return Math.abs( a - b ) <= Math.abs( deviation );
+        }
+
         return {
             extend
             , extendOnly
             , defaults
+            , equal
         };
 
     } )();
@@ -653,30 +704,31 @@
         constructor( box, options ) {
             let me = this;
             me.opt = options || {};
-            if ( ! me.opt.debug && ! box instanceof Box ) {
+            if ( ! me.opt.unitTest && ! box instanceof Box ) {
                 throw Error( 'Arbitrator constructor: box must be instance of Box' );
             }
-            me.box = me.opt.debug 
+            me.box = me.opt.unitTest 
                 ? { width: 300, height: 320, contentHeight: 300, left: 0 } : box;
             me.subBoxLayoutInitialized = false;
             me.subBoxes = [];
             me.adjBoxes = {};
+            me.deviation = typeof me.opt.deviation == 'number' ? me.opt.deviation : 2;
+            me.isDebug = me.opt.isDebug || 0;
         }
 
         register( subBox ) {
             if ( ! subBox instanceof Box ) {
                 throw Error( 'Arbitrator register(): subBox must be instance of Box' );
             }
-            console.log( 'register ' + subBox._uuid );
             this.subBoxes.push( subBox );
         }
 
         initializeSubBoxLayout() {
             let me = this;
             if ( me.subBoxes.length ) {
-                console.log( 
-                    'initializeSubBoxLayout: '
-                    + me.subBoxes.map( ( box ) => 'box ' + box._uuid )
+                me.isDebug && console.log( 
+                    '  initializeSubBoxLayout on parent box [ ' + me.box._uuid + ' ] : '
+                    + me.subBoxes.map( ( box ) => box._uuid )
                         .join( '; ' )
                 );
             }
@@ -685,7 +737,7 @@
             me.subBoxLayoutInitialized = true;
         }
 
-        getDefaultLayout( total ) {
+        getDefaultLayout( total /* only for unit test */ ) {
             let me = this;
             total = total || me.subBoxes.length;
 
@@ -697,9 +749,9 @@
             let j = 0;
             let layoutData = [];
 
-            console.log( 'Arbitrator.getDefaultLayout(): on box ' + me.box._uuid );
+            // console.log( 'Arbitrator.getDefaultLayout(): on box ' + me.box._uuid );
 
-            if ( me.opt.debug ) {
+            if ( me.opt.unitTest ) {
                 while( j < total ) {
                     let coords = getCoords( j );
                     let params = getBoxParams( coords );
@@ -772,16 +824,21 @@
 
         arbitrateSubBoxLayout( params ) {
             let me = this;
-            console.log(
-                'arbitrateSubBoxLayout on box [ ' + this.box._uuid + ' ]: '
-                + this.subBoxes.map( ( box ) => 'box ' + box._uuid )
+            me.isDebug && console.log(
+                '  arbitrateSubBoxLayout on parent box [ ' + this.box._uuid + ' ]: '
+                + this.subBoxes.map( ( box ) => box._uuid )
                     .join( '; ' )
             );
 
             let resizedBoxes = {};
             resizedBoxes.__version = Date.now();
             if ( me.probeResizeRequest( params, resizedBoxes ) ) {
+                me.isDebug && console.log( '  arbitrateSubBoxLayout successfully' );
                 me.box.arbitrator.onResize( { useTobe: 1 } );
+            }
+            else {
+                me.isDebug && console.log( '  arbitrateSubBoxLayout failed' );
+                me.box.arbitrator.onResize( { clearTobe: 1 } );
             }
         }
 
@@ -790,7 +847,7 @@
             let adjBoxes = {};
             subBoxes = subBoxes || me.subBoxes;
 
-            if ( me.opt.debug ) {
+            if ( me.opt.unitTest ) {
                 let _uuid = 1;
                 subBoxes.forEach( box => {
                     box._uuid = _uuid++;
@@ -809,7 +866,7 @@
 
                     // console.log( { top, left, width, height, sTop, sLeft, sWidth, sHeight } );
 
-                    if ( sLeft == left + width 
+                    if ( utils.equal( sLeft, left + width, me.deviation )
                             && ! (
                                 sTop >= top + height
                                 || sTop + sHeight <= top
@@ -818,7 +875,7 @@
                         abs[ 'e' ] = abs[ 'e' ] || [];
                         abs[ 'e' ].push( subBox );
                     } 
-                    else if ( sLeft + sWidth == left
+                    else if ( utils.equal( sLeft + sWidth, left, me.deviation )
                             && ! (
                                 sTop >= top + height
                                 || sTop + sHeight <= top
@@ -827,7 +884,7 @@
                         abs[ 'w' ] = abs[ 'w' ] || [];
                         abs[ 'w' ].push( subBox );
                     }
-                    else if ( sTop == top + height
+                    else if ( utils.equal( sTop, top + height, me.deviation )
                             && ! (
                                 sLeft >= left + width
                                 || sLeft + sWidth <= left
@@ -836,7 +893,7 @@
                         abs[ 's' ] = abs[ 's' ] || [];
                         abs[ 's' ].push( subBox );
                     }
-                    else if ( sTop + sHeight == top
+                    else if ( utils.equal( sTop + sHeight, top, me.deviation )
                             && ! (
                                 sLeft >= left + width
                                 || sLeft + sWidth <= left
@@ -913,26 +970,30 @@
             let me = this;
             let box = me.getBoxFromRequest( request ); 
             let tobeSize = me.getTobeSize( request );
-            console.log( 'probeResizeRequest from box ' + box._uuid );
+
+            me.isDebug && console.log( '    probeResizeRequest: box ' + box._uuid );
+
             if ( !tobeSize ) {
                 return false;
             }
 
             let p = me.probeRatioResize( box );
             if ( !p ) {
-                console.log( 'probeResizeRequest: can not be resized' );
+                me.isDebug && console.log( '      probeResizeRequest: can not be resized' );
                 return false;
             }
             let affectedBoxes = me.getAffectedBoxes( request, resizedBoxes );
 
-            console.log( 'affectedBoxes: ' + affectedBoxes.map( box => box.type + '|' + box.box._uuid ).join( ', ' ) );
+            me.isDebug && console.log( 
+                '      affectedBoxes: ' 
+                + affectedBoxes.map( box => box.type + '|' + box.box._uuid ).join( ', ' ) 
+            );
 
             affectedBoxes.forEach( item => resizedBoxes[ item.box._uuid ] = 1 );
 
             let i = 0, item, transferedRequest;
             while( i < affectedBoxes.length ) {
                 item = affectedBoxes[ i ];
-                console.log( item.type + '|' + item.box._uuid );
                 transferedRequest = me.getTransferedRequest( request, item.type, item.box );
                 if ( ! me.probeResizeRequest( transferedRequest, resizedBoxes ) ) {
                     return false;    
@@ -944,6 +1005,7 @@
         }
 
         getTransferedRequest( request, direction, transferedBox ) {
+            let me = this;
             let box = this.getBoxFromRequest( request );
             let r, transferedRequest;
 
@@ -981,7 +1043,12 @@
                     break;
                 case 'se-resize':
                     if ( 'e' == direction ) {
-                        if ( box.top + box.height == transferedBox.top + transferedBox.height ) {
+                        if ( utils.equal( 
+                                    box.top + box.height
+                                    , transferedBox.top + transferedBox.height 
+                                    , me.deviation 
+                                ) 
+                            ) {
                             r.type = 'sw-resize';
                             r.dx = -r.dx;
                         }
@@ -993,7 +1060,12 @@
                         transferedRequest = r;
                     }
                     if ( 's' == direction ) {
-                        if ( box.left + box.width == transferedBox.left + transferedBox.width ) {
+                        if ( utils.equal( 
+                                    box.left + box.width
+                                    , transferedBox.left + transferedBox.width
+                                    , me.deviation
+                                )
+                            ) {
                             r.type = 'ne-resize';
                             r.dy = -r.dy;
                         }
@@ -1007,7 +1079,12 @@
                     break;
                 case 'sw-resize':
                     if ( 'w' == direction ) {
-                        if ( box.top + box.height == transferedBox.top + transferedBox.height ) {
+                        if ( utils.equal(
+                                    box.top + box.height 
+                                    , transferedBox.top + transferedBox.height
+                                    , me.deviation
+                                )
+                            ) {
                             r.type = 'se-resize';
                             r.dx = -r.dx;
                         }
@@ -1019,7 +1096,7 @@
                         transferedRequest = r;
                     }
                     if ( 's' == direction ) {
-                        if ( box.left == transferedBox.left ) {
+                        if ( utils.equal( box.left, transferedBox.left, me.deviation ) ) {
                             r.type = 'nw-resize';
                             r.dy = -r.dy;
                         }
@@ -1033,7 +1110,7 @@
                     break;
                 case 'ne-resize':
                     if ( 'e' == direction ) {
-                        if ( box.top == transferedBox.top ) {
+                        if ( utils.equal( box.top, transferedBox.top, me.deviation ) ) {
                             r.type = 'nw-resize';
                             r.dx = -r.dx;
                         }
@@ -1045,7 +1122,12 @@
                         transferedRequest = r;
                     }
                     if ( 'n' == direction ) {
-                        if ( box.left + box.width == transferedBox.left + transferedBox.width ) {
+                        if ( utils.equal( 
+                                    box.left + box.width
+                                    , transferedBox.left + transferedBox.width
+                                    , me.deviation
+                                )
+                            ) {
                             r.type = 'se-resize';
                             r.dy = -r.dy;
                         }
@@ -1059,7 +1141,7 @@
                     break;
                 case 'nw-resize':
                     if ( 'w' == direction ) {
-                        if ( box.top == transferedBox.top ) {
+                        if ( utils.equal( box.top, transferedBox.top, me.deviation ) ) {
                             r.type = 'ne-resize';
                             r.dx = -r.dx;
                         }
@@ -1071,7 +1153,7 @@
                         transferedRequest = r;
                     }
                     if ( 'n' == direction ) {
-                        if ( box.left == transferedBox.left ) {
+                        if ( utils.equal( box.left, transferedBox.left, me.deviation ) ) {
                             r.type = 'sw-resize';
                             r.dy = -r.dy;
                         }
@@ -1090,7 +1172,7 @@
 
         probeRatioResize( box ) {
             let me = this;
-            let { tobe_width, tobe_height, width, height } = box;
+            let { tobe_width, tobe_height, width, height, contentHeight } = box;
 
             if ( ! box.checkParams() ) {
                 return false;
@@ -1100,12 +1182,13 @@
                 return true;
             }
 
-            // let totalSpace = box.arbitrator.getTotalSpace();
-            console.log( { tobe_width, tobe_height, width, height } );
+            me.isDebug && console.log( '      probeRatioResize: box ' + box._uuid );
+            // console.log( { tobe_width, tobe_height, width, height } );
 
+            let headerHeight = height - contentHeight; 
             let xRatio = tobe_width / width;
-            let yRatio = tobe_height / height;
-            console.log( { xRatio, yRatio } );
+            let yRatio = ( tobe_height - headerHeight ) / ( height - headerHeight );
+            // console.log( { xRatio, yRatio } );
             let subBoxes = box.arbitrator.subBoxes;
             let i = 0, subBox;
             while( i < subBoxes.length ) {
@@ -1212,10 +1295,14 @@
         }
 
         resize( options ) {
-            var opt = options || {};
+            let me = this; 
+            let opt = options || {};
 
             if ( opt.useTobe ) {
-                console.log( 'resize subboxes using tobe-size' );
+                me.isDebug && console.log( '    resize subboxes using tobe-size' );
+            }
+            else if ( opt.clearTobe ) {
+                me.isDebug && console.log( '    clear subboxes\' `tobe-` properties' );
             }
             else if ( !this.subBoxLayoutInitialized ) {
                 this.initializeSubBoxLayout( options );
@@ -1228,7 +1315,8 @@
 
         onResize( options ) {
             let me = this;
-            console.log( 'onResize: on box ' + me.box._uuid );
+            me.isDebug && console.log( '  onResize: on box ' + me.box._uuid );
+
             // update box params
             me.box.updateParams( options );
             me.resize( options );
@@ -1257,7 +1345,7 @@
     @[data-script="babel editable"](function(){
 
         var s = fly.createShow('#test_ut_arbitrator');
-        var ar = new Arbitrator( null, { debug: 1 } );
+        var ar = new Arbitrator( null, { unitTest: 1 } );
         s.show( 'testing getSubBoxGrid():' );
 
         var cases = [
@@ -1324,9 +1412,6 @@
             /* border: 10px solid #ccc; */
             border: none;
         }
-        .box_focus {
-            box-shadow: 0px 0px 2px 1px #ff7f0e;
-        }
         /* cursor style */
         .box_se-resize {
             cursor: se-resize;
@@ -1358,7 +1443,27 @@
         .box_w-resize * {
             cursor: w-resize;
         }
+        .box_n-resize {
+            cursor: n-resize;
+        }
+        .box_n-resize * {
+            cursor: n-resize;
+        }
+        .box_ne-resize {
+            cursor: ne-resize;
+        }
+        .box_ne-resize * {
+            cursor: ne-resize;
+        }
+        .box_nw-resize {
+            cursor: nw-resize;
+        }
+        .box_nw-resize * {
+            cursor: nw-resize;
+        }
+
         .box__header {
+            display: none;
             position: absolute;
             top: 0;
             right: 0;
@@ -1371,15 +1476,51 @@
             -webkit-user-select: none;
             user-select: none;
             cursor: pointer;
+            text-align: center;
+            font: normal normal normal 12px/24px;
         }
         .box__content {
             position: absolute;
-            top: 26px;
+            top: 0;
             right: 0;
             bottom: 0;
             left: 0;
             background: rgba( 0, 0, 0, 0.8 );
             overflow: hidden;
+        }
+        .box__uuid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            text-align: center;
+            font: normal normal normal 18px/32px; 
+            color: #fff;
+        }
+        .box__focus-mask {
+            display: none;
+            position: absolute;
+            z-index: 99999;
+            top: 1px;
+            left: 1px;
+            right: 1px;
+            bottom: 1px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            pointer-events: none;
+        }
+        .box_focus {
+            /* box-shadow: 0px 0px 2px 1px #ff7f0e; */
+        }
+        .box_focus > .box__focus-mask {
+            display: block;
+        }
+        .box_show-header > .box__header {
+            display: block;
+        }
+        .box_show-header > .box__content {
+            top: 26px;
         }
     </style>
 
@@ -1420,12 +1561,12 @@
                 , height: me.height + 'px'
             };
             me.isRootBox = props.isRootBox || 0;
+            me.showHeader = props.showHeader || 0;
 
             me.isFocused = 0;
             me.isDragging = 0;
             me.resizeState = RESIZE_STATE_DISTABLED;
 
-            me.arbitrator = new Arbitrator( me );
             if ( ! me.isRootBox ) {
                 me.parentArbitrator = context.arbitrator;
             }
@@ -1434,7 +1575,15 @@
                 me.parentArbitrator.register( me );
             }
 
-            // console.log( context.arbitrator );
+            // support: only configures on the root box
+            me.isDebug = me.parentArbitrator && me.parentArbitrator.isDebug
+                || props.debug || 0;
+
+            let arbitratorOptions = utils.extendOnly( {}, me, [ 'isDebug' ] );
+            me.arbitrator = new Arbitrator( me, arbitratorOptions );
+
+            me.borderThreshold = 10;
+            me.showUUID = props.showUUID || 0;
         }
 
         getChildContext() {
@@ -1442,12 +1591,21 @@
         }
 
         render() {
-            return (
-                <div className="box" style={this.styles} ref="box">
+            let me = this;
+            let header = ! me.showHeader ? null : (
                     <div className="box__header" ref="header">Title</div>
+                );
+            let uuid = ! me.showUUID ? null : <div className="box__uuid">{ me._uuid }</div>;
+
+            return (
+                <div className={ me.showHeader ? 'box box_show-header' : 'box' } 
+                    style={this.styles} ref="box">
+                    { header }
                     <div className="box__content" ref="content">
+                        { uuid }
                         { this.props.children }
                     </div>
+                    <div className="box__focus-mask"></div>
                 </div>
             );
         }
@@ -1459,7 +1617,11 @@
             if ( me.isRootBox ) {
                 me.arbitrator.onResize();
             }
-            me.enableDraggable();
+
+            if ( me.showHeader ) {
+                me.enableDraggable();
+            }
+
             me.enableFocus();
             me.enableHover();
         }
@@ -1468,14 +1630,22 @@
         }
 
         checkParams() {
-            console.log( 'checkParams' );
+            if ( void 0 == this.tobe_width ) {
+                throw Error( 'checkParams: `tobe_` properties not existed' );
+            }
+
+            let minSize = 3 * this.borderThreshold; 
+
+            if ( this.tobe_width < minSize || this.tobe_height < minSize ) {
+                return false;
+            }
             return true;
         }
 
         updateParams( options ) {
             let me = this;
             let opt = options || {};
-            console.log( 'Box.updateParams(): on box ' + me._uuid );
+            me.isDebug && console.log( '    Box.updateParams(): on box ' + me._uuid );
             let box = me.refs.box;
             let content = me.refs.content;
 
@@ -1485,6 +1655,13 @@
                 me.top = me.tobe_top || me.top;
                 me.width = me.tobe_width || me.width;
                 me.height = me.tobe_height || me.height;
+
+                // must clear `tobe_` properties
+                clearTobe();
+            }
+            else if ( opt.clearTobe ) {
+                clearTobe();
+                return;
             }
 
             box.style.left = me.left + 'px';
@@ -1493,6 +1670,12 @@
             box.style.height = me.height + 'px';
 
             me.contentHeight = content.offsetHeight; 
+
+            function clearTobe() {
+                [ 'left', 'top', 'width', 'height' ].forEach( prop => {
+                    delete me[ 'tobe_' + prop ];
+                } );
+            }
         }
 
         enableFocus = () => {
@@ -1556,8 +1739,9 @@
          * handlers for focus
          */
         on_focus = ( e ) => {
+            let me = this;
             let target = e.target;
-            let box = this.refs.box;
+            let box = me.refs.box;
             let curElement = target;
 
             while( curElement
@@ -1567,12 +1751,12 @@
 
             if ( !curElement ) {
                 $( box ).removeClass( 'box_focus' );
-                this.isFocused = 0;
+                me.isFocused = 0;
             }
             else {
                 $( box ).addClass( 'box_focus' );
-                this.isFocused = 1;
-                console.log( 'mousedown on box: ' + this._uuid );
+                me.isFocused = 1;
+                me.isDebug && console.log( 'mousedown on box: ' + me._uuid );
             }
         }
 
@@ -1677,7 +1861,7 @@
 
             if ( 
 
-                !this.isFocused 
+                ! this.isFocused 
                 || this.isDragging 
                 || ( 
                     this.resizeState != RESIZE_STATE_CAPTURE_HOVER 
@@ -1695,7 +1879,7 @@
 
             let header = this.refs.header;
             let parentBox = box.parentNode;
-            let headerRect = header.getBoundingClientRect();
+            let headerRect = !this.showHeader ? { height: -1 } : header.getBoundingClientRect();
             let boxRect = box.getBoundingClientRect();
             // viewport coords
             let vx = e.clientX;
@@ -1704,19 +1888,13 @@
             let cx = vx - boxRect.left;
             let cy = vy - boxRect.top;
 
-            let threshold = 10;
+            let threshold = this.borderThreshold;
+
             let xRightHit = Math.abs( cx - boxRect.width ) < threshold;
-            // let xRightInnerHit = xRightHit && cx <= boxRect.width;
-            // let xRightOuterHit = xRightHit && cx > boxRect.width;
             let xLeftHit = Math.abs( cx ) < threshold;
-            // let xLeftInnerHit = xLeftHit && cx >= 0;
-            // let xLeftOuterHit = xLeftHit && cx < 0;
             let yBottomHit = Math.abs( cy - boxRect.height ) < threshold;
-            // let yBottomInnerHit = yBottomHit && cy <= boxRect.height;
-            // let yBottomOuterHit = yBottomHit && cy > boxRect.height;
             let yTopHit = Math.abs( cy ) < threshold;
-            // let yTopInnerHit = yTopHit && cy >= 0;
-            // let yTopOuterHit = yTopHit && cy < 0;
+
             let onHeader = cy >= 0 && cy <= headerRect.height
                     && cx >=0 && cx <= boxRect.width;
 
@@ -1728,6 +1906,12 @@
                 else if ( xLeftHit && yBottomHit ) {
                     resizeType = 'sw-resize';
                 }
+                else if ( xRightHit && yTopHit ) {
+                    resizeType = 'ne-resize';
+                }
+                else if ( xLeftHit && yTopHit ) {
+                    resizeType = 'nw-resize';
+                }
                 else if ( xRightHit ) {
                     resizeType = 'e-resize';
                 } 
@@ -1736,6 +1920,9 @@
                 } 
                 else if ( xLeftHit ) {
                     resizeType = 'w-resize';
+                }
+                else if ( yTopHit ) {
+                    resizeType = 'n-resize';
                 }
                 else {
                     resizeType = null;
@@ -1757,8 +1944,9 @@
 
             function _resetDefault() {
                 [ 
-                    'se-resize', 'e-resize'
+                    'se-resize', 'e-resize', 'n-resize'
                     , 's-resize', 'sw-resize', 'w-resize'
+                    , 'ne-resize', 'nw-resize'
                 ]
                 .map( item => 'box_' + item ) 
                 .forEach( item => $( box ).removeClass( item ) )
@@ -1788,6 +1976,9 @@
                 case 'w-resize': 
                     me._resizeParams.offsetX = cx; 
                     break;
+                case 'n-resize': 
+                    me._resizeParams.offsetY = cy; 
+                    break;
                 case 'se-resize': 
                     me._resizeParams.offsetX = boundingRect.width - cx; 
                     me._resizeParams.offsetY = boundingRect.height - cy; 
@@ -1795,6 +1986,14 @@
                 case 'sw-resize': 
                     me._resizeParams.offsetX = cx; 
                     me._resizeParams.offsetY = boundingRect.height - cy; 
+                    break;
+                case 'ne-resize': 
+                    me._resizeParams.offsetX = boundingRect.width - cx; 
+                    me._resizeParams.offsetY = cy; 
+                    break;
+                case 'nw-resize': 
+                    me._resizeParams.offsetX = cx; 
+                    me._resizeParams.offsetY = cy; 
                     break;
             }
 
@@ -1810,7 +2009,7 @@
                 , false
             );
 
-            console.log( 'mousedown on box: ' + me._uuid )
+            me.isDebug && console.log( 'mousedown on box: ' + me._uuid )
 
             // prevent selection of text or image triggered by mousemove
             e.preventDefault(); 
@@ -1848,6 +2047,11 @@
                     dx += me._resizeParams.offsetX;
                     dy = 0;
                     break;
+                case 'n-resize':
+                    dy = -cy;
+                    dy += me._resizeParams.offsetY;
+                    dx = 0;
+                    break;
                 case 'se-resize':
                     dx += me._resizeParams.offsetX;
                     dy += me._resizeParams.offsetY;
@@ -1857,17 +2061,30 @@
                     dx += me._resizeParams.offsetX;
                     dy += me._resizeParams.offsetY;
                     break;
+                case 'ne-resize':
+                    dy = -cy;
+                    dy += me._resizeParams.offsetY;
+                    dx += me._resizeParams.offsetX;
+                    break;
+                case 'nw-resize':
+                    dx = -cx;
+                    dx += me._resizeParams.offsetX;
+                    dy = -cy;
+                    dy += me._resizeParams.offsetY;
+                    break;
             }
 
-            console.log( 'resizing on box: ' + me._uuid );
+            me.isDebug && console.log( '\n\n=> resizing on box: ' + me._uuid );
 
-            me.parentArbitrator 
-                && me.parentArbitrator.onSubBoxResize( {
-                    target: me._uuid
-                    , type: me.resizeType
-                    , dx: dx
-                    , dy: dy
-                } );
+            if ( Math.abs( dx ) >= 2 || Math.abs( dy ) >= 2 ) {
+                me.parentArbitrator 
+                    && me.parentArbitrator.onSubBoxResize( {
+                        target: me._uuid
+                        , type: me.resizeType
+                        , dx: dx
+                        , dy: dy
+                    } );
+            }
         }
 
         on_border_resize_end = ( e ) => {
@@ -1922,24 +2139,45 @@
         var s = fly.createShow('#test_Box');
         s.show( 'testing' );
 
+        function Block( props ) {
+            let styles = {
+                    position: 'absolute'
+                    , left: 0
+                    , top: '30px'
+                    , right: 0
+                    , bottom: 0
+                    , backgroundColor: props.bgColor || '#fff'
+                };
+
+            return (
+                <div style={ styles }>{ props.children }</div>
+            );
+        }
+
+        
+        /**
+         * #1f77b4 #aec7e8 #ff7f0e #ffbb78 #2ca02c #98df8a #d62728 #ff9896 #9467bd #c5b0d5 
+         * #8c564b #c49c94 #e377c2 #f7b6d2 #7f7f7f #c7c7c7 #bcbd22 #dbdb8d #17becf #9edae5
+         */
+
         ReactDOM.render( 
-            <Box height="780" width="611" isRootBox>
-                <Box>        
-                    <Box><img src="./img/even/IMG_7993.JPG.jpg" /></Box>
-                    <Box><img src="./img/even/IMG_7994.JPG.jpg" /></Box>
+            <Box height="780" width="611" isRootBox showUUID showHeader>
+                <Box showUUID>        
+                    <Box showUUID><Block bgColor="#1f77b4"></Block></Box>
+                    <Box showUUID><Block bgColor="#17becf"></Block></Box>
                 </Box>
-                <Box>   
-                    <Box><img src="./img/even/IMG_7989.JPG.jpg" /></Box>
-                    <Box><img src="./img/even/IMG_7990.JPG.jpg" /></Box>
-                    <Box><img src="./img/even/IMG_7988.JPG.jpg" /></Box>
+                <Box showUUID>   
+                    <Box showUUID><Block bgColor="#ff7f0e"></Block></Box>
+                    <Box showUUID><Block bgColor="#2ca02c"></Block></Box>
+                    <Box showUUID showHeader><Block bgColor="#ff9896"></Block></Box>
                 </Box>
-                <Box>   
-                    <Box><img src="./img/even/IMG_7983.JPG.jpg" /></Box>
-                    <Box><img src="./img/even/IMG_7997.JPG.jpg" /></Box>
-                    <Box><img src="./img/even/IMG_8001.JPG.jpg" /></Box>
-                    <Box><img src="./img/even/IMG_8003.JPG.jpg" /></Box>
-                    <Box><img src="./img/even/IMG_8004.JPG.jpg" /></Box>
-                    <Box><img src="./img/even/IMG_8005.JPG.jpg" /></Box>
+                <Box showUUID>   
+                    <Box showUUID><Block bgColor="#9467bd" /></Box>
+                    <Box showUUID><Block bgColor="#8c564b" /></Box>
+                    <Box showUUID><Block bgColor="#e377c2" /></Box>
+                    <Box showUUID><Block bgColor="#f7b6d2" /></Box>
+                    <Box showUUID><Block bgColor="#7f7f7f" /></Box>
+                    <Box showUUID><Block bgColor="#bcbd22" /></Box>
                 </Box>
             </Box>
             , document.querySelector( '#test_Box .test-panel' ) 
