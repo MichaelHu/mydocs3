@@ -1,6 +1,6 @@
-# component-system
+# frame-layout-component
 
-> 组件系统设计
+> 框架布局组件设计及实现
 
 
 <style type="text/css">
@@ -18,7 +18,7 @@
 
 > changelog: 171104
 
-* 组件布局系统
+* 框架组件布局系统
         组件定位由布局模块统筹计算
         尺寸支持决定尺寸与相对尺寸
         布局方式支持层叠、平铺
@@ -568,8 +568,15 @@
         nw( dx, dy )        s( 0, -dy ), e( -dx, 0 )    sw( dx, -dy ), ne( -dx, dy )
 
     `Tips:`
+
     * `单字母`request，表示由边触发的resize请求；`双字母`request，表示由顶点触发的resize请求
     * 单字母request，只能传递一种request；而双字母request，可以传递多种request，根据顶点拖动所影响的边的情况传递不同种类的request
+    * 传递后的请求，若有两个单字母request，需要将其`合并`成一个双字母请求
+
+
+    `resize请求传递示意图：`
+
+    <img src="./img/frame-layout-component-resize-request-transfer-171213.png" style="max-height: 580px;">
 
 * `se-resize`、`sw-resize`，实际上是对一个`顶点拖动`，该顶点`最多涉及4条边`的变化
 * `se-resize`, `sw-resize`, `ne-resize`, `nw-resize`都属于`顶点拖动`，前两者能通过`手动拖动`触发，后两者只能通过`resize请求传递`获得
