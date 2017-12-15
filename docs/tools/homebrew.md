@@ -12,7 +12,7 @@
 
 ## Concepts
 
-* `formula`: A formula is a package definition written in Ruby. 可以通过`brew create <URL>`创建，使用`brew install <formula>`安装
+* `formula`: A formula is a `package definition` written in Ruby. 可以通过`brew create <URL>`创建，使用`brew install <formula>`安装
 * `tap`: third-party repositories, <https://github.com/Homebrew/brew/blob/master/docs/brew-tap.md>
     ，通过`brew tap <user/repo>`添加新的第三方库，增加brew查找formula的可选范围。
         $ brew tap                  # 列出当前可用tap库

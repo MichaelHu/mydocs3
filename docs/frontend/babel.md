@@ -17,10 +17,8 @@
 * `docs`: <http://babeljs.io/docs/usage/babelrc/>
 
 
-## 初识
 
-
-### Installation
+## Installation
 
     $ npm install --save-dev babel-cli
     $ ./node_modules/.bin/babel -h
@@ -28,13 +26,35 @@
     $ ./node_modules/.bin/babel --presets es2015 main.js
 
 
-### Configurations
+## Configurations
 
 `.babelrc`或者`package.json`皆可：
 
     {
         presets: []
     }
+
+
+
+## presets
+
+### babel-presets-env
+
+2016年发布，目的是让`编译器`来做更多的决定，解放繁琐的人工配置。该presets包含了几乎所有的presets，包含：
+
+    babel-preset-es2015
+    babel-preset-es2016
+    babel-preset-es2017
+    babel-preset-latest
+
+以及其他的es20xx，比如
+
+    babel-preset-node5
+    babel-preset-es2015-node
+
+等。
+
+### 升级至babel-presets-env
 
 可以使用`babel-preset-env`插件<http://babeljs.io/docs/plugins/preset-env/>，由babel自动决定该使用哪些babel插件。
 
@@ -60,7 +80,11 @@
 
 
 
+
+
 ### ES2015 and beyond
+
+> 已过期，可用`babel-presets-env`代替
 
     npm install --save-dev babel-preset-es2015
 

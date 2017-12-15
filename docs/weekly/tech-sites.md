@@ -25,6 +25,7 @@
 
 ## 技术站点
 
+* Performance Calendar - The speed geek's favorite time of the year <https://calendar.perfplanet.com/2017/>
 * InfoQ前端专栏：<http://www.infoq.com/cn/Front-end/>
 * W3Cplus: <http://www.w3cplus.com>
 * W3Ctech: <https://www.w3ctech.com>
