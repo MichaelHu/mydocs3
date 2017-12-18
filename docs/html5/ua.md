@@ -1,6 +1,55 @@
 # UserAgent 分析
 
 
+## 浏览器位数
+
+### Chrome userAgent
+
+> 以下为`32位`Chrome在`Win7(32-bit) / Win7(64-bit) / WinXP(32-bit) / Win10(64-bit)`下的userAgent
+
+    win7 32-bit: Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.87 Safari/537.36
+    win7 64-bit: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.87 Safari/537.36
+    winxp 32-bit: Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36
+    win10 64-bit: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.87 Safari/537.36
+
+> 以下为`64位`Chrome在`Win7(64-bit)`下的userAgent
+
+    win7 64-bit: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36
+
+* 附Chrome的常见userAgent string - <http://www.useragentstring.com/pages/useragentstring.php?name=Chrome>
+* xp系统一般装32位的Chrome，安装64位Chrome的一般为Win 7及以上系统；而且一般64位系统是安装不了32位Chrome的
+* 所以，主要判断Win 7及以上的64位系统安装64位Chrome的情况，粗略判断可以通过`"Win64; x64"`
+* 综上，可以通过判断`userAgent`中的`Win64; x64`来判断64位Chrome，判断逻辑为：
+
+        if ( Chrome ) {
+            if ( userAgent包含"Win64; x64" ) {
+                提示64位Chrome可能无法使用PKI登录
+            }
+        }
+
+
+
+### IE 10 userAgent
+
+> 参考<https://msdn.microsoft.com/library/hh920767(v=vs.85).aspx>
+
+32 位 Windows 8 中的 32 位 Internet Explorer 10：
+
+    Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)
+
+32 位 Windows 8 中的 64 位 Internet Explorer 10：
+
+    Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0) 
+
+64 位 Windows 8 中的 64 位 Internet Explorer 10：
+
+    Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Win64; x64; Trident/6.0)
+
+看这篇文档，IE10估计可以通过WOW64标识来判断。
+
+
+
+
 ## WES7-sp1-64
 
 ### Chrome 55
@@ -14,7 +63,7 @@ win7旗舰版的UA同上。也即通过ua无办法区分win7和wes7。
 
 ## 微信UA
 
-Mozilla/5.0 (iPhone; CPU iPhone OS 9_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13C75 MicroMessenger/6.3.9 NetType/WIFI Language/zh_CN
+    Mozilla/5.0 (iPhone; CPU iPhone OS 9_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13C75 MicroMessenger/6.3.9 NetType/WIFI Language/zh_CN
 
 从中可以看出，有NetType/WIFI字段，可以直接判断网络类型。
 

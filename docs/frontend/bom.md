@@ -83,6 +83,29 @@
 
 
 ## navigator
+
+    field           value
+    ==================================================================================================
+    userAgent       Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36
+    appCodeName     Mozilla      
+    appVersion      5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36
+    platform        MacIntel
+    vendor          Google Inc.
+    vendorSub       
+    appName         Netscape
+    product         Gecko
+    productSub      20030107
+    language
+    languages
+    onLine
+    geolocation
+    plugins
+    mimeTypes
+    getBattery
+    permissions
+    vibrate
+
+
 ## screen
 ## history
 ## location

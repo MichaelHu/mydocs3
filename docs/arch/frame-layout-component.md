@@ -628,6 +628,37 @@
 
 
 
+### 171218
+
+* 支持哪些`props`？
+
+        name            prop-type
+        ========================================
+        isRootBox       bool 
+        useDefLayout    bool
+        showUUID        bool
+        showHeader      bool
+        height          /\d+%?/
+        width           /\d+%?/
+        top             /\d+%?/
+        left            /\d+%?/
+
+* `百分比尺寸`支持，仅在`初始化`时支持，初始化以后，`确保`所有尺寸参数都转换成`数字类型`
+* `onResize()`支持的类型，同时类型参数会传递给`updateParams()`和`resize()`
+
+        type            desc
+        ======================================================================================
+        init            初始化，先将百分比尺寸(若有)转换成数字类型的绝对尺寸，再更新至DOM
+        useTobe         使用`tobe_`前缀的尺寸实际更新box
+        clearTobe       清理`tobe_`前缀的尺寸
+
+* `useDefLayout` - 要求当前box的尺寸已经是`数字类型`，其子box则按默认方式进行布局，只能执行一次
+* `useDefLayout`设置会`覆盖`height, width, top, left等尺寸设置
+* todo: 响应`window.onresize`事件
+* todo: `drag-drop`，简单的可以让最里层Box进行一分为二
+
+
+
 ## utils
 
     @[data-script="babel-loose"]var utils = ( function() {
@@ -720,7 +751,9 @@
             me.subBoxes = [];
             me.adjBoxes = {};
             me.deviation = typeof me.opt.deviation == 'number' ? me.opt.deviation : 2;
+
             me.isDebug = me.opt.isDebug || 0;
+            me.useDefLayout = me.opt.useDefLayout || 0;
         }
 
         register( subBox ) {
@@ -1311,11 +1344,11 @@
             else if ( opt.clearTobe ) {
                 me.isDebug && console.log( '    clear subboxes\' `tobe-` properties' );
             }
-            else if ( !this.subBoxLayoutInitialized ) {
-                this.initializeSubBoxLayout( options );
+            else if ( me.useDefLayout && !me.subBoxLayoutInitialized ) {
+                me.initializeSubBoxLayout( options );
             }
 
-            this.subBoxes.forEach( ( box ) => {
+            me.subBoxes.forEach( ( box ) => {
                 box.arbitrator.onResize( options );
             } );
         }
@@ -1562,13 +1595,14 @@
             me.width = props.width || 100;
             me.height = props.height || 50;
             me.styles = {
-                top: me.top + 'px'
-                , left: me.left + 'px'
-                , width: me.width + 'px'
-                , height: me.height + 'px'
+                top: me.top + ( /%/.test( me.top ) ? '' : 'px' )
+                , left: me.left + ( /%/.test( me.left ) ? '' : 'px' )
+                , width: me.width + ( /%/.test( me.width ) ? '' : 'px' )
+                , height: me.height + ( /%/.test( me.height ) ? '' : 'px' )
             };
             me.isRootBox = props.isRootBox || 0;
             me.showHeader = props.showHeader || 0;
+            me.useDefLayout = props.useDefLayout || 0;
 
             me.isFocused = 0;
             me.isDragging = 0;
@@ -1586,7 +1620,7 @@
             me.isDebug = me.parentArbitrator && me.parentArbitrator.isDebug
                 || props.debug || 0;
 
-            let arbitratorOptions = utils.extendOnly( {}, me, [ 'isDebug' ] );
+            let arbitratorOptions = utils.extendOnly( {}, me, [ 'isDebug', 'useDefLayout' ] );
             me.arbitrator = new Arbitrator( me, arbitratorOptions );
 
             me.borderThreshold = 10;
@@ -1622,7 +1656,7 @@
 
             // initialize
             if ( me.isRootBox ) {
-                me.arbitrator.onResize();
+                me.arbitrator.onResize( { init: 1 } );
             }
 
             if ( me.showHeader ) {
@@ -1655,8 +1689,24 @@
             me.isDebug && console.log( '    Box.updateParams(): on box ' + me._uuid );
             let box = me.refs.box;
             let content = me.refs.content;
+            let container = me.parentArbitrator && me.parentArbitrator.box.refs.content
+                    || box.parentNode;
 
-            if ( opt.useTobe ) {
+            if ( opt.init ) {
+                console.log( container && container.offsetHeight );
+                if ( container ) {
+                    let contHeight = container.offsetHeight;
+                    let contWidth = container.offsetWidth;
+                    /(\d+)%/.test( me.left ) && ( me.left = RegExp.$1 * contWidth / 100 );
+                    /(\d+)%/.test( me.top ) && ( me.top = RegExp.$1 * contHeight / 100 );
+                    /(\d+)%/.test( me.width ) && ( me.width = RegExp.$1 * contWidth / 100 );
+                    /(\d+)%/.test( me.height ) && ( me.height = RegExp.$1 * contHeight / 100 );
+                }
+                else {
+                    throw Error( 'updateParams: no container' );
+                }
+            }
+            else if ( opt.useTobe ) {
                 // even if useTobe is set, maybe there is no tobe-size
                 me.left = me.tobe_left || me.left;
                 me.top = me.tobe_top || me.top;
@@ -2168,17 +2218,17 @@
          */
 
         ReactDOM.render( 
-            <Box height="780" width="611" isRootBox showUUID showHeader>
-                <Box showUUID>        
+            <Box height="100%" width="100%" isRootBox showUUID showHeader useDefLayout>
+                <Box showUUID useDefLayout>        
                     <Box showUUID><Block bgColor="#1f77b4"></Block></Box>
                     <Box showUUID><Block bgColor="#17becf"></Block></Box>
                 </Box>
                 <Box showUUID>   
-                    <Box showUUID><Block bgColor="#ff7f0e"></Block></Box>
-                    <Box showUUID><Block bgColor="#2ca02c"></Block></Box>
-                    <Box showUUID showHeader><Block bgColor="#ff9896"></Block></Box>
+                    <Box width="50%" height="100%" showUUID><Block bgColor="#ff7f0e"></Block></Box>
+                    <Box width="50%" height="50%" left="50%" showUUID><Block bgColor="#2ca02c"></Block></Box>
+                    <Box width="50%" height="50%" left="50%" top="50%" showUUID showHeader><Block bgColor="#ff9896"></Block></Box>
                 </Box>
-                <Box showUUID>   
+                <Box showUUID useDefLayout>   
                     <Box showUUID><Block bgColor="#9467bd" /></Box>
                     <Box showUUID><Block bgColor="#8c564b" /></Box>
                     <Box showUUID><Block bgColor="#e377c2" /></Box>
