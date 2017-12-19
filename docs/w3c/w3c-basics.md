@@ -16,8 +16,10 @@
 ## W3C标准文档
 
 * WebIDL Level 1 <https://www.w3.org/TR/WebIDL-1/> `Interface definition language, ECMAScript binding`，DOMString
-* HTML5 <https://www.w3.org/TR/html/>
+* HTML5 - `[ latest ]` <https://www.w3.org/TR/html/>
+* HTML5.0 <https://www.w3.org/TR/html50/>
 * HTML5.1 <https://www.w3.org/TR/html51/>
+* HTML5.2 <https://www.w3.org/TR/html52/>
 * DOM <https://www.w3.org/TR/dom/>
 * BOM (无正式标准，归类方便，特放此处) <https://www.w3cschool.cn/javascript/js-window.html>
 * CSS1 <https://www.w3.org/TR/CSS1/>
@@ -28,7 +30,7 @@
 * DOM-Level-0：`Netscape Navigator 3`及`MS IE 3`提供的HTML文档功能的合集，无正式规范 
 * DOM-Level-2-Core, 2000 <https://www.w3.org/TR/DOM-Level-2-Core/>
 * DOM-Level-3-Core <https://www.w3.org/TR/DOM-Level-3-Core/>
-* DOM-level-2-Events  <https://www.w3.org/TR/DOM-Level-2-Events/events.html>
+* DOM-level-2-Events  <http://www.w3.org/TR/DOM-Level-2-Events>
 * UIEvents (可以理解为level-3-events) <https://www.w3.org/TR/uievents/>
 * SVG <https://www.w3.org/TR/SVG11/>
 * SMIL Animation: 定义`SVG动画` <https://www.w3.org/TR/SVG11/animate.html>

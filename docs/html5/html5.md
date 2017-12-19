@@ -52,6 +52,12 @@ The `WAI-ARIA role` that an HTML element has assigned to it is `the first non-ab
 <ref://./cors.md.html>
 
 
+## DND
+
+<ref://./drag-and-drop.md.html>
+
+
+
 ## Fetch API
 
 > 引入两个更通用的概念：`Request`, `Response`。

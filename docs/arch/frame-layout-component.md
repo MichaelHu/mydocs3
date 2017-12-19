@@ -297,11 +297,13 @@
 * `平铺`模式下，header的drag需要disable掉 
 
 
+
+
 ### 171130
 
 * `resize`逻辑开发及调试
-* 限制：`border`本身不作为元素的`响应区`，`padding`会作为响应区
-* `!重要`：box`不设置border`样式，一律使用`border: none;`，另外的角度讲，box作为`framebox`，无外边距、边框、内边距是合适的。
+*  限制：`border`本身不作为元素的`响应区`，`padding`会作为响应区
+* `重要`：box`不设置border`样式，一律使用`border: none;`，另外的角度讲，box作为`framebox`，无外边距、边框、内边距是合适的。
 * `resize`的鼠标样式若只是设置在box上，若box内部有其他元素，且有默认`鼠标样式`，则无法显示正确鼠标样式。所以需要使用`设置class`的方式，不仅设置box本身，还设置box的`子孙元素`，比如：
 
         .box_w-resize {
@@ -591,7 +593,7 @@
 
 ### 171213 - optmization
 
-* 添加`deviation`，用于数值计算时的允许误差
+* 添加`deviation`，用于数值计算时的允许`误差`
 *  `tobe_`属性在`实际应用`或者`测试失败`后，需要`及时清理`，未及时清理，可能导致后续操作产生`混乱`
 * 为resize operation添加`debounce`，仅当x或y方向的变化`不小于2`时才触发resize计算
 * 计算`ratio向量`时，由于存在header，`yRatio`的计算需要考虑`header的高度`：
@@ -618,17 +620,19 @@
     * 由于box支持多层嵌套，使用简单的后代选择器（descendant selector）无法精确控制单个box的行为，需要使用`子元素选择器`（child selector）
 * `Box.checkParams()`至少有一个最基本实现：`宽高都不能小于 3 * borderThreshold`
 * `showUUID`属性用于调试模式下，展示box对应的uuid
-* `console日志`梳理及格式化，区分`unitTest`和`debug`两种模式。支持`仅在根box配置一次`debug属性，即可在所有子孙box上开启debug模式：
+* `console日志`梳理及格式化，区分`unitTest`和`debug`两种模式。支持`仅在根box配置一次`isDebug属性，即可在所有子孙box上开启debug模式：
 
         ...
         // support: only configures on the root box
         me.isDebug = me.parentArbitrator && me.parentArbitrator.isDebug
-            || props.debug || 0;
+            || props.isDebug || 0;
         ...
 
 
 
 ### 171218
+
+> changelog: 171219
 
 * 支持哪些`props`？
 
@@ -648,14 +652,91 @@
 
         type            desc
         ======================================================================================
-        init            初始化，先将百分比尺寸(若有)转换成数字类型的绝对尺寸，再更新至DOM
+        init            初始化，先将百分比尺寸（若有）转换成数字类型的绝对尺寸，再更新至DOM
         useTobe         使用`tobe_`前缀的尺寸实际更新box
         clearTobe       清理`tobe_`前缀的尺寸
 
-* `useDefLayout` - 要求当前box的尺寸已经是`数字类型`，其子box则按默认方式进行布局，只能执行一次
+* `useDefLayout` - 要求当前box的尺寸已经是`数字类型`，其子box则按默认方式进行布局<s>，只能执行一次</s>
 * `useDefLayout`设置会`覆盖`height, width, top, left等尺寸设置
-* todo: 响应`window.onresize`事件
+* todo: 响应`window.onresize`事件 [ `done` ]
 * todo: `drag-drop`，简单的可以让最里层Box进行一分为二
+
+
+
+### 171219
+
+* 在`rootBox`上添加`on_resize`以响应window的resize事件，执行过程如下所示：
+
+        window resize
+        get tobe size for root box: rootBox
+        if ( probeRatioResize( rootBox ) ) {
+            rootBox.arbitrator.onResize( { useTobe: 1 } )
+        }
+        else {
+            rootBox.arbitrator.onResize( { clearTobe: 1 } )
+        }
+
+*  `绝对定位`从父容器的`border内侧`开始，`无视`父容器的padding设置
+* <s>todo: `addBox / removeBox` ?</s>
+*  直接操作DOM属性，减少React的`render()周期`
+* `update` phase:
+
+        componentWillReceiveProps( nextProps )
+            // apply new props
+            // update arbitrator props
+
+        componentDidUpdate( prevProps, prevState )
+            if ( this.isRootBox ) {
+                this.arbitrator.onResize( { init: 1 } );
+            }
+    
+* `unmount`:
+
+        componentWillUnmount
+            removeEventListener()
+            disableDraggable()
+            disableFocus()
+            disableHover()
+            this.parentArbitrator.unregister( this )
+
+* 输出`Box配置`，包括Box`自身配置`，以及由rootBox输出的`box tree的配置`
+
+        getBoxConfig()
+            isRootBox
+            showHeader
+            useDefLayout
+            isDebug
+            showUUID
+            top
+            left
+            width
+            height
+
+        getBoxTreeConfig()
+            {
+                box: {}
+                , children: [
+                    { 
+                        box: { ... }
+                        , children: [
+                            { box: { ... }
+                            , { box: { ... }
+                        ]
+                    }
+                    , ...
+                    , { 
+                        box: { ... }
+                    }
+                ]
+            }
+
+* todo: box tree构建，使用`BoxManager`
+
+        根据box配置构建box树形结构
+        叶子box才可以包含其他组件
+        
+
+
 
 
 
@@ -708,11 +789,38 @@
             return Math.abs( a - b ) <= Math.abs( deviation );
         }
 
+        function getContentSize( element ) {
+            let computedStyle = getComputedStyle( element );
+            let boxSizing = computedStyle[ 'box-sizing' ];
+            let containerWidth = parseFloat( computedStyle[ 'width' ] );
+            let containerHeight = parseFloat( computedStyle[ 'height' ] );
+            let containerBorderTop = parseFloat( computedStyle[ 'border-top' ] );
+            let containerBorderRight = parseFloat( computedStyle[ 'border-right' ] );
+            let containerBorderBottom = parseFloat( computedStyle[ 'border-bottom' ] );
+            let containerBorderLeft = parseFloat( computedStyle[ 'border-left' ] );
+            let containerPaddingTop = parseFloat( computedStyle[ 'padding-top' ] );
+            let containerPaddingRight = parseFloat( computedStyle[ 'padding-right' ] );
+            let containerPaddingBottom = parseFloat( computedStyle[ 'padding-bottom' ] );
+            let containerPaddingLeft = parseFloat( computedStyle[ 'padding-left' ] );
+
+            let width = boxSizing == 'border-box'
+                    ? containerWidth - containerBorderLeft - containerBorderRight 
+                        - containerPaddingLeft - containerPaddingRight
+                    : containerWidth;
+            let height = boxSizing == 'border-box'
+                    ? containerHeight - containerBorderTop - containerBorderBottom
+                        - containerPaddingTop - containerPaddingBottom
+                    : containerHeight;
+
+            return { width, height };
+        }
+
         return {
             extend
             , extendOnly
             , defaults
             , equal
+            , getContentSize
         };
 
     } )();
@@ -749,7 +857,6 @@
                 ? { width: 300, height: 320, contentHeight: 300, left: 0 } : box;
             me.subBoxLayoutInitialized = false;
             me.subBoxes = [];
-            me.adjBoxes = {};
             me.deviation = typeof me.opt.deviation == 'number' ? me.opt.deviation : 2;
 
             me.isDebug = me.opt.isDebug || 0;
@@ -761,6 +868,20 @@
                 throw Error( 'Arbitrator register(): subBox must be instance of Box' );
             }
             this.subBoxes.push( subBox );
+        }
+
+        unregister( subBox ) {
+            if ( ! subBox instanceof Box ) {
+                throw Error( 'Arbitrator unregister(): subBox must be instance of Box' );
+            }
+            let i = this.subBoxes.length - 1;
+            while( i >= 0 ) {
+                if ( this.subBoxes[ i ] == subBox ) {
+                    this.subBoxes.splice( i, 1 );
+                    return;
+                }
+                i--;
+            }
         }
 
         initializeSubBoxLayout() {
@@ -1342,9 +1463,10 @@
                 me.isDebug && console.log( '    resize subboxes using tobe-size' );
             }
             else if ( opt.clearTobe ) {
-                me.isDebug && console.log( '    clear subboxes\' `tobe-` properties' );
+                me.isDebug && console.log( '    clear subboxes `tobe-` properties' );
             }
-            else if ( me.useDefLayout && !me.subBoxLayoutInitialized ) {
+            else if ( me.useDefLayout ) {
+                me.isDebug && console.log( '    use default layout' );
                 me.initializeSubBoxLayout( options );
             }
 
@@ -1443,6 +1565,7 @@
             position: relative;
             height: 800px;
             overflow: hidden;
+            border: 10px solid #a1d99b;
             background-color: #333;
         }
         .box {
@@ -1600,9 +1723,9 @@
                 , width: me.width + ( /%/.test( me.width ) ? '' : 'px' )
                 , height: me.height + ( /%/.test( me.height ) ? '' : 'px' )
             };
-            me.isRootBox = props.isRootBox || 0;
-            me.showHeader = props.showHeader || 0;
-            me.useDefLayout = props.useDefLayout || 0;
+            me.isRootBox = props.isRootBox || false;
+            me.showHeader = props.showHeader || false;
+            me.useDefLayout = props.useDefLayout || false;
 
             me.isFocused = 0;
             me.isDragging = 0;
@@ -1617,10 +1740,13 @@
             }
 
             // support: only configures on the root box
-            me.isDebug = me.parentArbitrator && me.parentArbitrator.isDebug
-                || props.debug || 0;
+            me.isDebug = props.isDebug 
+                || me.parentArbitrator && me.parentArbitrator.isDebug
+                || 0;
 
-            let arbitratorOptions = utils.extendOnly( {}, me, [ 'isDebug', 'useDefLayout' ] );
+            me.arbitratorOptionFields = [ 'isDebug', 'useDefLayout' ];
+
+            let arbitratorOptions = utils.extendOnly( {}, me, me.arbitratorOptionFields );
             me.arbitrator = new Arbitrator( me, arbitratorOptions );
 
             me.borderThreshold = 10;
@@ -1657,17 +1783,143 @@
             // initialize
             if ( me.isRootBox ) {
                 me.arbitrator.onResize( { init: 1 } );
+                window.addEventListener( 'resize', me.on_resize, false );
             }
 
             if ( me.showHeader ) {
                 me.enableDraggable();
             }
 
+            if ( me.isDebug ) {
+                me.enableShowBoxConfig();
+            }
+
             me.enableFocus();
             me.enableHover();
         }
 
+        componentWillReceiveProps( nextProps ) {
+            let me = this;
+            let props = nextProps;
+
+            // apply new props
+            me.top = props.top || 0;
+            me.left = props.left || 0;
+            me.width = props.width || 100;
+            me.height = props.height || 50;
+            me.showHeader = props.showHeader || 0;
+            me.useDefLayout = props.useDefLayout || 0;
+            me.showUUID = props.showUUID || 0;
+
+            // support: only configures on the root box
+            me.isDebug = props.isDebug
+                || me.parentArbitrator && me.parentArbitrator.isDebug
+                || false;
+
+            // reset showing box config
+            me.disableShowBoxConfig();
+            if ( me.isDebug ) {
+                me.enableShowBoxConfig();
+            }
+
+            // update arbitrator props
+            utils.extendOnly( me.arbitrator, me, me.arbitratorOptionFields );
+        }
+
+        shouldComponentUpdate( nextProps, nextState ) {
+            return true;
+        }
+
+        componentWillUpdate( nextProps, nextState ) {
+        }
+
+        componentDidUpdate( prevProps, prevState ) {
+            if ( this.isRootBox ) {
+                this.arbitrator.onResize( { init: 1 } );
+            }
+        }
+
         componentWillUnmount() {
+            let me = this;
+
+            if ( me.isRootBox ) {
+                window.removeEventListener( 'resize', me.on_resize, false );
+            }
+
+            if ( me.showHeader ) {
+                me.disableDraggable();
+            }
+
+            if ( me.parentArbitrator ) {
+                me.parentArbitrator.unregister( me );
+            }
+
+            if ( me.isDebug ) {
+                me.disableShowBoxConfig();
+            }
+
+            me.disableFocus();
+            me.disableHover();
+        }
+
+        enableShowBoxConfig() {
+            let me = this;
+            let box = me.refs.box;
+            box.addEventListener(
+                'click'
+                , me.showBoxConfig 
+                , false
+            );
+        }
+
+        disableShowBoxConfig() {
+            let me = this;
+            let box = me.refs.box;
+            box.removeEventListener(
+                'click'
+                , me.showBoxConfig 
+                , false
+            );
+        }
+
+        showBoxConfig = () => {
+            let boxConfig = this.getBoxConfig();
+            let boxTreeConfig = this.getBoxTreeConfig();
+            console.log( boxConfig );
+            if ( this.isRootBox ) {
+                console.log( '_boxTreeConfig', boxTreeConfig );
+                window._boxTreeConfig = JSON.stringify( boxTreeConfig );
+            }
+        }
+
+        getBoxConfig() {
+            let { isRootBox, showHeader, useDefLayout, isDebug, showUUID
+                , top, left, width, height } = this;
+            return { 
+                isRootBox
+                , showHeader
+                , useDefLayout
+                , isDebug
+                , showUUID
+                , top
+                , left
+                , width
+                , height
+            };
+        }
+
+        getBoxTreeConfig() {
+            let me = this;
+            let subBoxes = me.arbitrator.subBoxes;
+            let config = {};
+
+            config.box = me.getBoxConfig();
+            config.children = [];
+            subBoxes.forEach( ( subBox ) => {
+                config.children.push( subBox.getBoxTreeConfig() );
+            } );
+
+            return config;
         }
 
         checkParams() {
@@ -1693,10 +1945,10 @@
                     || box.parentNode;
 
             if ( opt.init ) {
-                console.log( container && container.offsetHeight );
                 if ( container ) {
-                    let contHeight = container.offsetHeight;
-                    let contWidth = container.offsetWidth;
+                    let contSize = utils.getContentSize( container );
+                    let contHeight = contSize.height;
+                    let contWidth = contSize.width;
                     /(\d+)%/.test( me.left ) && ( me.left = RegExp.$1 * contWidth / 100 );
                     /(\d+)%/.test( me.top ) && ( me.top = RegExp.$1 * contHeight / 100 );
                     /(\d+)%/.test( me.width ) && ( me.width = RegExp.$1 * contWidth / 100 );
@@ -1735,7 +1987,7 @@
             }
         }
 
-        enableFocus = () => {
+        enableFocus() {
             document.addEventListener(
                 'mousedown'
                 , this.on_focus
@@ -1743,7 +1995,15 @@
             );
         }
 
-        enableDraggable = () => {
+        disableFocus() {
+            document.removeEventListener(
+                'mousedown'
+                , this.on_focus
+                , false
+            );
+        }
+
+        enableDraggable() {
             let log = this.props.log;
             let header = this.refs.header;
 
@@ -1754,7 +2014,18 @@
             );
         }
 
-        enableHover = () => {
+        disableDraggable() {
+            let log = this.props.log;
+            let header = this.refs.header;
+
+            header.removeEventListener(
+                'mousedown'
+                , this.on_header_drag_start
+                , false
+            );
+        }
+
+        enableHover() {
             let box = this.refs.box;
 
             this.resizeState = RESIZE_STATE_CAPTURE_HOVER;
@@ -1766,7 +2037,19 @@
             );
         }
 
-        enableResize = ( type ) => {
+        disableHover() {
+            let box = this.refs.box;
+
+            this.resizeState = RESIZE_STATE_DISTABLED;
+
+            document.removeEventListener(
+                'mousemove'
+                , this.on_capture_hover
+                , false
+            );
+        }
+
+        enableResize( type ) {
             let me = this;
             let box = me.refs.box;
 
@@ -1780,7 +2063,7 @@
             );
         }
 
-        disableResize = () => {
+        disableResize() {
             let box = this.refs.box;
 
             this.resizeState = RESIZE_STATE_CAPTURE_HOVER;
@@ -2164,6 +2447,23 @@
 
         }
 
+        on_resize = ( e ) => {
+            let me = this;
+            let box = me.refs.box;
+            let container = box.parentNode;
+            let { width, height } = utils.getContentSize( container );
+
+            me.tobe_height = height;
+            me.tobe_width = width;
+
+            if ( me.arbitrator.probeRatioResize( me ) ) {
+                me.arbitrator.onResize( { useTobe: 1 } );
+            }
+            else {
+                me.arbitrator.onResize( { clearTobe: 1 } );
+            }
+        }
+
     }
     
     Box.defaultProps = {
@@ -2191,7 +2491,7 @@
 <div class="test-console"></div>
 <div class="test-container">
 
-    @[data-script="babel"](function(){
+    @[data-script="babel editable"](function(){
 
         var s = fly.createShow('#test_Box');
         s.show( 'testing' );
@@ -2218,23 +2518,23 @@
          */
 
         ReactDOM.render( 
-            <Box height="100%" width="100%" isRootBox showUUID showHeader useDefLayout>
-                <Box showUUID useDefLayout>        
-                    <Box showUUID><Block bgColor="#1f77b4"></Block></Box>
-                    <Box showUUID><Block bgColor="#17becf"></Block></Box>
+            <Box height="100%" width="100%" isRootBox showUUID useDefLayout>
+                <Box key="1" showUUID useDefLayout>        
+                    <Box key="11" showUUID><Block bgColor="#1f77b4"></Block></Box>
+                    <Box key="12" showUUID><Block bgColor="#17becf"></Block></Box>
                 </Box>
-                <Box showUUID>   
-                    <Box width="50%" height="100%" showUUID><Block bgColor="#ff7f0e"></Block></Box>
-                    <Box width="50%" height="50%" left="50%" showUUID><Block bgColor="#2ca02c"></Block></Box>
-                    <Box width="50%" height="50%" left="50%" top="50%" showUUID showHeader><Block bgColor="#ff9896"></Block></Box>
+                <Box showUUID key="2">   
+                    <Box key="21" width="50%" height="100%" showUUID><Block bgColor="#ff7f0e"></Block></Box>
+                    <Box key="22" width="50%" height="50%" left="50%" showUUID><Block bgColor="#2ca02c"></Block></Box>
+                    <Box key="23" width="50%" height="50%" left="50%" top="50%" showUUID showHeader><Block bgColor="#ff9896"></Block></Box>
                 </Box>
-                <Box showUUID useDefLayout>   
-                    <Box showUUID><Block bgColor="#9467bd" /></Box>
-                    <Box showUUID><Block bgColor="#8c564b" /></Box>
-                    <Box showUUID><Block bgColor="#e377c2" /></Box>
-                    <Box showUUID><Block bgColor="#f7b6d2" /></Box>
-                    <Box showUUID><Block bgColor="#7f7f7f" /></Box>
-                    <Box showUUID><Block bgColor="#bcbd22" /></Box>
+                <Box key="3" showUUID useDefLayout>   
+                    <Box key="31" showUUID><Block bgColor="#9467bd" /></Box>
+                    <Box key="32" showUUID><Block bgColor="#8c564b" /></Box>
+                    <Box key="33" showUUID><Block bgColor="#e377c2" /></Box>
+                    <Box key="34" showUUID showHeader><Block bgColor="#f7b6d2" /></Box>
+                    <Box key="35" showUUID><Block bgColor="#7f7f7f" /></Box>
+                    <Box key="36" showUUID><Block bgColor="#bcbd22" /></Box>
                 </Box>
             </Box>
             , document.querySelector( '#test_Box .test-panel' ) 
@@ -2248,6 +2548,51 @@
 
 
 
+## BoxManager
 
+### 代码实现
+
+    @[data-script="babel"]class BoxManager extends React.Component {
+
+        constructor( props ) {
+            super( props );
+            let me = this;
+        }
+
+        render() {
+            return (
+                <div>
+                    {this.props.boxConfig}
+                </div>
+            );
+        }
+
+    }
+
+
+### test
+
+
+<div id="test_BoxManager" class="test">
+<div class="test-panel box-container"></div>
+<div class="test-console"></div>
+<div class="test-container">
+
+    @[data-script="babel editable"](function(){
+
+        var s = fly.createShow('#test_BoxManager');
+        s.show( 'testing' );
+
+        var boxConfig = {"box":{"isRootBox":true,"showHeader":0,"useDefLayout":true,"isDebug":true,"showUUID":true,"top":0,"left":0,"width":694,"height":780},"children":[{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":true,"isDebug":true,"showUUID":true,"top":0,"left":0,"width":347,"height":390},"children":[{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":0,"left":0,"width":173.5,"height":390},"children":[]},{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":0,"left":173.5,"width":173.5,"height":390},"children":[]}]},{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":0,"left":347,"width":347,"height":390},"children":[{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":0,"left":0,"width":173.5,"height":390},"children":[]},{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":0,"left":173.5,"width":173.5,"height":195},"children":[]},{"box":{"isRootBox":false,"showHeader":true,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":195,"left":173.5,"width":173.5,"height":195},"children":[]}]},{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":true,"isDebug":true,"showUUID":true,"top":390,"left":0,"width":694,"height":390},"children":[{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":0,"left":0,"width":231.33333333333334,"height":195},"children":[]},{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":0,"left":231.33333333333334,"width":231.33333333333334,"height":195},"children":[]},{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":0,"left":462.6666666666667,"width":231.33333333333334,"height":195},"children":[]},{"box":{"isRootBox":false,"showHeader":true,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":195,"left":0,"width":231.33333333333334,"height":195},"children":[]},{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":195,"left":231.33333333333334,"width":231.33333333333334,"height":195},"children":[]},{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":195,"left":462.6666666666667,"width":231.33333333333334,"height":195},"children":[]}]}]};
+
+        ReactDOM.render( 
+            <BoxManager boxConfig={JSON.stringify( boxConfig )} />
+            , document.querySelector( '#test_BoxManager .test-panel' ) 
+        );
+
+    })();
+
+</div>
+</div>
 
 

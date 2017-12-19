@@ -165,7 +165,7 @@ jsx只是一个`句法糖`，目的是简化`React.createElement( component, pro
 1. dom元素的事件是`全小写`的，而jsx事件是`camel pattern`的
 2. dom元素属性传递的是`字符串`，jsx传递的是`函数`
 3. jsx不能像dom元素一样，通过`return false`来阻止默认行为，只能通过调用`preventDefault()`方法来实现
-4. 使用类方法作为handler，传递的是类方法的引用，而不是直接执行，所以在执行时，类方法内部的this是undefined，而不是指向类实例。需要在`constructor`中做类方法的主动绑定。
+4. 使用`类方法`作为handler，传递的是类方法的引用，而不是直接执行，所以在执行时，类方法内部的`this`是`undefined`，而不是指向类实例。需要在`constructor`中做类方法的主动绑定。
 
         class Toggle extends React.Component {
           constructor(props) {
