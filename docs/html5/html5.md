@@ -11,8 +11,10 @@
 
 ## Resources
 
-* `html 5`: <https://www.w3.org/TR/html/>
+* `html 5.0`: <https://www.w3.org/TR/html50/>
 * `html 5.1`: <https://www.w3.org/TR/html51>
+* `html 5.2`: <https://www.w3.org/TR/html52>
+* `latest html5`: <https://www.w3.org/TR/html>
 * `html历史`：<https://www.w3.org/TR/html51/introduction.html#introduction-history> 
 * 非常全面的文档，可当`reference`，值得全面通读一下
 

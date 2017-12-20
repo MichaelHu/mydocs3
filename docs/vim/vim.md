@@ -136,7 +136,7 @@
 * Select Mode
 * Insert Mode
 * Command-line Mode
-* Ex mode，与Normal Mode类似，主要区别在于该模式执行完一行命令后，仍然停留在当前模式种，要退出该模式，需输入`:visual`命令
+* Ex mode，与Normal Mode类似，主要区别在于该模式执行完一行命令后，仍然停留在当前模式中，要退出该模式，需输入`:visual`命令
 
 ### 6种额外模式
 

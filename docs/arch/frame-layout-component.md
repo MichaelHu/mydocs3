@@ -665,6 +665,8 @@
 
 ### 171219
 
+> changelog: 171220
+
 * 在`rootBox`上添加`on_resize`以响应window的resize事件，执行过程如下所示：
 
         window resize
@@ -701,7 +703,7 @@
 
 * 输出`Box配置`，包括Box`自身配置`，以及由rootBox输出的`box tree的配置`
 
-        getBoxConfig()
+        getConfig()
             isRootBox
             showHeader
             useDefLayout
@@ -712,30 +714,52 @@
             width
             height
 
-        getBoxTreeConfig()
+        getTreeConfig()
             {
-                box: {}
+                component: {
+                    type: 'Box'
+                    , props: { ... }
+                }
                 , children: [
                     { 
-                        box: { ... }
+                        component: {
+                            type: 'Box'
+                            , props: { ... }
+                        }
                         , children: [
-                            { box: { ... }
-                            , { box: { ... }
                         ]
                     }
                     , ...
                     , { 
-                        box: { ... }
+                        component: { ... }
+                        , children: [ ... ]
                     }
                 ]
             }
 
-* todo: box tree构建，使用`BoxManager`
+* todo: box tree构建，使用`BoxManager` [ `done` ]
 
         根据box配置构建box树形结构
         叶子box才可以包含其他组件
         
 
+### 171220 - 导出/重建
+
+* 使用`getConfig(), getTreeConfig()`来`扩展`getBoxConfig(), getBoxTreeConfig()
+* `getConfig()`, 获取组件的配置，若是Box类型组件，通过getBoxConfig获取；其他组件则获取其props内容
+*  `Box`可以包含其他组件，为了`配合生成组件树`，包含在Box下一级（`仅下一级`）的组件需要实现一些`接口`：
+
+        constructor中注册成为父Box的子组件 
+            registerSubComponent()
+        componentWillUnmount中取消注册
+            unregisterSubComponent()
+        getConfig()
+        getTreeConfig()
+
+* 一般情况下，只有`root box`才会调用`getTreeConfig()`，获得`组件树`的配置，这些配置数据可以用于`重建`组件树
+* Box的输出配置中，`useDefLayout`以及`isDebug`，需要按需进行过滤。如果不希望重建后的布局是默认布局，则需要把`useDefLayout`过滤掉；一般情况下`isDebug`在生产环境下是关闭的，也需要做一次过滤。
+* todo: dnd支持
+* todo: 构建package，放入`sophon-bricks`
 
 
 
@@ -855,8 +879,8 @@
             }
             me.box = me.opt.unitTest 
                 ? { width: 300, height: 320, contentHeight: 300, left: 0 } : box;
-            me.subBoxLayoutInitialized = false;
             me.subBoxes = [];
+            me.subComponents = [];
             me.deviation = typeof me.opt.deviation == 'number' ? me.opt.deviation : 2;
 
             me.isDebug = me.opt.isDebug || 0;
@@ -884,6 +908,29 @@
             }
         }
 
+        registerSubComponent( subComponent ) {
+            if ( ! subComponent instanceof React.Component ) {
+                throw Error( 'Arbitrator registerSubComponent(): '
+                    + 'subComponent must be instance of React.Component' );
+            }
+            this.subComponents.push( subComponent );
+        }
+
+        unregisterSubComponent( subComponent ) {
+            if ( ! subComponent instanceof React.Component ) {
+                throw Error( 'Arbitrator unregisterSubComponent(): '
+                    + 'subComponent must be instance of React.Component' );
+            }
+            let i = this.subComponents.length - 1;
+            while( i >= 0 ) {
+                if ( this.subComponents[ i ] == subComponent ) {
+                    this.subComponents.splice( i, 1 );
+                    return;
+                }
+                i--;
+            }
+        }
+
         initializeSubBoxLayout() {
             let me = this;
             if ( me.subBoxes.length ) {
@@ -895,7 +942,6 @@
             }
             
             me.getDefaultLayout();
-            me.subBoxLayoutInitialized = true;
         }
 
         getDefaultLayout( total /* only for unit test */ ) {
@@ -1556,6 +1602,101 @@
 
 
 
+
+## Block - 色块组件
+
+### 组件要求
+
+* 定位于作为Box组件的`下一级`其他组件
+* 需要实现接口`getConfig()`，返回组件用于`重建`时所需的配置信息，例如：
+
+        getConfig() {
+            return {
+                component: {
+                    type: 'Block'
+                    , props: { bgColor: this.props.bgColor }
+                }
+                , children: []
+            };
+        }
+
+* 需要接收`context`信息，并在以下生命周期方法中实现`注册/解绑`操作
+
+        constructor( props, context ) {
+            ...
+            this.parentArbitrator = context.arbitrator;
+            if ( this.parentArbitrator ) {
+                this.parentArbitrator.registerSubComponent( this );
+            }
+            ...
+        }
+
+        ...
+
+        componentWillUnmount() {
+            ...
+            if ( this.parentArbitrator ) {
+                this.parentArbitrator.unregisterSubComponent( this );
+            }
+            ...
+        }
+
+
+> 所有参与Box组件树配置`导出/重建`的组件，都需要按以下方式实现。
+
+
+### 代码实现
+
+    @[data-script="babel"]class Block extends React.Component {
+
+        constructor( props, context ) {
+            super( props );
+            this.parentArbitrator = context.arbitrator;
+            if ( this.parentArbitrator ) {
+                this.parentArbitrator.registerSubComponent( this );
+            }
+        }
+
+        render() {
+            let styles = {
+                    position: 'absolute'
+                    , left: 0
+                    , top: '30px'
+                    , right: 0
+                    , bottom: 0
+                    , backgroundColor: this.props.bgColor || '#fff'
+                };
+
+            return (
+                <div style={ styles }>{ this.props.children }</div>
+            );
+        }
+
+        componentWillUnmount() {
+            if ( this.parentArbitrator ) {
+                this.parentArbitrator.unregisterSubComponent( this );
+            }
+        }
+
+        getConfig() {
+            return {
+                component: {
+                    type: 'Block'
+                    , props: { bgColor: this.props.bgColor }
+                }
+                , children: []
+            };
+        }
+
+    }
+
+    Block.contextTypes = {
+        arbitrator: React.PropTypes.instanceOf( Arbitrator )
+    };
+
+    window.Block = Block;
+
+
 ## Box
 
 ### css
@@ -1782,7 +1923,10 @@
 
             // initialize
             if ( me.isRootBox ) {
+                // to convert the percentage size to numeric size
                 me.arbitrator.onResize( { init: 1 } );
+                // call `on_resize()` to get appropriate size for root box, then resize the tree
+                me.on_resize();
                 window.addEventListener( 'resize', me.on_resize, false );
             }
 
@@ -1807,9 +1951,9 @@
             me.left = props.left || 0;
             me.width = props.width || 100;
             me.height = props.height || 50;
-            me.showHeader = props.showHeader || 0;
-            me.useDefLayout = props.useDefLayout || 0;
-            me.showUUID = props.showUUID || 0;
+            me.showHeader = props.showHeader || false;
+            me.useDefLayout = props.useDefLayout || false;
+            me.showUUID = props.showUUID || false;
 
             // support: only configures on the root box
             me.isDebug = props.isDebug
@@ -1867,7 +2011,7 @@
             let box = me.refs.box;
             box.addEventListener(
                 'click'
-                , me.showBoxConfig 
+                , me.showConfig 
                 , false
             );
         }
@@ -1877,46 +2021,63 @@
             let box = me.refs.box;
             box.removeEventListener(
                 'click'
-                , me.showBoxConfig 
+                , me.showConfig 
                 , false
             );
         }
 
-        showBoxConfig = () => {
-            let boxConfig = this.getBoxConfig();
-            let boxTreeConfig = this.getBoxTreeConfig();
-            console.log( boxConfig );
+        showConfig = () => {
+            let config = this.getConfig();
+            let treeConfig = this.getTreeConfig();
+            console.log( config );
             if ( this.isRootBox ) {
-                console.log( '_boxTreeConfig', boxTreeConfig );
-                window._boxTreeConfig = JSON.stringify( boxTreeConfig );
+                console.log( '_boxTreeConfig', treeConfig );
+                window._boxTreeConfig = JSON.stringify( treeConfig );
             }
         }
 
-        getBoxConfig() {
+        getConfig() {
             let { isRootBox, showHeader, useDefLayout, isDebug, showUUID
                 , top, left, width, height } = this;
-            return { 
-                isRootBox
-                , showHeader
-                , useDefLayout
-                , isDebug
-                , showUUID
-                , top
-                , left
-                , width
-                , height
+
+            return {
+                type: 'Box'
+                , props: { 
+                    isRootBox
+                    , showHeader
+                    , useDefLayout
+                    , isDebug
+                    , showUUID
+                    , top
+                    , left
+                    , width
+                    , height
+                }
             };
         }
 
-        getBoxTreeConfig() {
+        getTreeConfig() {
             let me = this;
             let subBoxes = me.arbitrator.subBoxes;
+            let subComponents = me.arbitrator.subComponents;
             let config = {};
+            let subBoxesCount = subBoxes.length;
+            let subComponentsCount = subComponents.length;
 
-            config.box = me.getBoxConfig();
+            if ( subBoxesCount * subComponentsCount != 0 ) {
+                throw Error( 'getTreeConfig: one of '
+                    + 'subBoxesCount and subComponentsCount must be zero' );
+            }
+
+            config.component = me.getConfig();
             config.children = [];
+
             subBoxes.forEach( ( subBox ) => {
-                config.children.push( subBox.getBoxTreeConfig() );
+                config.children.push( subBox.getTreeConfig() );
+            } );
+
+            subComponents.forEach( subComponent => {
+                config.children.push( subComponent.getConfig() );
             } );
 
             return config;
@@ -2447,7 +2608,7 @@
 
         }
 
-        on_resize = ( e ) => {
+        on_resize = () => {
             let me = this;
             let box = me.refs.box;
             let container = box.parentNode;
@@ -2496,22 +2657,6 @@
         var s = fly.createShow('#test_Box');
         s.show( 'testing' );
 
-        function Block( props ) {
-            let styles = {
-                    position: 'absolute'
-                    , left: 0
-                    , top: '30px'
-                    , right: 0
-                    , bottom: 0
-                    , backgroundColor: props.bgColor || '#fff'
-                };
-
-            return (
-                <div style={ styles }>{ props.children }</div>
-            );
-        }
-
-        
         /**
          * #1f77b4 #aec7e8 #ff7f0e #ffbb78 #2ca02c #98df8a #d62728 #ff9896 #9467bd #c5b0d5 
          * #8c564b #c49c94 #e377c2 #f7b6d2 #7f7f7f #c7c7c7 #bcbd22 #dbdb8d #17becf #9edae5
@@ -2550,6 +2695,13 @@
 
 ## BoxManager
 
+
+### 组件说明
+
+* 从Box组件树配置（JSON格式）中`重建`组件树
+* `根节点`是一个Box组件，`叶子节点`可以是实现了`特定接口`的其他React组件，比如上文的`Block组件`（色块组件）
+
+
 ### 代码实现
 
     @[data-script="babel"]class BoxManager extends React.Component {
@@ -2559,12 +2711,28 @@
             let me = this;
         }
 
-        render() {
+        buildBoxTree( config, index ) {
+            let me = this;
+            let { component, children } = config;
+            let childItems = children.map( ( child, index ) => {
+                return me.buildBoxTree( child, index );
+            } );
+
+            let C = {
+                    Box
+                    , Block
+                };
+
+            let CN = C[ component.type ];
             return (
-                <div>
-                    {this.props.boxConfig}
-                </div>
+                <CN {...component.props} key={index}>
+                    {childItems} 
+                </CN>
             );
+        }
+
+        render() {
+            return this.buildBoxTree( this.props.boxConfig );
         }
 
     }
@@ -2572,9 +2740,12 @@
 
 ### test
 
+> `boxConfig`: <ref://./js/component-tree-config.js>
+
+<script src="./js/component-tree-config.js"></script>
 
 <div id="test_BoxManager" class="test">
-<div class="test-panel box-container"></div>
+<div class="test-panel box-container" style="height:500px;"></div>
 <div class="test-console"></div>
 <div class="test-container">
 
@@ -2583,10 +2754,10 @@
         var s = fly.createShow('#test_BoxManager');
         s.show( 'testing' );
 
-        var boxConfig = {"box":{"isRootBox":true,"showHeader":0,"useDefLayout":true,"isDebug":true,"showUUID":true,"top":0,"left":0,"width":694,"height":780},"children":[{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":true,"isDebug":true,"showUUID":true,"top":0,"left":0,"width":347,"height":390},"children":[{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":0,"left":0,"width":173.5,"height":390},"children":[]},{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":0,"left":173.5,"width":173.5,"height":390},"children":[]}]},{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":0,"left":347,"width":347,"height":390},"children":[{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":0,"left":0,"width":173.5,"height":390},"children":[]},{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":0,"left":173.5,"width":173.5,"height":195},"children":[]},{"box":{"isRootBox":false,"showHeader":true,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":195,"left":173.5,"width":173.5,"height":195},"children":[]}]},{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":true,"isDebug":true,"showUUID":true,"top":390,"left":0,"width":694,"height":390},"children":[{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":0,"left":0,"width":231.33333333333334,"height":195},"children":[]},{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":0,"left":231.33333333333334,"width":231.33333333333334,"height":195},"children":[]},{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":0,"left":462.6666666666667,"width":231.33333333333334,"height":195},"children":[]},{"box":{"isRootBox":false,"showHeader":true,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":195,"left":0,"width":231.33333333333334,"height":195},"children":[]},{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":195,"left":231.33333333333334,"width":231.33333333333334,"height":195},"children":[]},{"box":{"isRootBox":false,"showHeader":0,"useDefLayout":0,"isDebug":true,"showUUID":true,"top":195,"left":462.6666666666667,"width":231.33333333333334,"height":195},"children":[]}]}]};
+        // var boxConfig from `./js/component-tree-config.js`
 
         ReactDOM.render( 
-            <BoxManager boxConfig={JSON.stringify( boxConfig )} />
+            <BoxManager boxConfig={boxConfig} />
             , document.querySelector( '#test_BoxManager .test-panel' ) 
         );
 
