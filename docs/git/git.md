@@ -1023,6 +1023,9 @@ When we start mixing branches and commits, we will see how these two features co
     # 列出远程未合并分支，--no-merged必须在-r后面
     git branch -r --no-merged
 
+    # 列出远程已合并分支，--merged必须在-r后面
+    git branch -r --merged
+
     # 本地&远程都列出
     git branch -a
 

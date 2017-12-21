@@ -1891,7 +1891,7 @@
             me.arbitrator = new Arbitrator( me, arbitratorOptions );
 
             me.borderThreshold = 10;
-            me.showUUID = props.showUUID || 0;
+            me.showUUID = props.showUUID || false;
         }
 
         getChildContext() {
