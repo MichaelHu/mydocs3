@@ -317,8 +317,16 @@ github: <https://github.com/kevlened/copy-webpack-plugin>
 
 ### 配置点
 
-1. 区别`dev`和`prod`状态
-    * 使用`webpack.DefinePlugin`
+1. 区别`develeopment`和`production`状态
+    * 使用`webpack.DefinePlugin( ... )`
+
+            new webpack.DefinePlugin({
+              'process.env': {
+                NODE_ENV: JSON.stringify('development')
+                , WS_API: JSON.stringify( getArgVal( '--wsapi' ) )
+              }
+            })
+
     * 命令行`export PNAME=...`
     * `maybe`: `webpack --define <string>=<string>`
     

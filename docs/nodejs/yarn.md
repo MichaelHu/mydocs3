@@ -1,16 +1,19 @@
 # yarn
 
-> npm的高级替代品
+> `npm`的高级替代品；同时yarn还指`Apache Hadoop YARN`
 
 ## Resources
 
 * site: <https://yarnpkg.com/>
 * github: <https://github.com/yarnpkg/yarn/>
+* Apache Hadoop YARN: <https://baike.baidu.com/item/yarn/16075826>，是一种新的`Hadoop`资源管理器，与作为`node packages manager`的yarn存在`冲突`，解决办法是更改作为node packages manager的yarn`改名`，比如改成`yarn_fe`
+        $ cd ~/bin
+        $ ln -s ~/fe/softwares/yarn-v1.3.2/bin/yarn yarn_fe
 
 
 ## Features
 
-* `快速`，通过缓存下载过的包，无需重复下载，支持`离线模式`
+* `快速`，将下载过的包进行`缓存`，无需重复下载，支持`离线模式`
 * `确定性`，有格式详尽但又简洁的`lockfile`文件以及确定的依赖算法，保证在不同系统尚安装依赖，总能保持一致
 * 同样从`npm registry`下载package
 * `npm`的替代工具，为解决npm的缺憾而生
@@ -38,6 +41,18 @@
 
     # 更新
     $ brew upgrade yarn
+
+
+### 手动安装
+
+    $ cd ~/softwares
+    $ curl -OL https://yarnpkg.com/latest.tar.gz
+    $ tar zxvf latest.tar.gz
+
+    # mac: .bash_profile, linux: .bashrc
+    $ vim ~/.bash_profile
+
+        export PATH="$PATH:~/softwares/yarn-<version>/bin"
 
 
 

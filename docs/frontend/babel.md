@@ -31,8 +31,39 @@
 `.babelrc`或者`package.json`皆可：
 
     {
-        presets: []
+        "presets": [ ... ]
+        , "ignore": [ ... ] 
+        , "env": {
+            "production": {
+                "plugins": [ ... ]
+            }
+        }
     }
+
+### Tips
+
+* 若在`package.json`中配置，只需在`babel字段`下将以上.babelrc内容包含进来
+
+        {
+            "name": "my-package"
+            , "version": "1.0.0"
+            , "babel": {
+                // my babel cofig here
+            }
+            ...
+        }
+
+* `env`字段的内容可以在代码中通过`process.env.BABEL_ENV`获得，若不可用，可以通过`process.env.NODE_ENV`获得，如果都不可用，则默认为`development`
+* 可以通过`命令行`设置`env`变量：
+        
+        BABEL_ENV=production YOUR_COMMAND_HERE
+
+    或：
+
+        export BABEL_ENV=production
+        YOUR_COMMAND_HERE
+
+* 在`webpack`的配置中，可以使用`webpack.DefinePlugin( ... )`配置`process.env`，参考：<ref://../build-tools/webpack.md.html>
 
 
 

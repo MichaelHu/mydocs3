@@ -1647,7 +1647,8 @@
 
 ### 代码实现
 
-    @[data-script="babel"]class Block extends React.Component {
+    @[data-script="babel"]const PropTypes = React.PropTypes;
+    class Block extends React.Component {
 
         constructor( props, context ) {
             super( props );
@@ -1691,7 +1692,7 @@
     }
 
     Block.contextTypes = {
-        arbitrator: React.PropTypes.instanceOf( Arbitrator )
+        arbitrator: PropTypes.instanceOf( Arbitrator )
     };
 
     window.Block = Block;
@@ -1831,7 +1832,9 @@
 
 ### js
 
-    @[data-script="babel"]/**
+    @[data-script="babel"]const PropTypes = React.PropTypes;
+
+    /**
      * state                desc 
      * =================================
      * DISABLED             disabled
@@ -1854,19 +1857,20 @@
             let  me = this;
 
             me._uuid = _uuid++;
-            me.top = props.top || 0;
-            me.left = props.left || 0;
-            me.width = props.width || 100;
-            me.height = props.height || 50;
+
+            utils.extendOnly( me, props
+                , [ 
+                    'top', 'left', 'width', 'height'
+                    , 'isRootBox', 'showHeader', 'useDefLayout', 'showUUID'
+                ]
+            );
+
             me.styles = {
                 top: me.top + ( /%/.test( me.top ) ? '' : 'px' )
                 , left: me.left + ( /%/.test( me.left ) ? '' : 'px' )
                 , width: me.width + ( /%/.test( me.width ) ? '' : 'px' )
                 , height: me.height + ( /%/.test( me.height ) ? '' : 'px' )
             };
-            me.isRootBox = props.isRootBox || false;
-            me.showHeader = props.showHeader || false;
-            me.useDefLayout = props.useDefLayout || false;
 
             me.isFocused = 0;
             me.isDragging = 0;
@@ -1891,7 +1895,6 @@
             me.arbitrator = new Arbitrator( me, arbitratorOptions );
 
             me.borderThreshold = 10;
-            me.showUUID = props.showUUID || false;
         }
 
         getChildContext() {
@@ -2165,7 +2168,6 @@
         }
 
         enableDraggable() {
-            let log = this.props.log;
             let header = this.refs.header;
 
             header.addEventListener(
@@ -2176,7 +2178,6 @@
         }
 
         disableDraggable() {
-            let log = this.props.log;
             let header = this.refs.header;
 
             header.removeEventListener(
@@ -2265,7 +2266,6 @@
          * handlers for drag
          */
         on_header_drag_start = ( e ) => {
-            let log = this.props.log;
             let box = this.refs.box;
             let parentBox = box.parentNode;
             let header = this.refs.header;
@@ -2293,7 +2293,6 @@
         }
 
         on_header_dragging  = ( e ) => {
-            let log = this.props.log;
             let box = this.refs.box;
             let parentBox = box.parentNode;
             let header = this.refs.header;
@@ -2334,7 +2333,6 @@
         }
 
         on_header_drag_end = ( e ) => {
-            let log = this.props.log;
             let header = this.refs.header;
             let box = this.refs.box;
             let parentBox = box.parentNode;
@@ -2628,15 +2626,35 @@
     }
     
     Box.defaultProps = {
-        log: console.log
+        top: 0
+        , left: 0
+        , width: 200
+        , height: 100
+        , isRootBox: false 
+        , isDebug: false
+        , showHeader: false 
+        , showUUID: false 
+        , useDefLayout: false 
+    };
+
+    Box.propTypes = {
+        top: PropTypes.oneOfType( [ PropTypes.string, PropTypes.number ] )
+        , left: PropTypes.oneOfType( [ PropTypes.string, PropTypes.number ] )
+        , width: PropTypes.oneOfType( [ PropTypes.string, PropTypes.number ] )
+        , height: PropTypes.oneOfType( [ PropTypes.string, PropTypes.number ] )
+        , isRootBox: PropTypes.bool
+        , isDebug: PropTypes.bool
+        , showHeader: PropTypes.bool
+        , showUUID: PropTypes.bool
+        , useDefLayout: PropTypes.bool
     };
 
     Box.contextTypes = {
-        arbitrator: React.PropTypes.instanceOf( Arbitrator )
+        arbitrator: PropTypes.instanceOf( Arbitrator )
     };
 
     Box.childContextTypes = {
-        arbitrator: React.PropTypes.instanceOf( Arbitrator )
+        arbitrator: PropTypes.instanceOf( Arbitrator )
     };
 
     window.Box = Box;

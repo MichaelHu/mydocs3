@@ -1186,6 +1186,12 @@ idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文
 
 > 全文检索，`:vimgrep`，简写`:vim`
 
+### Syntax
+
+    :vim[grep][!] /{pattern}/[g][j] {file} ...
+
+### Examples
+
     :vimgrep /<script.\+>/ **/*.md
     :cw
 

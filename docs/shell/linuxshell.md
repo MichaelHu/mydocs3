@@ -28,13 +28,13 @@
 
         for i in {1..10}; do vim $i/README.md; done
 
-    以上命令能保证人工编辑好对应README.md且保存退出vim后，再启动下一条vim命令。
+    以上命令能保证人工编辑好对应README.md且`保存退出`vim后，再启动下一条vim命令。
 
 * 使用bash命令解析器直接解析，就如同命令行中连续输入两条vim命令一样，无法在第一条vim命令编辑完成，并保存退出后再执行第二条vim命令，比如：
 
         for i in {1..10}; do echo vim $i/README.md; done | sh -x
 
-    以上命令是无法实现人工批量编辑文件目的的。
+    以上命令是`无法实现`人工批量编辑文件目的的。
 
 
 ## $相关 
@@ -49,6 +49,8 @@
     $?                  # exit status，可能是命令、函数或脚本本身的exit status
     $$                  # 当前脚本的pid
     $!                  # 上一后台运行的任务的pid
+    $_                  # 上一命令的参数
+
 
 
 
@@ -226,6 +228,59 @@
 
 
 
+## 字符串操作
+
+### ${...}格式
+
+    # 获取字符串长度
+    ${#string}
+
+    # 获取子串
+    ${string:position}
+    ${string:position:length}
+    ${*:position}
+    ${@:position}
+
+    # 首部子串移除
+    # 非贪婪
+    ${string#substring}
+    # 贪婪
+    ${string##substring}
+
+    # 尾部子串移除
+    # 非贪婪
+    ${string%substring}
+    # 贪婪
+    ${string%%substring}
+
+    # 字符串替换
+    # 只替换首次匹配
+    ${string/substring/replacement/}
+    # 替换全部匹配
+    ${string//substring/replacement/}
+    # 若首部匹配则替换
+    ${string/#substring/replacement/}
+    # 若尾部匹配则替换
+    ${string/%substring/replacement/}
+
+
+#### Tips
+
+* 上述命令中，除`string部分`需要用字符串`变量名`之外，其他的既可以用变量名，也可以使用`直接量`
+
+
+
+
+
+### expr命令
+
+> todo
+
+    expr substr $string $position $length
+    expr match "$string" '\($substring\)'
+
+
+
 
 ## 条件和逻辑表达式
 
@@ -248,25 +303,153 @@
         command-list
     fi
 
-    # &&, ||，最好在`[[ ]]`中
+    # &&, ||只在`[[...]]`中支持
     [[ expr1 && expr2 ]]
     [[ expr1 || expr2 ]]
 
-    # -a, -o，皆可
-    [[ expr1 -a expr2 ]]
-    [[ expr1 -o expr2 ]]
+    # -a, -o只在`[...]`中支持
     [ expr1 -a expr2 ]
     [ expr1 -o expr2 ]
 
-* `[]`与`[[ ]]`，使用后者能避免一些逻辑错误
-* `[]`与`(( ))`
+    # 支持算术表达式
+    (( expr ))
+
+
+
+### Tips
+
+* `if/then`结构会判断一系列的命令的`exit status`是否为`0`，如果为0，则`命中then`分支
+* `if/then`结构可以嵌套
+* `[[..]]`是在Bash 2.02作为`扩展测试命令`开始引入的，它更接近其他编程语言的编写方式
+* Bash将`[[ $a -lt $b ]]`作为一个元素，能返回一个`退出状态`(exit status)
+* 同样的，`((..))`与`let ..`也会返回一个`exit status 0`，如果其中的算术表达式得到一个`非零值`
 
         if [ 0 ]; then echo 'yes'; fi
         yes
 
         if (( 0 )); then echo 'yes'; fi
 
-    前者使用`exit status`，后者使用`计算值`。
+* `[..]`与`[[..]]`，使用后者能避免一些逻辑错误。其中`&&`, `||`, `>`, `<`只在`[[..]]`中支持
+* `逻辑操作符`需遵循`相同类型一起使用`的规则
+
+
+
+
+
+### 逻辑表达式操作符
+
+#### 文件test操作符
+
+    operator            desc
+    ===========================================================================================
+    -e                  file exists
+    -a                  file exists, deprecated
+    -f                  file is a regular file ( not a directory or device file )
+    -s                  file is not zero size
+    -d                  file is a directory
+    -b                  block device ( floppy, cdrom, etc. )
+    -c                  character device
+    -p                  pipe
+    -h                  symbolic link
+    -L                  symbolic link
+    -S                  socket
+    -t                  is associated with a terminal device 
+                        This test option may be used to check whether the stdin ([ -t 0 ]) 
+                        or stdout ([ -t 1 ]) in a given script is a terminal.
+    -r                  has read permission ( for the user runnint the test )
+    -w                  has write permission
+    -x                  has execute permission
+    -g                  todo 
+    -u                  todo
+    -k                  todo
+    -O                  you are owner of file
+    -G                  group-id of file same as yours
+    -N                  file modified since it was last read
+    f1 -nt f2           f1 is newer than f2
+    f1 -ot f2           f1 is older than f2
+    f1 -ef f2           f1 and f2 are hard links to the same file
+    !                   not
+
+例子：
+
+    if [ -e file ]
+    if [ -r file ]
+
+
+#### 整数比较
+
+`[...]`中使用：
+
+    operator    desc                        example
+    ==============================================================
+    -eq         equal                       if [ "$a" -eq "$b" ]
+    -ne         not equal                   if [ "$a" -ne "$b" ]
+    -gt         greater than
+    -ge         greater than or equal to 
+    -lt         less than
+    -le         less than or equal to
+
+`((...))`中使用：
+
+    operator    desc                        example
+    ============================================================
+    <           less than                   (( "$a" < "$b" ))
+    <=          less than or equal to       (( "$a" <= "$b" ))
+    >           greater than                (( "$a" > "$b" ))
+    >=          greater than or equal to    (( "$a" >= "$b" ))
+
+> 数字比较，与操作数是否用双引号包围无关，即使使用双引号包围，进行的也可以是数字比较
+
+
+#### 字符串比较
+
+    operator    desc                        example
+    =====================================================================================
+    =           equal to                    if [ "$a" = "$b" ]         
+    ==          equal to                    if [ "$a" == "$b" ]
+    !=          not equal to                if [ "$a" != "$b" ]
+    <           less than in ASCII          if [ "$a" \< "$b" ] or if [[ "$a" < "$b" ]]
+                alphabetical order
+    >           greater than in ASCII       if [ "$a" \> "$b" ] or if [[ "$a" > "$b" ]]
+                alphabetical order
+    -n          string is not null
+    -z          string is null ( zero length )
+    
+#### 逻辑表达式
+
+    operator    desc            example
+    =================================================
+    -a          logic and       if [ expr1 -a expr2 ]
+    -o          logic or        if [ expr1 -o expr2 ]
+
+    &&          logic and       if [[ expr1 && expr2 ]]
+    ||          logic or        if [[ expr1 || expr2 ]]
+
+
+
+
+
+
+
+### 基本值的逻辑值
+
+#### TRUE
+
+    desc                        Examples
+    ==========================================================
+    0                           if [ 0 ]
+    1                           if [ 1 ]
+    -1                          if [ -1 ]
+    non-empty string            if [ "false" ]
+
+#### FALSE
+
+    desc                        Examples
+    ==========================================================
+    NULL ( empty condition )    if [ ]
+    uninitialized variable      if [ $xyz ]
+    NULL variable               xyz=; if [ $xyz ]
+    empty string                if [ "" ]
 
 
 
@@ -314,6 +497,36 @@
 
 * 用在condition处，使用的是计算的`expr的值`，这不同于`[ ]`结构，使用的是`exit status`
 * 其`exit status`与`计算值`刚好`相反`，如上所示
+
+
+### test
+
+以下两个语句`完全等价`：
+
+    if test condition-true
+    if [ condition-true ]
+
+其中`[`作为bash的内建命令，会调用内建命令`test`，`]`并不是内建命令，在老版本Bash中并不必须提供，但在新版本的Bash中，要求提供。
+
+`test`和`[`也有二进制版本，但它们作为`sh-utils package`提供：
+
+    /usr/bin/test
+    /usr/bin/[
+
+以下调用：
+
+    $ type test
+    test is a shell builtin
+    $ type [
+    [ is a shell builtin
+    $ type [[
+    [[ is a shell keyword
+    $ type ]]
+    ]] is a shell keyword
+    $ type ]
+    -bash: type: ]: not found
+
+       
 
 
 
@@ -551,6 +764,8 @@ todo
         ls
         put docs.tar.gz
         EOF
+
+
 
 
 

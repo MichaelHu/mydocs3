@@ -67,6 +67,8 @@
 
 参考： <http://www.ecma-international.org/ecma-262/6.0/index.html#sec-imports>
 
+### Syntax
+
     import { sex, echo } from './a';
     import * as utils from './a';
     import utils from './a';
@@ -74,8 +76,9 @@
     import React, {Component, PropTypes} from 'react';
 
 
+    // Export Directly
     export * from './abc';
-    export ABC from './abc';
+    export { sex } from './abc';
 
     // VARDECLARATION
     export var a = 12306;
@@ -114,18 +117,30 @@
     export { sex as a, echo as e };
 
 
+### Tips
+
 * `from`后的`路径描述`，不以`./`或`../`开头的，默认从`node_modules`查找路径中查找
 * `import utils from './a';`，utils等同于`exports.default`
 * `import * as utils from './a';`，utils等同于`exports`
+* `错误`写法：
 
+        var sex = 'female';
+        export sex;
 
-错误写法：
-
-    export sex;
-
-* export不支持此种类型的输出：`export { name: varB, sex: varA };`，
+* export`不支持`此种类型的输出：`export { name: varB, sex: varA };`，
     但支持：`export { varB, varA };`或`export { varB as name, varA as sex };`
-* import不支持此种类型的解构：`import { name, sex: varA } from './a';`
+* import`不支持`此种类型的解构：`import { name, sex: varA } from './a';`
+* 直接export语法可以达到`简写`效果：
+
+        import A from './a';
+        export default A;
+
+    简写成 =>
+
+        export { default } from './a';
+
+
+### Examples
 
 a.js:
 
