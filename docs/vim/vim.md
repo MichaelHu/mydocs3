@@ -110,7 +110,7 @@
 2. `normal`模式下，`单引号'`用于访问bookmark，`双引号"`用于设置下一delete，yank或者put操作使用的寄存器
 3. `normal`以及`command-line`模式下，`@`用于访问寄存器
 4. 带`g前缀`的命令原来功能这么强大，比如：`g0, g^, g$, gm, gp, gP, gJ, ge, gE, 
-    ga, g8, g CTRL-G, gk, gj, gq, gqq`，
+    ga, g8, g CTRL-G, gk, gj, gq, gqq, CTRL-W gf, CTRL-W gF`，
     你知道几个？会用几个？
 5. `insert`模式下，`CTRL-N`或者`CTRL-P`能用于输入`补全`提示
 6. `command line`模式下，`CTRL-V`能用于输入特殊字符，比如`<C-V><Enter> `将输入`回车符<CR>`，命令行上显示`^M`
@@ -1160,6 +1160,83 @@ idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文
 
 ## CTRL-W相关
 
+> 获取帮助：`:help CTRL-W`
+
+### 获取帮助
+
+* window相关帮助：`:help window`
+* CTRL-W命令相关帮助：`:help CTRL-W`，特定命令帮助：`:help CTRL-W_J`
+* 默认`窗口切割线`为`水平方向`
+
+
+### 窗口分割
+
+    # 用水平分割线分割
+    CTRL-W s
+    CTRL-W S
+    :[N]sp[lit] [++opt] [+cmd] [file]
+
+    # 用垂直分割线分割
+    CTRL-W v
+    :[N]vs[plit] [++opt] [+cmd] [file]
+
+    # 用水平分割线来创建新窗口，且新开空buffer
+    CTRL-W n
+    :[N]new
+    :[N]vne[w]
+
+    # 用垂直分割线来创建新窗口，且新开空buffer
+    :[N]sv[iew] [++opt] [+cmd] {file}
+
+    CTRL-W ]
+
+    # 用水平分割线分割，将当前鼠标下的文件名所指的文件在新窗口中打开
+    CTRL-W f
+    # 用水平分割线分割，将当前鼠标下的文件名所指的文件在新窗口中打开
+    # ，且跳转至文件名后所指的行号
+    CTRL-W F
+
+    # 见tab
+    CTRL-W gf
+    CTRL-W gF
+
+
+### 窗口切换命令
+
+    CTRL-W k        切换至上方窗口
+    CTRL-W j        切换至下方窗口
+    CTRL-W h        切换至左边窗口
+    CTRL-W l        切换至右边窗口
+
+
+### 窗口移动命令
+
+    CTRL-W r        窗口向右/向下循环切换位置
+    CTRL-W R        窗口向左/向上循环切换位置
+    CTRL-W x        窗口交换位置
+    CTRL-W K        置顶且占用全部宽度
+    CTRL-W J        置底且占用全部宽度
+    CTRL-W H        置左且占用全部高度
+    CTRL-W L        置右且占用全部高度
+    CTRL-W T        将当前窗口放到新的Tab中
+
+### 窗口缩放命令
+
+    CTRL-W =        将所有窗口设置成等宽、等高，对设置了winfixheight, winfixwidth的窗口不生效
+    CTRL-W _        窗口高度设置成尽可能高，等同`:res[ize]`命令
+    CTRL-W |        窗口宽度设置成尽可能宽，等同`:vertical res[ize]`命令
+    CTRL-W [N]+     窗口高度增加N
+    CTRL-W [N]-     窗口高度减少N
+    CTRL-W [N]>     窗口宽度增加N
+    CTRL-W [N]<     窗口宽度减少N
+    z{N}<CR>        窗口高度设置成N
+
+
+### todo
+
+
+### :wincmd
+
 `CTRL-W j`
 、`CTRL-W h`
 、`CTRL-W l`
@@ -1180,6 +1257,84 @@ idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文
     autocmd StdinReadPre * let s:std_in=1
     autocmd VimEnter * if argc() == 1 && !exists("s:std_in") | NERDTree | :wincmd l | endif
 
+
+
+
+## Tabs
+
+> 获取帮助：`:help :tab`
+
+### Commands
+
+    # tab新建
+    :[count]tabe[dit]
+    :[count]tabnew
+    :[count]tabe[dit] [++opt] [+cmd] {file}
+    :[count]tabnew [++opt] [+cmd] {file}
+        :.tabnew
+        :+tabnew
+        :-tabnew
+        :0tabnew
+        :$tabnew
+
+    # 在tab中执行命令
+    :[count]tab {cmd}
+        # 当前buffer在新tab中打开
+        :tab split
+        # 新tab中打开`help :split`命令对应的文档
+        :tab help :split
+        :.tab help
+        :-tab help
+        :+tab help
+        :0tab help
+        :$tab help
+
+    # 列出所有tab
+    :tabs
+
+    # tab关闭
+    :tabc[lose][!]
+    :tabo[nly][!]
+
+    # tab间切换
+    :tabn[ext]
+    [count]gt
+    :tabp[revious]
+    :tabN[ext]
+    [count]gT
+    :tabr[ewind]
+    :tabfir[st]
+    :tabl[ast]
+
+    # 新开tab，并将当前鼠标下的文件名所指的文件在新的tab page中编辑
+    CTRL-W gf
+    # 新开tab，并将当前鼠标下的文件名所指的文件在新的tab page中编辑
+    # ，并跳转到文件名后面所示的行号
+    CTRL-W gF
+
+    # tab移动
+    # 移动到tab N
+    :tabm[ove] [N] 
+    :[N]tabm[ove]
+        :.tabmove
+        :-tabmove
+        :+tabmove
+        :0tabmove
+        :tabmove 0
+        :tabmove
+        :$tabmove
+        :tabmove $
+    # 向右或向左移动
+    :tabm[ove] +[N]
+    :tabm[ove] -[N]
+
+
+### Options
+
+    tabline
+    showtabline
+
+todo
 
 
 ## VimGrep

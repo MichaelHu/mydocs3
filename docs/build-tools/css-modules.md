@@ -4,14 +4,14 @@
 
 ## Resources
 
-* github: <https://github.com/css-modules/css-modules>
+* github: <https://github.com/css-modules/css-modules> <iframe src="http://258i.com/gbtn.html?user=css-modules&repo=css-modules&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
 * webpack implementation: <https://github.com/webpack/css-loader#css-modules>
 
 
 ## Features
 
-* 每个CSS文件被定义为一个CSS module
-* 所有`类名、动画名`默认为本地作用域
+* 每个CSS文件被定义为一个`CSS module`
+* 所有`类名、动画名`默认为`本地作用域`
 
 
 
