@@ -6,27 +6,12 @@
 
 ## JS正则
 
-js正则表达式语法是`Perl5`正则的`大型子集`。
+JavaScript正则表达式语法是`Perl5`正则的`大型子集`，在字符串处理上已经足够强大。
 
-有一些Perl正则的语法特性并不被ECMAScript支持，这些特性包括：
+### Resources
 
-    s           当行模式标记
-    x           扩展语法标记
-    \a
-    \e
-    \l
-    \u
-    \L
-    \U
-    \E
-    \Q
-    \A
-    \Z
-    \z
-    \G
-    (?<=p)
-    (?<!p)
-    (?#p)
+* JS正则表达式：<https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions>
+* `RegExp`: <https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/RegExp>
 
 
 ### 特殊字符
@@ -53,12 +38,34 @@ js正则表达式语法是`Perl5`正则的`大型子集`。
     (?=p)       零宽正向先行断言
     (?!p)       零宽负向先行断言
 
+### 不支持的特性 
+
+其中有一些`Perl正则`的语法特性并不被`ECMAScript`支持，这些特性包括：
+
+    s           单行模式标记
+    x           扩展语法标记
+    \a
+    \e
+    \l
+    \u
+    \L
+    \U
+    \E
+    \Q
+    \A
+    \Z
+    \z
+    \G
+    (?<=p)
+    (?<!p)
+    (?#p)
 
 
-## 反向引用
+
+### 反向引用
 
 
-### 1. 反向引用模式
+#### 反向引用模式
 
 
 格式：`\1, \2, \3, ..., \9`
@@ -72,7 +79,7 @@ js正则表达式语法是`Perl5`正则的`大型子集`。
 
 
 
-### 2. 反向引用模式匹配串
+#### 反向引用模式匹配串
 
 
 格式：`$&, $1, $2, $3, ..., $9`
@@ -80,6 +87,59 @@ js正则表达式语法是`Perl5`正则的`大型子集`。
     string.replace(/(<)[^>]+(>)/g, '$1...$2');
 
     
+### API
+
+#### RegExp对象
+
+    reg.exec()
+    reg.test()
+
+#### String对象
+
+    str.match()
+    str.replace()
+    str.search()
+    str.split()
 
 
+
+## GREP正则
+
+    # mac
+    $ grep -E <pattern>
+    # linux
+    $ grep -P <pattern>
+
+
+
+## AWK正则
+
+## FIND正则
+
+    $ find . -type f -iregex
+    $ find . -type f -regex
+
+## VIM正则
+
+    magic
+        \<
+        \>
+    non-magic
+
+
+
+## SED正则 
+
+
+## PHP正则
+
+> PCRE - Regular Expressions ( Perl-Compatible )
+
+    preg_split()
+    preg_replace()
+    preg_replace_callback()
+    preg_match()
+    preg_match_all()
+    preg_grep()
+    preg_filter()
 

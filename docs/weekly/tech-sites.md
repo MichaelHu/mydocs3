@@ -5,13 +5,13 @@
 ## 各公司技术／设计部门blog
 
 * FEX: <http://fex.baidu.com>
-* AlloyTeam: <http://www.alloyteam.com>
 * JDC: <http://jdc.jd.com>
-* ISUX: <http://isux.tencent.com>
-* CDC: <http://cdc.tencent.com>
-* O2: <https://aotu.io>
-* EFE: <http://efe.baidu.com>
 * EUX: <http://eux.baidu.com>
+* ISUX: <http://isux.tencent.com>
+* O2: <https://aotu.io>
+* AlloyTeam: <http://www.alloyteam.com>
+* CDC: <http://cdc.tencent.com>
+* EFE: <http://efe.baidu.com>
 * TGideas: <http://tgideas.qq.com>
 * 畅游VC: <http://vc.changyou.com>
 * MXD: <http://mxd.tencent.com>
