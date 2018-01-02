@@ -62,3 +62,52 @@
 * `40-46`: <https://pan.baidu.com/s/1o8e1Gue>
 * `1-34`: <http://www.oldapps.com/google_chrome.php>
 
+
+
+## net::xx错误汇总
+
+> `net::ERR_CONTENT_LENGTH_MISMATCH`
+
+> `net::ERR_EMPTY_RESPONSE`
+
+* 并不是`Content-Length`为0，也就是Response body为空的情况
+* 场景之一：`已建立`了socket连接，正在准备数据，`尚未开始`返回，服务出现了`异常`，Chrome浏览器会报该错误
+* 直接通过浏览器地址栏进行请求，会在页面中展示该错误；使用`AJAX`请求，会在console中显示红色ERROR
+* 以下代码能复现以上错误码：
+
+        var http = require('http');
+        http.createServer(function (req, res) {
+
+                // net::ERR_EMPTY_RESPONSE
+                // req.connection.end();
+
+                res.writeHead(200, {'Content-Type': 'text/plain'});
+
+                // also net::ERR_EMPTY_RESPONSE
+                // req.connection.end();
+
+                for ( var i in req ) {
+                    res.write( i + '\r\n' );
+                }
+
+                // net::ERR_INCOMPLETE_CHUNKED_ENCODING
+                // req.connection.end();
+
+                res.end('Hello World\n');
+            })
+            .listen( 8087 )
+            ;
+
+> `net::ERR_INCOMPLETE_CHUNKED_ENCODING`
+
+* 场景之一：`已建立`了socket连接，数据已经`部分返回`，服务出现了`异常`，Chrome浏览器会报该错误
+* 以上`net::ERR_EMPTY_RESPONSE`相关复现代码的第二部分能复现该错误
+
+
+> `net::ERR_INSECURE_RESPONSE`
+
+* 一般与`HTTPS/SSL`相关
+        
+
+
+

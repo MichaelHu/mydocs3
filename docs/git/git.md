@@ -187,7 +187,7 @@ todo:
 
 ## git diff
 
-常用命令：
+### 常用命令
 
     # 当前文件与暂存区文件比较
     git diff <file>
@@ -207,21 +207,26 @@ todo:
     git diff --staged <file>
     git diff --cached <file>
 
-其他options，列举部分如下：
+其他`options`，列举部分如下：
 
-    --stat                      显示统计信息
-    --src-prefix                默认为a/
-    --dst-prefix                默认为b/
+    option                          desc
+    ==================================================================
+    --stat                          显示统计信息
+    --src-prefix                    默认为a/
+    --dst-prefix                    默认为b/
     --no-prefix
-    -R                          交换src和dst 
+    -R                              交换src和dst 
     --ignore-blank-lines    
     -b, --ignore-space-change
     -w, --ignore-all-space
     --ignore-blank-lines
-    --name-only                 只显示变化的文件
-    --name-status               显示变化文件及其变化状态
+    --name-only                     只显示变化的文件
+    --name-status                   显示变化文件及其变化状态
 
-以上<file>可以是文件，也可以是目录。其`部分`支持`glob pattern`（<ref://../shell/glob.md.html>）。
+
+### Tips
+
+以上`<file>`可以是`文件`，也可以是`目录`。其`部分`支持`glob pattern`（<ref://../shell/glob.md.html>）。
 
     git diff *.md
     git diff **/*.md
@@ -549,10 +554,15 @@ other目录下的object对象`全都是blob类型`的，但可能对应真实的
     git fetch
     git merge origin/master
 
-合并策略通过`-s`选项传入，默认为`recursive` strategy，它采用3路合并算法，是`git merge`和`git pull`操作时默认采用的合并方案，recursive策略还支持细化的合并算法，可以通过`-X<options>`传入。
+
+### 合并策略
+
+* `合并策略`通过`-s`选项传入，默认为`recursive` strategy，它采用3路合并算法，是`git merge`和`git pull`操作时默认采用的合并方案，recursive策略还支持细化的合并算法，可以通过`-X<options>`传入。
+* 合并策略主要有`5种`：`resolve, recursive, octopus, ours, subtree`，需要区分`-s ours`与`-Xours`的不同。
 
     # 采用recursive合并策略，冲突时优先使用ours
     $ git merge -s recursive -Xours <branch>
+    $ git merge -Xours <branch>
 
 
 ### 例子

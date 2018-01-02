@@ -5,6 +5,22 @@
 > 合作，最难的是定义`边界`和`共赢`。
 
 
+## 2018-01-02
+
+### ontology
+
+* `Ontoloty`，`本体论`，研究客观事物存在的本质，它与`认识论`（`Epistemology`）相对。认识论研究人类知识的本质和来源。总的来说，本体论研究`客观存在`，认识论研究`主观认知`
+* `ontoloty`，本体
+
+
+### *AAS
+
+* `Saas` ( Software-as-a-service ) - 软件即服务
+* `Paas` ( Platform-as-a-service ) - 平台即服务
+* `Iaas` ( Infrastructure-as-a-service ) - 基础架构即服务
+* 参考：<http://www.ruanyifeng.com/blog/2017/07/iaas-paas-saas.html>
+
+
 ## 2017-11-22
 
 咨询`贾振庚`专家：
