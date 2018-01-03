@@ -82,25 +82,31 @@
 
 > 获得帮助： `:help string`
 
-* 双引号字符串"string"
-        \...
-        \..
-        \.
-        \x..
-        \x.
-        \X..
-        \X.
-        \u....
-        \U....
-        \b
-        \e
-        \f
-        \n
-        \r
-        \t
-        \\
-        \"
-        \<xxx>
+* `双引号`字符串`"string"`
+
+        \...        three-digit octal number (e.g., "\316")
+        \..         two-digit octal number (must be followed by non-digit)
+        \.          one-digit octal number (must be followed by non-digit)
+        \x..        byte specified with two hex numbers (e.g., "\x1f")
+        \x.         byte specified with one hex number (must be followed by non-hex char)
+        \X..        same as \x..
+        \X.         same as \x.
+        \u....      character specified with up to 4 hex numbers, stored according to the
+                    current value of 'encoding' (e.g., "\u02a4")
+        \U....      same as \u but allows up to 8 hex numbers.
+        \b          backspace <BS>
+        \e          escape <Esc>
+        \f          formfeed <FF>
+        \n          newline <NL>
+        \r          return <CR>
+        \t          tab <Tab>
+        \\          backslash
+        \"          double quote
+        \<xxx>      Special key named "xxx".  e.g. "\<C-W>" for CTRL-W.  This is for use
+                    in mappings, the 0x80 byte is escaped.
+                    To use the double quote character it must be escaped: "<M-\">".
+                    Don't use <Char-xxxx> to get a utf-8 character, use \uxxxx as
+                    mentioned above.
 
 * 单引号字符串'string'
     
@@ -140,13 +146,14 @@
 
 #### Tips
 
+* 注意区分`命令`和`函数`，每一行都是一个命令，由命令来`调用`函数
 * 函数引用变量必须以`大写字母`, `s:`, `w:`, `t:` 或 `b:`开头，最后两种已经不支持（todo）
-* 命令语句用换行分隔，如在单行内，则用`|`分隔；类比一下，shell语句也用换行分隔，单行内，使用`;`分隔
+* 命令语句用`换行`分隔，如在单行内，则用`|`分隔；类比一下，shell语句也用换行分隔，单行内，使用`;`分隔
 * `:fu`或`:function`列出所有函数及其参数
 * 使用`range`函数，处理需要在每行之间`共享上下文`的情况，可参考`~/.vimrc`中`F_prefix_line_number`的实现
 * 使用`setline()`, `append()`等往缓冲区输出内容
 * 使用`getline()`从缓冲区获取内容
-* 使用`:echo`命令往控制台输出内容
+* 使用`:echo`命令往控制台输出内容，`:echo {expr1} ...`支持表达式，比如简单数学运算`:echo 13/29.0`
 * 使用`system()`执行shell命令，并获取返回结果
 * 使用`:normal`, `:silent`等，扩展command line模式，可以在该模式下运行`normal模式`下的命令。但目前所知，这些命令只能在`命令行模式下生效`，而在`函数中`调用则`不生效`。或许`:exe {expr1} ...`命令会更强大，可以在函数内调用
 * 使用寄存器传递数据
@@ -853,6 +860,14 @@ pattern是一个regexp，其开启`ignorecase`, `smartcase` and `magic`
 
 * 是`string()`的反函数，支持Numbers, Floats, Strings以及它们的组合，同时支持Funcref
 * 与`:exe`的区别，一个是命令，一个是函数；而且它们的功能也迥异
+
+
+#### expand()
+
+    :echo expand( '%' )
+    vim-eval.md
+    " equivalent to
+    :echo @%
 
 
 

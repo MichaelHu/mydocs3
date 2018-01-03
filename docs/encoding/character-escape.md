@@ -100,6 +100,8 @@
 
 ### js escape
 
+> 对字符串按`Unicode-16`编码进行`%xx`或`%uxxxx`转义
+
     console.log( escape( 'a百度' ) );
     a%u767E%u5EA6
 
@@ -107,14 +109,14 @@
 * 生成新版本的`十六进制`表示的转义字符串，输入也是一个字符串
 * 码点`不大于0xFF`的，且不包含以下字串中任一字符的，使用`%xx`；码点`大于0xFF`的，使用`%uxxxx`；以下字串包含的任一字符原样输出
         ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@*_+-./
-    `不转义字符`为：字母、数字，以及7个特殊字符。
-* 默认string的内部表示为`Unicode`
+    不转义字符为：`字母、数字，以及7个特殊字符`。
+* 默认string的内部表示为`Unicode-16`编码
 
 
 
 ### js encodeURI
 
-> URI encoding
+> URI encoding，对字符串按`UTF-8`编码进行`%xx`转义
 
     console.log( encodeURIComponent( '百度' ) );
     %E7%99%BE%E5%BA%A6
