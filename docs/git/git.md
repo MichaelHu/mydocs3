@@ -18,11 +18,26 @@
 
 * site: <https://git-scm.com><img src="./img/git.png" height="20">
 * docs: <https://git-scm.com/doc>
+* github: <https://github.com/git/git> <iframe src="http://258i.com/gbtn.html?user=git&repo=git&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
 * 参考图文教程： <http://pcottle.github.io/learnGitBranching/?demo>
 
     github: <https://github.com/pcottle/learnGitBranching> <iframe src="http://258i.com/gbtn.html?user=pcottle&repo=learnGitBranching&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
 
     <img src="./img/git-learnbranch-success.png" style="max-height:400px">
+
+## Versions
+
+* 版本历史：
+
+    2.16
+    2.15
+    ...
+    2.0.x
+    1.9.x
+    ...
+    1.5.x
+
+* 查看详细版本更新历史：`git/Documentation/RelNotes/*.txt`
 
 
 ## Tips
@@ -286,16 +301,91 @@ todo:
     git log -p 55130805d5e95f0075e94d4b65985175c4295738..HEAD
     git log -p 55130805d5e95f0075e94d4b65985175c4295738..677a258a9a83c50f2d7543d11e4bc133fcf156fc
 
+    # 绘制分支历史图谱 from git 1.5.x
+    git log --graph
+    git log -p --graph
 
 
-`commit log`按时间先后逆序排布，但是最近的commit不一定比较远的commit对应的代码包新，比如下图，`hangzhou1229-newlogo`分支是第二个commit，但是该分支是基于半个月前的master分支进行的一个patch。
+### log graph
+
+    $ git log --graph
+
+        |
+        *   commit 32b6d2a6ecaa688744ebe4cc24b956428ac22a7a
+        |\  Merge: 54a6655 2ac8b6b
+        | | Author: hudamin <hdm258i@gmail.com>
+        | | Date:   Fri Dec 22 11:00:35 2017 +0800
+        | |
+        | |     Merge branch 'master' of http://172.22.1.88/sophon-wiki/sophon-docs
+        | |
+        | * commit 2ac8b6b940c2315c8789c904d93f262ceae55893
+        | | Author: zhangrui2 <zhangrui2@lvwan.com>
+        | | Date:   Fri Dec 22 10:53:48 2017 +0800
+        | |
+        | |     面试资料
+        | |
+        | *   commit fc6249427b02ceb5272aed047e80a7b82b8ee667
+        | |\  Merge: dd7a2bd 51f3dda
+        | | | Author: zhangrui2 <zhangrui2@lvwan.com>
+        | | | Date:   Thu Dec 21 20:27:45 2017 +0800
+        | | |
+        | | |     Merge remote-tracking branch 'origin/master'
+        | | |
+        | * | commit dd7a2bd54d0bdae3048794567b0a95c28fd8ed5c
+        | | | Author: zhangrui2 <zhangrui2@lvwan.com>
+        | | | Date:   Thu Dec 21 20:27:38 2017 +0800
+        | | |
+        | | |     面试资料
+        | | |
+        * | | commit 54a665563c22d1893172374da336354864588660
+        | |/  Author: hudamin <hdm258i@gmail.com>
+        |/|   Date:   Fri Dec 22 11:00:28 2017 +0800
+        | |
+        | |       update
+        | |
+        * |   commit 51f3dda9a9bac1bed00d7fb265c886ca3556f255
+        |\ \  Merge: a25a25e f47fe87
+        | |/  Author: hudamin <hdm258i@gmail.com>
+        | |   Date:   Thu Dec 21 19:20:52 2017 +0800
+        | |
+        | |       update
+        | |
+        | * commit f47fe87f0541f2c651b3f3ce5571331bd0380c56
+        | | Author: zhangrui2 <zhangrui2@lvwan.com>
+        | | Date:   Thu Dec 21 19:18:59 2017 +0800
+        | |
+        | |     技术周报
+        | |
+        | * commit 496066d07cfca454a022094bca12a82a4b2892a9
+        | | Author: zhangrui2 <zhangrui2@lvwan.com>
+        | | Date:   Thu Dec 21 19:17:59 2017 +0800
+        | |
+        | |     技术周报
+        | |
+        * | commit a25a25e1d4d3c9d679a62191bd88559e201d8f31
+        |/  Author: hudamin <hdm258i@gmail.com>
+        |   Date:   Thu Dec 21 19:19:41 2017 +0800
+        |
+        |       update
+        |
+
+
+* `*`指示分支流上又一个commit
+* 同一分支a，存在`本地( a )`和`远程( origin/a )`两个分支，如果总是`单人维护`，那么总是一条`直线`；如果是`多人维护`，就会出现本地和远程分支的合并，这在graph上显示为`两路合并为一路`
+* 以上`repo`只有一个`master`分支，由多人参与维护，在graph上就会看到多处分叉与合并
+* `graph视图`下，commit log就不一定按时间逆序排列了
+
+
+### log排序 
+
+commit log按`时间逆序`排列，但是最近的commit不一定比较远的commit对应的代码包新，比如下图，`hangzhou1229-newlogo`分支是第二个commit，但是该分支是基于半个月前的master分支进行的一个patch。
 
  <img src="./img/git-log.png" height="500">
 
 
-### 有用日志信息Merge
+### Merge log
 
-> `Merge`字段，提示该分支的merge信息，在分析日志的时候，可以追溯其合并的分支
+> `Merge字段`，提示该分支的merge信息，在分析日志的时候，可以追溯其合并的分支
 
 如下命令输出的`Merge: 88e579f 04ece21`，表明了commit `314d8b0`合并了`88e579f`以及`04ece21 ( master分支 )`。
 

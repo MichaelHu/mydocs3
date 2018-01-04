@@ -25,6 +25,7 @@
 
 ## 技术站点
 
+* `Auth0 Blog` - Company Updates & Technology Articles，这上面的技术文章都比较有深度，值得留存 <https://auth0.com/blog/>
 * Performance Calendar - The speed geek's favorite time of the year <https://calendar.perfplanet.com/2017/>
 * InfoQ前端专栏：<http://www.infoq.com/cn/Front-end/>
 * W3Cplus: <http://www.w3cplus.com>

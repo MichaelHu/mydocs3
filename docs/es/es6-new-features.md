@@ -9,6 +9,8 @@
 * es6: <http://www.ecma-international.org/ecma-262/6.0/index.html>
 * `ecma-262`: <ref://../ecma/ecma-262.md.html>
 * mozilla es6: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/New_in_JavaScript/ECMAScript_6_support_in_Mozilla>
+* 160103 ECMAScript compatiblity table <http://kangax.github.io/compat-table/es6/> github: <https://github.com/kangax/compat-table> <iframe src="http://258i.com/gbtn.html?user=kangax&repo=compat-table&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
+* 161116 A Rundown of JavaScript 2015 features - Auth0 <https://auth0.com/blog/a-rundown-of-es6-features/>
 * 实时转码DEMO：<http://google.github.io/traceur-compiler/demo/repl.html>
 
 
@@ -179,6 +181,7 @@ import.js:
 
 * 参数部分与`=>`之间不能有换行
 * `this`关键字在函数体中能直接体现当前上下文的this，不同于function内的this
+* `arguments, super, new.target`也同this关键词类似，它们都指向父scope的对应对象
 * 简单情况下`()`与`{}`可以省略。省略`{}`时，`return`关键字也可省略（实际上`必须省略`）
         
         a => a + 5                          // (), {}, return都省略
@@ -202,6 +205,12 @@ import.js:
         constructor(name) {
             this.name = name;
         }
+
+        // getter
+        get name() {
+            return name;
+        }
+
         // 实例方法
         sayName() {
             console.log('My name is '+this.name);
@@ -248,12 +257,20 @@ import.js:
             console.log( 'breathing...' );
         }
     };
+    function getKey() {
+        return 'some key';
+    }
     var worker = {
-        __proto__: human, // 设置此对象的原型为human,相当于继承human
-        company: 'freelancer',
+        // Prototypes can be set this way
+        __proto__: human, 
+        // key === value, shorthand for someObject: someObject
+        someObject,
+        // Methods can now be defined this way
         work() {
             console.log( 'working...' );
-        }
+        },
+        // Dynamic values for keys
+        [ getKey() ]: 'some value'
     };
     human.breathe();    // 输出 ‘breathing...’
     //调用继承来的breathe方法
