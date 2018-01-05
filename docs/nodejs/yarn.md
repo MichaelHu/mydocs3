@@ -4,9 +4,9 @@
 
 ## Resources
 
-* site: <https://yarnpkg.com/>
-* github: <https://github.com/yarnpkg/yarn/>
-* Apache Hadoop YARN: <https://baike.baidu.com/item/yarn/16075826>，是一种新的`Hadoop`资源管理器，与作为`node packages manager`的yarn存在`冲突`，解决办法是更改作为node packages manager的yarn`改名`，比如改成`yarn_fe`
+* `site`: <https://yarnpkg.com/>
+* `github`: <https://github.com/yarnpkg/yarn/>
+* Apache `Hadoop YARN`: <https://baike.baidu.com/item/yarn/16075826>，是一种新的`Hadoop`资源管理器，与作为`node packages manager`的yarn存在`冲突`，解决办法是更改作为node packages manager的yarn`改名`，比如改成`yarn_fe`
         $ cd ~/bin
         $ ln -s ~/fe/softwares/yarn-v1.3.2/bin/yarn yarn_fe
 
@@ -67,33 +67,41 @@
 
 ### 常用命令
 
-    yarn help
-    yarn init
+    # get help information
+    $ yarn help
+    # get `global` command's help info
+    $ yarn help global
+
+    # initialize a package
+    $ yarn init
 
     # adding a dependency
-    yarn add <package> 
-    yarn add <package>[@<version>]
-    yarn add <package>[@<tag>]
+    $ yarn add <package> 
+    $ yarn add <package>[@<version>]
+    $ yarn add <package>[@<tag>]
 
     # add to `devDependencies`
-    yarn add <package> --dev
+    $ yarn add <package> --dev
     # add to `peerDependencies`
-    yarn add <package> --peer
+    $ yarn add <package> --peer
     # add to `optionalDependencies`
-    yarn add <package> --optional
+    $ yarn add <package> --optional
 
-    yarn upgrade <package>
-    yarn remove <package>
+    $ yarn upgrade <package>
+    $ yarn remove <package>
 
     # installing all the dependencies of project
-    yarn
-    yarn install
+    $ yarn
+    $ yarn install
 
     # generate lockfile
-    yarn generate-lock-entry
-    yarn generate-lock-entry --use-manifest ./package.json
-    yarn generate-lock-entry --resolved local-file.tgz#hash
+    $ yarn generate-lock-entry
+    $ yarn generate-lock-entry --use-manifest ./package.json
+    $ yarn generate-lock-entry --resolved local-file.tgz#hash
 
+    # run globally
+    $ yarn global add <package>
+    $ yarn global remove <package>
 
 
 

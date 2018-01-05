@@ -15,6 +15,7 @@
 
 * `site`: <http://babeljs.io>
 * `docs`: <http://babeljs.io/docs/usage/babelrc/>
+* `babylon`: <ref://../tools/babylon.md.html>
 
 
 

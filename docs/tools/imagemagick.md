@@ -18,7 +18,7 @@
 
 ## Versions
 
-* 7.0-7-12
+* 7.0.7-12
 
 
 ## Installation
