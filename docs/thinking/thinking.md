@@ -9,9 +9,22 @@
 
 > 技术leader不是靠单兵作战能力取胜，而是靠有效地组织和利用技术资源获得最大化的产出来取胜。
 
-> Impossible is nothing, just do it.
+> Impossible is nothing, `just do it`.
 
 > Stick to the end.
+
+
+## 2018-01-08
+
+> 军人的承诺：`保证完成任务！`
+
+180104 这才叫执行力! 「 <https://mp.weixin.qq.com/s/IH-niTE681TxYtJeiXCU-A> 」关于`执行力`的一篇令人震撼的文章。
+
+<div style="max-height:300px; overflow: hidden;">
+<img src="./img/ability-of-execution-180108.png" style="margin-top: -500px;">
+</div>
+
+以上图片点击后看全部截图。
 
 
 ## 2017-12-21

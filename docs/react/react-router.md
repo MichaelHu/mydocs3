@@ -4,14 +4,14 @@
 
 ## Resources
 
-* github： <https://github.com/reactjs/react-router>
-* react-router-redux: <https://github.com/reactjs/react-router-redux>
+* `github`： <https://github.com/ReactTraining/react-router> <iframe src="http://258i.com/gbtn.html?user=ReactTraining&repo=react-router&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+* `react-router-redux`: <https://github.com/reactjs/react-router-redux>
 * history: <https://github.com/ReactTraining/history>
 
 
 ## Installation
 
-    npm install --save react-router
+    $ npm install --save react-router
 
 
 
@@ -552,13 +552,13 @@ fallback-src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f64c.png
 
 ## react-router-redux
 
-> Ruthlessly simple bindings to keep react-router and redux in sync.
+> Ruthlessly simple bindings to keep `react-router` and `redux` in sync.
 
-github: <https://github.com/reactjs/react-router-redux>
+`github`: <https://github.com/reactjs/react-router-redux>
 
-确保react-router与redux的store保持同步。
+确保`react-router`与`redux`的store保持同步。
 
-    npm install --save react-router-redux
+    $ npm install --save react-router-redux
 
 ### 原理
 

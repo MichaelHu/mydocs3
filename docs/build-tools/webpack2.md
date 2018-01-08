@@ -21,9 +21,17 @@
 下面分别介绍。
 
 
+## 其他概念
+
+* module
+* chunk, non-entry chunk
+* emit
+* bundle
+
+
 ## entry
 
-> webpack会在运行过程中生成`依赖图谱`，简单说`entry`就是`依赖链`的`起点`
+> webpack会在运行过程中生成`依赖图谱( dependency graph )`，简单说`entry`就是`依赖链`的`起点`
 
 ### 单入口语法
 
@@ -31,7 +39,7 @@
         entry: string | Array<string>
     }
 
-支持`字符串`和`字符串数组`，只打成一个包
+支持`字符串`和`字符串数组`，只打成一个包( `bundle` )
 
     {
         entry: './path/to/entry/file.js' 
@@ -43,6 +51,8 @@
             , './path/to/entry/file2.js' 
         ]
     }
+
+
 
 ### 对象语法
 
@@ -71,7 +81,10 @@
        }
     }
 
+
+
 #### SPA分拆
+
 SPA中分拆`公共库`与`业务`代码。
 
     {
@@ -81,7 +94,10 @@ SPA中分拆`公共库`与`业务`代码。
         }
     }
 
+
+
 #### MPA分拆
+
 MPA中`按页面`拆分为不同entry。
 
     {
@@ -154,9 +170,9 @@ MPA中`按页面`拆分为不同entry。
 
 ## loaders
 
-webpack将每个文件（.css, .html, .scss, .jpg等）都作为一个module，但是，webpack`只懂javascript`！
+webpack将每个文件（.css, .html, .scss, .jpg等）都作为一个`module`，但是，webpack`只懂javascript`！
 
-> loader的`目的`就是将这些`非js module`的文件`转换`成js module
+> loader的`目的`就是将这些`非js module`的文件`转换`成js module，让webpack可以`读懂非js module`
 
     {
         module: {
@@ -166,7 +182,7 @@ webpack将每个文件（.css, .html, .scss, .jpg等）都作为一个module，�
         }
     }
 
-以上配置告诉webpack编译器，当在`require()`或`import`语句中引入`.js`或`.jsx`文件时，先用`babel-loader`转换一下再添加到bundle中。 
+以上配置告诉webpack编译器，当在`require()`或`import`语句中引入`.js`或`.jsx`文件时，先用`babel-loader`转换后再添加到bundle中。 
 
 注意，是在`module.rules`而不是`rules`下定义。
 
@@ -175,9 +191,9 @@ webpack将每个文件（.css, .html, .scss, .jpg等）都作为一个module，�
 
 ## plugins
 
-> loaders以`文件(js module或非js module)为单位`进行转换，而plugins以编译事件为契机，执行某些自定义的功能。非常强大、可定制。
+> loaders以`文件(js module或非js module)为单位`进行转换，而plugins以`编译事件`为契机，执行某些自定义的功能。非常强大、可定制。
 
-需要`require`进来，并通过`new`创建新实例。
+需要`require`进来，并通过`new`创建新实例，并添加到`plugins数组`中。
 
     {
         plugins: [
@@ -208,6 +224,164 @@ webpack将每个文件（.css, .html, .scss, .jpg等）都作为一个module，�
                     支持：global（全局变量）, commonjs, commonjs2, amd等形式
 
 
+
+## HMR
+
+> Hot Module Replacement
+
+
+## Lazy Loading
+
+    ...
+    button.onClick = e => import( /* webpackChunkName: "print" */ './print' ).then( module => {
+        var print = module.default;
+        print();
+    } );
+    ...
+
+
+## Shimming
+
+> 支持ES2015 modules, CommonJS, AMD之外的modules - `broken modules`
+
+### Shimming Globals
+
+> 全局变量shimming，支持在module中直接引用全局变量而不需要显式import
+
+`ProvidePlugin`，可以在module中直接引用某个指定全局变量，就可以将该变量对应的package自动加载进来
+
+    ...
+    , plugins: [
+        new webpack.ProvidePlugin( {
+            _: 'lodash'
+        } )
+    ]
+    ...
+
+
+
+### Granular Shimming
+
+> `颗粒垫片`，`this关键词`覆盖，使用`imports-loader`插件
+
+    ...
+    module: {
+        rules: [
+            {
+                test: require.resolve("index.js"),
+                use: "imports-loader?this=>window"
+            }
+        ];
+    }
+    ...
+
+
+### Global Exports
+
+> 将未显式export的变量通过`module.exports`暴露出来，对于一些古老方式编写的library很有用，不需要改变就代码就能做到，方法为通过`exports-loader`
+
+src/globals.js:
+
+    var file = "blah.txt";
+    var helpers = {
+        test: function() {
+            console.log("test something");
+        },
+        parse: function() {
+            console.log("parse something");
+        }
+    };
+
+
+webpack.config.js:
+
+    ...
+    module: {
+        rules: [
+            {
+                test: require.resolve("globals.js"),
+                use: "exports-loader?file,parse=helpers.parse"
+            }
+        ];
+    }
+    ...
+
+src/index.js:
+    
+    import { file, parse } from './global.js';
+    ...
+
+
+> 以上webpack配置将不可export的`globals.js`变成了`exprtable`
+
+
+### 加载ployfills
+
+> 建议单独建立一个`ployfills.js`文件，将所有polyfill module在这个module中一起import，并将该polyfills.js module作为`独立entry`打包；从性能角度来说，`不建议`在`main module`中引入各个polyfill module
+
+src/polyfills.js:
+
+    import "babel-polyfill";
+    import "whatwg-fetch";
+
+webpack.config.js:
+
+    ...
+    entry: {
+        polyfills: "./src/polyfills.js",
+        index: "./src/index.js"
+    },
+    output: {
+        filename: "[name].bundle.js",
+        path: path.resolve(__dirname, "dist")
+    }
+    ...
+
+    
+
+## TypeScript
+
+<https://webpack.js.org/guides/typescript/>
+
+    $ npm install --save-dev typescript ts-loader
+
+tsconfig.json:
+
+    {
+        "compilerOptions": {
+            "outDir": "./dist/",
+            "noImplicitAny": true,
+            "module": "es6",
+            "target": "es5",
+            "jsx": "react",
+            "allowJs": true
+        }
+    }
+
+
+webpack.config.js:
+
+    ...
+    module.exports = {
+        entry: "./src/index.ts",
+        module: {
+            rules: [
+                {
+                    test: /\.tsx?$/,
+                    use: "ts-loader",
+                    exclude: /node_modules/
+                }
+            ]
+        },
+        resolve: {
+            extensions: [".tsx", ".ts", ".js"]
+        },
+        output: {
+            filename: "bundle.js",
+            path: path.resolve(__dirname, "dist")
+        }
+    };
+    ...
 
 
 

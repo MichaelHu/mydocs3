@@ -1,6 +1,8 @@
-# hugeapp-ares
+# ares-hugeapp
 
 > `战神(Ares)`项目( from 170419 )，寓意`前锋、冲锋陷阵`，驰骋在技术实践的战场中！也是`第一个`HugeApp。
+
+changelog: 
 
 ## 定位
 * 用于架构技术研究

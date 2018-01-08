@@ -70,7 +70,7 @@
 
 ## presets
 
-### babel-presets-env
+### babel-preset-env
 
 2016年发布，目的是让`编译器`来做更多的决定，解放繁琐的人工配置。该presets包含了几乎所有的presets，包含：
 
@@ -86,7 +86,7 @@
 
 等。
 
-### 升级至babel-presets-env
+### 升级至babel-preset-env
 
 可以使用`babel-preset-env`插件<http://babeljs.io/docs/plugins/preset-env/>，由babel自动决定该使用哪些babel插件。
 

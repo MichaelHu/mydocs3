@@ -106,7 +106,7 @@
 
 ## Useful Tips
 
-1. 编辑模式搞清楚，记住`normal, insert, visual, command-line`
+1. 主要编辑模式搞清楚，记住`normal, insert, visual, command-line`
 2. `normal`模式下，`单引号'`用于访问bookmark，`双引号"`用于设置下一delete，yank或者put操作使用的寄存器
 3. `normal`以及`command-line`模式下，`@`用于访问寄存器
 4. 带`g前缀`的命令原来功能这么强大，比如：`g0, g^, g$, gm, gp, gP, gJ, ge, gE, 
@@ -116,7 +116,7 @@
 6. `command line`模式下，`CTRL-V`能用于输入特殊字符，比如`<C-V><Enter> `将输入`回车符<CR>`，命令行上显示`^M`
 7. `:help`在线帮助，很对不同查询对象使用不同语法，比如查询`options`，则将option用`单引号`包起来。
 8. `normal`模式，`CTRL-L`刷新屏幕
-9. 一些特殊字符的展示：
+9. 一些`特殊字符`的展示：
 
         ^M      x0d，也就是carriage-return，回车符
         ^@      x00
@@ -1542,7 +1542,7 @@ command line模式的行注释。
 
 
 
-### 执行外部命令 
+###  执行外部命令 
 
 当前buffer的内容可以通过`range`选择，`pipe`到外部命令，外部命令的输出结果会`替换`当前buffer中通过range`选中的`内容。
 
@@ -1558,6 +1558,7 @@ command line模式的行注释。
     :'<,'>!awk '/^.*$/{printf "\%s = \%d\n",$0,$1 + $3}'
     :'<,'>!sed -e '1\!G;h;$\!d'
     :'<,'>!tail -r
+    :'<,'>!prettier --tab-width=4
 
 1. 当前buffer内容用外部`xxd命令`转换后并`替换`
 2. 当前buffer第1到100行内容，用外部命令`grep`过滤出以`#`开头的行，并`替换`，注意`#`需要转义
@@ -1567,6 +1568,7 @@ command line模式的行注释。
 6. 选中行的第一个与第三个数`相加`，并`追加`到行末尾，注意`%`需要转义
 7. 将选中的所有行`按行号逆序`输出，并替换，注意`!`需要转义。相关参考：<ref://../shell/linuxshell.md.html>中关于`sed`命令的部分。
 8. 同上，`更简单`的按行号逆序输出
+9. 将选中区域文本使用prettier命令`格式化`
 
 
 

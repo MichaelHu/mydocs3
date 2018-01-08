@@ -88,13 +88,24 @@ mac下进行`-g`安装，出现`EACCES`错误，原因是对`/usr/local/lib/node
 
 > Node `Version` Manager - Simple `bash script` to manage multiple active node.js versions
 
-* github: <https://github.com/creationix/nvm> <iframe src="http://258i.com/gbtn.html?user=creationix&repo=nvm&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>   
+* `github`: <https://github.com/creationix/nvm> <iframe src="http://258i.com/gbtn.html?user=creationix&repo=nvm&type=star&count=true" frameborder="0" scrolling="0" width="100px" height="20px"></iframe>   
 
-### install
+### versions
 
-    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
+    0.33.8
+    ...
+    0.33.2
+    0.33.1
+    ...
+
+
+### install or update
+
+> 可`安装`或`更新`
+
+    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
 or
-    wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
+    wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
 
 ### 使用方式
 
@@ -105,7 +116,9 @@ or
     nvm which 5.0
     nvm use system
     nvm ls
-    nvm ls-remote
+    nvm ls <version>
+    nvm ls-remote 
+    nvm ls-remote <version>
     nvm alias default node
 
 列出可用命令，使用`两个tab`:
