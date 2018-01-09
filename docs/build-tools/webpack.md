@@ -8,21 +8,20 @@
 > 注：编写此篇文档的时候，`webpack 2`尚未正式发布。`webpack 2`相关内容移步<ref://./webpack2.md.html>
 
 
+## Resources
+
 * site: <https://webpack.github.io>
 * docs: <http://webpack.github.io/docs/>
 * get started: <http://webpack.github.io/docs/tutorials/getting-started/>
-
-1. 相关阅读： Browserify : <http://browserify.org>
-2. 相关介绍文档： <https://segmentfault.com/a/1190000006178770>
-
+* 相关: `Browserify` - <ref://./browserify.md.html>
+* 「 入门 Webpack，看这篇就够了 」 - <https://segmentfault.com/a/1190000006178770>
 
 
-
-## 印象
+## Features
 
 * 模块`打包`，可以将`css`甚至`image`文件都以`js`的方式打包。
-* `依赖分析`
-* 通过插件可以支持`各种`前端中间`文件类型`：.jade, .coffee, .less, .sass, .jsx等
+* `依赖分析`获得依赖图谱( `dependency graph` )
+* 通过`loader`可以支持`各种`前端中间`文件类型`：.jade, .coffee, .less, .sass, .jsx等
 * 两个很关键的抽象：`loader`, `plugin`
 * `loader`是一个输出一个`函数`的node模块，`plugin`是符合特定接口的类（比如`.apply()`方法，在install时被调用一次），它可以使用webpack引擎提供的功能，可以使用`compiler`和`compilation`对象。
 * `loader`的使用，需要了解清楚其`输入输出`，了解清楚了就不会迷惑了
@@ -39,19 +38,54 @@
 
 
 
+## 常用loaders/plugins
+
+### loaders
+
+    babel-loader
+    vue-loader
+
+    less-loader
+    sass-loader
+    css-loader
+    style-loader
+
+    html-loader
+
+    extract-loader
+    file-loader
+    url-loader
+
+### internal plugins
+
+    webpack.BannerPlugin
+    webpack.optimize.UglifyJsPlugin
+    webpack.optimize.OccurenceOrderPlugin
+    webpack.optimize.CommonsChunkPlugin
+
+### third plugins
+
+    html-webpack-plugin
+    extract-text-webpack-plugin
+    copy-webpack-plugin
+
+
 
 
 ## 安装
 
 ### 版本
 
+> 版本1和后续版本在配置文件格式上有`较大差异`
+
 1. webpack 1.x
 2. webpack 2.x
+3. webpack 3.x
 
 
 ### webpack
 
-安装webpack主程序。
+安装`webpack`主程序。
 
     npm install -g webpack
     npm install webpack
@@ -182,6 +216,7 @@ css`作用域`支持：
 
 	new webpack.BannerPlugin
     new webpack.optimize.UglifyJsPlugin
+    new webpack.optimize.OccurenceOrderPlugin
 
 等。
 
@@ -195,11 +230,16 @@ css`作用域`支持：
 
 #### html-webpack-plugin
 
-github: <https://github.com/ampedandwired/html-webpack-plugin>
+github: <https://github.com/ampedandwired/html-webpack-plugin> <iframe src="http://258i.com/gbtn.html?user=jantimon&repo=html-webpack-plugin&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 
     npm install --save-dev html-webpack-plugin
 
 html文件自动生成，或者按模板生成。简化创建一个html文件来调用webpack生成的bundle文件的过程，该插件会为你自动生成对应的html文件。
+
+基于`html-webpack-plugin`插件扩展的其他插件：
+* `html-webpack-inline-source-plugin`，支持将`资源内联化`: <https://github.com/DustinJackson/html-webpack-inline-source-plugin>
+* `html-webpack-inline-svg-plugin`，支持svg内联化: <https://github.com/thegc/html-webpack-inline-svg-plugin>
+* ... todo
 
 
 #### extract-text-webpack-plugin
@@ -312,7 +352,10 @@ github: <https://github.com/kevlened/copy-webpack-plugin>
 
 使用配置文件后，就不需要在`webpack`的命令行调用中添加`过多`参数，虽然配置项也可以通过命令行参数传递。
 
-* doc：<http://webpack.github.io/docs/configuration.html>
+* new version: 
+    * `options`: <https://webpack.js.org/configuration/>
+    * concepts: <https://webpack.js.org/concepts/configuration/>
+* old version ( deleted ): <s><http://webpack.github.io/docs/configuration.html></s> 
 
 
 ### 配置点
@@ -416,6 +459,8 @@ github: <https://github.com/kevlened/copy-webpack-plugin>
 
 #### 配置项列表
 
+* `options`: <https://webpack.js.org/configuration/>
+
 配置文件包含的可配置选项：
 
 	context // 项目根路径，必须是绝对路径
@@ -446,9 +491,12 @@ github: <https://github.com/kevlened/copy-webpack-plugin>
 		automatically created contexts defaults module.xxxContextXxx
 	resolve
 		resolve.alias
+        resolve.aliasFields         v2.x
 		resolve.root
-		resolve.modulesDirectories
+		resolve.modulesDirectories  v1.x
+		resolve.modules             v2.x
 		resolve.fallback
+        // automatically resolve certain extensions, defaults to [ ".js", ".json" ]
 		resolve.extensions
 		resolve.packageMains
 		resolve.packageAlias
@@ -463,6 +511,46 @@ github: <https://github.com/kevlened/copy-webpack-plugin>
 	debug
 	devtool
 	devServer
+        devServer.after
+        devServer.allowedHosts
+        devServer.before
+        devServer.bonjour
+        devServer.clientLogLevel
+        devServer.color - CLI only
+        devServer.compress
+         devServer.contentBase
+        devServer.disableHostCheck
+        devServer.filename
+         devServer.headers
+        devServer.historyApiFallback
+         devServer.host
+        devServer.hot
+        devServer.hotOnly
+        devServer.https
+        devServer.index
+        devServer.info - CLI only
+        devServer.inline
+        devServer.lazy
+        devServer.noInfo
+        devServer.open
+        devServer.openPage
+        devServer.overlay
+        devServer.pfx
+        devServer.pfxPassphrase
+         devServer.port
+         devServer.proxy
+        devServer.progress - CLI only
+        devServer.public
+         devServer.publicPath
+        devServer.quiet
+        devServer.setup
+        devServer.socket
+        devServer.staticOptions
+        devServer.stats
+        devServer.stdin - CLI only
+        devServer.useLocalIp
+        devServer.watchContentBase
+        devServer.watchOptions  
 	node
 	amd
 	loader
@@ -480,7 +568,7 @@ github: <https://github.com/kevlened/copy-webpack-plugin>
 
 需要使用`plugins`配置项来引入插件`HtmlWebpackPlugin`
 
-HtmlWebpackPlugin插件: <https://github.com/ampedandwired/html-webpack-plugin>
+`HtmlWebpackPlugin`插件: <https://github.com/ampedandwired/html-webpack-plugin>
 
 相关配置文件：
 
@@ -621,7 +709,8 @@ webpack支持html文件的自动生成，非常方便。但是项目中也避免
 
     };
 
-
+* `entry`配置中增加`html`类型的依赖链起点，目的是使html文件中的css、img等资源成为`依赖图谱`的`被依赖资源`，会被webpack作为module处理
+* `html-loader`将解析html文件中的指定属性：`["img:src", "link:href"]`，这些属性对应的资源会被作为module处理
 
 
 
@@ -702,7 +791,9 @@ css文件可能需要在js代码中`require`；也可能是用sass编写，还�
 
 
 
-`1. extract-loader`:
+##### extract-loader
+
+`github`: <https://github.com/peerigon/extract-loader> <iframe src="http://258i.com/gbtn.html?user=peerigon&repo=extract-loader&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 
 从bundle里提取`html`或者`css`，所以`前提`是html和css在bundle中被`引用`。
 
@@ -719,15 +810,15 @@ css文件可能需要在js代码中`require`；也可能是用sass编写，还�
     ]
     ...
 
-以上配置针对在js中使用`require()`引用的css文件有效。如果css文件只在某个独立的html文件中引用，是不会被提取的。 
+以上配置针对在js中使用`require()`引用的css文件有效。如果css文件只在某个独立的html文件中引用，是不会被提取的。如果需要也被提取，则需要将对应的html文件添加到entry中，也作为一个`依赖链起点`。 
 
 
 
-`2. extract-text-webpack-plugin`:
+##### extract-text-webpack-plugin
 
-功能基本上同extract-loader，`不同`的是，该plugin可以将得到的独立文件`inject`到引用的html文件中。
+`github`: <https://github.com/webpack/extract-text-webpack-plugin> <iframe src="http://258i.com/gbtn.html?user=webpack-contrib&repo=extract-text-webpack-plugin&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 
-github: <https://github.com/webpack/extract-text-webpack-plugin>
+功能基本上同`extract-loader`，`不同`的是，它是一个插件，有更强大的功能，该plugin可以将得到的独立文件`inject`到引用的html文件中。
 
 配置文件：
 
@@ -1309,7 +1400,7 @@ AMD风格。
         });
     };
 
-`exports`是一个函数，用于`executor参数`构造一个`Promise`对象。<ref://../frontend/promisejs.md.html>
+`exports`是一个函数，作为`executor参数`，用于构造一个`Promise`对象。<ref://../frontend/promisejs.md.html>
 
 
 

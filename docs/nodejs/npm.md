@@ -587,13 +587,23 @@ npm获取配置信息，来自`六个来源，优先级如下，由高到低`：
     npm link [@<scope>/]<pkgname>
     npm ln (with any of the previous argument usage)
 
-> 方便开发调试，可将另一个包链接到本包的node_modules下，另一个包的任意改动，可以直接反映出来。
+> 方便`开发调试`，可将另一个包链接到本包的`node_modules`下，另一个包的任意改动，可以直接反映出来。
 
-注意pkgname不是目录名，而是包名，其在package.json中定义。
+注意pkgname不是目录名，而是包名，其在`package.json`中定义。
 
-进行包链接，包含两个步骤：
-1. 当前目录下运行`npm link`，创建全局安装的符号链接，从`prefix/package-name`指到当前目录
-2. 再在另一个目录下，运行`npm link package-name`，在本地的node_modules中创建一个符号链接到第一步
+
+#### 包链接
+
+进行`包链接`，包含两个步骤：
+1. 当前目录下运行`npm link`，创建`全局安装`的符号链接，从全局`node_modules/package-name`指到当前目录，如下所示：
+
+        hudamin@local turbo-markdown $ sudo npm link
+        /Users/hudamin/.nvm/versions/node/v7.7.4/bin/tm -> /Users/hudamin/.nvm/versions/node/v7.7.4/lib/node_modules/turbo-markdown/bin/tm
+        /Users/hudamin/.nvm/versions/node/v7.7.4/lib/node_modules/turbo-markdown -> /Users/hudamin/projects/git/turbo-markdown
+
+    同时会链接`bin`目录。
+
+2. 再在另一个目录下，运行`npm link package-name`，在本地的`node_modules`中创建一个符号链接到第一步
     创建的全局符号链接。
 
 举例如下：
@@ -609,7 +619,18 @@ npm获取配置信息，来自`六个来源，优先级如下，由高到低`：
     npm link ../node-redis
 
 
-一个实际例子：
+#### 解除包链接
+
+> 执行`卸载命令`即可
+
+    # un, unlink, uninstall, remove
+    $ npm un <package-name>
+    $ sudo npm un -g <package-name>
+
+
+#### Examples
+
+一个`实际例子`如下：
 
     $ cd hello-node
     $ npm link

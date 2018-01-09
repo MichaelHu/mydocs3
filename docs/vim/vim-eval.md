@@ -5,7 +5,7 @@
 ## Resources
 
 * 帮助：`:help eval`
-* vim - <ref://./vim.md.html>
+* `vim` - <ref://./vim.md.html>
 
 
 ## 编译选项
@@ -454,6 +454,17 @@
 * `s:`前缀，vim script局部变量
 * `a:`前缀，`函数参数`，仅在函数内部，比如`a:firstline`, `a:lastline`
 * `v:`前缀，全局变量，Vim预定义
+
+
+### 特殊变量
+
+* `&`前缀，option，比如`&enc`, `&ft`
+* `&g:`前缀，全局option
+* `&l:`前缀，本地option
+* `@`前缀，寄存器，比如`@z`
+* `$`前缀，环境变量
+
+
 
 
 ### let命令
