@@ -56,6 +56,8 @@
     file-loader
     url-loader
 
+    bundle-loader
+
 ### internal plugins
 
     webpack.BannerPlugin
@@ -153,6 +155,16 @@ html文件的解析，输出为`字符串`。它能对`html`文件的`标签属�
     npm install --save-dev extract-loader
 
 提取功能。从bundle中将require请求的css提取出来；从html中将img，css引用提取出来。适合用于发布版本的优化处理。
+
+
+#### bundle-loader
+
+    npm install --save bundle-loader
+
+封装`require.ensure()`，使代码懒加载的实现逻辑更简单。<https://github.com/webpack-contrib/bundle-loader> <iframe src="http://258i.com/gbtn.html?user=webpack-contrib&repo=bundle-loader&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+
+相关链接：
+* React-Router 4建议的代码分割方式：<https://reacttraining.com/react-router/web/guides/code-splitting>
 
 
 #### vue-loader

@@ -7,11 +7,227 @@
 * `github`： <https://github.com/ReactTraining/react-router> <iframe src="http://258i.com/gbtn.html?user=ReactTraining&repo=react-router&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 * `react-router-redux`: <https://github.com/reactjs/react-router-redux>
 * history: <https://github.com/ReactTraining/history>
+* ` Examples for 4.x` [ 写得不错，很有参考价值 ]: <https://reacttraining.com/react-router/web/example/basic>
+* `4.x` docs: <https://reacttraining.com/react-router/>
+* `3.x` docs: <https://github.com/ReactTraining/react-router/tree/v3/docs>
+* `2.x` docs: <https://github.com/ReactTraining/react-router/tree/v2.8.1/docs>
+
+
+## Versions
+
+* changelog: <https://github.com/ReactTraining/react-router/blob/master/CHANGES.md>
+
+### Changelogs
+
+* `4.x`: 4.0.0 - 4.2.0 [ 170823 ]
+        Include `react-router` in `react-router-dom`
+        react-router-native
+        StaticRouter
+        <Switch location>, <Route location>
+        分布式Route
+        Switch
+    
+* `3.x`: 3.0.0 - 3.0.2 [ 170118 ]
+        Add params, location, routes to props injected by withRouter
+        Route: add `router` to props
+        Link: add `to` prop
+
+* `2.x`: 2.0.0 - 2.8.1 [ 160913 ]
+        render
+        browserHistory
+        hashHistory
+        createMemoryHistory
+        onChange hook 
+
+* `1.x`: 1.0.0 - 1.0.3 [ 151223 ]
+
+
+### Tips
+
+* `Migrating from v2/v3 to v4`: <https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/guides/migrating.md>
+* v4版本进行了`重新设计`，和旧版本存在很大差异，`安装、使用、渲染原理、路由嵌套`等都不一样
+* `<Router routes> `属性在v4中`不再支持`，因为v4不再采用集中式路由配置
+* `v4`采用了`分布式Route`，可以在任何需要渲染内容的地方使用Route，比如Route可以放在div标签内；而之前的版本，Route都是`顶级集中配置`。
+* 续上一点，在`v3`中，Route不是一个真正的组件，只用于创建一个`路由配置对象`；`v4`开始，Route成为一个`实际组件`，在任何地方，需要渲染`基于location`的内容，都可以在该地方渲染一个Route组件
+* `路由嵌套`，原理不同，写法也不同，如下：
+
+        // v2, v3
+        <Route path='parent' component={Parent}>
+            <Route path='child' component={Child} />
+            <Route path='other' component={Other} />
+        </Route>
+
+
+        // v4
+        <Route path='parent' component={Parent} />
+
+        const Parent = () => (
+            <div>
+                <Route path='child' component={Child} />
+                <Route path='other' component={Other} />
+            </div>
+        )
+
+* `onEnter, onUpdate, onLeave`在v4中不再支持，而是使用Route对应的component的生命周期方法代替。
+
+        v2, v3          v4
+        ============================================================
+        onEnter         componentDidMount, componentWillMount
+        onUpdate        componentDidUpdate, componentWillUpdate
+        onLeave         componentWillUnmount
+
+* `<Switch>`，v4新引入，渲染第一个匹配的子路由对应的组件树，两者的等价实现如下：
+
+        // v3
+        <Route path="/" component={App}>
+            <IndexRoute component={Home} />
+            <Route path="about" component={About} />
+            <Route path="contact" component={Contact} />
+        </Route>;
+
+        // v4
+        const App = () => (
+            <Switch>
+                <Route exact path="/" component={Home} />
+                <Route path="/about" component={About} />
+                <Route path="/contact" component={Contact} />
+            </Switch>
+        );
+
+* `<Redirect>`区别：
+
+    `Redirect`: 
+    
+        // v3
+        <Route path="/" component={App}>
+            <IndexRedirect to="/welcome" />
+        </Route>;
+
+        // v4
+        <Route exact path="/" render={() => <Redirect to="/welcome" component={App} />} />
+        // or
+        <Switch>
+            <Route exact path="/" component={App} />
+            <Route path="/login" component={Login} />
+            <Redirect path="*" to="/" />
+        </Switch>;
+
+    `query string`:
+
+        // v3
+        <Redirect from="/" to="/welcome" />
+        // /?source=google → /welcome?source=google
+
+        // v4
+        <Redirect from="/" to="/welcome" />
+        // /?source=google → /welcome
+
+        <Redirect from="/" to={{ ...location, pathname: "/welcome" }} />
+        // /?source=google → /welcome?source=google
+
+
+* `<Link to>`，v4必须提供`非null`的`to`属性
+* 关于`代码分割( code-splitting )`，v4建议使用webpack的`bundle-loader`，v4以下则主要使用`getComponent()`调用wepack的`require.ensure()`达到异步加载代码的目的，「 React-Router 4建议的代码分割方式 」：<https://reacttraining.com/react-router/web/guides/code-splitting>
+
 
 
 ## Installation
 
+    # 1.x - 3.x
     $ npm install --save react-router
+
+    # 4.x
+    $ npm install --save react-router-dom
+
+
+
+## Labels
+
+> from `React-Router 4.x`
+
+    StaticRouter
+        // 用于服务端渲染
+
+    BrowserRouter
+        history: object
+        children: node
+
+    StaticRouter
+        basename: string
+        location: string | object
+        context: object
+        children: node
+
+    Route
+        key
+        path: string
+        exact: bool
+        strict: bool // 可用于强制location.pathname不带末尾斜线
+        location: object
+        component: Component
+            history
+                length
+                action
+                location
+                push( path, [state] )
+                replace( path, [state] )
+                go( n )
+                goBack()
+                goForward()
+                block( prompt )
+            location
+                key // no with HashHistory
+                pathname
+                search
+                hash
+                state
+            match
+                url
+                path
+                params
+                isExact
+        render: Function
+            history
+                ...
+            location
+                ...
+            match
+                ...
+        children
+            history
+                ...
+            location
+                ...
+            match
+                ...
+
+    Link
+        to
+        style
+
+    Redirect
+        from
+        to
+
+    Switch
+        // 渲染第一个匹配的子路由
+        location
+        <Switch>
+            <Route path="/" exact component={Home}/>
+            <Redirect from="/old-match" to="/will-match"/>
+            <Route path="/will-match" component={WillMatch}/>
+            <Route component={NoMatch}/>
+        </Switch>
+
+    // 用于对组件进行封装，使组件接收和<Route>一样的路由变化属性{ match, location, history }
+    withRouter      // 高级组件
+
+
+
+
+> 以下主要为`2.x / 3.x`版本文档，未特殊注明`4.x`，都属于2.x / 3.x相关的内容
+
+<hr>
 
 
 
@@ -88,6 +304,7 @@
 * 支持`默认路由`，`<IndexRoute component={Dashboard}>`
 * `绝对`路径使用，在`简化`路径的同时能`保留`UI的嵌套信息，但`不能`在`动态加载`的路由配置中使用
 * 支持`hooks`：`onLeave`和`onEnter`
+* 从`v4.x.x`开始，`Route`并不限定于顶级组件，它可以出现在`DOM tree`中，开发者可在`DOM tree`中`挖坑`，而这些坑可以根据`路由选择`来`填充`
 
 
 ### 两种写法
@@ -178,6 +395,9 @@
 
 
 ### onLeave & onEnter
+
+    onEnter( nextState, replace, callback? )
+    onLeave( prevState )
 
 路由变换过程中，先在`离开`的路由调用`onLeave`，再在`进入`的路由调用`onEnter`。
 
@@ -390,11 +610,32 @@ docs: <https://github.com/ReactTraining/react-router/blob/master/docs/guides/Dyn
 
 #### 基础方法
 
-* getChildRoutes
-* getIndexRoute
-* getComponents
-* getComponent
+* `getComponents`，components属性的`异步函数`版本
 
+        <Route
+            path="courses/:courseId"
+            getComponents={(nextState, cb) => {
+                // do asynchronous stuff to find the components
+                cb(null, { sidebar: CourseSidebar, content: Course });
+            }}
+        />;
+
+    其中，cb的格式为：`cb( err, components )`
+
+* `getComponent`，component属性的`异步函数`版本
+
+        <Route
+            path="courses/:courseId"
+            getComponent={(nextState, cb) => {
+                // do asynchronous stuff to find the components
+                cb(null, Course);
+            }}
+        />;
+
+    其中，cb的格式为：`cb( err, component )`
+
+* `getChildRoutes`，childRoutes属性的`异步函数`版本
+* `getIndexRoute`
 
 #### huge app examples
 

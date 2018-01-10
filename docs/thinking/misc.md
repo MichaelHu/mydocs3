@@ -1,5 +1,10 @@
 # misc
 
+## 脉轮
+
+<https://www.eclecticenergies.com/chinese_traditional/chakras/>
+
+
 ## 双关词现象
 
 近期各类媒体文章都喜欢采用`双关词`（暂且这么命名），比如：

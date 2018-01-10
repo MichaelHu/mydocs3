@@ -326,23 +326,48 @@ todo
 
 ## flexible box layout
 
+> `弹性`布局
+
 ### Resources
 
 * Level 1: <http://www.w3.org/TR/css-flexbox-1/>
 * `flex-cheatsheet`: <http://yoksel.github.io/flex-cheatsheet/>
 * `Flexbox布局的正确使用姿势`: <https://segmentfault.com/a/1190000009932882> 
+* simple history:
+    1. `css2.1`定义了`4种`布局模式: `block`, `inline`, `table`, `positioned`
+    2. `css3`新引入了一种布局: `flex`
 
-> `弹性`布局
+            display: flex | inline-flex;
 
-1. `css2.1`定义了`4种`布局模式: `block`, `inline`, `table`, `positioned`
-2. `css3`新引入了一种布局: `flex`
 
-        display: flex | inline-flex;
+### Features
+
+* flex是`一维`的，css grid是`二维`的
+* `flex`属性的理解是关键
+* 个人理解，flex是更`强大版本`的`float`，比如float实现的瀑布流，可用flex简单实现。当然flex功能不止这个。
+
+        /* item */
+        float: left;
+        width: 100px;
+        height: 200px;
+        overflow: hidden;
+
+    用`flex实现`如下：
+
+        /* container */
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: flex-start;
+
+        /* item */
+        flex: 0 0 100px;
+        height: 200px;
+        overflow: hidden;
 
 
 ### 可用属性
 
-> 注意`flex container`与`flex item`的区别
+> 注意`flex container`与`flex item`的区别，`flex属性`的理解很关键
 
     /* 设定其内容元素使用flex布局 */
     display: flex | inline-flex;
@@ -365,15 +390,36 @@ todo
         flex: initial;
         /* 等价于  flex: 1 1 auto; */
         flex: auto;
-        /* 等价于  flex: <positive-number> 1 0; 完全按照指定值按比例分配空间*/
+        /* 等价于  flex: <positive-number> 1 0; 此种情况完全按照指定值按比例分配空间*/
         flex: <positive-number>;
-
+        /* 综合考虑元素内容及额外空间，并在此基础上grow */
         flex: 1 0 auto;
+        /* 考虑元素宽或高为200px，并在此基础上grow */
         flex: 1 0 200px;
+        /* 考虑元素宽或高为300px，并在此基础上shrink */
+        flex: 0 1 300px;
+
+
+    /* 其接收值等同于：width或height接收值 + 'content' */
+    /* flex简写方式中，忽略<flex-basis>，相当于设置了0 */
+    flex-basis: auto | content | <width>
+        /* 综合考虑内容宽度或高度、额外空间等因素 */
+        flex-basis: auto;
+        /* 根据内容宽度或高度 */
+        flex-basis: content;
+        /* 根据所提供的值设置宽度或高度 */
+        flex-basis: <width>;
 
     order: <integer>
+        /* 正向 */
         order: 0;
+        /* 逆向 */
         order: -1;
+
+
+### 空间分配
+
+
 
 
 ### 例子1
