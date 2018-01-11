@@ -1,6 +1,22 @@
 # insight images
 
 
+## 耳听为虚，眼见不一定为实
+
+> 我们听到的只是一种想法，不一定就是事实；我们看到的也只是一种视角，不一定反映本质。
+
+ <img src="./img/about-truth-170909.jpg" style="max-height:300px">
+
+
+
+## Simple ≠ Easy 
+
+> `简单`不等于`容易`
+
+ <img src="./img/simple-easy.png">
+
+
+
 ## 自我塑造
 
 > 自我塑造，过程很疼，但你最终能收获一个更好的自己
@@ -17,7 +33,7 @@
 
 ## 虚伪的朋友
 
-> 虚伪的朋友必诚实的敌人更可怕
+> 虚伪的朋友比诚实的敌人更可怕
 
  <img src="./img/1c944611670c4d84bb4321fb756008dd.jpg" style="">
 
@@ -31,7 +47,7 @@
 
 ## 老板 vs 领导者
 
-> Boss与Leader的区别
+> `Boss`与`Leader`的区别
 
  <img src="./img/2a7f1e99f37b4324b8c06dbe0eb649cf.jpg" style="">
 
@@ -62,6 +78,13 @@
 > 你必须一路向前，因为人生不能后退
 
  <img src="./img/4a88ff70a07c4699b64f8ad42de3373d.jpg" style="">
+
+
+## 切忌盲目前行
+
+> 一味按照别人的指引`盲目前进`，可能会一脚踏空，摔得惨痛
+
+ <img src="./img/a915e6af200945afa2785a72da8682c2.jpg" style="">
 
 
 ## 付出才有收获
@@ -97,13 +120,6 @@
 > 再努力一下，或许就是成功
 
  <img src="./img/dd6f2cdab6b941fa9616b7b175f4c9ee.jpg" style="">
-
-
-## 切忌盲目前行
-
-> 一味按照别人的指引`盲目前进`，可能会一脚踏空，摔得惨痛
-
- <img src="./img/a915e6af200945afa2785a72da8682c2.jpg" style="">
 
 
 ## 不要被虚伪迷惑

@@ -136,6 +136,8 @@
 
  <img src="./img/about-truth-170909.jpg" style="max-height:300px">
 
+更多：<ref://./insight-images.md.html>
+
 
 ## 2017-08-28
 

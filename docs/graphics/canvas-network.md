@@ -614,7 +614,7 @@ todo：hover层渲染／节点hover／拖动／动画
 
 ### Graph
 
-> 存储和管理图谱的节点、边数据，提供高效的相关基本操作
+> 存储和管理图谱的节点、边数据，提供相关的、高效的基本数据操作
 
     @[data-script="babel-loose"]class _Graph {
 
