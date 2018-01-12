@@ -5,6 +5,22 @@
 > 合作，最难的是定义`边界`和`共赢`。
 
 
+## 2018-01-12
+
+### IIFE
+
+> `立即执行函数表达式` ( Immediately Invoked Function Expression )
+
+是一种称为`自执行匿名函数`( Self-Executing Anonymous Function )的设计模式。只是一个新接触的词儿，其含义是老生常谈。
+
+    var result = (function () {
+        var name = "Barry";
+        return name;
+    })();
+
+
+
+
 ## 2018-01-02
 
 ### ontology
@@ -40,6 +56,7 @@
 参考：<https://zhidao.baidu.com/question/521414574679967285.html>
 * `™` - trademark （ alt + 2 ），像他人提示相关文字`当作商标`使用，但不一定是注册商标
 * `®` - register trademark （ alt + r ），`注册商标`，具有法律效应
+更多参考：<ref://../mac/mac.md.html>
 
 
 

@@ -26,9 +26,9 @@
 ## 技术站点
 
 * `Auth0 Blog` - Company Updates & Technology Articles，这上面的技术文章都比较有深度，值得留存 <https://auth0.com/blog/>
-* Performance Calendar - The speed geek's favorite time of the year <https://calendar.perfplanet.com/2017/>
+* Performance Calendar - The `speed` geek's favorite time of the year，持续专业关注`性能优化`技术方向 <https://calendar.perfplanet.com/2017/>
 * InfoQ前端专栏：<http://www.infoq.com/cn/Front-end/>
-* W3Cplus: <http://www.w3cplus.com>
+* `W3Cplus` - 于2010年12月28日创立，创始人`@大漠`现就职于手淘: <http://www.w3cplus.com>
 * W3Ctech: <https://www.w3ctech.com>
 * 前端观察: <https://www.qianduan.net>
 * 牛大拿设计师导航：<http://www.niudana.com> 
@@ -42,6 +42,7 @@
 
 ## 个人站点
 
+* 相学长，丁香园前端 <https://juejin.im/user/58f876dc5c497d0058e38ae1>
 * 候振宇L4 <http://www.cnblogs.com/sskyy/>
 * D3作者Mike Bostock的个人博客 <https://bost.ocks.org/mike/>
 * 鑫空间，鑫生活 高质量前端技术博客 <http://www.zhangxinxu.com>
@@ -58,11 +59,12 @@
 
 * 石墨文档: <https://github.com/shimohq>
 * ant design: <https://ant.design/index-cn> 
-* element 饿了么出品的vue ui <http://element.eleme.io>
+* `element` 饿了么出品的vue ui <http://element.eleme.io> github: <https://github.com/ElemeFE/element> <iframe src="http://258i.com/gbtn.html?user=ElemeFE&repo=element&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 * element-react 饿了么出品的react ui <https://eleme.github.io/element-react/>
-* iView - Talking Data可视化团队出品的vue ui <https://www.iviewui.com> github: <https://github.com/iview/iview>
-* VEUI - 百度EFE出品的vue ui <https://github.com/ecomfe/veui>
-* THX - 阿里妈妈前端团队 <https://github.com/thx>
+* `iView` - Talking Data可视化团队出品的vue ui <https://www.iviewui.com> github: <https://github.com/iview/iview> <iframe src="http://258i.com/gbtn.html?user=iview&repo=iview&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+* `VEUI` - 百度EFE出品的vue ui <https://github.com/ecomfe/veui>
+* `dxy-ui` - 丁香园桌面UI <https://dxy-f2e.github.io/dxy-ui/docs/>
+* `THX` - 阿里妈妈前端团队 <https://github.com/thx>
 
 
 
