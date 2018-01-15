@@ -13,6 +13,12 @@
 个人总结的编码规范 <ref://../es/js-coding-style.md.html>
 
 
+## FEX
+
+* `styleguide`: <https://github.com/fex-team/styleguide>
+
+
+
 ## standard JS
 
 ### Resources

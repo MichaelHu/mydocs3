@@ -120,6 +120,8 @@ or
     nvm ls-remote 
     nvm ls-remote <version>
     nvm alias default node
+    nvm uninstall <version>
+    nvm deactivate
 
 列出可用命令，使用`两个tab`:
 

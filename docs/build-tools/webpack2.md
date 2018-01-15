@@ -123,6 +123,16 @@ MPA中`按页面`拆分为不同entry。
         output: {
             // ---- basic options ----
 
+            /**
+             * [hash]       The hash of the module, 详见`./webpack-insights.md.html`
+             * [chunkhash]  The hash of the chunk content
+             * [name]       The module name
+             * [id]         The module identifier
+             * [query]      The module query, i.e., the string following ? in the filename
+             * [x:length]   The length of field x
+             * When using the ExtractTextWebpackPlugin, use [contenthash] to obtain a hash 
+             *              of the extracted file (neither [hash] nor [chunkhash] work).
+             */
             // can use [name], [hash], [chunkhash]
             filename: ...
 
