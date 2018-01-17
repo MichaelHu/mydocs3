@@ -907,7 +907,7 @@ js文件可能有`es2015`或者`react`的语法，这些情况都可以通过配
 
 #### js模块复用
 
-相关插件： `CommonsChunkPlugin`，是webpack自带插件。
+相关插件： `CommonsChunkPlugin`，是webpack自带插件。<https://webpack.js.org/plugins/commons-chunk-plugin/>
 
 `1. 自动抽取复用模块`：
 
@@ -1542,8 +1542,9 @@ todo
 
 > Serves a webpack app. Updates the browser on changes.
 
-* doc: <http://webpack.github.io/docs/webpack-dev-server.html>
 * github: <https://github.com/webpack/webpack-dev-server>
+* old doc: <s><http://webpack.github.io/docs/webpack-dev-server.html></s>
+* doc: <https://webpack.js.org/configuration/dev-server/>
 
 1. 不会输出到`output`目录，而是在内存中。
 2. 模块热替换，它通过为webpack的配置文件增加`HotModuleReplacementPlugin`插件来达到热替换。命令行选项为`--hot`，而配置文件为`{ hot: true }`
@@ -1557,8 +1558,7 @@ todo
 
         http://test.irice.com:9000/webpack-dev-server
 
-
-4. `inline`模式，还不是很理解，`[ todo ]`
+4. `inline`模式为默认模式
 
 
 ### 安装及运行
@@ -1614,7 +1614,7 @@ todo
 
 ### historyApiFallback 选项
 
-使用browserHistory，需要服务器将所有url请求都导向首页（`index.html`）输出，避免404。
+使用`browserHistory`，需要服务器将所有url请求都导向首页（`index.html`）输出，避免404。
 
     { 
         historyApiFallback: true

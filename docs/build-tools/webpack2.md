@@ -8,6 +8,14 @@
 * configuration: <https://webpack.js.org/configuration/>
 
 
+## Tips
+
+* 关于`dev-server`的`特殊地址前缀`访问：
+
+        /webpack-dev-server                 列出所有由webpack生成的文件
+        /webpack-dev-server/                开启iframe访问模式
+        /webpack-dev-server/index.html      开启iframe访问模式
+
 
 ## 四个关键概念
 

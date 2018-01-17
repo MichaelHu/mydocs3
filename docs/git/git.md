@@ -1232,9 +1232,18 @@ When we start mixing branches and commits, we will see how these two features co
 
     # 在commit上打tag
     git tag <tagname> <commit>
+    git tag -a -m <msg> <tagname> <commit>
 
     # 在HEAD上打tag
     git tag -a <tagname> -m <comment>
+
+    # 多段comment
+    git tag <tagname> -m <comment1> -m <comment2> -m <comment3>
+
+    # 显示多段comment
+    git tag -n 
+    git tag -n3 
+    git tag -n5 
 
 
 

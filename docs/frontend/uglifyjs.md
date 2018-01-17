@@ -2,41 +2,157 @@
 
 > JavaScript parser / mangler / compressor / beautifier library for NodeJS.
 
-## features
+## Features
 
-* 解析器、混淆器、压缩器、美化器
-* site: <http://marijn.haverbeke.nl/uglifyjs>
-* github1: <https://github.com/mishoo/UglifyJS>
-* github2: <https://github.com/mishoo/UglifyJS2>
-* API Refs: <https://github.com/mishoo/UglifyJS2#api-reference>
-* API Refs `Advanced` - 关于AST等: <http://lisperator.net/uglifyjs/>
+* 不仅仅是一个代码压缩工具：`解析器、混淆器、压缩器、美化器`
+* 支持`CLI`调用，也支持`API`调用
 * 可运行于`node`，也可运行于`browser`
 * `uglifyjs 3`是精简API版本，并`不向后兼容`版本2和版本1，`慎用!`
 * `TreeTransformer`在`v2.6.2开始`有一个较大变化，不进行`隐式`节点clone
 * `parse`后得到的AST，可以通过`操作AST`方便的对程序结构进行调整，但是调整后，可能`syntax scope`已经发生混乱，这时，先将代码输出成文本（`ast.print_to_string()`），再次进行解析，能获得完整的scope（`toplevel.figure_out_scope()`），具体可参考`pro-uglifyjs`插件的实现。
 
 
-## install
+## Resources
 
-    npm install uglify-js@3
-    npm install uglify-js@2
-    npm install uglify-js@1
+* site: <http://marijn.haverbeke.nl/uglifyjs>
+* github1: <https://github.com/mishoo/UglifyJS>
+* github2: <https://github.com/mishoo/UglifyJS2>，有三个分支：<iframe src="http://258i.com/gbtn.html?user=mishoo&repo=UglifyJS2&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+    * `harmony`，支持`es2015+`语法压缩的`uglify-es`
+    * `v2.x`，2.x版本
+    * `master`，3.x版本
+* API Refs: <https://github.com/mishoo/UglifyJS2#api-reference>
+* API Refs `Advanced` - 关于AST等: <http://lisperator.net/uglifyjs/>
+* 近乎`「偏执」`的代码美化器 - `Prettier` <ref://../tools/prettier.md.html>
+
+## Installation
+
+    $ npm install uglify-js@3
+    $ npm install uglify-js@2
+    $ npm install uglify-js@1
 
 
-## CLI usage
+## CLI Interface
 
-参考：<https://github.com/mishoo/UglifyJS2#usage>
+> 参考：<https://github.com/mishoo/UglifyJS2#usage>
 
-	uglifyjs /home/doe/work/foo/src/js/file1.js \
+### Usage 
+
+    uglify [files ...] [options]
+    uglify [[options] -- ] [files ...]
+
+* 如果`options`在被压缩文件列表前面，则需要使用`--`结束options输入
+* `命令行`模式下，`quote_style`的4种类型设置暂不支持
+
+
+### Options
+
+    -h, --help                  Print usage information.
+                                `--help options` for details on available options.
+    -V, --version               Print version number.
+    -p, --parse <options>       Specify parser options:
+                                `acorn`  Use Acorn for parsing.
+                                `bare_returns`  Allow return outside of functions.
+                                                Useful when minifying CommonJS
+                                                modules and Userscripts that may
+                                                be anonymous function wrapped (IIFE)
+                                                by the .user.js engine `caller`.
+                                `expression`  Parse a single expression, rather than
+                                              a program (for parsing JSON).
+                                `spidermonkey`  Assume input files are SpiderMonkey
+                                                AST format (as JSON).
+    -c, --compress [options]    Enable compressor/specify compressor options:
+                                `pure_funcs`  List of functions that can be safely
+                                              removed when their return values are
+                                              not used.
+    -m, --mangle [options]      Mangle names/specify mangler options:
+                                `reserved`  List of names that should not be mangled.
+    --mangle-props [options]    Mangle properties/specify mangler options:
+                                `builtins`  Mangle property names that overlaps
+                                            with standard JavaScript globals.
+                                `debug`  Add debug prefix and suffix.
+                                `domprops`  Mangle property names that overlaps
+                                            with DOM properties.
+                                `keep_quoted`  Only mangle unquoted properties.
+                                `regex`  Only mangle matched property names.
+                                `reserved`  List of names that should not be mangled.
+    -b, --beautify [options]    Beautify output/specify output options:
+                                `beautify`  Enabled with `--beautify` by default.
+                                `preamble`  Preamble to prepend to the output. You
+                                            can use this to insert a comment, for
+                                            example for licensing information.
+                                            This will not be parsed, but the source
+                                            map will adjust for its presence.
+                                `quote_style`  Quote style:
+                                               0 - auto
+                                               1 - single
+                                               2 - double
+                                               3 - original
+                                `wrap_iife`  Wrap IIFEs in parenthesis. Note: you may
+                                             want to disable `negate_iife` under
+                                             compressor options.
+    -o, --output <file>         Output file path (default STDOUT). Specify `ast` or
+                                `spidermonkey` to write UglifyJS or SpiderMonkey AST
+                                as JSON to STDOUT respectively.
+    --comments [filter]         Preserve copyright comments in the output. By
+                                default this works like Google Closure, keeping
+                                JSDoc-style comments that contain "@license" or
+                                "@preserve". You can optionally pass one of the
+                                following arguments to this flag:
+                                - "all" to keep all comments
+                                - a valid JS RegExp like `/foo/` or `/^!/` to
+                                keep only matching comments.
+                                Note that currently not *all* comments can be
+                                kept when compression is on, because of dead
+                                code removal or cascading statements into
+                                sequences.
+    --config-file <file>        Read `minify()` options from JSON file.
+    -d, --define <expr>[=value] Global definitions.
+    --ie8                       Support non-standard Internet Explorer 8.
+                                Equivalent to setting `ie8: true` in `minify()`
+                                for `compress`, `mangle` and `output` options.
+                                By default UglifyJS will not try to be IE-proof.
+    --keep-fnames               Do not mangle/drop function names.  Useful for
+                                code relying on Function.prototype.name.
+    --name-cache <file>         File to hold mangled name mappings.
+    --self                      Build UglifyJS as a library (implies --wrap UglifyJS)
+    --source-map [options]      Enable source map/specify source map options:
+                                `base`  Path to compute relative paths from input files.
+                                `content`  Input source map, useful if you're compressing
+                                           JS that was generated from some other original
+                                           code. Specify "inline" if the source map is
+                                           included within the sources.
+                                `filename`  Name and/or location of the output source.
+                                `includeSources`  Pass this flag if you want to include
+                                                  the content of source files in the
+                                                  source map as sourcesContent property.
+                                `root`  Path to the original source to be included in
+                                        the source map.
+                                `url`  If specified, path to the source map to append in
+                                       `//# sourceMappingURL`.
+    --timings                   Display operations run time on STDERR.
+    --toplevel                  Compress and/or mangle variables in top level scope.
+    --verbose                   Print diagnostic messages.
+    --warn                      Print warning messages.
+    --wrap <name>               Embed everything in a big function, making the
+                                “exports” and “global” variables available. You
+                                need to pass an argument to this option to
+                                specify the name that your module will take
+                                when included in, say, a browser.
+
+
+
+### Examples
+
+	$ uglifyjs /home/doe/work/foo/src/js/file1.js \
 			 /home/doe/work/foo/src/js/file2.js \
 			 -o foo.min.js \
 			 --source-map foo.min.js.map \
 			 --source-map-root http://foo.com/src \
 			 -p 5 -c -m
 
-* `--comments`: 保持版权注释。默认为包含`@license`或`@preserve`的注释。还可以是其他值：
-
-	`all`，保留所有注释；`正则表达式`，保持正则匹配的注释。
+    # 美化代码，也可用于将源码的注释移除，比如webpack打包后的代码
+    $ uglify -b -- dist/index_abcde0.js
+    $ uglify --beautify 1 -- dist/index_abcde0.js
 
 
 

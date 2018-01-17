@@ -1,9 +1,19 @@
 # bootstrap
 
 > @[style="color:green;font-size:18px"]The most popular HTML, CSS, and JavaScript 
-> framework for developing responsive, mobile first projects on the web.
+> framework for developing `responsive`, `mobile-first` projects on the web.
 
 > 为每一人每一处而设计
+
+## Features
+
+* 提供开发SDK：Sass variables, mixins, responsive grid system, extensive prebuild components, powerful plugins built on jQuery等
+* CSS`预处理器`，推荐使用`sass`，其他的［ less, postcss ］
+* 提供官方`Themes`，有些特定Theme是收费的
+* `一个框架任何设备`
+* 拥有`各类特性`：文档、组件以及jQuery插件
+* `bootstrap 4`正在预发布版：<https://v4-alpha.getbootstrap.com>
+
 
 ## Resources
 
@@ -14,18 +24,24 @@
 ## Versions
 
 * v4.x <https://getbootstrap.com/docs/4.0/getting-started/introduction/>
-    * Reboot.css 默认box-sizing为`border-box`，使用rem，干掉多数元素的`margin-top`，`touch-action: manipulation`来加速移动端点击等，测试页面很好的展示了区别：<https://codepen.io/ncerminara/pen/RLMwmy>
+    * `Reboot.css`： 默认box-sizing为`border-box`，使用rem，干掉多数元素的`margin-top`，`touch-action: manipulation`来加速移动端点击等，测试页面很好的展示了区别：<https://codepen.io/ncerminara/pen/RLMwmy>
 * v3.0.0 - v3.3.7 <https://getbootstrap.com/docs/3.3/>
 * v2.0.0 - v2.3.2 <https://getbootstrap.com/2.3.2/>
 * v1.0.0 - v1.4.0 
 
 
-## Misc
+## Installation
 
-* CSS`预处理器`［ Sass, less, postcss ］
-* `一个框架任何设备`；
-* 拥有`各类特性`：文档、组件以及jQuery插件
-* `bootstrap 4`正在预发布版：<https://v4-alpha.getbootstrap.com>
+`npm` packages:
+
+    $ npm install bootstrap@4
+    $ npm install bootstrap@3
+
+or `download`:
+
+* 4.x: <http://getbootstrap.com/docs/4.0/getting-started/download/>
+* 3.x: <http://getbootstrap.com/docs/3.3/getting-started/#download>
+* 2.x: <https://getbootstrap.com/2.3.2/assets/bootstrap.zip>
 
 
 

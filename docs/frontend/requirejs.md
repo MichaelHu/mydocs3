@@ -77,39 +77,42 @@
 
 > `完整配置说明：` <http://requirejs.org/docs/api.html#config>
 
-1. `shim`配置，针对`非AMD`模块，比如`bootstrap`
-
-        require.config({
-            baseUrl: '.'
-            , waitSeconds: 0 // disable timeout check
-            , paths: {
-                'jquery': '../bower_components/jquery/dist/jquery'
-                , 'bootstrap': '../bower_components/bootstrap/dist/js/bootstrap'
-                , 'underscore': '../bower_components/underscore/underscore'
-                , 'rocket-p': '../bower_components/rocket-p/dist/rocket-p'
-                , 'main': 'main'
-            }       
-            , shim: {
-                // no exports, only supply deps
-                'bootstrap': ['jquery']
-                , 'backbone': {
-                    deps: ['underscore', 'jquery']
-                    , exports: 'Backbone'
-                }
-                , 'foo': {
-                    deps: ['bar']
-                    , exports: 'Foo'
-                    , init: function (bar) {
-                        return this.Foo.noConflict();
-                    }
+    require.config({
+        baseUrl: '.'
+        , waitSeconds: 0 // disable timeout check
+        , paths: {
+            'jquery': '../bower_components/jquery/dist/jquery'
+            , 'bootstrap': '../bower_components/bootstrap/dist/js/bootstrap'
+            , 'underscore': '../bower_components/underscore/underscore'
+            , 'rocket-p': '../bower_components/rocket-p/dist/rocket-p'
+            , 'main': 'main'
+        }       
+        , shim: {
+            // no exports, only supply deps
+            'bootstrap': ['jquery']
+            , 'backbone': {
+                deps: ['underscore', 'jquery']
+                , exports: 'Backbone'
+            }
+            , 'foo': {
+                deps: ['bar']
+                , exports: 'Foo'
+                , init: function (bar) {
+                    return this.Foo.noConflict();
                 }
             }
-        }); 
+            // jquery plugin, no exports
+            , 'jquery.scroll': [ 'jquery' ]
+            // backbone plugin, no exports
+            , 'backbone.layoutmanager': [ 'backbone' ]
+        }
+    }); 
 
+### Tips
 
-    `例子：`提供jQuery插件的shim配置方式， <https://github.com/requirejs/example-jquery-shim>
-
-    jQuery的特点是，不管是否运行AMD模式，都会注册`window.jQuery`和`window.$`
+1. `shim`配置，仅针对`non-AMD`模块，比如`bootstrap`，为这些模块提供`AMD模块`的`封装`，可配置模块依赖、输出、init方法等
+2. shim的目的是通过`封装`，建立代码间基于`define/require`模式的`关联`
+3. `jQuery`的特点是，不管是否运行AMD模式，都会注册`window.jQuery`和`window.$`，参考：jQuery插件的shim配置方式 <https://github.com/requirejs/example-jquery-shim>
 
 
 

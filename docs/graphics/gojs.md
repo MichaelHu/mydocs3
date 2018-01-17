@@ -9,7 +9,7 @@
 * get started: <https://gojs.net/latest/learn/>
 * ` samples`: <https://gojs.net/latest/samples/index.html>
     * kanban <https://gojs.net/latest/samples/kanban.html>
-    * BPMN Editor <https://gojs.net/latest/extensions/BPMN.html>
+    * `BPMN` ( Business Process Model and Notation ) Editor <https://gojs.net/latest/extensions/BPMN.html>
     * Floor Plan Editor <https://gojs.net/latest/extensions/FloorPlanEditor.html>
 
 
