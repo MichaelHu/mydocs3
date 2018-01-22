@@ -66,7 +66,13 @@
     webpack.config.dev.js
     devServer配置
     externals配置
-    基础库抽取，避免bundle
+    基础库抽取，避免重复bundle
+
+### 180118
+
+    应用框架抽取，避免重复bundle
+    react的运行时错误无法在压缩后展示问题解决，uglifyjs去注释，prettier压缩缩进
+    目录结构，采用适用于大型项目的目录组织：
 
 
 

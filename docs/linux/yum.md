@@ -1,14 +1,12 @@
 # yum
 
-> Yellow dog Updater, Modified - 黄狗包管理器
+> `Yellow dog Updater, Modified` - 黄狗包管理器
 
-## 简介
+## Features
 
-`yum`（全称为 Yellow dog Updater, Modified）是一个在`Fedora`、`RedHat`、`SUSE`以及`CentOS`中的Shell前端软件包管理器。
-
-基於`RPM`包管理，能够从指定的服务器自动下载RPM包并且安装，可以自动处理依赖性关系，并且一次安装所有依赖的软体包，无须繁琐地一次次下载、安装。
-
-`yum`提供了`查找、安装、删除`某一个、一组甚至全部软件包的命令，而且命令简洁而又好记。
+* `yum`是一个在`Fedora`、`RedHat`、`SUSE`以及`CentOS`中的Shell前端软件包管理器。
+* 基於`RPM`包管理，能够从指定的服务器自动下载RPM包并且安装，可以自动处理依赖性关系，并且一次安装所有依赖的软体包，无须繁琐地一次次下载、安装。
+* `yum`提供了`查找、安装、删除`某一个、一组甚至全部软件包的命令，而且命令简洁而又好记。
 
 
 ## yum help 

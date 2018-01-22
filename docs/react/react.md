@@ -1,7 +1,7 @@
 # react 
 
 
-> A JAVASCRIPT LIBRARY FOR BUILDING USER INTERFACES <img src="./img/react_logo.svg" width="50"> 
+> A JAVASCRIPT LIBRARY FOR `BUILDING USER INTERFACES` <img src="./img/react_logo.svg" width="50"> 
 
 ## Resources
 
@@ -52,7 +52,7 @@
 * Virtual DOM：高`性能`，更`简单`的编程模型
 * Data Flow：`单向`数据流
 
-> `JSX`是React的一大创新亮点，js和html混写的方式极大提高编码效率
+> `JSX`是React的一大创新亮点，js和html混写的方式极大提高编码效率，其很有可能参考`E4X` - ECMAScript for XML, ECMA-357
 
 
 ### Top-level APIs
@@ -304,6 +304,7 @@ jsx只是一个`句法糖`，目的是简化`React.createElement( component, pro
         <select multiple={true} value={['B', 'C']}>
             ...
         </select>
+9. 更多参考：<https://goshakkk.name/controlled-vs-uncontrolled-inputs-react/>
 
 
 

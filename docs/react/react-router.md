@@ -603,10 +603,10 @@ todo
 
 docs: <https://github.com/ReactTraining/react-router/blob/master/docs/guides/DynamicRouting.md>
 
-> React Router does all of its path matching and component fetching asynchronously, which allows you to not only load up the components lazily, but also lazily load the route configuration. You really only need one route definition in your initial bundle, the router can resolve the rest on demand.
+> React Router does all of its path matching and component fetching `asynchronously`, which allows you to not only load up the components lazily, but also lazily load the route configuration. You really only need one route definition in your initial bundle, the router can resolve the rest on demand.
 
-* 路由负责所有的`路径匹配`，以及`组件`的`异步获取`
-* 不仅组件`懒加载`，对应的`路由配置`也可以懒加载
+* 所有的`路径匹配`，以及`组件获取`都是`异步`进行的
+* 所以，不仅组件可以`懒加载`，对应的`路由配置`也可以懒加载
 
 #### 基础方法
 
@@ -616,6 +616,8 @@ docs: <https://github.com/ReactTraining/react-router/blob/master/docs/guides/Dyn
             path="courses/:courseId"
             getComponents={(nextState, cb) => {
                 // do asynchronous stuff to find the components
+                ...
+                // then trigger callback
                 cb(null, { sidebar: CourseSidebar, content: Course });
             }}
         />;

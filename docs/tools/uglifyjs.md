@@ -143,6 +143,7 @@
 
 ### Examples
 
+    # 合并两个文件，并一起做混淆压缩
 	$ uglifyjs /home/doe/work/foo/src/js/file1.js \
 			 /home/doe/work/foo/src/js/file2.js \
 			 -o foo.min.js \
@@ -152,7 +153,10 @@
 
     # 美化代码，也可用于将源码的注释移除，比如webpack打包后的代码
     $ uglify -b -- dist/index_abcde0.js
-    $ uglify --beautify 1 -- dist/index_abcde0.js
+    $ uglify --beautify -- dist/index_abcde0.js
+
+    # 将缩进设置为0，满足某些场景需求，比如需要不压缩源码，但需要尽可能减少文件尺寸
+    $ prettier --tab-width 0 dist/index_abcde0.js
 
 
 

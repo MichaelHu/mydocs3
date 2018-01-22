@@ -164,7 +164,7 @@ html文件的解析，输出为`字符串`。它能对`html`文件的`标签属�
 封装`require.ensure()`，使代码懒加载的实现逻辑更简单。<https://github.com/webpack-contrib/bundle-loader> <iframe src="http://258i.com/gbtn.html?user=webpack-contrib&repo=bundle-loader&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 
 相关链接：
-* React-Router 4建议的代码分割方式：<https://reacttraining.com/react-router/web/guides/code-splitting>
+* React-Router 4建议的`代码分割`( code splitting )方式：<https://reacttraining.com/react-router/web/guides/code-splitting>
 
 
 #### vue-loader

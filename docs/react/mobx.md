@@ -2,15 +2,17 @@
 
 > changelog: 170426 todo
 
-* en <https://mobx.js.org> cn <http://cn.mobx.js.org>
-* <https://github.com/mobxjs/mobx>
+## Resources
+
+* en: <https://mobx.js.org> cn: <http://cn.mobx.js.org>
+* github: <https://github.com/mobxjs/mobx> <iframe src="http://258i.com/gbtn.html?user=mobxjs&repo=mobx&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 
 
 ## 设计哲学
 
 > Anything that can be derived from the application state, should be derived. Automatically.
 
-任何源自应用状态的东西都应该自动获得。
+任何可从应用状态获取的东西都应该自动获得。
 
 
 

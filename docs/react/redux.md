@@ -1,18 +1,22 @@
 # Redux
 
-> Redux is a predictable state container for JavaScript apps.
+> <img src="./img/redux-logo.png" height="26"> is a `predictable` state container for JavaScript apps.
 
 2016-12-14
 , 2016-05
 
-<img src="./img/redux-logo.png" height="60"> 
-<http://redux.js.org/index.html>
+
+## Resources
+ 
+* `site`: <http://redux.js.org/index.html>
+* `github`: <https://github.com/reactjs/redux> <iframe src="http://258i.com/gbtn.html?user=reactjs&repo=redux&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+
 
 ## Features
 
-* 可预测的`状态容器`，非常适用于js `SPA`的构建
+* 可预期的`状态容器`，非常适用于js `SPA`的构建
 * 一种设计思想的`彻底、坚定`的实现者
-* 大量使用`ES6`的新特性
+* 大量使用`ES6+`的新特性
 * 推荐使用`webpack`作为打包工具
 
 

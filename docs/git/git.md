@@ -260,8 +260,8 @@ todo:
 
 常用命令：
 
-    # 最近n次修改日志
-    git log -n -- <file>
+    # 最近N次修改日志
+    git log -N -- <file>
     git log -3
 
     # 详细修改日志
@@ -270,14 +270,14 @@ todo:
     # 包括文件更名情况下的日志 
     git log --follow -- <single-file>
 
-    # 最近n次详细修改日志
-    git log -p -n -- <file>
+    # 最近N次详细修改日志
+    git log -p -N -- <file>
 
     # 修改日志统计信息，包含文件名和概要
     git log --stat -- <file>
 
     # src/index.js文件的修改日志
-    git log -p -n -- src/index.js
+    git log -p -N -- src/index.js
 
     # 时间范围
     git log --since="2 weeks ago" 

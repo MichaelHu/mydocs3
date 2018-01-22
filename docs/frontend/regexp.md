@@ -37,13 +37,15 @@ JavaScript正则表达式语法是`Perl5`正则的`大型子集`，在字符串�
     \cX         控制字符^X，例如\cJ等价与\n
     (?=p)       零宽正向先行断言
     (?!p)       零宽负向先行断言
+    (?:p)       不计入子模式
+
 
 ### 不支持的特性 
 
 其中有一些`Perl正则`的语法特性并不被`ECMAScript`支持，这些特性包括：
 
-    s           单行模式标记
-    x           扩展语法标记
+    s               单行模式标记
+    x               扩展语法标记
     \a
     \e
     \l
@@ -59,6 +61,7 @@ JavaScript正则表达式语法是`Perl5`正则的`大型子集`，在字符串�
     (?<=p)
     (?<!p)
     (?#p)
+    (?<name>p)      命名子模式 
 
 
 
@@ -142,4 +145,26 @@ JavaScript正则表达式语法是`Perl5`正则的`大型子集`，在字符串�
     preg_match_all()
     preg_grep()
     preg_filter()
+
+
+
+## Nginx配置项正则
+
+* 同是`PCRE`正则
+* 支持`命名子模式`，使用括号包围，起始`?`后面用`<name>`指示当前子模式可用`name`获取
+
+        ?<name>	    Perl 5.10 compatible syntax, supported since PCRE-7.0
+        ?'name'	    Perl 5.10 compatible syntax, supported since PCRE-7.0
+        ?P<name>    Python compatible syntax, supported since PCRE-4.0 
+
+    举例如下：
+
+        server {
+            server_name   ~^(www\.)?(?<domain>.+)$;
+
+            location / {
+                root   /sites/$domain;
+            }
+        }
+
 
