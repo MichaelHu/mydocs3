@@ -774,6 +774,20 @@ todo
 
 
 
+## history
+
+> 列出近期使用的命令
+
+    history [-c] [-d offset] [n]
+    history -awrn [filename]
+    history -ps arg [arg...]
+
+    # 逆序列出所有历史命令
+    $ history
+
+    # 清除历史命令
+    $ history -c
+
 
 
 ## diff

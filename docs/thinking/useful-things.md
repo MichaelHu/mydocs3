@@ -5,6 +5,13 @@
 > 合作，最难的是定义`边界`和`共赢`。
 
 
+## 2018-01-23
+
+### OCR
+
+> Optical Chracter Recogonition，光学字符识别
+
+
 ## 2018-01-12
 
 ### IIFE

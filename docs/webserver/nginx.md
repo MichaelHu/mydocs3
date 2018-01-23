@@ -1,18 +1,23 @@
 # nginx
 
-> nginx [ engine x ] is an HTTP and reverse proxy server, a mail proxy server, and a generic TCP/UDP proxy server, originally written by `Igor Sysoev`.
+> <img src="./img/nginx-180113.png" style="height: 20px;"> [ `engine x` ] is an HTTP and reverse proxy server, a mail proxy server, and a generic TCP/UDP proxy server, originally written by `Igor Sysoev`.
 
 ## Features
 
 * 俄罗斯人出品
+* 支持`HTTP`以及`反向代理`服务器
+* 支持`邮件代理`服务器
+* 通用`TCP/UDP代理`服务器
 * 不支持在命令行提供`端口`参数，多端口监听使用新开`虚拟主机`的方式
+* 支持`WebSocket`代理
+
 
 ## Resources
 
 * site: <http://nginx.org>
 * docs: <http://nginx.org/en/docs/>
-* 变量列表：<http://nginx.org/en/docs/varindex.html>
-* 命令列表：<http://nginx.org/en/docs/dirindex.html>
+* `指令`列表：<http://nginx.org/en/docs/dirindex.html>
+* `变量`列表：<http://nginx.org/en/docs/varindex.html>
 
 
 ## Installation
@@ -38,6 +43,11 @@
       -T            : test configuration, dump it and exit
       -q            : suppress non-error messages during configuration testing
       -s signal     : send signal to a master process: stop, quit, reopen, reload
+                    stop    - shut down quickly
+                    quit    - shut down gracefully
+                    reload  - reload configuration, start the new worker process with a new
+                              configuration, gracefully shut down old work processes
+                    reopen  - reopen log files
       -p prefix     : set prefix path (default: /usr/local/Cellar/nginx/1.12.2_1/)
       -c filename   : set configuration file (default: /usr/local/etc/nginx/nginx.conf)
       -g directives : set global directives out of configuration file
@@ -52,23 +62,87 @@
     $ kill -s QUIT <pid>
 
 
+## nginx.conf
+
+配置文件`大体框架`如下：
+
+    # main part
+    ...
+    # events part
+    events {
+        ...
+    }
+    # http part
+    http {
+        include ...;
+        server {
+            listen 8080;
+            server_name localhost;
+            location /apollo/ {
+                alias /Users/hudamin/projects/git/hugeapp-apollo/dist/;
+            }
+            ...
+        }
+        ...
+    }
+
+
+
 ## Tips
 
-* 配置命令必须以`;`结束，或者以`}`结束
+* 配置命令必须以`;`结束，或者以`}`结束；若`正则表达式`包含它们，需要用`单引号`或`双引号`包围；注释使用`#`
 * `多虚拟机`可通过获取请求头的`Host`字段，并基于`server_name`进行路由；如果不含该字段，或者该字段没有匹配到任何server，则会使用`listen <port> default_server;`的server，如果不存在，则使用第一个server。
-* 所有类型( 精确匹配字符串、正则匹配字符串等 )的location测试，都`只测试pathname`部分，而不包含query string部分，原因在于query string部分有多种表达形式，因顺序、参数个数而异：
-        /index.php?user=john&page=1
-        /index.php?page=1&user=john
-        /index.php?page=1&something+else&user=john
-* `root`未配置情况下，默认未`root html;`，也就是默认nginx程序根目录下的`html`目录；
-    `相对路径`配置的root，会接在程序根目录后；`绝对路径`配置的root，则不会以程序根目录作为前缀
+* 可以多个虚拟机，监听`同一端口`，使用`不同server_name`进行路由
 * `error_log`是全局配置，`access_log`是server级别的配置
 * 基于性能考虑，location匹配会先进行`非正则`的匹配，`不管其定义顺序`；非正则匹配不成功以后，才会`按定义顺序`进行`正则模式`匹配
-* `location` 语法:
+* `root`的路径处理按`append`方式进行；`alias、proxy_pass`的路径处理方式类似，前者是往本地映射，后者是往远程映射；
+* `root`未配置情况下，默认未`root html;`，也就是默认nginx程序根目录下的`html`目录；
+    `相对路径`配置的root，会接在程序根目录后；`绝对路径`配置的root，则不会以程序根目录作为前缀
+* `rewrite`是对uri进行修改，文档参考 <http://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite>
+    * `rewrite`和`proxy_pass`同处于一个location下，若rewrite匹配，则`proxy_pass`将被忽略
+    * `rewrite`至`本地地址`，默认`不作重定向`，除非设置redirect或permanent flag；rewrite至`远程地址`，会进行重定向
 
-        location [ = | ~ | ~* | ^~ ] uri { ... }
 
-    `语法说明`：
+## Alias
+
+`alias`指令将location uri映射成`本地获取路径`，以类似`proxy_pass`的方式进行路径替换：
+
+### Syntax
+
+    alias path;
+
+* 只在`location`指令内部出现
+* 路径替换方式同`proxy_pass`
+
+
+### Examples
+
+    server {
+        ...
+        location /apollo {
+            alias /data/dist;
+        }
+        ...
+    }
+
+例子：
+
+    /apollo => /data/dist 
+    /apollo/index.html => /data/dist/index.html
+
+
+
+## Location
+
+`location`指令对标准化后的URI进行匹配，由其内部的指令进行后续的处理。
+
+### Syntax
+
+    location [ = | ~ | ~* | ^~ ] uri { ... }
+    location @name { ... }
+
+* 能出现在`server`和`location`指令内部，也即支持`location嵌套`
+* `匹配语法`支持多种类型，`语法说明`如下：
 
                 prefix strings
         =       exact match prefix strings
@@ -82,33 +156,126 @@
         !~      no match case-sensitive regular expression
         !~*     no match case-insensitive regular expression
 
-    `标准化URI`，location处理的uri是先经过以下处理，形成标准化URI后的：
 
-    * 解码类似`%xx`格式的字符串
-    * 解析包含`.`或`..`的相对路径
-    * 压缩多个`/`（目录分隔符）
-* 基于性能的考虑，会尽可能使用`精确匹配`，再使用`前缀匹配`，最后才考虑使用`正则匹配`
-* `alias`将location uri映射成`本地获取路径`path
-* `rewrite`是对uri进行修改 [ todo ] <http://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite>
-    * `rewrite`和`proxy_pass`同处于一个location下，若rewrite匹配，则`proxy_pass`将被忽略
+### 标准化URI
 
+`normalized URI`，location处理的uri是`标准化URI`，原始URI先经过以下处理，才形成标准化URI：
+
+* 解码类似`%xx`格式的字符串
+* 解析包含`.`或`..`的相对路径
+* 压缩多个`/`（目录分隔符）
 
 
+### 路径匹配
+
+* 所有类型( 精确匹配字符串、正则匹配字符串等 )的location测试，都`只测试pathname`部分，而不包含query string部分，原因在于query string部分有多种表达形式，因顺序、参数个数而异：
+        /index.php?user=john&page=1
+        /index.php?page=1&user=john
+        /index.php?page=1&something+else&user=john
+* 基于`性能`的考虑，会尽可能使用`精确匹配`，再使用`前缀匹配`，最后才考虑使用`正则匹配`
 
 
-## server
 
-    server {
-        listen 7080;
-        server_name 192.168.1.100;
-        keepalive_timeout 0;
+## If
 
-        location ... { 
-            ... 
+`if`指令进行条件判断
+
+### Syntax
+
+    if ( condition ) { ... }
+
+### Examples
+
+    if ( $http_user_agent ~ MSIE ) {
+        rewrite ^(.*)$ /msie/$1 break;
+    }
+
+    if ( $http_cookie ~* "id=([^;]+)(?:;|$)" ) {
+        set $id $1;
+    }
+
+    if ( $request_method = POST ) {
+        return 405;
+    }
+
+    if ( $slow ) {
+        limit_rate 10k;
+    }
+
+    if ( $invalid_referer ) {
+        return 403;
+    }
+
+
+## Return
+
+停止处理，并将指定状态码返回给客户端。
+
+### Syntax
+
+    return code [text];
+    return code URL;
+    return URL;
+
+
+## Set
+
+### Syntax
+
+    set $variable value;
+
+todo
+
+
+
+## Rewrite
+
+`rewrite`指令对`URI`进行`正则匹配`和`更改`
+
+### Syntax
+
+    rewrite regex replacement [flag];
+    rewrite_log on | off;
+    server_name_in_redirect on | off;
+    port_in_redirect on | off;
+
+* 能出现在`server, location, if`指令内部
+* `rewrite`指令按其在配置文件中出现的顺序，`顺次执行`
+* 有`两种`方式可以`停止顺次执行链`，一种为`[flag]`参数，一种为特殊前缀的`replacement`字段，如下条说明。
+* 如果`replacement`为`http://`, `https://`或`$scheme`，则停止执行链，直接进行重定向
+* 如果`replacement`为本地地址，默认情况下为`服务器重写`，而不需要客户端重定向
+* `flag`参数的可选值：
+
+        last        停止当前rewrite执行链，开始进行新的location匹配    
+        break       同`break`指令
+        redirect    使用302重定向对新地址进行处理，可支持本地地址修改后并重定向
+        permanent   使用301重定向对新地址进行处理，可支持本地地址修改后并重定向
+
+* 以下配置：
+
+        server {
+            ...
+            rewrite ^(/download/.*)/media/(.*)\..*$ $1/mp3/$2.mp3 last;
+            rewrite ^(/download/.*)/audio/(.*)\..*$ $1/mp3/$2.ra  last;
+            return  403;
+            ...
         }
 
-        ...
-    }
+    如果是在`location`指令内，则`last`需要替换成`break`：
+
+        location /download/ {
+            rewrite ^(/download/.*)/media/(.*)\..*$ $1/mp3/$2.mp3 break;
+            rewrite ^(/download/.*)/audio/(.*)\..*$ $1/mp3/$2.ra  break;
+            return  403;
+        }
+
+* `replacement`中，可以通过在`末尾`添加`?`来阻止将原始请求的参数跟在最后面
+
+        rewrite ^/users/(.*)$ /show?user=$1? last;
+
+* 如果正则表达式中包含`}`或者`;`，则整个正则表达式都需要用`单引号`或者`双引号`包围
+
+
 
 
 ## Reverse Proxy
@@ -149,47 +316,45 @@
 
 充分理解`proxy_pass`规则是反向代理的关键
 
-1. location后面进行`URI匹配`，记`location`的URI参数为`URI-r`
+1. location后面进行`URI匹配`，记`location`的URI参数为`URI-p` ( URI pattern )
 
         location URI {
             ...
         }
 
-2. `proxy_pass`指令后面跟被代理服务器的地址(proxied server address)，可以是`域名方式`，也可以是`IP方式`，两者都可以包含端口。也就是对应`location.origin`的部分
-3. 被代理服务器的地址还可以后跟URI，记`proxy_pass`里包含的URI参数为`URI-p`
+2. `proxy_pass`指令后面跟的被代理服务器地址( proxied server address )，可以是`域名方式`，也可以是`IP方式`，两者都可以包含端口。也就是对应`location.origin`的部分
+3. 被代理服务器的地址还可以`后跟URI`，记`proxy_pass`里包含的URI参数为`URI-r` ( URI replacement )
         
         proxy_pass http://www.example.com/link/
                    |____________________||____|
                    proxied-server-address  URI      
                    
-    注意，被代理`服务器地址`符合`location.origin`规则，它不包含`/`，URI总是以`/`开头，以下两个规则具有明显区别：
-
-    # /api/123 => http://www.example.com/api/123
-    location /api/ {
-        proxy_pass http://www.example.com;
-    }
-
-    # /api/123 => http://www.example.com/123
-    location /api/ {
-        proxy_pass http://www.example.com/;
-    }
-
 4. 代理过程将`URI-r`替换成`URI-p`，再接到`location.origin`部分后面
 
-        URI-r *
-        => proxied-server-address URI-p *
+        URI-p *
+        => proxied-server-address URI-r *
 
     如果`URI-p`不存在或者无法确定，则替换规则为：
 
-        URI-r *
+        URI-p *
         => proxied-server-address URI-r *
 
-    如果`URI-p`是一个具体的资源，比如指向`/path/to/index.html`，则不做替换和拼接：
+    如果`URI-r`是一个具体的资源，比如指向`/path/to/index.html`，则不做替换和拼接：
 
-        URI-r *
-        => proxied-server-address URI-p
+        URI-p *
+        => proxied-server-address URI-r
 
-上方规则属`临时整理`，尚未全部实地验证通过。
+    注意，被代理`服务器地址`符合`location.origin`规则，它不包含`/`，URI总是以`/`开头，以下两个规则具有明显区别：
+
+        # /api/123 => http://www.example.com/api/123
+        location /api/ {
+            proxy_pass http://www.example.com;
+        }
+
+        # /api/123 => http://www.example.com/123
+        location /api/ {
+            proxy_pass http://www.example.com/;
+        }
 
 
 ### proxy_set_header
@@ -209,7 +374,326 @@
     }
 
 
+## Other
+
+### Etag
+
+    etag on | off;
+    
+* Default: `etag on;`
+* Context: `http, server, location`
+
+### Expires
+
+通过`expires`指令，添加或者修改`Expires`、`Cache-Control`响应头。
+
+    expires [modified] time;
+    expires epoch | max | off;
+
+* Default: `expires off;`
+* Context: `http, server, location, if in location`
+* 作用于状态码：`200, 201( 1.3.10 ), 204, 206, 301, 302, 304, 307( 1.1.16, 1.0.13 ), or 308( 1.13.0 )` 
+* `time`可为正值也可为负值
+
+        # Expires = current + time
+        expires 60s;            Cache-Control: max-age=60
+                                Expires: current + 60s
+        expires 90m;
+        expires -30m;           Cache-Control: no-cache
+                                Expires: current - 30m
+
+        # Expires = file modified time + time
+        expires modified 30m;
+
+        # Expires = time of day, using `@` prefix
+        expires @15h30m;
+
+* 设置`绝对时间`，使用`epoch`或`max`参数
+
+        expires epoch;          Cache-Control: no-cache
+                                Expires: Thu, 01 Jan 1970 00:00:01 GMT
+        expires max;            Cache-Control: max-age=315360000 
+                                Expires: Thu, 31 Dec 2037 23:55:55 GMT
+
+* 设置`off`，避免增加或者修改`Expires`、`Cache-Control`响应头
+* expires可以`后跟变量`，如下例子：
+
+        map $sent_http_content_type $expires {
+            default         off;
+            application/pdf 42d;
+            ~image/         max;
+        }
+
+        expires $expires;
+
+* `location`内，如果`rewrite`命中，对应的expires设置将被`忽略`：
+
+        location /abc {
+            expires epoch;
+            rewrite ^\/abc(.*) /apollo$1;
+        }
+
+
+
+### Addition
+
+> module: `ngx_http_addition_module`
+
+    add_before_body uri;
+    add_after_body uri;
+    addition_types mime-type ...;
+
+    location / {
+        add_before_body /before_action;
+        add_after_body /after_body;
+    }
+
+
+        
+
+## Headers
+
+    add_header name value [always];
+
+    auth_http_header
+    auth_jwt_header_set
+    client_header_buffer_size
+    client_header_timeout
+    fastcgi_hide_header
+    fastcgi_ignore_headers
+    fastcgi_pass_header
+    fastcgi_pass_request_headers
+    http2_max_header_size
+    ignore_invalid_headers
+    large_client_header_buffers
+    proxy_headers_hash_bucket_size
+    proxy_headers_hash_max_size
+    proxy_hide_header
+    proxy_ignore_headers
+
+    proxy_pass_header field;
+    proxy_pass_request_headers on | off;
+    proxy_set_header field value;
+
+    real_ip_header field | X-Real-IP | X-Forwarded-For | proxy_protocol;
+
+    scgi_hide_header
+    scgi_ignore_header
+    scgi_pass_header
+    scgi_pass_request_headers
+    spdy_headers_comp
+    underscores_in_headers
+    uwsgi_hide_header
+    uwsgi_ignore_headers
+    uwsgi_pass_header
+    uwsgi_pass_request_headers
+    
+        
 
 
 
 
+## WebSocket Proxy
+
+参考：<http://nginx.org/en/docs/http/websocket.html>
+
+例子1:
+
+    location /chat/ {
+        proxy_pass http://backend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+例子2:
+
+    http {
+
+        map $http_upgrade $connection_upgrade {
+            default upgrade;
+            ''      close;
+        }
+
+        server {
+            ...
+
+            location /chat/ {
+                proxy_pass http://backend;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection $connection_upgrade;
+            }
+        }
+
+    }
+
+
+
+## FastCGI
+
+    location / {
+        fastcgi_pass  localhost:9000;
+        fastcgi_index index.php;
+
+        fastcgi_param SCRIPT_FILENAME /home/www/scripts/php$fastcgi_script_name;
+        fastcgi_param QUERY_STRING    $query_string;
+        fastcgi_param REQUEST_METHOD  $request_method;
+        fastcgi_param CONTENT_TYPE    $content_type;
+        fastcgi_param CONTENT_LENGTH  $content_length;
+    }
+
+
+
+
+## Variables
+
+    $request                    full original request file
+    $request_ 
+        body
+        body_file               name of a temporary file with the request body
+        completion
+        filename
+        id
+        length
+        method
+        time
+        uri
+    $sent_http_
+        content_type
+        cache_control
+        ...
+
+    ...
+
+
+
+
+## Modules
+
+### ngx_http_proxy_module
+
+    proxy_bind
+    proxy_buffer_size
+    proxy_buffering
+    proxy_buffers
+    proxy_busy_buffers_size
+    proxy_cache
+    proxy_cache_background_update
+    proxy_cache_bypass
+    proxy_cache_convert_head
+    proxy_cache_key
+    proxy_cache_lock
+    proxy_cache_lock_age
+    proxy_cache_lock_timeout
+    proxy_cache_max_range_offset
+    proxy_cache_methods
+    proxy_cache_min_uses
+    proxy_cache_path
+    proxy_cache_purge
+    proxy_cache_revalidate
+    proxy_cache_use_state
+    proxy_connect_timeout
+    proxy_cookie_domain
+    proxy_cookie_path
+    proxy_force_ranges
+    proxy_headers_hash_bucket_size
+    proxy_headers_hash_max_size
+    proxy_hide_header
+    proxy_http_version
+    proxy_ignore_client_abort
+    proxy_ignore_headers
+    proxy_intercept_errors
+    proxy_limit_rate
+    proxy_max_temp_file_size
+    proxy_method
+    proxy_next_upstream
+    proxy_next_upstream_timeout
+    proxy_next_upstream_tries
+    proxy_no_cache
+    proxy_pass
+    proxy_pass_header
+    proxy_pass_request_body
+    proxy_pass_request_headers
+    proxy_read_timeout
+    proxy_redirect
+    proxy_request_buffering
+    proxy_send_lowat
+    proxy_send_timeout
+    proxy_set_body
+    proxy_set_header
+    proxy_ssl_certificate
+    proxy_ssl_certificate_key
+    proxy_ssl_ciphers
+    proxy_ssl_crl
+    proxy_ssl_name
+    proxy_ssl_password_file
+    proxy_ssl_server_name
+    proxy_ssl_session_reuse
+    proxy_ssl_protocols
+    proxy_ssl_trusted_certificate
+    proxy_ssl_verify
+    proxy_ssl_verify_depth
+    proxy_store
+    proxy_store_access
+    proxy_temp_file_write_size
+    proxy_temp_path
+
+
+### ngx_http_fastcgi_module
+
+    fastcgi_bind
+    fastcgi_buffer_size
+    fastcgi_buffering
+    fastcgi_buffers
+    fastcgi_busy_buffers_size
+    fastcgi_cache
+    fastcgi_cache_background_update
+    fastcgi_cache_bypass
+    fastcgi_cache_key
+    fastcgi_cache_lock
+    fastcgi_cache_lock_age
+    fastcgi_cache_lock_timeout
+    fastcgi_cache_max_range_offset
+    fastcgi_cache_methods
+    fastcgi_cache_min_uses
+    fastcgi_cache_path
+    fastcgi_cache_purge
+    fastcgi_cache_revalidate
+    fastcgi_cache_use_stale
+    fastcgi_cache_valid
+    fastcgi_catch_stderr
+    fastcgi_connect_timeout
+    fastcgi_force_ranges
+    fastcgi_hide_header
+    fastcgi_ignore_client_abort
+    fastcgi_ignore_headers
+    fastcgi_index
+    fastcgi_intercept_errors
+    fastcgi_keep_conn
+    fastcgi_limit_rate
+    fastcgi_max_temp_file_size
+    fastcgi_next_upstream
+    fastcgi_next_upstream_timeout
+    fastcgi_next_upstream_tries
+    fastcgi_no_cache
+    fastcgi_param
+    fastcgi_pass
+    fastcgi_pass_header
+    fastcgi_pass_request_body
+    fastcgi_pass_request_headers
+    fastcgi_read_timeout
+    fastcgi_request_buffering
+    fastcgi_send_lowat
+    fastcgi_send_timeout
+    fastcgi_split_path_info
+    fastcgi_store
+    fastcgi_store_access
+    fastcgi_temp_file_write_size
+    fastcgi_temp_path
+
+
+### ngx_http_spdy_module
+
+    spdy_chunk_size
+    spdy_headers_comp
