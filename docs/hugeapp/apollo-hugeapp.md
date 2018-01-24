@@ -74,6 +74,10 @@
     react的运行时错误无法在压缩后展示问题解决，uglifyjs去注释，prettier压缩缩进
     目录结构，采用适用于大型项目的目录组织：
 
+### 180124
+
+    支持Code-Splitting，使用bundle-loader、react-loadable两种方案
+
 
 
 

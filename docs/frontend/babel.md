@@ -130,6 +130,33 @@
 
 <ref://../ecma/ecma-262.md.html>
 
+    $ npm install --save-dev babel-preset-stage-0
+    ├─ babel-helper-bindify-decorators@6.24.1
+    ├─ babel-helper-explode-class@6.24.1
+    ├─ babel-plugin-syntax-async-generators@6.13.0
+    ├─ babel-plugin-syntax-class-constructor-call@6.18.0
+    ├─ babel-plugin-syntax-class-properties@6.13.0
+    ├─ babel-plugin-syntax-decorators@6.13.0
+    ├─ babel-plugin-syntax-do-expressions@6.13.0
+    ├─ babel-plugin-syntax-dynamic-import@6.18.0
+    ├─ babel-plugin-syntax-export-extensions@6.13.0
+    ├─ babel-plugin-syntax-function-bind@6.13.0
+    ├─ babel-plugin-syntax-object-rest-spread@6.13.0
+    ├─ babel-plugin-transform-async-generator-functions@6.24.1
+    ├─ babel-plugin-transform-class-constructor-call@6.24.1
+    ├─ babel-plugin-transform-class-properties@6.24.1
+    ├─ babel-plugin-transform-decorators@6.24.1
+    ├─ babel-plugin-transform-do-expressions@6.22.0
+    ├─ babel-plugin-transform-export-extensions@6.22.0
+    ├─ babel-plugin-transform-function-bind@6.22.0
+    ├─ babel-plugin-transform-object-rest-spread@6.26.0
+    ├─ babel-preset-stage-0@6.24.1
+    ├─ babel-preset-stage-1@6.24.1
+    ├─ babel-preset-stage-2@6.24.1
+    └─ babel-preset-stage-3@6.24.1
+
+* 安装`stage-0`，同时会将1, 2, 3都一并安装
+
 
 
 

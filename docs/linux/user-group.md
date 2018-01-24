@@ -1,9 +1,14 @@
-# USER:GROUP under LINUX
+# user / group
+
+> only for Linux
+
+## Resources
+
+* linux 添加用户、权限，让ssh只允许指定的用户登录等 <http://blog.163.com/huangbao_007/blog/static/356365352015111122358368/>
 
 
-## 文件
 
-相关文件主要为以下几个：
+## 相关文件
 
 * `/etc/group`：包含所有组 
 * `/etc/passwd`及`/etc/shadow`：包含系统存在的所有用户名
@@ -72,7 +77,7 @@ root用户属于`wheel, daemon, kmem, sys, ..., admin`组成员。
 
 > `?` Mac下为什么找不到user_name为hudamin的配置行呢？
 
-MacOS已经不同于Linux，它采用`BSD的权限管理系统`。虽然仍然有/etc/group和/etc/passwd文件，它们只用于单用户模式下的权限管理。GUI系统启动以后，使用全新一套权限管理系统。所以你在通常的Linux权限管理文件中，根本找不到自己的用户名。
+`MacOS`已经不同于Linux，它采用`BSD的权限管理系统`。虽然仍然有/etc/group和/etc/passwd文件，它们只用于单用户模式下的权限管理。GUI系统启动以后，使用全新一套权限管理系统。所以你在通常的Linux权限管理文件中，根本找不到自己的用户名。
 
 可以参考： <http://wenku.baidu.com/link?url=uCKDCnaflnijR7nMvBP4XbJJVGT_UPMs6lpVDYtMWerou01LfCazWNXDxqqD7fg3zufhlSR6AM0lBgct9BqPLKXun-BISbCekAcjYExadVS>
 
@@ -88,6 +93,61 @@ MacOS已经不同于Linux，它采用`BSD的权限管理系统`。虽然仍然�
     $ id
     uid=501(hudamin) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),98(_lpadmin),33(_appstore),100(_lpoperator),204(_developer),398(com.apple.access_screensharing),399(com.apple.access_ssh)
     
+
+
+## useradd
+
+添加新的用户账号
+
+    $ useradd -h
+
+      -b, --base-dir BASE_DIR       base directory for the home directory of the
+                                    new account
+      -c, --comment COMMENT         GECOS field of the new account
+      -d, --home-dir HOME_DIR       home directory of the new account
+      -D, --defaults                print or change default useradd configuration
+      -e, --expiredate EXPIRE_DATE  expiration date of the new account
+      -f, --inactive INACTIVE       password inactivity period of the new account
+      -g, --gid GROUP               name or ID of the primary group of the new
+                                    account
+      -G, --groups GROUPS           list of supplementary groups of the new
+                                    account
+      -h, --help                    display this help message and exit
+      -k, --skel SKEL_DIR           use this alternative skeleton directory
+      -K, --key KEY=VALUE           override /etc/login.defs defaults
+      -l, --no-log-init             do not add the user to the lastlog and
+                                    faillog databases
+      -m, --create-home             create the user's home directory
+      -M, --no-create-home          do not create the user's home directory
+      -N, --no-user-group           do not create a group with the same name as
+                                    the user
+      -o, --non-unique              allow to create users with duplicate
+                                    (non-unique) UID
+      -p, --password PASSWORD       encrypted password of the new account
+      -r, --system                  create a system account
+      -R, --root CHROOT_DIR         directory to chroot into
+      -s, --shell SHELL             login shell of the new account
+      -u, --uid UID                 user ID of the new account
+      -U, --user-group              create a group with the same name as the user
+      -Z, --selinux-user SEUSER     use a specific SEUSER for the SELinux user mapping
+
+[`Mac OS不存在该命令`]。
+
+新增用户`admin`不能直接使用ssh登录，需要修改`/etc/ssh/sshd_config`文件，添加以下行：
+
+    $ vim /etc/ssh/sshd_config
+    AllowUsers admin
+
+多用户，可用`空格分隔`，比如：
+
+    AllowUsers admin other
+
+另外，root账号，不需添加也是可以ssh登录的。有些情况下，普通用户被禁用`su`命令后，无法通过`su root`切换到root账户，这时可以使用root账户的ssh权限登录：`ssh root@localhost`
+
+
+
+
+
 
 
 ## usermod
@@ -109,14 +169,6 @@ MacOS已经不同于Linux，它采用`BSD的权限管理系统`。虽然仍然�
 [`Mac OS不存在该命令`]。
 
 
-
-
-
-## useradd
-
-添加用户账号
-
-[`Mac OS不存在该命令`]。
 
 
 

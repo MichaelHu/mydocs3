@@ -49,6 +49,7 @@
     sass-loader
     css-loader
     style-loader
+    bootstrap-sass-loader
 
     html-loader
 
@@ -154,7 +155,7 @@ html文件的解析，输出为`字符串`。它能对`html`文件的`标签属�
 
     npm install --save-dev extract-loader
 
-提取功能。从bundle中将require请求的css提取出来；从html中将img，css引用提取出来。适合用于发布版本的优化处理。
+提取功能。从`bundle`中将require请求的`css`提取出来；从`html`中将`img`，`css`引用提取出来。适合用于发布版本的优化处理。
 
 
 #### bundle-loader
@@ -163,8 +164,9 @@ html文件的解析，输出为`字符串`。它能对`html`文件的`标签属�
 
 封装`require.ensure()`，使代码懒加载的实现逻辑更简单。<https://github.com/webpack-contrib/bundle-loader> <iframe src="http://258i.com/gbtn.html?user=webpack-contrib&repo=bundle-loader&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 
-相关链接：
-* React-Router 4建议的`代码分割`( code splitting )方式：<https://reacttraining.com/react-router/web/guides/code-splitting>
+* React-Router 4建议的`代码分割`( code splitting )方式：<https://reacttraining.com/react-router/web/guides/code-splitting>，它推荐使用`bundle-loader`，其star数相比react-loadable较少。
+* 另外，`react-lodable`组件直接从组件级别，而不是loader级别来解决问题，提供更强大的扩展功能，应该是更好的选择。<ref://../react/react-loadable.md.html>
+
 
 
 #### vue-loader
@@ -792,6 +794,7 @@ css文件可能需要在js代码中`require`；也可能是用sass编写，还�
 
 * `less-loader`: 解析`.less`文件
 * `sass-loader`: 解析`.sass`文件
+* `bootstrap-sass-loader`: 解析Sass版本的Bootstrap，支持`自定义`打包
 
 
 
@@ -1465,10 +1468,10 @@ AMD风格。
 
 ### happypack
 
-<https://github.com/amireh/happypack>，启用`多线程`加速webpack构建速度。
+启用`多线程`加速webpack构建速度，<https://github.com/amireh/happypack> <iframe src="http://258i.com/gbtn.html?user=amireh&repo=happypack&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 
 1. 多线程设置，根据CPU核数设置，不是越多越好
-2. 图片url-loader暂有问题，先不使用
+2. 图片`url-loader`暂有问题，先不使用
 
 
 
@@ -1528,11 +1531,11 @@ AMD风格。
 
 ### webpack-bundle-analyzer 
 
-Webpack plugin and CLI utility that represents bundle content as convenient interactive zoomable `treemap`
+> Webpack `plugin` and `CLI utility` that represents bundle content as convenient interactive zoomable `treemap`
 
-<https://www.npmjs.com/package/webpack-bundle-analyzer>
+* github: <https://github.com/webpack-contrib/webpack-bundle-analyzer> <iframe src="http://258i.com/gbtn.html?user=webpack-contrib&repo=webpack-bundle-analyzer&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+* report in FoamTree: <ref://./html/webpack-bundle-report.html>
 
-todo
 
 
 

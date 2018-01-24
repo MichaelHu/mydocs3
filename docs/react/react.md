@@ -467,6 +467,13 @@ jsx只是一个`句法糖`，目的是简化`React.createElement( component, pro
         };
 
 
+### Code Splitting
+
+* Code-Splitting: <https://reactjs.org/docs/code-splitting.html>，使用`dynamic import()`, `react-loadable`
+* bundle-loader: <https://reacttraining.com/react-router/web/guides/code-splitting>，使用`bundle-loader`
+* react-loadable: <https://github.com/thejameskyle/react-loadable> <iframe src="http://258i.com/gbtn.html?user=thejameskyle&repo=react-loader&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe> 
+
+
 
 
 ## cbScriptBlock回调
