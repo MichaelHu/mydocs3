@@ -25,6 +25,7 @@
 
 ## 技术站点
 
+* `众成翻译` - 最新外语文章推荐、翻译、发布站点，来自奇舞团，更新很快  <http://www.zcfy.cc>
 * `Auth0 Blog` - Company Updates & Technology Articles，这上面的技术文章都比较有深度，值得留存 <https://auth0.com/blog/>
 * Performance Calendar - The `speed` geek's favorite time of the year，持续专业关注`性能优化`技术方向 <https://calendar.perfplanet.com/2017/>
 * InfoQ前端专栏：<http://www.infoq.com/cn/Front-end/>
@@ -44,6 +45,7 @@
 
 * 相学长，丁香园前端 <https://juejin.im/user/58f876dc5c497d0058e38ae1>
 * 候振宇L4 <http://www.cnblogs.com/sskyy/>
+* 怡红院落 <https://imnerd.org>
 * D3作者Mike Bostock的个人博客 <https://bost.ocks.org/mike/>
 * 鑫空间，鑫生活 高质量前端技术博客 <http://www.zhangxinxu.com>
 * 极限前端，博主( Ouven )为前腾讯IMWEB团队成员 <http://jixianqianduan.com>

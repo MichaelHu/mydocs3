@@ -15,9 +15,12 @@
 ## Resources
 
 * site: <http://nginx.org>
+* nginx blog: <https://www.nginx.com/blog/>
 * docs: <http://nginx.org/en/docs/>
 * `指令`列表：<http://nginx.org/en/docs/dirindex.html>
 * `变量`列表：<http://nginx.org/en/docs/varindex.html>
+* pcre - <ref://../linux/pcre.md.html>
+* openssl - <ref://../linux/openssl.md.html>
 
 
 ## Installation
@@ -27,6 +30,33 @@
 
     # CentOS，需要root权限，若无root权限，可选择源码安装
     $ yum install nginx
+
+    # install by source
+    $ curl -O http://nginx.org/download/nginx-1.13.8.tar.gz
+    $ tar zxvf nginx-1.13.8.tar.gz
+    $ cd nginx-1.13.8
+    $ ./configure --help
+    $ ./configure --prefix=/home/admin/soft/nginx-1.13.8 \
+            --with-file-aio \
+            --with-http_ssl_module \
+            --with-http_v2_module \
+            --with-http_realip_module \
+            --with-http_addition_module \
+            --with-pcre=/home/admin/download/pcre-8.41 \
+            --with-openssl=/home/admin/download/openssl-1.0.2n \
+            --with-debug \
+            --with-http_dav_module
+
+* 源码安装，依赖一些`基础库`，比如`pcre` <ref://../linux/pcre.md.html>
+* 如果需要启用`https`支持，则需要依赖`openssl` <ref://../linux/openssl.md.html>
+*  `pcre`和`openssl`等依赖，都是`源码依赖`，而不是依赖已经安装好的pcre和openssl，也就是在`--with-pcre`和`--with-openssl`选项后面提供相关依赖的`源码路径`即可，而不是提供安装以后的路径
+* 不能依赖太新的版本，比如`pcre2`在`nginx1.13`上不支持
+* 涉及`路径选项`，都使用`绝对路径`，避免走不必要的弯路
+* 本次成功安装的`源码包组合`为：
+
+        nginx-1.13.8.tar.gz  
+            openssl-1.0.2n.tar.gz  
+            pcre-8.41.tar.gz
 
 
 ## Usage
@@ -92,15 +122,61 @@
 
 * 配置命令必须以`;`结束，或者以`}`结束；若`正则表达式`包含它们，需要用`单引号`或`双引号`包围；注释使用`#`
 * `多虚拟机`可通过获取请求头的`Host`字段，并基于`server_name`进行路由；如果不含该字段，或者该字段没有匹配到任何server，则会使用`listen <port> default_server;`的server，如果不存在，则使用第一个server。
+
 * 可以多个虚拟机，监听`同一端口`，使用`不同server_name`进行路由
+
 * `error_log`是全局配置，`access_log`是server级别的配置
+
 * 基于性能考虑，location匹配会先进行`非正则`的匹配，`不管其定义顺序`；非正则匹配不成功以后，才会`按定义顺序`进行`正则模式`匹配
-* `root`的路径处理按`append`方式进行；`alias、proxy_pass`的路径处理方式类似，前者是往本地映射，后者是往远程映射；
-* `root`未配置情况下，默认未`root html;`，也就是默认nginx程序根目录下的`html`目录；
+
+* `root`与`alias`的路径处理都按`append`方式进行；`alias`往本地映射，`proxy_pass`是往远程映射；但`alias`只支持`同类型`映射，目录到目录，文件到文件的映射，而`proxy_pass`可将目录映射至具体文件
+
+* `root`未配置情况下，默认为`root html;`，也就是默认nginx程序根目录下的`html`目录；
     `相对路径`配置的root，会接在程序根目录后；`绝对路径`配置的root，则不会以程序根目录作为前缀
+
 * `rewrite`是对uri进行修改，文档参考 <http://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite>
     * `rewrite`和`proxy_pass`同处于一个location下，若rewrite匹配，则`proxy_pass`将被忽略
     * `rewrite`至`本地地址`，默认`不作重定向`，除非设置redirect或permanent flag；rewrite至`远程地址`，会进行重定向
+
+*  `proxy_pass`配置时，需要注意location uri与proxed uri`尾部保持一致`，除非所有请求都导向一个具体文件：
+
+        # /api/login => http://172.22.1.102/login
+        location /api/ {
+            proxy_pass http://172.22.1.102/;
+        }
+
+        # /api/login => http://172.22.1.102//login
+        location /api {
+            proxy_pass http://172.22.1.102/;
+        }
+
+    以上第二种情况，会导致proxyed uri多了一个`/`，这种uri会导致请求失败。当然，也有这种需求，希望某个模式的请求，都返回某个页面，比如：
+
+        # /abc/ => http://127.0.0.1:8000/index.html
+        # /abc/dfdf => http://127.0.0.1:8000/index.html
+        location /abc/ {
+            proxy_pass http://127.0.0.1:8000/index.html;
+        }
+
+* 配置一个使用`Push-State-History`特性的SPA，通常有以下方法：
+
+        # 1. 使用try_files指令
+        location ~^/favicon\.ico {
+        }
+        location / {
+            try_files $uri $uri/ /index.html;
+        }
+
+        # 2. 使用rewrite方式，需要多步
+        location ~* \.(html|js|css|png|jpe?g|gif|ttf|woff2?|eot|svg|ico)$ {
+        }
+        location / {
+            rewrite ^.*$ / break;
+            index index.html;
+        }
+
+
+
 
 
 ## Alias
@@ -111,8 +187,10 @@
 
     alias path;
 
-* 只在`location`指令内部出现
-* 路径替换方式同`proxy_pass`
+* 只在`location`指令内部出现，其path部分可使用变量，除了`$document_root`, `$realpath_root`不能用
+* `root`与`alias`的路径处理都按`append`方式进行，也就是匹配的URI会拼接到root或alias指定的路径后面，需要注意`同类型`映射
+* `alias`往本地映射，`proxy_pass`是往远程映射；但`alias`只支持`同类型`映射，目录到目录，文件到文件的映射，而`proxy_pass`可将目录映射至具体文件
+* `alias`主要作用是改变`本地资源查找的路径`
 
 
 ### Examples
@@ -156,6 +234,8 @@
         !~      no match case-sensitive regular expression
         !~*     no match case-insensitive regular expression
 
+    其中，`^~`后跟的表达式并不是正则，而是prefix strings，它的含义是如果后方的匹配串是当前最长前缀匹配串，那么就不启动正则匹配了。
+
 
 ### 标准化URI
 
@@ -172,59 +252,26 @@
         /index.php?user=john&page=1
         /index.php?page=1&user=john
         /index.php?page=1&something+else&user=john
-* 基于`性能`的考虑，会尽可能使用`精确匹配`，再使用`前缀匹配`，最后才考虑使用`正则匹配`
+*  基于`性能`的考虑，匹配过程先使用`精确匹配`，再使用`前缀匹配`，最后才考虑使用`正则匹配`，如果前缀匹配中的最长匹配前面使用了`^~`，则将不使用正则匹配
 
 
 
-## If
+## TryFiles
 
-`if`指令进行条件判断
+    try_files file ... uri;
+    try_files file ... =code;
 
-### Syntax
-
-    if ( condition ) { ... }
 
 ### Examples
 
-    if ( $http_user_agent ~ MSIE ) {
-        rewrite ^(.*)$ /msie/$1 break;
+    location /images/ {
+        try_files $uri /images/default.gif;
     }
 
-    if ( $http_cookie ~* "id=([^;]+)(?:;|$)" ) {
-        set $id $1;
+    location = /images/default.gif {
+        expires 30s;
     }
 
-    if ( $request_method = POST ) {
-        return 405;
-    }
-
-    if ( $slow ) {
-        limit_rate 10k;
-    }
-
-    if ( $invalid_referer ) {
-        return 403;
-    }
-
-
-## Return
-
-停止处理，并将指定状态码返回给客户端。
-
-### Syntax
-
-    return code [text];
-    return code URL;
-    return URL;
-
-
-## Set
-
-### Syntax
-
-    set $variable value;
-
-todo
 
 
 
@@ -282,7 +329,9 @@ todo
 
 > 反向代理：<https://www.nginx.com/resources/admin-guide/reverse-proxy/>
 
-* 在`location`内部编写`指令`进行配置
+### Tips
+
+* 支持的Context：`location`, `if in location`, `limit_except`
 * 常用指令：`proxy_pass`, `proxy_set_header`, `proxy_buffer`
 * 使用到的一些概念的说明：
 
@@ -290,10 +339,34 @@ todo
 
 * `location.*`可参考<ref://../frontend/bom.md.html>
 * 其他指令：`fastcgi_pass, uwsgi_pass, scgi_pass, memcached_pass`
+* `错误`信息： 
+
+        nginx: [emerg] "proxy_pass" cannot have URI part in location given by regular 
+        expression, or inside named location, or inside "if" statement, or 
+        inside "limit_except" block
+        
+     若使用正则匹配，那么`proxy_pass`配置的path部分`不能包含URI`，比如以下配置是`错误`的：
+
+        # error config
+        location ~ / {
+            proxy_pass http://127.0.0.1:8000/index.html;
+        }
+
+    因为proxy_pass的path部分包含了URI: `/index.html`，所以是错误的。这一限制可以理解为：使用正则匹配的proxy_pass在路径处理时，`只允许`使用`append方式`。另外，虽然不能包含URI，但可以接`变量`：
+
+        location ~ / {
+            proxy_pass http://127.0.0.1:8000/$request_uri;
+        }
+
+    不过这个的作用与下方是等价的，下方的性能还更好：
+
+        location / {
+            proxy_pass http://127.0.0.1:8000/;
+        }
 
 
 
-### 举例说明
+### Examples
 
     # 所有请求`/some/path/*`转发到`http://www.example.com/link/*`：
     location /some/path/ {
@@ -305,10 +378,11 @@ todo
         proxy_pass http://127.0.0.1:8000;
     }
 
-    # 所有请求转发到`http://127.0.0.1:8000/index.html`，适合`SPA push-state`方案
-    location ~ / {
-        proxy_pass http://127.0.0.1:8000/index.html;
+    # 所有`/api/*`的请求都转发到`http://172.22.1.102/*`
+    location /api/ {
+        proxy_pass http://172.22.1.102/;
     }
+
 
 
 
@@ -372,6 +446,73 @@ todo
         proxy_set_header Accept-Encoding "";
         proxy_pass http://localhost:8000;
     }
+
+
+## Listen
+
+设置监听地址、监听端口、协议等。
+
+### Syntax
+
+    listen address[:port] [default_server] [ssl] [http2 | spdy] [proxy_protocol] [setfib=number] [fastopen=number] [backlog=number] [rcvbuf=size] [sndbuf=size] [accept_filter=filter] [deferred] [bind] [ipv6only=on|off] [reuseport] [so_keepalive=on|off|[keepidle]:[keepintvl]:[keepcnt]];
+    listen port [default_server] [ssl] [http2 | spdy] [proxy_protocol] [setfib=number] [fastopen=number] [backlog=number] [rcvbuf=size] [sndbuf=size] [accept_filter=filter] [deferred] [bind] [ipv6only=on|off] [reuseport] [so_keepalive=on|off|[keepidle]:[keepintvl]:[keepcnt]];
+    listen unix:path [default_server] [ssl] [http2 | spdy] [proxy_protocol] [backlog=number] [rcvbuf=size] [sndbuf=size] [accept_filter=filter] [deferred] [bind] [so_keepalive=on|off|[keepidle]:[keepintvl]:[keepcnt]];
+
+
+
+
+## If
+
+`if`指令进行条件判断
+
+### Syntax
+
+    if ( condition ) { ... }
+
+### Examples
+
+    if ( $http_user_agent ~ MSIE ) {
+        rewrite ^(.*)$ /msie/$1 break;
+    }
+
+    if ( $http_cookie ~* "id=([^;]+)(?:;|$)" ) {
+        set $id $1;
+    }
+
+    if ( $request_method = POST ) {
+        return 405;
+    }
+
+    if ( $slow ) {
+        limit_rate 10k;
+    }
+
+    if ( $invalid_referer ) {
+        return 403;
+    }
+
+
+## Return
+
+停止处理，并将指定状态码返回给客户端。
+
+### Syntax
+
+    return code [text];
+    return code URL;
+    return URL;
+
+
+## Set
+
+### Syntax
+
+    set $variable value;
+
+* Context：`server, location, if`
+
+todo
+
 
 
 ## Other
@@ -558,13 +699,16 @@ todo
         length
         method
         time
-        uri
+        uri                     full original request URI ( with arguments )
     $sent_http_
         content_type
         cache_control
         ...
 
     ...
+    $uri                        current URI in request, normalized
+
+* 以`$`开头
 
 
 

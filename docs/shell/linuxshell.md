@@ -638,9 +638,9 @@
 
 说明：
 
-* Quoting the variables is not mandatory, since word splitting does not take place.
-* Each test line ends with a right paren ).
-* Each condition block ends with a double semicolon ;;.
+* Quoting the variables is not mandatory, since word splitting does not take place
+* Each `test line` ends with a right paren `)`
+* Each condition block ends with a double semicolon `;;`
 * The entire case block terminates with an esac (case spelled backwards).
 
 ### 判断按键
@@ -1519,7 +1519,10 @@ gtop: <https://github.com/aksakalli/gtop>，node实现的终端可视化监控�
 主要在`linux`下使用，比如：
 
     $ hostname [-i|--ip-address]        # 显示ip地址
+    $ hostname [-I|--all-ip-addresses]  # 显示主机的所有ip地址
     $ hostname [-I|--allip-address]     # 显示所有关联的ip地址
+    $ hostnam [-f|--fqdn|--long]        # 显示长主机名
+    
 
     
 
