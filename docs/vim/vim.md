@@ -13,6 +13,7 @@
 * vim-scripts: <http://vim-scripts.org/vim/scripts.html> 
 * github vim-scripts: <https://github.com/vim-scripts>
 * vim-eval: <ref://./vim-eval.md.html>
+* `vim-plugin`: <ref://./vim-plugin.md.html>
 * `vim-tuning` - vim脚本、插件等编写 <ref://./vim-tuning.md.html>
 * `VimAwesome` - 插件聚合站点 <https://vimawesome.com>
 
@@ -1050,10 +1051,31 @@ idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文
     * `"#` - alternate file name
 
 6. 表达式寄存器`"=`
-7. selection and drop 寄存器`"*`, `"+`, `"~`
-    * `"*` - 剪贴板内容
+7. selection and drop 寄存器`"*`, `"+`, `"~`，用于保存或读取剪贴板内容
+    * 有`3种`文档化的selections
+            PRIMARY     the current visual selection in vim's visual mode
+            SECONDARY   which is ill-defined ( vim没有用到，所以给出了病态定义的描述 )
+            CLIPBOARD   used for cut, copy and paste operations
+        存取`"*`，vim使用的是`PRIMARY`；存取`"+`，vim使用的是`CLIPBOARD`；vim`不使用`SECONDARY。
+    * MS-Windows下，`"*`和`"+`完全等价
+    * `x11-selection`下，两者有些差别，见下方所述
+    * 有`8个`cut-buffers，`CUT_BUFFER0` - `CUT_BUFFER7`，但vim只用了`CUT_BUFFER0`，这也是xterm默认使用的那个
+    * 当vim`退出或者挂起`，无法响应其他应用的selection请求时，它会将拥有的selection的内容写入到`CUT_BUFFER0`中，优先写入`"+`的内容，在写`"*`的内容
+    * 同样的，如果vim想从`"*`或`"+`中获取内容，如果为空或不可用，vim会转向从`CUT_BUFFER0`获取内容
+    * xterm默认将内容`同时`写到`PRIMARY`和`CUT_BUFFER0`，paste时先从PRIMARY取，取不到再去`CUT_BUFFER0`，而根本不使用CLIPBOARD，所以在`vim`和`xterm`间交换数据，应该使用`"*`
+    *  技能： 
+
+            "+y     复制到剪贴板
+            "+x     剪切到剪贴板
+            "+p     从剪贴板粘贴
+            "*y     复制到PRIMARY
+            "*x     剪切到PRIMARY
+            "*p     从PRIMARY粘贴
+
 8. 黑洞寄存器`"_`，往其中写内容，什么都不会发生；往外读取是，什么都读不到。用于删除内容，不希望影响其他寄存器的时候，可以指定该寄存器，比如：`"_d`, `"_x`
 9. 上一检索模式寄存器`"/`
+
+
 
 
 ### Examples

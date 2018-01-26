@@ -2,7 +2,12 @@
 
 > free X/Y/Zmodem implementation
 
-<https://ohse.de/uwe/software/lrzsz.html>
+## Resources
+
+* site: <https://ohse.de/uwe/software/lrzsz.html>
+* secureCRT使用rz命令上传文件失败问题－－一直中断开发机 <http://blog.csdn.net/wangzhaotongalex/article/details/50827529>
+* Mac OSX 使用rz、sz 远程上传、下载文件 <https://www.cnblogs.com/dingdada/p/4498766.html> 介绍MacOS上如何在iTerm2中安装、配置和使用`rz/sz`命令
+
 
 ## Features
 
@@ -12,7 +17,15 @@
 * 高性能 
 
 
-## transfer protocols
+## Tips
+
+* 避免上传文件失败，使用兼容性较好的方式调用rz/sz命令，建议都使用`-bye`风格：
+
+        $ rz -bye
+        $ sz -bye
+
+
+## Transfer Protocols
 
 在`SecureCRT`下的传输协议有`ASCII`、`Xmodem`、`Ymodem`、`Zmodem`，共4种。
 

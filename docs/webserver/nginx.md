@@ -235,6 +235,20 @@
         !~*     no match case-insensitive regular expression
 
     其中，`^~`后跟的表达式并不是正则，而是prefix strings，它的含义是如果后方的匹配串是当前最长前缀匹配串，那么就不启动正则匹配了。
+* 使用过程中，发现`^~`的以下用法会导致服务器`502`错误：
+
+        # error: 502
+        location ^~ / {
+            rewrite ^.*$ / break;
+        }
+
+    原因在于location内部使用了rewrite指令，而以下用法是可以的：
+
+        # ok
+        location ^~ / {
+            root /path/to/docroot;
+            index index.html;
+        }
 
 
 ### 标准化URI
@@ -662,6 +676,12 @@ todo
             location /chat/ {
                 proxy_pass http://backend;
                 proxy_http_version 1.1;
+                proxy_set_header Host $http_host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_connect_timeout 60s;
+                proxy_read_timeout 1200s;
+                proxy_send_timeout 1200s;
                 proxy_set_header Upgrade $http_upgrade;
                 proxy_set_header Connection $connection_upgrade;
             }
