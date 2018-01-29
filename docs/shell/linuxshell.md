@@ -1371,19 +1371,48 @@ gtop: <https://github.com/aksakalli/gtop>，node实现的终端可视化监控�
 
 打包目录：
 
-    zip -r dir.zip dir
+    $ zip -r dir.zip dir
 
 加密打包目录：
 
-    zip -r --encrypt dir.zip dir
+    $ zip -r --encrypt dir.zip dir
 
 解压缩：
 
-    unzip dir.zip
+    $ unzip dir.zip
 
 例子：
 
-    zip -q -r -P $password sophonweb_$commitId.zip ./sophonweb_$commitId
+    # 命令行中直接提供密码，可能有安全隐患
+    $ zip -q -r -P $password sophonweb_$commitId.zip ./sophonweb_$commitId
+
+
+
+## mail
+
+### 发送邮件
+
+todo
+
+    ctrl+D      开启新行
+
+
+
+### 阅读邮件
+
+    $ mail
+
+    命令        功能
+    ================================================
+    +           邮件列表中跳至下一封邮件
+    -           邮件列表中跳至上一封邮件
+    p           打开邮件
+    d           删除邮件
+    r           回复邮件
+    u [N]       撤销删除
+    x           退出邮件
+
+
 
 
 
