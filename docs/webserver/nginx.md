@@ -121,6 +121,7 @@
 ## Tips
 
 * 配置命令必须以`;`结束，或者以`}`结束；若`正则表达式`包含它们，需要用`单引号`或`双引号`包围；注释使用`#`
+* `location`和`rewrite`指令所使用正则表达式，不需要对`/`进行转义
 * `多虚拟机`可通过获取请求头的`Host`字段，并基于`server_name`进行路由；如果不含该字段，或者该字段没有匹配到任何server，则会使用`listen <port> default_server;`的server，如果不存在，则使用第一个server。
 
 * 可以多个虚拟机，监听`同一端口`，使用`不同server_name`进行路由
@@ -134,7 +135,7 @@
 * `root`未配置情况下，默认为`root html;`，也就是默认nginx程序根目录下的`html`目录；
     `相对路径`配置的root，会接在程序根目录后；`绝对路径`配置的root，则不会以程序根目录作为前缀
 
-* `rewrite`是对uri进行修改，文档参考 <http://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite>
+* `rewrite`是对uri进行修改，前缀匹配过程中将`额外URI部分`进行`append`的操作在rewrite中是不使用的，文档参考 <http://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite>
     * `rewrite`和`proxy_pass`同处于一个location下，若rewrite匹配，则`proxy_pass`将被忽略
     * `rewrite`至`本地地址`，默认`不作重定向`，除非设置redirect或permanent flag；rewrite至`远程地址`，会进行重定向
 
@@ -301,7 +302,7 @@
     port_in_redirect on | off;
 
 * 能出现在`server, location, if`指令内部
-* `rewrite`指令按其在配置文件中出现的顺序，`顺次执行`
+*  `rewrite`指令按其在配置文件中出现的顺序，`顺次执行`
 * 有`两种`方式可以`停止顺次执行链`，一种为`[flag]`参数，一种为特殊前缀的`replacement`字段，如下条说明。
 * 如果`replacement`为`http://`, `https://`或`$scheme`，则停止执行链，直接进行重定向
 * 如果`replacement`为本地地址，默认情况下为`服务器重写`，而不需要客户端重定向
@@ -335,6 +336,7 @@
         rewrite ^/users/(.*)$ /show?user=$1? last;
 
 * 如果正则表达式中包含`}`或者`;`，则整个正则表达式都需要用`单引号`或者`双引号`包围
+* 由于没有类似JS的`正则字面量`表达，类似`/^[a..e].+/`，location和rewrite指令所使用的正则表达式中，`/`不需要转义
 
 
 
@@ -372,7 +374,7 @@
             proxy_pass http://127.0.0.1:8000/$request_uri;
         }
 
-    不过这个的作用与下方是等价的，下方的性能还更好：
+    不过这个的作用与下方是等价的，下方的性能`还更好`：
 
         location / {
             proxy_pass http://127.0.0.1:8000/;

@@ -8,7 +8,11 @@
 
 * `site`: <https://www.gitbook.com>
 * `gitbook-cli`: <https://github.com/GitbookIO/gitbook-cli>
-* `gitbook`: <https://github.com/GitbookIO/gitbook>
+* `gitbook`: <https://github.com/GitbookIO/gitbook> <iframe src="http://258i.com/gbtn.html?user=GitbookIO&repo=gitbook&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+* `markdown`语法： <https://toolchain.gitbook.com/syntax/markdown.html>
+* `目录页`写法： <https://toolchain.gitbook.com/pages.html>
+* `引用`子目录中`非md文档`的写法：<https://github.com/MichaelHu/gitbook-plugin-otherlink>
+
 
 
 ## Features
@@ -21,13 +25,6 @@
 * 也可以离线安装，用于本地撰写和发布，适合于团队协作编写文档
 * 有一些免费书籍可查看
 * 使用`gitbook-cli + versions`架构，cli与engines分离，可以使用不同版本的引擎编译不同书籍。根据书籍配置，采用适合的引擎。versions目录在`~/.gitbook/versions`目录下。
-
-
-## 参考资料
-
-1. `markdown`语法： <https://toolchain.gitbook.com/syntax/markdown.html>
-2. `目录页`写法： <https://toolchain.gitbook.com/pages.html>
-3. `引用`子目录中`非md文档`的写法：<https://github.com/MichaelHu/gitbook-plugin-otherlink>
 
 
 ## getting started
@@ -45,6 +42,7 @@
 
     # built the static website
     gitbook build
+    # build with more detail
     gitbook build ./ --log=debug --debug
 
     # list versions installed locally
@@ -186,11 +184,13 @@ editor本地book的目录存放在`~/GitBook/Library/Import/`目录下，假如�
 * `gitbook-plugin-sitemap`: 暂不知其作用。但已知问题是`node-5.10.1`版本不能安装`1.1.0+`的版本，需要更新node版本才能正常安装。
 * `gitbook-plugin-search-pro`: <https://github.com/gitbook-plugins/gitbook-plugin-search-pro>
 
-其他插件可在此处获得：<https://github.com/GitbookIO>
+`其他插件`可在此处获得：<https://github.com/GitbookIO>
 
 新插件安装可以通过在`book.json`中配置，并通过`gitbook install`命令安装：
 
-    gitbook install
+    $ gitbook install
+
+其他自行`二次开发`的插件，见后文。
 
 
 
@@ -316,8 +316,9 @@ editor本地book的目录存放在`~/GitBook/Library/Import/`目录下，假如�
 
 ## 二次开发
 
-* <https://github.com/MichaelHu/gitbook-plugin-theme-sophon>
-* <https://github.com/MichaelHu/gitbook-plugin-otherlink>
+* 自定义theme：<https://github.com/MichaelHu/gitbook-plugin-theme-sophon>
+* 支持`内部链接`：<https://github.com/MichaelHu/gitbook-plugin-otherlink>
+* 自定义`favicon`：<https://github.com/MichaelHu/gitbook-plugin-custom-favicon>
 
 
 

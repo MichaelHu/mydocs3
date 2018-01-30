@@ -16,6 +16,7 @@
 * `d`: 一星期内的天（0~6，0为星期日） 
 * `cmd`: 要运行的程序，程序被送入sh执行，这个shell只有USER,HOME,SHELL这三个环境变量
 
+
 ### 例子
 
 每晚的21:30重启apache
@@ -38,6 +39,14 @@
 ### 文件格式
 
 一定注意，如果使用`crontab crontab-file`形式，其中的`crontab-file文件必须是unix类型的文件`。
+
+
+## Tips
+
+* crontab执行时，其所持有的`环境变量`是最简版，需要按需添加需要的环境变量
+* 不要使用`windows记事本`编辑crontab-file
+
+todo
 
 
 ## 常用命令

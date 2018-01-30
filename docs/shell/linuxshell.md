@@ -1263,7 +1263,10 @@ todo
 ### top
 > 提供一个当前运行系统实时动态的视图，也就是正在运行进程
 
-gtop: <https://github.com/aksakalli/gtop>，node实现的终端可视化监控程序
+    $ top -d 1
+    $ top -U <user>
+
+`gtop`: <https://github.com/aksakalli/gtop>，node实现的终端可视化监控程序
 
     $ npm install gtop -g
     $ gtop
@@ -1336,6 +1339,13 @@ gtop: <https://github.com/aksakalli/gtop>，node实现的终端可视化监控�
     $ cat /proc/meminfo
     $ cat /proc/zoneinfo
     $ cat /proc/mounts
+
+查看系统`CPU核数`：
+
+    # linux
+    $ cat /proc/cpuinfo | awk '/^processor/{print $3}' | tail -1
+    # mac
+    $ sysctl -n hw.ncpu
 
 
 

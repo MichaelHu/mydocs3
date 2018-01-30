@@ -100,6 +100,27 @@
 ## Events
 ## File System
 
+    const fs = require( 'fs' );
+    fs.
+        access( path[, mode], callback )
+        accessSync( path[, mode] )
+        appendFile( file, data[, options], callback )
+        appendFileSync( file, data[, options] )
+        chmod( path, mode, callback )
+        chmodSync( path, mode )
+
+        chown( path, uid, gid, callback )
+        chownSync( ... )
+        close( fd, callback )
+        closeSync( fd )
+        constants
+        createReadStream( path[, options] )
+        createWriteStream( path[, options] )
+        exists( path, callback )
+        ...
+
+
+
 ## Globals
 
     Class:Buffer        // Used to handle binary data
