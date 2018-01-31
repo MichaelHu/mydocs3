@@ -4,7 +4,7 @@
 
 ## Resources
 
-* github: <https://github.com/thejameskyle/react-loadable> <iframe src="http://258i.com/gbtn.html?user=thejameskyle&repo=react-loader&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe> 
+* github: <https://github.com/thejameskyle/react-loadable> <iframe src="http://258i.com/gbtn.html?user=thejameskyle&repo=react-loadable&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe> 
 * React Code Splitting: <https://reactjs.org/docs/code-splitting.html>
 * React Router Code Splitting: <https://reacttraining.com/react-router/web/guides/code-splitting>
 * `bundle-loader`: <https://github.com/webpack-contrib/bundle-loader>，从webpack的`loader角度`解决问题，当然也可以封装成组件，React Router就提供了组件封装方式

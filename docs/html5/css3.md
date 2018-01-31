@@ -200,7 +200,7 @@ todo
 
  <img src="./img/css-clip.png">
 
-* 兼容写法
+* `兼容`写法
 
         .hidden{
             position: absolute;
@@ -209,8 +209,26 @@ todo
         }
 
 
+### 定义图片可见部分的例子
 
-### 例子
+    @[data-script="html" style="margin-top:10px"]<style type="text/css">
+        .img-clip__container { position: relative; width: 610px; height: 300px; } 
+        .img-clip__image_original { 
+        }
+        .img-clip__image_clipped { 
+            position: absolute; 
+            left: 310px;
+            clip: rect( 130px, 300px, 300px, 0 );
+        }
+    </style>
+    <div class="img-clip__container">
+        <img src="./img/xiaoxin-180131.jpg" class="img-clip__image_original">
+        <img src="./img/xiaoxin-180131.jpg" class="img-clip__image_clipped">
+    </div>
+
+
+
+### 进度圆环例子
 
 实现`圆环`进度条。存在问题：`50%`交界处有卡顿，效果不流畅。推荐还是用svg或者canvas实现比较好。
 

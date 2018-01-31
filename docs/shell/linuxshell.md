@@ -778,12 +778,52 @@ todo
 
 > 列出近期使用的命令
 
+### Syntax
+
     history [-c] [-d offset] [n]
     history -awrn [filename]
+        -c      清空当前历史命令，如果终端存在安全问题，在退出时执行该命令，避免被黑客利用
+        -a      将历史命令缓冲区命令写入历史命令文件中，可理解为将当前session新增的history指令
+                追加到histfiles中，若没有加histfiles，则预设写入~/.bash_history
+        -r      将历史命令文件中的命令读入当前历史命令缓冲区
+        -w      将当前历史命令缓冲区命令写入历史命令文件中
     history -ps arg [arg...]
+
+    # 执行序号为N的历史命令
+    !N      
+    # 重新执行上一命令
+    !!
+    # 在历史中搜索最先匹配的命令，并执行
+    !?pattrn?
+    # 编辑序号指定的历史命令，保存后执行
+    fc N
+
+
+### Tips
+
+* `HISTFILE`环境变量，指定命令历史文件，默认为`~/.bash_history`
+* `HISTTIMEFORMAT`环境变量，可用于设置历史命令的显示时间，如`export HISTTIMEFORMAT='[%F %T]'`，格式同date命令的format
+* `HISTCONTROL`环境变量，可以设置命令历史去重：`export HISTCONTROL=erasedups`
+
+        ignoredups      忽略连续重复的命令
+        ignorespace     忽略以空白字符开头的命令
+        ignoreboth      同时忽略以上两种
+        erasedups       忽略所有历史命令中的重复命令
+
+* `HISTSIZE`环境变量，用于设置最大历史命令数量，特殊用途可以用于`禁用历史`： `export HISTSIZE=0`
+* 参考文章：<https://www.cnblogs.com/keithtt/p/7040549.html>
+
+
+### Examples
 
     # 逆序列出所有历史命令
     $ history
+
+    # 逆序列出最近的10个历史命令
+    $ history 10
+
+    # 执行历史序号为20的命令
+    $ !20
 
     # 清除历史命令
     $ history -c
@@ -2099,7 +2139,7 @@ sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://.
     find [-H | -L | -P] [-EXdsx] -f path [path ...] [expression]
 
 * 针对递归遍历的每一个文件，执行`expression`
-* 每个expression都会返回`布尔值`，使用`运算符`连接，`默认`为`-and`的关系，-and可以省略
+* 每个`expression`都会返回`布尔值`，使用`运算符`连接，`默认`为`-and`的关系，-and可以省略
 * 查找路径的指定`不属于`expression部分
 * expression部分由下列`Primaries`和`Operands`组成
 * 提及的可能作为命令分隔符的部分`特殊字符`，需要转义，比如`(, ), ;`等，使用`反斜线`或`引号`转义
@@ -2166,7 +2206,7 @@ sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://.
     -print
     -print0
     -prune
-    -regex pattern
+    -regex patten                   路径正则，perl兼容正则，需对整个路径进行匹配
     -samefile name
     -size n[ckMGTP]
     -type f|b|c|d|l|p|s
@@ -2188,8 +2228,10 @@ sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://.
     expression expression
     expression -or expression
 
-`Tips`:
+### Tips
+
 * `(`, `)`需要使用反斜线`转义`
+* `-regex pattern`，`-iregex pattern`的pattern匹配的是`整个路径`，而不是部分路径
 
 
 ### Examples

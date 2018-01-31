@@ -485,6 +485,35 @@ todo: `git config --set push.default ...`
 
     git push origin master^:abc
 
+## git config
+
+    # 查看当前git账户配置
+    $ git config --list
+    credential.helper=osxkeychain
+    user.name=hudamin
+    user.email=hdm258i@gmail.com
+    core.excludesfile=/Users/hudamin/.gitignore_global
+    difftool.sourcetree.cmd=opendiff "$LOCAL" "$REMOTE"
+    difftool.sourcetree.path=
+    mergetool.sourcetree.cmd=/Applications/SourceTree.app/Contents/Resources/opendiff-w.sh "$LOCAL" "$REMOTE" -ancestor "$BASE" -merge "$MERGED"
+    mergetool.sourcetree.trustexitcode=true
+    core.repositoryformatversion=0
+    core.filemode=true
+    core.bare=false
+    core.logallrefupdates=true
+    core.ignorecase=true
+    core.precomposeunicode=true
+    remote.origin.url=git@172.22.1.88:fe/sophon-scripts.git
+    remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+    branch.master.remote=origin
+    branch.master.merge=refs/heads/master
+
+### Tips
+
+* `~/.gitconfig`文件可以用于配置和保存当前用户的全局git配置
+* 以`.`分隔的`命名空间方式`进行配置
+* 常用配置主要有：`user`, `core`, `remote`, `branch`
+
 
 
 ## git init

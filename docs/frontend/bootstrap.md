@@ -7,12 +7,11 @@
 
 ## Features
 
-* 提供开发SDK：Sass variables, mixins, responsive grid system, extensive prebuild components, powerful plugins built on jQuery等
 * CSS`预处理器`，推荐使用`sass`，其他的［ less, postcss ］
+* 提供`开发SDK`：包括`Sass variables`, `mixins`, `responsive grid system`, `extensive prebuild components`, `powerful plugins built on jQuery`等
 * 提供官方`Themes`，有些特定Theme是收费的
-* `一个框架任何设备`
+* 一个框架`任何设备`
 * 拥有`各类特性`：文档、组件以及jQuery插件
-* `bootstrap 4`正在预发布版：<https://v4-alpha.getbootstrap.com>
 
 
 ## Resources
@@ -25,6 +24,7 @@
 
 * v4.x <https://getbootstrap.com/docs/4.0/getting-started/introduction/>
     * `Reboot.css`： 默认box-sizing为`border-box`，使用rem，干掉多数元素的`margin-top`，`touch-action: manipulation`来加速移动端点击等，测试页面很好的展示了区别：<https://codepen.io/ncerminara/pen/RLMwmy>
+    * `Theme`部分使用`Sass`构建，可由开发者将bootstrap源码作为项目源码引入，可以`自定义`包含的模块
 * v3.0.0 - v3.3.7 <https://getbootstrap.com/docs/3.3/>
 * v2.0.0 - v2.3.2 <https://getbootstrap.com/2.3.2/>
 * v1.0.0 - v1.4.0 
