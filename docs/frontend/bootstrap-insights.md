@@ -1,5 +1,15 @@
 # bootstrap-insights
 
+
+## Tips
+
+* bootstrap 3使用`Less`编写，bootstrap 4使用`Sass`编写
+* 本文针对bootstrap 4，`reactstrap`提供该版本的封装<ref://../react/reactstrap.md.html>
+* bootstrap 4可对css和js部分进行自定义include，具体实现可以参考`hugeapp-apollo`项目
+* 可以通过提供自己的`variables文件`对核心文件进行覆盖，而不是直接修改，对扩展开放
+* 使用`components + utilities`架构
+
+
 ## css
 
     ▾ scss/
@@ -218,6 +228,37 @@
     align-bottom
     align-text-top
     align-text-bottom
+
+
+#### spacing
+
+> 适用于所有的`断点`( breakpoints: xs, sm, md, lg, xl )，所以在spacing的类名中总是不包含断点名称[ 可能有些出入，todo ]
+
+    {property}{sides}-{size}
+    {property}{sides}-{breakpoint}-{size}
+
+    // property
+    m - margin
+    p - padding
+
+    // sides
+    t - top
+    b - bottom
+    l - left
+    r - right
+    x - left and right
+    y - top and bottom
+    blank - 4 sides
+
+    // size
+    0 - 0
+    1 - $spacer * .25
+    2 - $spacer * .5
+    3 - $spacer
+    4 - $spacer * 1.5
+    5 - $spacer * 3
+    auto - margin auto
+
 
 
 

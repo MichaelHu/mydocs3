@@ -373,6 +373,11 @@ import.js:
 
 ## for of 值遍历
 
+* 与`for .. in`区别在于for in包含对象`所有`可枚举值，for of只包含对象`自身`的可枚举值，例如原型链的属性将不被包含
+
+
+
+
 ## iterator, generator
 
 

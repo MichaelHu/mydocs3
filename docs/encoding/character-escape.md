@@ -158,6 +158,7 @@
     alert              \a
     form-feed          \f
     carriage-return    \r
+    newline            \n
     tab                \t
     vertical tab       \v
 

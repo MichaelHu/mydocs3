@@ -4,11 +4,11 @@
 
 ## Schemas
 
-    UC浏览器            ucbrowser://
-    QQ浏览器            mttbrowser://
-    微信                weixin://
-    百度APP             baiduboxapp://
-                        baiduboxapp://v11/test/123
+    ucbrowser://                    # UC浏览器            
+    mttbrowser://                   # QQ浏览器            
+    weixin://                       # 微信                
+    baiduboxapp://                  # 百度APP             
+    baiduboxapp://v11/test/123                          
     
 ## Resources
 

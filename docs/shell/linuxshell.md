@@ -1416,6 +1416,11 @@ todo
 
 
 
+## uuencode/uudecode
+
+对文件进行编解码，支持`base64`编码，具体参考<ref://../encoding/base64.md.html>
+
+
 
 ## zip
 
@@ -2043,6 +2048,31 @@ sed的`正则（使用-E( mac )或-r( linux )）`接近`perl`的正则，比如�
     tail -r file
 
 当然，还有另外的办法，但这两个个办法是`比较简单`的。（`理解`：对于n行文本，`前n-1行`输出为空，`最后一行`输出逆序行）。该命令用于同`vim`的命令行结合，能对选中行按行号逆序排列，参考<ref://../vim/vim.md.html>
+
+
+#### 将文件所有行合并成一行
+
+    sed -e '1h;1!H;$g;$s/\n//g;$p;d' c
+
+`处理过程`：
+
+    仅在第一行，用pattern space内容覆盖hold space
+    除第一行，将pattern space内容append至hold space + 换行
+    仅在最后一行:
+        1. 用hold space内容覆盖pattern space
+        2. 对pattern space内容做替换处理，将换行符删除
+        3. 输出pattern space的内容
+    每一行最后都将pattern space内容清空
+
+`Tips`：
+* `1!H`，隐含第一行不执行H命令，其他行都执行H命令
+* `$!d`，隐含除了最后一行，都执行d命令
+
+
+    
+
+
+### 其他
 
 sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://../encoding/character-escape.md.html>
 
