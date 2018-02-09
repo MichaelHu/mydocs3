@@ -23,6 +23,11 @@
 * 支持`预加载`，使用`preload()`方法
 
 
+## Tips
+
+* `import( ... )`需要精确到文件本身，不会默认进行`index扩展`
+
+
 
 ## Installation
 

@@ -87,4 +87,24 @@ bootstrap只webpack构建：
 <http://getbootstrap.com/docs/4.0/getting-started/webpack/>
 
 
+### 180207
+
+* 完成`ReactStrap`子项目，尝试使用`reactstrap`/`bootstrap 4`
+
+
+### 180208
+
+* 使用react-router v4，支持`分布式路由`配置
+* react-router v4的path匹配，类似与nginx的location指令的`前缀匹配`
+
+
+### 180209
+
+* 通过适当的`code-spliting`，支持大规模扩展
+* 支持项目中针对不同css文件，选择是否启动`css-modules`，components和apps默认都启动css-modules
+* 新起`canvas`子项目，后续增加新的酷炫案例实践
+
+
+
+
 
