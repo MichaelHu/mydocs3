@@ -1599,3 +1599,69 @@ todo
 
 
 
+## Demos
+
+### github
+
+* Interesting canvas <https://github.com/whxaxes/canvas-test> <iframe src="http://258i.com/gbtn.html?user=whxaxes&repo=canvas-test&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+* canvas-special <https://github.com/bxm0927/canvas-special> <iframe src="http://258i.com/gbtn.html?user=bxm0927&repo=canvas-special&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+* sketch of three.js <http://ykob.github.io/sketch-threejs/> <https://github.com/ykob/sketch-threejs> <iframe src="http://258i.com/gbtn.html?user=ykob&repo=sketch-threejs&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+* 小游戏 - 看你有多色 <http://www.lovebxm.com/canvas-special/look-def-color/index.html> <https://github.com/bxm0927/canvas-special>
+
+
+
+### html5tricks
+
+* 射线效果 <http://www.html5tricks.com/demo/html5-canvas-radian/index.html>
+* 180203 16个富有创意的HTML5 Canvas / SVG动画特效集合 <http://www.html5tricks.com/16-html5-canvas-animation.html>
+    * 高空瀑布 <http://www.html5tricks.com/demo/html5-canvas-waterfall-lake/index.html>
+    * 雷达<http://www.html5tricks.com/demo/html5-css3-3d-radar-animation/index2.html>
+    * 沙漏 <http://www.html5tricks.com/demo/html5-canvas-image-flow-time/index2.html>
+    * 火焰 <http://www.html5tricks.com/demo/html5-canvas-fire-text-animation/index.html>
+    * 粒子爆炸 <http://www.html5tricks.com/demo/html5-webgl-particle-animation/index2.html>
+    * 蝴蝶飞舞 <http://www.html5tricks.com/demo/html5-canvas-butterfly/index2.html>
+    * 天体运行 <http://www.html5tricks.com/demo/html5-canvas-3d-planet/index.html>
+    * 3D房间模型，玩游戏的人 <http://www.html5tricks.com/demo/html5-canvas-3d-model-camera/index2.html>
+    * 光束效果 <http://www.html5tricks.com/demo/html5-canvas-beam-explosion/index2.html>
+    * 粒子时钟 <http://www.html5tricks.com/demo/html5-canvas-pixel-clock/index2.html>
+    * 圆形进度 <http://www.html5tricks.com/demo/html5-canvas-circle-percentage/index.html>
+    * 心电图 <http://www.html5tricks.com/demo/html5-canvas-electrocardiogram/index.html>
+    * 梦幻树 <http://www.html5tricks.com/demo/html5-canvas-dream-tree/index.html>
+    * CSS3五彩3D动画 <http://www.html5tricks.com/demo/css3-colorful-3d-ball/index2.html>
+    * 闪烁的蓝宝石 <http://www.html5tricks.com/demo/html5-canvas-3d-sapphire/index2.html>
+    * 钻石 <http://www.html5tricks.com/demo/html5-canvas-3d-diamond/index2.html>
+* 171214 3D立方体波浪动画 <http://www.html5tricks.com/demo/html5-canvas-3d-cube-wave/index.html>
+* 171214 2D文字与3D图像粒子转换动画 <http://www.html5tricks.com/demo/html5-canvas-2d-to-3d/index2.html>
+* 171229 15个超强悍的CSS3/Canvas/SVG时钟动画赏析 <http://www.html5tricks.com/15-cool-css3-circle-clock.html>
+* 171229 纯CSS3乒乓球动画 <http://www.html5tricks.com/demo/pure-css3-ping-pong/index.html>
+* 180113 SVG火焰燃烧动画 <http://www.html5tricks.com/demo/svg-fire-stick/index2.html>
+* 180114 精美的SVG单选按钮美化插件 <http://www.html5tricks.com/demo/svg-radio-buttons/index.html>
+* 18012l 密码解锁动画 <http://www.html5tricks.com/demo/html5-password-animation/index.html>
+* 170926 SVG天气预报动画卡片 <http://www.html5tricks.com/demo/html5-svg-weather-card/index.html>
+* 180125 炫酷阴影发光文字特效 <http://www.html5tricks.com/demo/html5-css3-shadow-shine-text/index.html>
+* 180127 创意表情切换按钮 <http://www.html5tricks.com/demo/pure-css3-face-style-switch/index.html>
+* 170729 HTML5点阵列局部放大镜动画特效 <http://www.html5tricks.com/demo/html5-dot-outline/index2.html>
+* 180128 CSS3实现的放大镜动画 <http://www.html5tricks.com/demo/jquery-glasses-animation/index2.html>
+* 180129 纯CSS3实现仿Mac系统的Dock菜单 <http://www.html5tricks.com/demo/pure-css3-mac-dock/index2.html>
+* 151114 CSS3实现大象走路 <http://www.html5tricks.com/demo/pure-css3-elephant-animation/index2.html>
+* 161112 炫酷输入框 <http://www.html5tricks.com/demo/html5-text-input-animation/index.html>
+* 180204 svg 3选项开关 <http://www.html5tricks.com/demo/svg-3-option-button/index.html>
+
+
+### other
+
+* 180131 Canvas 实现炫丽的粒子运动效果(粒子生成文字) <https://juejin.im/post/5a707089518825732821b9dd>
+
+        /* 关闭scrollbar */
+        body::-webkit-scrollbar{
+            display: none;
+        }
+
+        #input-text::placeholder{
+            color: #ccc;
+            line-height: 55px;
+            height: 55px;
+        }
+
+    Demo: <http://yunkus.com/demo/canvas/canvas-granule-animation-and-build-text/>
+

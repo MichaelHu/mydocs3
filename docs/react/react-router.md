@@ -68,6 +68,8 @@
             </div>
         )
 
+     需要注意的是，v4版本的子路由path设置，`不会`和父路由的`path拼接`，需要写全。
+
 * `onEnter, onUpdate, onLeave`在v4中不再支持，而是使用Route对应的component的生命周期方法代替。
 
         v2, v3          v4
@@ -127,6 +129,14 @@
 
 
 * `<Link to>`，v4必须提供`非null`的`to`属性
+* 对于v4版本，`<Route>`有3种渲染方式，分别为：
+
+        <Route component>
+        <Route render>
+        <Route children>
+
+    每一种渲染方式都会收到三个路由属性：`match`, `location`, `history`。`不设置path`属性的Route总是会被渲染
+    
 * 关于`代码分割( code-splitting )`，v4建议使用webpack的`bundle-loader`，v4以下则主要使用`getComponent()`调用wepack的`require.ensure()`达到异步加载代码的目的，「 React-Router 4建议的代码分割方式 」：<https://reacttraining.com/react-router/web/guides/code-splitting>
 
 

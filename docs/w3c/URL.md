@@ -111,6 +111,7 @@
 * `mediatype`: the optional `MIME` type string, such as `image/jpeg`, `application/xhtml+xml`, etc. Defaults to `text/plain;charset=US-ASCII`
 * 可选的base64标识：`;base64`，用于标识后面的数据部分是否为base64格式
 * 数据本身，使用`,`与前面的字段分开，如果所在上下文不支持直接的文本格式，则可以使用base64格式
+* 空数据：`data:,`
 
 ### Examples 
 
@@ -135,11 +136,39 @@
 
 以下例子展示在链接中打开data URI的内容：
 
-    @[data-script="html editable"]<a
-        href="data:application/xhtml+xml;base64,PGRpdiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94aHRtbCI+PHN0eWxlPjpyb290IHsgYmFja2dyb3VuZDogZ3JlZW47IH0gaHRtbCB7IGJhY2tncm91bmQ6IHJlZCAhaW1wb3J0YW50OyB9PC9zdHlsZT48L2Rpdj4=" 
-        target="_blank">
-        link to a XHTML file represented by data URI
-    </a>
+    @[data-script="html"]<script id="test_data_uri_template" type="text/template">
+        <div xmlns="http://www.w3.org/1999/xhtml">
+            <style>
+                :root { background: green; } 
+                html { background: red !important; }
+            </style>
+        </div>
+    </script>
+
+<div id="test_data_uri" class="test">
+<a class="test-link">Link to data-uri</a> [ 可能受安全限制而无法打开，可以右键点击，在新窗口/标签页中打开 ]
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_data_uri');
+        var $link = $( '#test_data_uri .test-link' );
+        var htmlContent = $( '#test_data_uri_template' ).text();
+        s.show( 'create data URI ...' );
+        s.append_show( 'text content', htmlContent );
+        var base64EncodedData = btoa( htmlContent );
+        s.append_show( 'base64 encoded', base64EncodedData );
+        var dataURI = 'data:application/xhtml+xml;base64,' + base64EncodedData;
+        // var dataURI = 'data:text/html;base64,' + base64EncodedData;
+        $link.attr( 'href', dataURI );
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
 
 
 ### encode & decode

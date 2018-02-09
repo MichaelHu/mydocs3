@@ -404,7 +404,7 @@ todo：hover层渲染／节点hover／拖动／动画
         canvas.style.width = cssSize.w + 'px';
         canvas.style.height = cssSize.h + 'px';
         // the center point is ( 0, 0 )
-        ctx.setTransform( ratio, 0, 0, ratio, cssSize.w / 2, cssSize.h / 2 )
+        ctx.setTransform( ratio, 0, 0, ratio, canvas.width / 2, canvas.height / 2 )
     }
 
 
