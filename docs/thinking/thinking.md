@@ -1,5 +1,8 @@
 # thinking
 
+<style type="text/css">
+.snapshot-wrapper { max-height:300px; overflow: hidden; }
+.snapshot { border-left: 5px solid #000 !important; }</style>
 
 > 思维是灵魂的自我谈话。 —— 柏拉图
 
@@ -14,9 +17,34 @@
 > Stick to the end.
 
 
+## 2018-03-01
+
+> 两个不断
+
+* 不断`实践`的力量
+* 不断`写作`的力量
+
+
+## 2018-02-28
+
+### 过好早晨
+
+* 「 怎样度过早晨，便怎样度过一生 」 <https://mp.weixin.qq.com/s/LF_a1TkLjRRKZUvQAqYTJQ>
+<div class="snapshot-wrapper">
+<img src="./img/good-morning-good-life-180228.png" class="snapshot" style="margin-top: -1360px;">
+</div>
+
+### 春节感悟
+
+* 开慢车，开稳车
+* 感冒需要预防，及早吃药
+* 越`积极主动`，压力越小
+
+
+
 ## 2018-02-09
 
-> 关于技术学习和实践
+> 关于技术`学习和实践`
 
 * 只学习不实践，较难达到理想的深度
 * 只有`学习加实践`，才能达到理想的`深度`

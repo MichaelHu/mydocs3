@@ -12,6 +12,7 @@
 * AlloyTeam: <http://www.alloyteam.com>
 * CDC: <http://cdc.tencent.com>
 * EFE: <http://efe.baidu.com>
+* 人人FED: <https://fed.renren.com/>
 * TGideas: <http://tgideas.qq.com>
 * 畅游VC: <http://vc.changyou.com>
 * MXD: <http://mxd.tencent.com>

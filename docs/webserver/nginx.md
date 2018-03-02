@@ -533,6 +533,40 @@ todo
 
 ## Other
 
+### Client Body
+
+    client_body_buffer_size
+    client_body_in_file_only
+    client_body_single_bugger
+    client_body_temp_path
+    client_body_timeout
+    client_max_body_size
+
+#### client_max_body_size
+
+    # Sets the maximum allowed size of the client request body, specified in the “Content-Length”
+    # request header field. If the size in a request exceeds the configured value, the 413 (Request
+    #        Entity Too Large) error is returned to the client. Please be aware that browsers cannot
+    # correctly display this error. Setting size to 0 disables checking of client request body size.
+    Syntax:	client_max_body_size size;
+    Default: client_max_body_size 1m;
+    Context: http, server, location
+
+resources:
+* docs: <http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>
+* 三个思路解决`413 Request Entity Too Large` <http://blog.csdn.net/tim_phper/article/details/51992986>
+
+
+
+
+
+### Client Header
+
+    client_header_buffer_size
+    client_header_timeout
+
+
+
 ### Etag
 
     etag on | off;

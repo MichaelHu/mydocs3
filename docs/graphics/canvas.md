@@ -1300,15 +1300,28 @@ x0,y0为渐变起始点，x1,y1为渐变结束点。
 
 > 像素操作
 
-    // CSS尺寸、透明背景
-    context.createImageData( sw, sh )
-    context.createImageData( imageData )
-    context.getImageData( sx, sy, sw, sh )
+    // 1. in CSS sizes
+    // 2. all the pixels in the returned object are transparent black ( rgba( 0, 0, 0, 0 ) )
+    imagedata = context.createImageData( sw, sh )
+    imagedata = context.createImageData( imageData )
+
+    // in canvas coordinate space units
+    imagedata = context.getImageData( sx, sy, sw, sh )
+
+    // returns the actual dimensions of the data in the ImageData object, in device pixels.
     imageData.width
     imageData.height
+
+    // returns the one-dimensional array containing the data in RGBA order, as
+    // integers in the range 0 to 255.
     imageData.data
+
+    // 1. Paints the data from the given imageData object onto the canvas
+    // 2. If a dirty rectangle is provided, only the pixels from that rectangle are painted
     imageData.putImageData( imageData, dx, dy[, dirtyX, dirtyY, dirtyWidth, dirtyHeight] )
 
+* 新建imageData（通过`createImageData()`创建）的默认像素值为`透明黑色`，也即`rgba( 0, 0, 0, 0 )`
+* 通过`getImageData()`获得的像素值，`初始部分`的像素值为`透明黑色`
 
 
 

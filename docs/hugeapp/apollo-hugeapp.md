@@ -6,12 +6,15 @@
 * 包罗万象
 * 一键搭建
 * 精致
+* 提供技术实践场
+* 体验`积木式`开发
+
 
 ## 全景图
 
     构建层
         npm / yarn / make
-         webpack
+         webpack 2/3/4
         parcel
         rollup
         fis3
@@ -45,6 +48,7 @@
         iView
         element
         san-mui
+        reactstrap
         ...
     基础库
         jQuery
@@ -83,7 +87,7 @@
 
 
 ### 180202
-bootstrap只webpack构建：
+bootstrap之webpack构建：
 <http://getbootstrap.com/docs/4.0/getting-started/webpack/>
 
 
@@ -100,9 +104,14 @@ bootstrap只webpack构建：
 
 ### 180209
 
-* 通过适当的`code-spliting`，支持大规模扩展
+* 通过适当的`code-spliting`，支持`大规模`扩展
 * 支持项目中针对不同css文件，选择是否启动`css-modules`，components和apps默认都启动css-modules
 * 新起`canvas`子项目，后续增加新的酷炫案例实践
+
+### 180301
+
+* MagicBox子项目
+* Echarts子项目
 
 
 

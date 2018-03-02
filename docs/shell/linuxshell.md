@@ -255,13 +255,13 @@
 
     # 字符串替换
     # 只替换首次匹配
-    ${string/substring/replacement/}
+    ${string/substring/replacement}
     # 替换全部匹配
-    ${string//substring/replacement/}
+    ${string//substring/replacement}
     # 若首部匹配则替换
-    ${string/#substring/replacement/}
+    ${string/#substring/replacement}
     # 若尾部匹配则替换
-    ${string/%substring/replacement/}
+    ${string/%substring/replacement}
 
 
 #### Tips

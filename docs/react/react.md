@@ -10,6 +10,9 @@
 * Github: <https://github.com/facebook/react>
 * Flux: <https://facebook.github.io/flux/docs/overview.html>
 * Introduce: <http://www.ruanyifeng.com/blog/2015/03/react.html>
+* Changelogs: <https://github.com/facebook/react/blob/master/CHANGELOG.md>
+        // React.PropTypes从16.0.0开始不再可用，需从prop-types import
+        // React.createClass()从16.0.0开始不再可用，需从create-react-class import
 
 
 

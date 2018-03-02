@@ -6,6 +6,7 @@
 * github: <https://github.com/ecomfe/echarts>
 * echarts-insights: <ref://./echarts-insights.md.html> 
 * examples: <http://echarts.baidu.com/examples.html>
+* 配置项文档: <http://echarts.baidu.com/option.html>
 
 ## Features
 
