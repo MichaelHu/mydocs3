@@ -2767,6 +2767,16 @@ output：
 
 
 
+### 生成图片列表 
+
+> 支持`lazyload`的图片列表
+
+    ls img_* \
+        | xargs -n 1 \
+        | awk -F'.' \
+            '{printf " <img class=\"lazy\" data-url=\"./img/2018-indonesia/big-%s-1200.%s\">\n\n", $1, $2}'
+
+
 
 
 

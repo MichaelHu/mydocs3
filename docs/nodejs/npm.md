@@ -119,7 +119,9 @@ or
     nvm ls <version>
     nvm ls-remote 
     nvm ls-remote <version>
-    nvm alias default node
+    nvm alias default <version>           # Set default node version on a shell
+    nvm alias default node                # Always default to the latest available 
+                                          # node version on a shell
     nvm uninstall <version>
     nvm deactivate
 

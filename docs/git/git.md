@@ -1262,6 +1262,7 @@ When we start mixing branches and commits, we will see how these two features co
     # 在commit上打tag
     git tag <tagname> <commit>
     git tag -a -m <msg> <tagname> <commit>
+        -a, --annotate     Make an unsigned, annotated tag object
 
     # 在HEAD上打tag
     git tag -a <tagname> -m <comment>

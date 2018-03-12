@@ -39,8 +39,72 @@
 
 ### Syntax
 
-    magick [input-options] input-file [output-options] output-file
-    magick -list ...
+    $ man magick
+
+        magick [input-options] input-file [output-options] output-file
+
+    $ magick -usage
+
+        magick [ {option} | {image} ... ] {output_image}
+        magick [ {option} | {image} ... ] -script {filename} [ {script_args} ... ]
+        magick -help | -version | -usage | -list {option}
+
+
+### Options
+
+    Image Settings:
+
+        -adjoin             join images into a single multi-image file
+        -affine matrix
+        -antialias          remove pixel-aliasing
+        ...
+        -background-color
+        ...
+        -bordercolor color
+        -caption string     assign a caption to an image
+        ...
+
+
+    Image Operators:
+
+        ...
+        -border geometry
+        ...
+        -set property value
+
+    Image Channel Operators:
+
+    Image Sequence Operators:
+
+        -affinity filename
+        -append
+        -clut
+        -coalesce
+        -combine
+        -composite
+        -crop geometry
+        -deconstruct
+        -evaluate-sequence operator
+        -flatten
+        -fx expression
+        -hald-clut
+        -mosaic
+        ...
+        -write filename
+
+    Image Stack Operators:
+
+        -clone indexes
+        ...
+
+    Miscellaneous Options:
+
+        -debug events
+        -help
+        -log format
+        -list type
+        -version
+
 
 ### -auto-orient option
 
@@ -58,7 +122,8 @@
     $ magick -list preview
     $ magick -list type
     
-### Examples
+
+## Examples
 
     # 自动调整图片方向
     $ magick input.jpg -auto-orient output.png
@@ -86,6 +151,9 @@
     # 使用填充色进行颜色化，效果如同盖上一层颜色蒙层，-colorize <1-100>
     $ magick input.jpg -fill '#000' -colorize 50 output.jpg
 
+    # 添加边框
+    $ magick input.jpg -border 10x10 -bordercolor '#f00' output.jpg
+
     # 使用油画效果，-paint radius
     $ magick input.jpg -paint 5 output.jpg
 
@@ -102,11 +170,31 @@
     $ magick 'input.gif[3,2,4]' output.mng
 
     # 批量生成缩略图，自动映射文件名
+    ## 1. 裁切方式，自定义序列号的格式
     $ magick '*.JPG' -crop 120x120+850+1200 thumbnail%03d.png
     $ magick '*.JPG[120x120+850+1200]' thumbnail%03d.png
+    ## 2. 等比缩放方式，自定义序列号的格式
+    $ magick '*.JPG' -resize 120x120 -auto-orient thumbnail%03d.png # 10进制
+    $ magick '*.JPG' -resize 120x120 -auto-orient thumbnail%03x.png # 16进制
+    $ magick '*.JPG' -resize 120x120 -auto-orient thumbnail%03o.png # 8进制
+    ## 3. 等比缩放方式，输出文件名与输入文件名相关联
+    ## 3.1 从6.4.8-4开始，可以使用-set指令，预设格式串
+    ## 3.2 预设格式串必须以`filename:`为前缀，并在输出文件名中用`%[filename:x]`引用
+    ## 3.3 原有文件的引用通常为：`%d/%f`或`%d/%t.%e`或`%d/%t.%m`
+    ## 3.4 以上%d, %f, %t, %m, %w, %h等只能在-set指令中使用，而不能直接使用在输出文件名中
+    ## 3.5 可直接在输出文件名中使用的是%d, %o, %x等序列值
+    $ magick IMG_15* -set filename:f 'thumb-%t' -resize 120x120 \
+        -auto-orient -verbose %[filename:f].jpg
+
+    # 格式转换
+    $ magick convert rose.jpg -resize 50% rose.png
 
     # 从文件中获取输入文件列表，@前缀
     $ magick @image-list.txt mymovie.gif
+
+    # 文本输出到图片
+    $ magick -background lightblue  -fill blue  -font Arial -pointsize 20 \
+        label:'ImageMagick\nRules - OK!' label_multiline.gif
 
     # 读取指定范围的图片，以下只读取image-1.jpg - image-5.jpg
     $ magick image-%d.jpg[1-5]
@@ -128,3 +216,50 @@
         -background firebrick3 -shadow 80x3+3+3 \) +swap -background none -layers merge \) \
         -insert 0 -gravity center -append -background white -gravity center -extent 320x200 \
         cylinder_shaded.png 
+
+
+## 实际案例
+
+高分辨率的原始图像，压缩成较大尺寸图与缩略图：
+
+    # 压缩图片，使用自定义文件名，自动方向，等比例缩放，压缩质量为80
+    magick *.jpg -set filename:f 'big-%t-1200' -auto-orient -resize 1200 -quality 80 -verbose %[filename:f].jpg
+    magick *.png -set filename:f 'big-%t-1200' -auto-orient -resize 1200 -quality 80 -verbose %[filename:f].png
+    # 生成缩略图，使用自定义文件名，自动方向，等比例缩放，压缩质量为80
+    magick *.jpg -set filename:f 'thumb-%t-120' -auto-orient -resize 120 -quality 80 -verbose %[filename:f].jpg
+    magick *.png -set filename:f 'thumb-%t-120' -auto-orient -resize 120 -quality 80 -verbose %[filename:f].png
+
+由于一次性`不间断压缩`的图片数目过多，容易造成`系统假死`，需要通过脚本添加`压缩间隔`，可如下实现：
+
+    #!/bin/bash
+    TASKS_PER_DISPATCH=5
+    let a=0; \
+    let b=1; \
+    for i in `ls img_*.jpg`; do \
+        echo ==== [ $b ] $i ====; \
+        magick $i -set filename:f 'big-%t-1200' -resize 1200 -auto-orient -quality 80 -verbose %[filename:f].jpg; \
+        magick $i -set filename:f 'thumb-%t-120' -resize 120 -auto-orient -quality 80 -verbose %[filename:f].jpg; \
+        let a=(a+1)%$TASKS_PER_DISPATCH; \
+        let b=b+1; \
+        if (( a == 0 )); then sleep 1; fi; \
+    done; \
+    let a=0; \
+    let b=1; \
+    for i in `ls img_*.png`; do \
+        echo ==== [ $b ] $i ====; \
+        magick $i -set filename:f 'big-%t-1200' -resize 1200 -auto-orient -quality 80 -verbose %[filename:f].png; \
+        magick $i -set filename:f 'thumb-%t-120' -resize 120 -auto-orient -quality 80 -verbose %[filename:f].png; \
+        let a=(a+1)%$TASKS_PER_DISPATCH; \
+        let b=b+1; \
+        if (( a == 0 )); then sleep 1; fi; \
+    done
+
+
+todo: 
+
+* 貌似支持通过`-write`指令同时产生多组输出
+
+
+
+
+
