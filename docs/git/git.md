@@ -679,9 +679,9 @@ other目录下的object对象`全都是blob类型`的，但可能对应真实的
 * `合并策略`通过`-s`选项传入，默认为`recursive` strategy，它采用3路合并算法，是`git merge`和`git pull`操作时默认采用的合并方案，recursive策略还支持细化的合并算法，可以通过`-X<options>`传入。
 * 合并策略主要有`5种`：`resolve, recursive, octopus, ours, subtree`，需要区分`-s ours`与`-Xours`的不同。
 
-    # 采用recursive合并策略，冲突时优先使用ours
-    $ git merge -s recursive -Xours <branch>
-    $ git merge -Xours <branch>
+        # 采用recursive合并策略，冲突时优先使用ours
+        $ git merge -s recursive -Xours <branch>
+        $ git merge -Xours <branch>
 
 
 ### 例子
@@ -1149,14 +1149,18 @@ When we start mixing branches and commits, we will see how these two features co
     # 列出远程分支
     git branch -r
 
+    # 本地&远程都列出
+    git branch -a
+
     # 列出远程未合并分支，--no-merged必须在-r后面
     git branch -r --no-merged
+    # 列出commit分支的远程未合并分支
+    git branch -r --no-merged <commit>
 
     # 列出远程已合并分支，--merged必须在-r后面
     git branch -r --merged
-
-    # 本地&远程都列出
-    git branch -a
+    # 列出commit分支的远程已合并分支
+    git branch -r --merged <commit>
 
 
 ### 创建分支

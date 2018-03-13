@@ -3,7 +3,7 @@
 > <img src="./img/webpack-logo.png" height="40"> CommonJS Module Bundler。智能的`模块打包器`。但不仅仅是一个打包器。
 
 
-`天生`对`SPA`有很好的支持，但是也支持`AMD`。通过复用模块拆分，也能很好的支持`MP`。
+`天生`对`SPA`有很好的支持；在js模块类型上支持`AMD`/`CommonJS`/`ES Module`等。通过复用模块拆分，也能很好的支持`MP`。
 
 > 注：编写此篇文档的时候，`webpack 2`尚未正式发布。`webpack 2`相关内容移步<ref://./webpack2.md.html>
 

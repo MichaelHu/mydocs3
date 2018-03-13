@@ -97,7 +97,9 @@
 
 
 
-    // DEFAULT
+    /**********************
+     * DEFAULT
+     */
     var sex = 'female';
     export default sex;
 
@@ -113,10 +115,32 @@
     // ClassDeclaration
     export default class ABC extends DEF { ... };
 
+    // FunctionDeclaration
+    export default function echo( ... ) { ... };
+
+    // GeneratorDeclaration
+    export default function *() { ... };
+
+
+
     // ExportClause
     export {};
     export { sex, echo };
     export { sex as a, echo as e };
+
+
+
+### Definition
+
+    Declaration[Yield] :
+        HoistableDeclaration[?Yield]
+        ClassDeclaration[?Yield]
+        LexicalDeclaration[In, ?Yield]
+    HoistableDeclaration[Yield, Default] :
+        FunctionDeclaration[?Yield,?Default]
+        GeneratorDeclaration[?Yield, ?Default]
+
+
 
 
 ### Tips
@@ -128,6 +152,10 @@
 
         var sex = 'female';
         export sex;
+
+    而应该是：
+
+        export var sex = 'female';
 
 * export`不支持`此种类型的输出：`export { name: varB, sex: varA };`，
     但支持：`export { varB, varA };`或`export { varB as name, varA as sex };`
