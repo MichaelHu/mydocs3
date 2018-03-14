@@ -335,6 +335,7 @@
         $ let a=4-4; echo $?
         1
 
+* `let`后的表达式，操作符与操作数之间不能有`空白符`
 * `[..]`与`[[..]]`，使用后者能避免一些逻辑错误。其中`&&`, `||`只在`[[..]]`中支持
 * `逻辑操作符`需遵循`相同类型一起使用`的规则
 
@@ -2157,6 +2158,8 @@ sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://.
     # vim下将awk作为外部命令调用
     :'<,'>!awk '{printf("\%s \%.2f\n", $0, $2*0.6+$3*0.2+$4*0.1+$5*0.1 )}' 
 
+注意，在vim中使用外部命令，`%`需要转义。
+
 
 
 
@@ -2775,6 +2778,18 @@ output：
         | xargs -n 1 \
         | awk -F'.' \
             '{printf " <img class=\"lazy\" data-url=\"./img/2018-indonesia/big-%s-1200.%s\">\n\n", $1, $2}'
+
+
+
+### 统计一段时间内的文档更新行数
+
+    let c=0; \
+        for i in `\
+            git log --stat --since 2018-01-01 \
+            | grep ' docs/' | grep '.md' | awk -F'|' '{print $2}' \
+            | awk '{print $1}'`; \
+        do let c=c+$i; done; \
+        echo $c
 
 
 
