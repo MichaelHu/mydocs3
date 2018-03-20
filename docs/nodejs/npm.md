@@ -125,7 +125,7 @@ or
     nvm uninstall <version>
     nvm deactivate
 
-列出可用命令，使用`两个tab`:
+列出`可用命令`，使用`两个tab`:
 
     $ nvm [tab][tab]
     alias             deactivate        install           ls                  run               unload

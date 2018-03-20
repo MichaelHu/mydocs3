@@ -2794,6 +2794,16 @@ output：
 
 
 
+## Mac shell相关
+
+> 与linux shell的一些不同之处
+
+    # 复制目录
+    cp -r img/180317-strawberry a/img/
+    # 复制目录下的文件
+    cp -r img/180317-strawberry/ a/img/
+
+
 
 ## 参考
 

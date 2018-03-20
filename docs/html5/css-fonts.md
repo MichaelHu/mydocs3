@@ -23,6 +23,8 @@
 * 阿里妈妈矢量图标库 <http://www.iconfont.cn/plus>
 * 170403 消灭豆腐块！谷歌联合Adobe发布全新开源汉字字体 <https://github.com/googlei18n/noto-fonts>
 * 170625 给自己的Fonts教程 <https://segmentfault.com/a/1190000009920615>
+* 170325 CSS font-family常见中文字体对应的英文名称 <http://www.zhangxinxu.com/wordpress/2017/03/css-font-family-chinese-english/>
+* 170325 CSS font-family中文字体英文名称展示 <http://www.zhangxinxu.com/study/201703/font-family-chinese-english.html>
 
 
 ## tips

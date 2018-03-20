@@ -1,6 +1,13 @@
 # es7
 
 
+## Resources
+
+* `ecma-262`: <ref://../ecma/ecma-262.md.html>
+* ES2016( es7 ): <http://www.ecma-international.org/ecma-262/7.0/index.html>
+
+
+
 `dnd`提到了`es7`的写法。<http://gaearon.github.io/react-dnd/>
 
 只有两个新特性：

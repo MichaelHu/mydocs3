@@ -10,6 +10,7 @@
 * ES5.1: <http://www.ecma-international.org/ecma-262/5.1/index.html>，中文对应：<https://www.w3.org/html/ig/zh/wiki/ES5> 
 * ES2015( es6 ): <http://www.ecma-international.org/ecma-262/6.0/index.html>
 * ES2016( es7 ): <http://www.ecma-international.org/ecma-262/7.0/index.html>
+* ES2017( es8 ): <http://www.ecma-international.org/ecma-262/8.0/index.html>
 * ES`( latest )`: <https://tc39.github.io/ecma262/>
 
 
