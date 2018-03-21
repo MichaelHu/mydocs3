@@ -23,8 +23,10 @@
 ## Tips
 
 * API文档比较全面，编写代码时可多多参考
-* 所有puppeteer API都是node与Headless Chrome的交互，都是异步进行的
-* Node最低支持版本v6.4.0，最好使用高于`v7.6.0`的版本，以支持更好的异步编程方式( async/await )
+* 所有puppeteer API都是node与Headless Chrome的交互，都是`异步`进行的，使用API时，注意别忘了添加`await`关键词
+* Node最低支持版本v6.4.0，最好使用高于`v7.6.0`的版本，以支持更好的异步编程方式( `async/await` )，具体可参考 <ref://../es/es8.md.html>
+* `JSHandle`类型，指向browser内部的变量
+* `page.waitForFunction( pageFunction, [ options [, ...args ]] )`，注意pageFunction是运行在`浏览器上下文`而不是node上下文中，其不能使用外部上下文的变量，另外传入的参数需要`可序列化`
 
 
 

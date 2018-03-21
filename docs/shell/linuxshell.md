@@ -241,13 +241,13 @@
     ${*:position}
     ${@:position}
 
-    # 首部子串移除
+    # 首部子串移除，支持通配符*
     # 非贪婪
     ${string#substring}
     # 贪婪
     ${string##substring}
 
-    # 尾部子串移除
+    # 尾部子串移除，支持通配符
     # 非贪婪
     ${string%substring}
     # 贪婪
@@ -267,6 +267,11 @@
 #### Tips
 
 * 上述命令中，除`string部分`需要用字符串`变量名`之外，其他的既可以用变量名，也可以使用`直接量`
+* 首部/尾部字符串移除，支持通配符`*`，例如：
+        a=img_xxxxx_yyyy
+        a=${a#*_}       # xxxxx_yyyy
+        a=${a##*_}      # yyyy
+        
 
 
 
@@ -1032,6 +1037,24 @@ todo
 
 
 
+## set
+
+    set -e
+    set -o option-name
+
+### options
+
+    -e              exit immediately if a pipeline, a subshell command enclosed in
+                    parentheses, or one of the commands executed as part of a command list
+                    enclosed by braces exits with a non-zero status.
+    -o option-name  the option-name can be one of the following:
+        pipefail    if set, the return value of a pipeline is the value of the last ( rightmost )
+                    command to exit with a non-zero status, or zero if all commands in the 
+                    pipeline exit successfully. This option is disabled by default.
+        ...
+    ...
+
+
 
 ## env
 
@@ -1097,6 +1120,17 @@ todo
     /user/bin/cp
     $ /usr/bin/cp -r src/* dest
     $ \cp -r src/* dest
+
+### Examples
+
+    # mac下，对剪贴板内容做批量操作，在~/.bash_profile添加以下内容
+    alias px="pbpaste | xargs -n 1'
+
+    # 使用方式
+    $ px rm
+    $ px git rm
+    $ px git checkout --
+
 
 
 
