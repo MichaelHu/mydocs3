@@ -11,6 +11,7 @@
 * mozilla es6: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/New_in_JavaScript/ECMAScript_6_support_in_Mozilla>
 * 160103 ECMAScript compatiblity table <http://kangax.github.io/compat-table/es6/> github: <https://github.com/kangax/compat-table> <iframe src="http://258i.com/gbtn.html?user=kangax&repo=compat-table&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
 * 161116 A Rundown of JavaScript 2015 features - Auth0 <https://auth0.com/blog/a-rundown-of-es6-features/>
+* 180316 Check out these useful ECMAScript 2015 (ES6) tips and tricks <https://medium.freecodecamp.org/check-out-these-useful-ecmascript-2015-es6-tips-and-tricks-6db105590377> ES6新特性使用提示和技巧
 * 实时转码DEMO：<http://google.github.io/traceur-compiler/demo/repl.html>
 
 

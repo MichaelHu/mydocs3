@@ -13,6 +13,10 @@
 * Changelogs: <https://github.com/facebook/react/blob/master/CHANGELOG.md>
         // React.PropTypes从16.0.0开始不再可用，需从prop-types import
         // React.createClass()从16.0.0开始不再可用，需从create-react-class import
+* `React-like` Framework:
+    * preact <https://preactjs.com> github: <https://github.com/developit/preact> <iframe src="http://258i.com/gbtn.html?user=developit&repo=preact&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+    * Inferno github: <https://github.com/infernojs/inferno> <iframe src="http://258i.com/gbtn.html?user=infernojs&repo=inferno&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+    * Nerv <https://github.com/NervJS/nerv> <iframe src="http://258i.com/gbtn.html?user=NervJS&repo=nerv&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 
 
 
