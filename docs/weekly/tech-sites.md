@@ -51,6 +51,7 @@
 * 候振宇L4 <http://www.cnblogs.com/sskyy/>
 * 怡红院落 <https://imnerd.org>
 * D3作者Mike Bostock的个人博客 <https://bost.ocks.org/mike/>
+* three.js作者Mr.doob <http://mrdoob.com> github: <https://github.com/mrdoob> 
 * 鑫空间，鑫生活 高质量前端技术博客 <http://www.zhangxinxu.com>
 * 极限前端，博主( Ouven )为前腾讯IMWEB团队成员 <http://jixianqianduan.com>
 * 拉风的博客，Raphael曾在BAT，IBM实习，2013年毕业后加入微信研发部门至今，其博客图文结合，具有深度，推荐收藏 <http://rapheal.sinaapp.com>

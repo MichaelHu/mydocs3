@@ -10,18 +10,32 @@
 ## Resources
 
 * site: <https://threejs.org>
-* github: <https://github.com/mrdoob/three.js/>
+* github: <https://github.com/mrdoob/three.js/> <iframe src="http://258i.com/gbtn.html?user=mrdoob&repo=three.js&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 * docs: <http://threejs.org/docs/index.html>
+* the Author `Mr.boob`'s site: <http://mrdoob.com>
+* editor: <https://threejs.org/editor/>
 * local examples: <a href="file:///Users/hudamin/projects/git/three.js/examples/index.html" target="_blank">Examples</a>
 * 现学现卖Three.js: <https://aotu.io/notes/2017/08/28/getting-started-with-threejs/>
 * `「Learning Three.js」`samples: <https://github.com/josdirksen/learning-threejs>
+* Web Ninja Interview: Mr.Doob <http://ajaxian.com/archives/web-ninja-interview-mr-doob>
+
+
+## Examples
+
+* <https://alexanderperrin.com.au/paper/shorttrip/>
+* <http://hands.wtf>: yes, god, cat, etc.
+* <http://mrdoob.com/#/129/voxels>
+* <http://mrdoob.com/projects/voxels/#A/aenahcacYbomibhehbiihaacaehajlafjaceXidhVhhffeahajjVhhfbemZWhhSeesfXafjahmabWaanaed>
 
 
 ## Keywords
 
     Object      Desc
-    ----------------------------------
+    ------------------------------------------------------------------------------------
     scene       场景
+                Scenes allow you to set up what and where is to be rendered by three.js.
+                This is where your place objects, lights and cameras.
+    fog
     plane       平面
     cube        立方体
     sphere      球体
@@ -29,6 +43,8 @@
     axes        x、y和z轴
     mesh        网，好比一个包装工，它将“可视化的材质”粘合在一个数学世界里的几何体上，
                 形成一个可添加到场景的对象
+    geometry    Base class for all geometries ( but not for BufferGeometries ). 
+                This can also be used directly for building custom geometries.
 
 
 todo:
@@ -50,11 +66,29 @@ todo:
 * 游戏，赛车视角
 
 
+
+
+## 180323
+
+Line <https://threejs.org/docs/#api/objects/Line>
+    A continuous line.
+    This is nearly the same as LineSegments; the only difference is that is is rendered using 
+    gl.LINE_STRIP instead of gl.LINES
+
+LineBasicMaterial
+    LineColorMaterial已被LineBasicMaterial取代
+
+Vector3
+    Vertex
+
+
+
+
 ## PerspectiveCamera
 
     PerspectiveCamera( fov, aspect, near, far )
 
-* `fov` — Camera frustum(锥) vertical field of view, from bottom to top of view, `in degrees`.
+* `fov` — Camera frustum(锥) vertical `field of view`, from bottom to top of view, `in degrees`.
 * `aspect` — Camera frustum `aspect ratio`(宽高比), window width divided by window height. 
 * `near` — Camera frustum near plane(平面).
 * `far` — Camera frustum far plane.
