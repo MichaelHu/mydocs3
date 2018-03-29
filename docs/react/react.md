@@ -210,6 +210,8 @@ jsx只是一个`句法糖`，目的是简化`React.createElement( component, pro
 
     上方两种写法等价。
 
+6. SyntheticEvent: <https://reactjs.org/docs/events.html#mouse-events>
+
 
 
 

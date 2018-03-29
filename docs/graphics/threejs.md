@@ -68,6 +68,77 @@ todo:
 
 
 
+## 180328
+
+### 显示中文字体
+
+* 先使用`facetype.js`从`ttf`字体文件生成对应`json`文件，可在Chrome浏览器下自动触发文件下载，Safari浏览器不触发下载，json文件太大不容易拷贝保存
+* 再使用`THREE.TextGeometry()`生成Geometry
+* 参考`facetype.js` - typeface.js generator <https://github.com/gero3/facetype.js> <iframe src="http://258i.com/gbtn.html?user=gero3&repo=facetype.js&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+
+
+
+
+rotation
+
+    right-hand rotation
+
+    * 右手法则旋转
+
+
+
+Math/Plane
+
+    A two dimensional surface that extends infinitely in 3d space, represented in Hessian normal form ( <http://mathworld.wolfram.com/HessianNormalForm.html> ) by a unit length normal vector and a constant.
+
+    * 是一个数学概念
+    * 在3d空间中无限延展的二维平面
+
+BufferGeometry
+
+    This class is an efficient alternative to Geometry, because it stores all data, including vertex positions, face indices, normals, colors, UVs, and custom attributes within buffers; this reduces the cost of passing all this data to the GPU.
+    This also makes BufferGeometry harder to work with than Geometry; rather than accessing position data as Vector3 objects, color data as Color objects, and so on, you have to access the raw data from the appropriate attribute buffer. This makes BufferGeometry best-suited for static objects where you don't need to manipulate the geometry much after instantiating it.
+
+    * 是Geometry的高效( 高性能 )版本，它将所有数据存储在buffer中
+    * buffer存储减少了传输所有数据给GPU的耗时
+    * 性能提升的同时也增加了接口使用的复杂度
+    * 非常适用于静态对象，在实例化之后不再需要频繁对其属性进行操作
+
+
+
+
+## 180327
+
+PointLight
+
+    A light that gets emitted from a single point in all directions. A common use case for this is to replicate the light emitted from a bare lightbulb.
+
+    PointLight( color : Integer, intensity : Float, distance : Number, decay : Float )
+
+    * 点光源，发自一点，向任何方向发射
+    * 常用于模拟来自裸灯泡的光
+
+
+## 180326
+
+Phong光照模型：
+
+    Phong光照模型是真是图形学中提出的第一个有影响的光照模型，该模型只考虑物体对直接光照的反射作用，认为环境光是常量，没有考虑物体之间相互的反射光。
+
+DirectionalLight
+
+    A light that gets emitted in a specific direction. This light will behave as though it is infinitely far away and the rays produced from it are all parallel. THe common use case for this is to simulate daylight; the sun is far enough away that its position can be considered to be infinite, and all light rays coming from it are parallel.
+
+    * 方向光
+    * 来自无穷远处的光，其光束为平行光束
+    * 常用于模拟太阳光，太阳的距离可认为无穷远，其照射过来的光为平行光
+
+opacity and transparent
+
+    new THREE.MeshBasicMaterial( { color: 0x998800, opacity: 0.5, transparent: false } )
+
+
+
 ## 180323
 
 Line <https://threejs.org/docs/#api/objects/Line>

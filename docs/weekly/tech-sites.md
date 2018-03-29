@@ -48,7 +48,7 @@
 ## 个人站点
 
 * 相学长，丁香园前端 <https://juejin.im/user/58f876dc5c497d0058e38ae1>
-* 候振宇L4 <http://www.cnblogs.com/sskyy/>
+* 候振宇 - 理想世界 <http://www.cnblogs.com/sskyy/>
 * 怡红院落 <https://imnerd.org>
 * D3作者Mike Bostock的个人博客 <https://bost.ocks.org/mike/>
 * three.js作者Mr.doob <http://mrdoob.com> github: <https://github.com/mrdoob> 
