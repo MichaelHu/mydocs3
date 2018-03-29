@@ -27,10 +27,9 @@
 
 `Level 0`，浏览器直接将事件派发给`target`，如果该target有handler，则执行之，仅此而已，别再无它。
 
-
-
 ## DOM Event Level 2
 1. <http://www.w3.org/TR/DOM-Level-2-Events/> 2000-11-13成为`REC`
+
 
 
 ### 术语
@@ -87,6 +86,27 @@ bubble链是在事件派发前确定的，如果事件处理过程中DOM结构�
 
 
 
+## UI Events
+
+1. 可以认为是DOM Event Level 3，在DOM Level 3 Core的体系内
+2. <https://www.w3.org/TR/uievents/> 2016-08-04 Working Draft
+
+
+### Event Flow
+
+from UI Events ( DOM Event Level 3 )
+
+ <img src="./img/eventflow.svg" style="max-height: 500px;">
+
+
+### Default actions and cancelable events
+
+* Default actions and cancelable events <https://www.w3.org/TR/uievents/#event-flow-default-cancel>
+
+    * 比如`mousedown`事件在用户按下鼠标时立即触发
+    * 一个可能的default action是设置`状态机`，允许用户`拖动图片`或者`选择文本`，该default action是否最终触发，取决于用户后面的行为，如果是在一张图片上，那么继续拖动鼠标，将会触发图片拖动
+    * 调用`event.preventDefault()`将可以阻止这些默认行为的发生，也就是即使在图片上点击并拖动，也不会触发默认的图片拖动行为
+    * 再比如form表单下的`<button>`按钮，点击后的默认行为会提交表单；链接`<a>`点击，能触发navigation的默认行为
 
 
 
@@ -333,7 +353,9 @@ The return value of `dispatchEvent` indicates whether any of the listeners which
 
 
 
-## 例子：事件派发顺序
+## 例子
+    
+### 事件派发顺序
 
 验证目的：
 
@@ -354,8 +376,8 @@ The return value of `dispatchEvent` indicates whether any of the listeners which
         var $btnOutter = $wrapper.find('.bg-color-1'); 
         var $btnClear = $wrapper.find('button'); 
 
-        $wrapper.onclick = function(e) {
-            s.show();
+        $wrapper[ 0 ].onclick = function(e) {
+            s.show( 'html4', 'wrapper' );
         };
 
         $btnInner[0].onclick = function(e) {
@@ -405,6 +427,74 @@ The return value of `dispatchEvent` indicates whether any of the listeners which
 </div>
 
 
+### 原生、语义事件派发顺序
+
+验证目的：
+
+1. `mousedown`, `mouseup`, `click`的顺序
+2. 原生事件、语义事件在capture与bubble阶段的顺序
+
+<div id="test_raw_semantics_event_priority" class="test">
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var id = 'test_raw_semantics_event_priority';
+        var s = fly.createShow( '#' + id );
+        s.show('click to test ...');
+
+        var $wrapper = $( '#' + id );
+        var $btnInner = $wrapper.find('.bg-color-2'); 
+        var $btnOuter = $wrapper.find('.bg-color-1'); 
+        var $btnClear = $wrapper.find('button'); 
+
+        $btnInner[0].addEventListener('mousedown', function(e) {
+            s.append_show('mousedown', 'inner button');
+        }, false);
+
+        $btnInner[0].addEventListener('mouseup', function(e) {
+            s.append_show('mouseup', 'inner button');
+        }, false);
+
+        $btnInner[0].addEventListener('click', function(e) {
+            s.append_show('click', 'inner button');
+        }, false);
+
+        $btnOuter[0].addEventListener('mousedown', function(e) {
+            s.append_show('mousedown', 'outer button');
+            e.stopPropagation();
+        }, false);
+
+        $btnOuter[0].addEventListener('mouseup', function(e) {
+            s.append_show('mouseup', 'outer button');
+            e.stopPropagation();
+        }, false);
+
+        $btnOuter[0].addEventListener('click', function(e) {
+            s.append_show('click', 'outer button');
+            e.stopPropagation();
+        }, false);
+
+        $btnClear[0].onclick = function(e) {
+            s.show('click to test ...');
+            e.stopPropagation();
+        }
+
+    })();
+
+</div>
+<div class="test-panel" style="height: 100px;">
+<div class="nested-button bg-color-1" style="height: 80px;">
+<div class="nested-button bg-color-2" style="height: 60px;">
+</div>
+</div>
+</div>
+<button> Clear </button>
+<div class="test-console"></div>
+</div>
+
+
+
 
 
 
@@ -412,6 +502,107 @@ The return value of `dispatchEvent` indicates whether any of the listeners which
 ## Key events
 
 > The DOM Level 2 Event specification does not provide a key event module. An event module designed for use with keyboard input devices will be included in a later version of the DOM specification.
+
+> UI Events 详细定义了Key Events
+
+### KeyboardEvent IDL
+
+    // UI Events
+    [Constructor(DOMString type, optional KeyboardEventInit eventInitDict)]
+    interface KeyboardEvent : UIEvent {
+      // KeyLocationCode
+      const unsigned long DOM_KEY_LOCATION_STANDARD = 0x00;
+      const unsigned long DOM_KEY_LOCATION_LEFT = 0x01;
+      const unsigned long DOM_KEY_LOCATION_RIGHT = 0x02;
+      const unsigned long DOM_KEY_LOCATION_NUMPAD = 0x03;
+
+      readonly attribute DOMString key;
+      readonly attribute DOMString code;
+      readonly attribute unsigned long location;
+
+      readonly attribute boolean ctrlKey;
+      readonly attribute boolean shiftKey;
+      readonly attribute boolean altKey;
+      readonly attribute boolean metaKey;
+
+      readonly attribute boolean repeat;
+      readonly attribute boolean isComposing;
+
+      boolean getModifierState(DOMString keyArg);
+    };
+
+    partial interface KeyboardEvent {
+      // The following support legacy user agents
+      readonly attribute unsigned long charCode;
+      readonly attribute unsigned long keyCode;
+      readonly attribute unsigned long which;
+    };
+
+### InputEvent IDL
+
+    [Constructor(DOMString type, optional InputEventInit eventInitDict)]
+    interface InputEvent : UIEvent {
+      readonly attribute DOMString data;
+      readonly attribute boolean isComposing;
+    };
+
+
+### Examples
+
+验证：`keydown`, `keyup`, `keypress`事件在input, document上的传递
+
+<div id="test_keyboard_events" class="test">
+<div class="test-container">
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_keyboard_events');
+        var $document = $( document );
+        var $container = $( '#test_keyboard_events' );
+        var $input = $container.find( 'input' );
+        var $button = $container.find( 'button' );
+
+        $input.on( 'click', function( e ) {
+            e.stopPropagation();
+        } );
+
+        $button.on( 'click', function( e ) {
+            e.stopPropagation();
+            // prevent `submit` default action
+            e.preventDefault();
+            s.show( 'Testing ...' );
+        } );
+
+        $document.on( 'keydown keyup keypress', function( e ) {
+            s.append_show( 'document key events', e.type );
+        } );
+
+        $input.on( 'keydown keyup keypress', function( e ) {
+            s.append_show( 'input key events', e.type );
+            // e.stopPropagation();
+        } );
+
+        $input.on( 'beforeinput input', function( e ) {
+            s.append_show( 'input events', e.type, e.data );
+            // e.stopPropagation();
+        } );
+
+        s.show( 'Testing ...' );
+
+    })();
+
+</div>
+<div class="test-panel">
+<form class="form-inline">
+<input class="form-control" type="text">
+<button class="form-control">Clear</button>
+</form>
+</div>
+<div class="test-console"></div>
+</div>
+
+
+
 
 
 
