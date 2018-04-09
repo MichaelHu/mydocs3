@@ -45,6 +45,7 @@
                 形成一个可添加到场景的对象
     geometry    Base class for all geometries ( but not for BufferGeometries ). 
                 This can also be used directly for building custom geometries.
+	shader
 
 
 todo:
@@ -64,6 +65,45 @@ todo:
 * 分子结构图
 * 虚拟现实，过山车
 * 游戏，赛车视角
+
+
+## 180406
+
+shader: 着色器，着色程序
+
+	Diffuse Shader Material has only two properties-a color and a texture.
+	漫反射着色器材质只有两个属性-颜色和纹理。
+
+
+
+
+## 180402
+
+### 光
+
+    DirectionalLight            方向光源，发射平行光
+    PointLight                  点光源
+
+### 几何体
+
+    CircleGeometry              圆盘
+    BoxGeometry                 立方体（三维方块）
+    ConeGeometry                圆锥体
+    CylinderGeometry            圆柱体
+    DodecahedronGeometry        十二面体
+    RingGeometry                圆环
+    ShapeGeometry               自定义形状
+    SphereGeometry              球体 
+    TorusGeometry               圆环面 
+    TorusKnotGeometry           圆环结
+    TubeGeometry                管状体
+    TetrahedronGeometry         四面体
+    PolyhedronGeometry          自定义多面体
+
+### 辅助类几何体
+
+    EdgesGeometry               边几何体，用于展示其他几何体
+    WireframeGeometry           线框体，用于展示其他几何体
 
 
 

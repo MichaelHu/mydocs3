@@ -24,6 +24,14 @@
 * 百度AI开放平台 <http://ai.baidu.com>
 * FEG - 网易FEG前端团队 <http://feg.netease.com>
 
+
+## 技术会议
+
+* QCon
+* D2
+* 中国CSS开发者大会
+
+
 ## 技术站点
 
 * `html5-tricks` - <http://www.html5tricks.com>
@@ -47,6 +55,7 @@
 
 ## 个人站点
 
+* Zell Liew - 知名前端专家，来自新加坡，<https://learnjavascript.today> 作者，其个人站点 <https://zellwk.com/blog/>
 * 相学长，丁香园前端 <https://juejin.im/user/58f876dc5c497d0058e38ae1>
 * 候振宇 - 理想世界 <http://www.cnblogs.com/sskyy/>
 * 怡红院落 <https://imnerd.org>

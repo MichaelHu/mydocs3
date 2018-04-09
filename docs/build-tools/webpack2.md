@@ -257,6 +257,13 @@ webpack将每个文件（.css, .html, .scss, .jpg等）都作为一个`module`�
     } );
     ...
 
+webpack 2支持`import( module )`语句，module部分支持变量，但不支持目录的默认模块，如下：
+
+    // moduleA is a directory
+    import( './moduleA' );              // error
+    import( './moduleA/index' );        // the right way
+    import( './moduleA/index.js' );     // the right way too
+
 
 ## Shimming
 
