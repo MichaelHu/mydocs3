@@ -404,7 +404,7 @@
 
 ### proxy_pass规则
 
-充分理解`proxy_pass`规则是反向代理的关键
+充分理解`proxy_pass`规则是`反向代理`的关键
 
 1. location后面进行`URI匹配`，记`location`的URI参数为`URI-p` ( URI pattern )
 
@@ -419,7 +419,7 @@
                    |____________________||____|
                    proxied-server-address  URI      
                    
-4. 代理过程将`URI-r`替换成`URI-p`，再接到`location.origin`部分后面
+4. 代理过程将`URI-p`替换成`URI-r`，再接到`location.origin`部分后面
 
         URI-p *
         => proxied-server-address URI-r *

@@ -1329,10 +1329,22 @@ idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文
     :tabl[ast]
 
     # 新开tab，并将当前鼠标下的文件名所指的文件在新的tab page中编辑
+    # Mnemonic( 记忆的 ): "goto file".
     CTRL-W gf
+
     # 新开tab，并将当前鼠标下的文件名所指的文件在新的tab page中编辑
     # ，并跳转到文件名后面所示的行号
+    #     eval.c:10
+    #     eval.c @ 20
+    #     eval.c (30)
+    #     eval.c 40
     CTRL-W gF
+
+	# 新窗口中打开鼠标下文件名，详见CTRL-W相关部分
+	CTRL-W f
+	CTRL-W F
+
+	./emacs.md:20
 
     # tab移动
     # 移动到tab N
