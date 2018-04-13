@@ -11,6 +11,7 @@
 
 ## 资讯
 
+* 180412 2018 年了，你还是只会 npm install 吗？<https://mp.weixin.qq.com/s/e-_3DN5CzVFDmNZ1W4F9VA>
 * 170602 npm 5.0增强了常规性能，据说5倍之快 <https://www.infoq.com/news/2017/05/npm-5-released>
         强化了缓存的作用，提升性能
         --no-save开关，默认会进行save
