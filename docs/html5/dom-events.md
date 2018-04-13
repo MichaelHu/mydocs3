@@ -18,6 +18,136 @@
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 
 
+## HTML5 Web application APIs
+
+### Resources
+
+* Web application APIs - HTML 5: <https://www.w3.org/TR/html5/webappapis.html>
+* Event handlers on elements, Document objects, and Window objects - HTML 5: <https://www.w3.org/TR/html5/webappapis.html#event-handlers-on-elements-document-objects-and-window-objects>
+
+### Event Types
+
+#### 全支持事件
+
+> 所有HTMLElements, 以及Document和Window都支持
+
+    Event handler           Event handler event type
+    ==================================================
+    onabort                 abort
+    onauxclick              auxclick
+    oncancel                cancel
+    oncanplay               canplay
+    oncanplaythrough        canplaythrough
+    onchange                change
+    onclick                 click
+    onclose                 close
+    oncuechange             cuechange
+    ondblclick              dblclick
+    ondrag                  drag
+    ondragend               dragend
+    ondragenter             dragenter
+    ondragexit              dragexit
+    ondragleave             dragleave
+    ondragover              dragover
+    ondragstart             dragstart
+    ondrop                  drop
+    ondurationchange        durationchange
+    onemptied               emptied
+    onended                 ended
+    oninput                 input
+    oninvalid               invalid
+    onkeydown               keydown
+    onkeypress              keypress
+    onkeyup                 keyup
+    onloadeddata            loadeddata
+    onloadedmetadata        loadedmetadata
+    onloadend               loadend
+    onloadstart             loadstart
+    onmousedown             mousedown
+    onmouseenter            mouseenter
+    onmouseleave            mouseleave
+    onmousemove             mousemove
+    onmouseout              mouseout
+    onmouseover             mouseover
+    onmouseup               mouseup
+    onwheel                 wheel
+    onpause                 pause
+    onplay                  play
+    onplaying               playing
+    onprogress              progress
+    onratechange            ratechange
+    onreset                 reset
+    onseeked                seeked
+    onseeking               seeking
+    onselect                select
+    onshow                  show
+    onstalled               stalled
+    onsubmit                submit
+    onsuspend               suspend
+    ontimeupdate            timeupdate
+    ontoggle                toggle
+    onvolumechange          volumechange
+    onwaiting               waiting
+
+
+#### 大部分支持事件
+
+> 除了` <body>, <frameset> `之外都支持
+
+    Event handler           Event handler event type
+    ==================================================
+    onblur                  blur
+    onerror                 error
+    onfocus                 focus
+    onload                  load
+    onresize                resize
+    onscroll                scroll
+
+> 除了`Window`之外都支持
+
+    Event handler           Event handler event type
+    ==================================================
+    oncut                   cut
+    oncopy                  copy
+    onpaste                 paste
+
+
+
+#### 仅Window支持的事件
+
+> 也包含Window开放给`<body>`和`<frameset>`的部分事件
+
+
+    Event handler           Event handler event type
+    ==================================================
+    onafterprint            afterprint
+    onbeforeprint           beforeprint
+    onbeforeunload          beforeunload
+    onhashchange            hashchange
+    onlanguagechange        languagechange
+    onmessage               message
+    onoffline               offline
+    ononline                online
+    onpagehide              pagehide
+    onpageshow              pageshow
+    onrejectionhandled      rejectionhandled
+    onpopstate              popstate
+    onstorage               storage
+    onunhandledrejection    unhandledrejection
+    onunload                unload
+
+
+#### 仅Document支持的事件
+
+    Event handler           Event handler event type
+    ==================================================
+    onreadystatechange      readystatechange
+
+
+
+
+
+
 
 
 ## DOM Event Level 0

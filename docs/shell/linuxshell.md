@@ -1137,17 +1137,18 @@ todo
 
 ## which vs whereis
 
-1. `whereis`输出系统标准目录中的程序地址
-2. `which`输出根据用户目录优先级查找的程序地址，更接近用户视角
+1. `whereis`输出`系统标准目录`中的程序地址
+2. `which`输出根据用户目录优先级查找的程序地址，更接近`用户视角`
 
 比如：
 
-    which vim
     $ which -a vim
     /Users/hudamin/softwares/vim8/bin/vim
     /usr/bin/vim
+
     $ which vim
     /Users/hudamin/softwares/vim8/bin/vim
+
     $ whereis vim
     /usr/bin/vim
 
