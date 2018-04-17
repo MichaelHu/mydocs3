@@ -507,16 +507,26 @@
         return 403;
     }
 
+    # 非特定不能访问
+    if ( $remote_addr !~ '172\.22\.128\.\d+' ) {
+        return 403;
+    }
 
 ## Return
 
-停止处理，并将指定状态码返回给客户端。
+停止处理，并将指定`状态码`返回给客户端。
 
 ### Syntax
 
+    # 返回指定代码
+    return code;
+
+    # 重定向至URL
+    return URL;
+
+    # 返回指定代码，并将文本返回给用户
     return code [text];
     return code URL;
-    return URL;
 
 
 ## Set

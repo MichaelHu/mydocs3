@@ -187,6 +187,27 @@ cnpm支持除`publish`之外的所有命令。
 
 
 
+## nrm
+
+> Node Registry Manager - `nrm`，Node镜像源管理工具。
+
+    $ npm i -g nrm
+
+    $ nrm --help
+
+    $ nrm ls
+    * npm ---- https://registry.npmjs.org/
+      cnpm --- http://r.cnpmjs.org/
+      taobao - https://registry.npm.taobao.org/
+      nj ----- https://registry.nodejitsu.com/
+      rednpm - http://registry.mirror.cqupt.edu.cn/
+      npmMirror  https://skimdb.npmjs.com/registry/
+      edunpm - http://registry.enpmjs.org/
+
+    $ nrm use <registry>
+
+
+
 
 
 ## 包注册与发布
