@@ -28,10 +28,12 @@
             var $item = $(item)
                 , tag = $item[0].tagName
                 , txt = $item.text()
+                , tmpArr
                 ;
             
             switch(tag){
-                case 'H2': 
+
+                case 'H2':
                     levelIndices[0]++;
                     if(!/^\s*[一二三四五六七八九十]+、/.test(txt)){
                         $item.text(toCHNNumber(levelIndices[0]) + '、' + $item.text());
@@ -41,46 +43,70 @@
                     levelIndices[3] = 0;
                     levelIndices[4] = 0;
                     break;
-                case 'H3': 
-                    levelIndices[1]++;
+                case 'H3':
                     if(!/^\s*[1-9][0-9]*\.[1-9][0-9]*\s+/.test(txt)){
-                        $item.text(
-                            levelIndices.slice(0, 2).join('.') + ' ' 
-                            + $item.text()
-                        );
+                        levelIndices[1]++;
+                        tmpArr = levelIndices.slice( 0, 2 );
+                        if ( tmpArr.indexOf( 0 ) < 0 ) {
+                            $item.text(
+                                tmpArr.join('.') + ' '
+                                + $item.text()
+                            );
+                            levelIndices[2] = 0;
+                            levelIndices[3] = 0;
+                            levelIndices[4] = 0;
+                        }
+                        else {
+                            levelIndices[1]--;
+                        }
                     }
-                    levelIndices[2] = 0;
-                    levelIndices[3] = 0;
-                    levelIndices[4] = 0;
                     break;
-                case 'H4': 
-                    levelIndices[2]++;
+                case 'H4':
                     if(!/^\s*(?:[1-9][0-9]*\.){2}[1-9][0-9]*\s+/.test(txt)){
-                        $item.text(
-                            levelIndices.slice(0, 3).join('.') + ' ' 
-                            + $item.text()
-                        );
+                        levelIndices[2]++;
+                        tmpArr = levelIndices.slice( 0, 3 );
+                        if ( tmpArr.indexOf( 0 ) < 0 ) {
+                            $item.text(
+                                tmpArr.join('.') + ' '
+                                + $item.text()
+                            );
+                            levelIndices[3] = 0;
+                            levelIndices[4] = 0;
+                        }
+                        else {
+                            levelIndices[2]--;
+                        }
                     }
-                    levelIndices[3] = 0;
-                    levelIndices[4] = 0;
                     break;
-                case 'H5': 
-                    levelIndices[3]++;
+                case 'H5':
                     if(!/^\s*(?:[1-9][0-9]*\.){3}[1-9][0-9]*\s+/.test(txt)){
-                        $item.text(
-                            levelIndices.slice(0, 4).join('.') + ' ' 
-                            + $item.text()
-                        );
+                        levelIndices[3]++;
+                        tmpArr = levelIndices.slice( 0, 4 );
+                        if ( tmpArr.indexOf( 0 ) < 0 ) {
+                            $item.text(
+                                tmpArr.join('.') + ' '
+                                + $item.text()
+                            );
+                            levelIndices[4] = 0;
+                        }
+                        else {
+                            levelIndices[3]--;
+                        }
                     }
-                    levelIndices[4] = 0;
                     break;
-                case 'H6': 
-                    levelIndices[4]++;
+                case 'H6':
                     if(!/^\s*(?:[1-9][0-9]*\.){4}[1-9][0-9]*\s+/.test(txt)){
-                        $item.text(
-                            levelIndices.slice(0).join('.') + ' ' 
-                            + $item.text()
-                        );
+                        levelIndices[4]++;
+                        tmpArr = levelIndices.slice( 0 );
+                        if ( tmpArr.indexOf( 0 ) < 0 ) {
+                            $item.text(
+                                tmpArr.join('.') + ' '
+                                + $item.text()
+                            );
+                        }
+                        else {
+                            levelIndices[4]--;
+                        }
                     }
                     break;
             }
