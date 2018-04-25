@@ -12,11 +12,11 @@
 
 编码规范介绍`文件命名规范`、`命名空间规范`、`id－class命名规范`，有遗漏再补充。
 
-## 1. 文件命名规范
+## 文件命名规范
 
 webapp代码文件主要以`js、css、html、图片`等格式存在。框架对这些文件的命名有一些约定的规范。
 
-### 1.1 js文件命名
+### js文件命名
 
 js文件命名，按照js代码命名空间层级给出，举例如下：
 
@@ -67,7 +67,7 @@ mynotes的page目录，以notes页面为例，其js目录下文件命名遵从`r
 @todo: 命名空间规范
 @todo: id, class命名规范
 
-### 1.2 css、html、tpl文件命名规范 
+### css、html、tpl文件命名规范 
 
 不同于js文件按命名空间方式命名，css、html、tpl的命名更简单一点，因为对于单个页面来讲，这些文件一般只有一个，所以可以直接使用页面的`action name`来命名。举例如下：
 
@@ -94,11 +94,11 @@ notes页面的css、html、tpl文件的命名，具体如下：
           globalloading.tpl.html
           pageloading.tpl.html
 
-### 1.3 img文件命名规范
+### img文件命名规范
 
 暂未定规范，其所处的目录结构已经能避免重名冲突，当然也可以加入一下柔性规范。
 
-### 1.4 为什么要这样命名？
+### 为什么要这样命名？
 
 主要解释js文件的命名，js文件之所以选择按命名空间来规范，原因是：
 
@@ -114,7 +114,7 @@ notes页面的css、html、tpl文件的命名，具体如下：
     需要`手工进行`，也不容易使用自动化工具。所以Rocket框架规定模块内最多三级命名空间。
 
 
-## 2. 命名空间规范
+## 命名空间规范
 
 命名空间主要针对js代码。框架的`顶级命名空间为rocket`，预定义了9个核心`二级命名空间`：
 * router
@@ -167,11 +167,11 @@ webapp主模块`最多为三级命名空间`，以页面navzaker为例：
           rocket.subview.listzaker.header.js
           rocket.subview.listzaker.pageslider.js
 
-## 3. id-class命名规范
+## id-class命名规范
 
 主要针对html和css文件涉及的命名相关的规范。
 
-### 3.1 id命名规范
+### id命名规范
 
     根元素：            #wrapper
     页面元素：          #页面名称_page
@@ -187,7 +187,7 @@ webapp主模块`最多为三级命名空间`，以页面navzaker为例：
                 #detail_page_content_list
 
 
-### 3.2 class命名规范
+### class命名规范
 
 CSS类名与id命名规范类似，区别在于id的分隔符是**下划线**，CSS类名的分隔符是**减号**。命名的时候，CSS类名以id为参照，层级与id对应。
 
@@ -211,7 +211,7 @@ CSS类名与id命名规范类似，区别在于id的分隔符是**下划线**，
 实际上，.wrapper, .detail-page这类具有唯一性的节点一般不需要类选择器，直接使用id选择器即可。
 
 
-### 3.3 id-class命名规范
+### id-class命名规范
 
 实际情况中，id和class是混合的，CSS命名的时候，类名以id为参照，层级与id对应，举例如下：
 

@@ -9,6 +9,7 @@
 
 * 主页：<http://www.w3.org>
 * W3C中国：<http://www.chinaw3c.org>
+* W3C github: <https://github.com/w3c>
 * Web标准：<http://www.w3.org/standards/>
 * 如何阅读W3C规范：<http://www.chinaw3c.org/how-to-read-spec-gb.html>
 
@@ -27,6 +28,9 @@
 * CSS2.2 <https://www.w3.org/TR/CSS22/>
 * CSS3 <https://www.w3.org/TR/CSS/>
 * CSSOM <https://www.w3.org/TR/cssom-view-1/> CSSOM View Module，参考<ref://./cssom.md.html>
+* CSS Grid Layout Module
+    * Level 2: <https://www.w3.org/TR/css-grid-2/>
+    * Level 1: <https://www.w3.org/TR/css-grid-1/>
 * DOM-Level-0：`Netscape Navigator 3`及`MS IE 3`提供的HTML文档功能的合集，无正式规范 
 * DOM-Level-2-Core, 2000 <https://www.w3.org/TR/DOM-Level-2-Core/>
 * DOM-Level-3-Core <https://www.w3.org/TR/DOM-Level-3-Core/>
@@ -132,8 +136,12 @@
 
         `Group Notes:`
 
+        * 2017-02-16 Ready-made Counter Styles <https://www.w3.org/TR/2017/NOTE-predefined-counter-styles-20170216/>
+        * 2017-01-31 CSS Snapshot 2017 <https://www.w3.org/TR/2017/NOTE-css-2017-20170131/>
+        * 2015-10-13 CSS Snapshot 2015 <http://www.w3.org/TR/2015/NOTE-css-2015-20151013/>
         * ...
         * 2015-03-26 CSS Template Layout Module <http://www.w3.org/TR/2015/NOTE-css-template-3-20150326/>
+        * 2013-03-14 CSS Print Profile <http://www.w3.org/TR/css-print/>
         * ...
 
         `Drafts - Candidate Recommendations:`
@@ -146,6 +154,16 @@
 
         `Other Working Drafts:`
 
+        * 2018-04-23 CSS Box Alignment Module Level 3
+        * 2018-04-20 CSS Display Module Level 3
+        * + 2018-04-12 CSS Layout API Level 1
+        * + 2018-04-10 CSS Painting API Level 1
+        * 2018-04-10 CSS Fonts Module Level 4
+        * + 2018-04-10 CSS Typed OM Level 1
+        * 2018-03-13 CSS Text Docoration Module Level 4
+        * 2018-03-04 CSS Intrinsic & Extrinsic Sizing Module Level 3
+        * 2018-02-06 CSS Grid Layout Module Level 2
+        * 2018-02-02 Selectors Level 4
         * ...
         * 2016-09-13 Web Animations <https://www.w3.org/TR/2016/WD-web-animations-1-20160913/>
         * 2016-07-06 Media Queries Level 4 <http://www.w3.org/TR/2016/WD-mediaqueries-4-20160706/>
@@ -472,6 +490,29 @@ XML, XML Namespaces, XML Schema, XSLT, Efficient XML Interchange (EXI)
 
 #### Browsers and Authoring Tools
 
+
+
+## CSS-TAG Houdini Task Force Specifications
+
+`CSS Houdini` 是一个新的 `W3C 工作组`，志在通过提供一系列 API，使开发者能够拥有`访问 CSS 引擎`的能力，可以不局限于原来的 CSS 属性，有能力创建自定义的 CSS 特性并高效的使用在浏览器中；同时，Houdini 的出现使得浏览器的`行为得到统一`，新特性能够更快的使用到项目中。
+
+### Specifications
+
+* Box Tree API 1
+* CSS Layout API 1
+* CSS Painting API 1
+* CSS Parser API 1
+* CSS Properties and Values API 1
+* CSS Typed OM 1
+* Font Metrics API 1
+* Worklets 1
+
+
+### Resources
+
+* `css-houdini` drafts: <https://drafts.css-houdini.org>
+* github: <https://github.com/w3c/css-houdini-drafts>
+* [译] Houdini：也许是你未曾听过的最振奋人心的 CSS 进化 <https://segmentfault.com/a/1190000005876983>
 
 
 

@@ -171,7 +171,45 @@ todo
 * 为什么input不支持伪元素(:after,:before)？ <https://www.zhihu.com/question/21296044>
 * 170918 你所不知的 CSS ::before 和 ::after `伪元素`用法 <http://blog.dimpurr.com/css-before-after/>
 
+### Examples
 
+    @media print a[href]::after {
+        content: " (" attr(href) ")";
+    }
+
+以上样式设置，将会在打印的时候，为`存在href属性`( 只有hash不算 )的链接，在其文本后面添加` (链接地址)`。`bootstrap.css`正是这么做的。但有时候，我们希望打印到PDF的时候，这种样式有点冗余，则可以自行添加print样式表，覆盖该设置：
+
+    @media print a[href]::after {
+        content: "" ! important;
+    }
+    
+
+
+
+## 打印属性( print )
+
+### 属性说明
+
+> @media print的样式属性值，最好都添加`! important`，确保覆盖优先级。
+
+    orphans                 设置当元素内部发生分页时必须在页面底部保留的最少行数
+    page-break-after        设置元素后的分页行为，取值: auto, always, avoid, left, right, inherit
+    page-break-before       设置元素前的分页行为，取值: auto, always, avoid, left, right, inherit
+    page-break-inside       设置元素内部的分页行为，取值: auto, avoid, inherit
+    windows                 设置当元素内部发生分页时必须在页面顶部保留的最少行数
+
+### Resources
+
+* CSS print 样式 css控制打印样式 分页 页面大小 <http://www.lrxin.com/archives-1093.html>
+* CSS打印属性：<http://www.w3school.com.cn/cssref/#print>
+
+
+### Examples
+
+    @media print table {
+        page-break-before: always;
+        page-break-inside: avoid;
+    }
 
 
 

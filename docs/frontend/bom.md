@@ -124,6 +124,8 @@
 * host包含`hostname + port`
 * origin包含`protocol + host`
 * host以及origin`都不包含`末尾的`斜线`，形如`http://www.258i.com`
+* `search`为空字符串或者以`?`开头的字符串
+* `hash`为空字符串或者以`#`开头的字符串
 
 <div id="test_location" class="test">
 <div class="test-container">

@@ -1,6 +1,12 @@
 # HTTP
 
 
+## Resources
+
+* HTTP状态码：<https://baike.baidu.com/item/HTTP状态码/5053660>
+* nginx: <ref://../webserver/nginx.md.html>
+
+
 ## HTTP
 
 `RFC2616`: <a href="./txt/rfc2616.txt">Hypertext Transfer Protocol -- HTTP/1.1</a>

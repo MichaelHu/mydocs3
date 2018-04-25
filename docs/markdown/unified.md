@@ -4,7 +4,7 @@
 
 ## Features
 
-* github: <https://github.com/unifiedjs/unified>
+* github: <https://github.com/unifiedjs/unified> <iframe src="http://258i.com/gbtn.html?user=unifiedjs&repo=unified&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 * `通用`文本处理器，基于`语法树`，支持多种解析器
 
 ## Usage

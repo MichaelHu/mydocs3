@@ -6,6 +6,7 @@
 
 * FEX: <http://fex.baidu.com>
 * JDC: <http://jdc.jd.com>
+* PKU Visualization Blog: <http://vis.pku.edu.cn/blog/>
 * EUX: <http://eux.baidu.com>
 * ISUX: <http://isux.tencent.com>
 * O2: <https://aotu.io>

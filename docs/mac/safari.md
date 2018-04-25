@@ -21,4 +21,7 @@
     127.0.0.1 fonts.gstatic.com
 
 
+## pdf页内链接
+
+打印成pdf输出时，safari的`页内链接能正常跳转`，而chrome则不行。如需pdf页内跳转，最好使用safari。
  

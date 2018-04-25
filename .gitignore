@@ -1,5 +1,6 @@
 .DS_Store
 __tmp/
+__reveal-lib/
 _book/
 *.swp
 *.preview.html
