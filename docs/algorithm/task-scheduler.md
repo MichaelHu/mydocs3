@@ -161,7 +161,7 @@ from <ref://../graphics/canvas-network.md.html>
 
 ### 状态迁移
 
-> 判断状态是否流转是，需要确保当前状态是否为合理状态，也即 `WAITING -> READY -> EXECUTING -> DONE` 4个状态必须按这个`先后顺序流转`，可能存在跳过某个状态，如READY，但是确保一定`不能逆序`。
+> 判断状态是否流转时，需要确保当前状态是否为合理状态，也即 `WAITING -> READY -> EXECUTING -> DONE` 4个状态必须按这个`先后顺序流转`，可能存在跳过某个状态，如READY，但是确保一定`不能逆序`。
 
     new                             进入WAITING状态
         WAITING     
@@ -247,7 +247,7 @@ from <ref://../graphics/canvas-network.md.html>
         } );
         t1.dispatch( 'statechange', { state: 'READY' } );
 
-* 如果input的两个`不同字段`同时都依赖`同一个task`，需要`避免`该task`两次执行`onready
+*  如果input的两个`不同字段`同时都依赖`同一个task`，需要`避免`该task`两次执行`onready
 * 所有`函数回调字段`都以当前task对象为`context`
 
 以下为代码实现：

@@ -70,15 +70,17 @@
 
 
 
+### font-style
+
+    normal | italic | oblique | inherit
+
+
 ### font-variant
 
 设置小型大写字母的字体显示文本，所有小写字母会被转换为大写，但是相比其余字幕，尺寸更小。
 
     normal | small-caps | inherit
 
-### font-style
-
-    normal | italic | oblique | inherit
 
 ### font-weight
 
@@ -86,6 +88,8 @@
 
     400 = normal
     700 = bold
+
+
 
 
 ### font-family

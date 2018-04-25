@@ -13,16 +13,112 @@
 * Transition Modes
 * Themes
 * Speaker Mode: `S` key
+* Short Keys:
+
+        S           Speaker Mode
+        N/Space     Next
+        P           Previous
+        B/.         Black
+        ESC/O       Overview
+        F           Fullscreen
+        H/←         Navigate Left 
+        J/↓         Navigate Down
+        K/↑         Navigate Up
+        L/→         Navigate Right
+    
+* Multiplexing
 * Code Highlight
+* query string extensions:
+
+        print-pdf       include pdf-style to export pdf
+        showNotes       include speaker notes in exported pdf
+        transition      none|fade|slide|convex|concave|zoom
+
 
 
 ## Versions
 
-* 3.0.0 - 3.6.0
-* 2.0.0 - 2.6.2
+* 3.0.0 - 3.6.0 [ 2017 ]
+* 2.0.0 - 2.6.2 [ 2014 ]
 * 1.1.0 - 1.4.0
 
+## Themes
 
+> `v3.x.x`
+
+    <link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+1. `black`: Black background, white text, blue links (default theme)
+2. `white`: White background, black text, blue links
+3. `league`: Gray background, white text, blue links (default theme for reveal.js < 3.0.0)
+4. `beige`: Beige background, dark text, brown links
+5. `sky`: Blue background, thin dark text, blue links
+6. `night`: Black background, thick white text, orange links
+7. `serif`: Cappuccino background, gray text, brown links
+8. `simple`: White background, black text, blue links
+9. `solarized`: Cream-colored background, dark green text, blue links
+
+可以通过动态改变link的href属性，切换当前theme。
+
+
+
+## Slide Backgrounds
+
+
+## Fragments
+
+### effects
+
+    <section>
+        <p class="fragment shrink">shrink</p>
+        <p class="fragment fade-out">fade-out</p>
+        <p class="fragment fade-up">fade-up (also down, left and right!)</p>
+        <p class="fragment current-visible">visible only once</p>
+        <p class="fragment highlight-current-blue">blue only once</p>
+        <p class="fragment highlight-red">highlight-red</p>
+        <p class="fragment highlight-green">highlight-green</p>
+        <p class="fragment highlight-blue">highlight-blue</p>
+    </section>
+
+### in and out 
+
+    <section>
+        <span class="fragment fade-in">
+            <span class="fragment fade-out">I'll fade in, then out</span>
+        </span>
+    </section>
+
+### fragment index
+
+    <section>
+        <p class="fragment" data-fragment-index="3">Appears last</p>
+        <p class="fragment" data-fragment-index="1">Appears first</p>
+        <p class="fragment" data-fragment-index="2">Appears second</p>
+    </section>
+
+### fragment events
+
+    Reveal.addEventListener( 'fragmentshown', function( event ) {
+        // event.fragment = the fragment DOM element
+    } );
+
+    Reveal.addEventListener( 'fragmenthidden', function( event ) {
+        // event.fragment = the fragment DOM element
+    } );
+
+
+## Events
+
+    ready
+    slidechanged
+
+    fragmentshown
+    fragmenthidden
+
+
+## APIs
+
+    ...
 
 
 ## Configuration

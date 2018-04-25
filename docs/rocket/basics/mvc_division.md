@@ -21,7 +21,7 @@ Rocket框架中，APP层面使用传统web应用的路由分发机制，而在Pa
 
 通过本章学习，将了解Rocket框架是如何进行MVC分解的。
 
-## 1. 与传统MVC的关系
+## 与传统MVC的关系
 
 MVC是一种`软件设计`的理念，主张在代码组织上将`业务逻辑`（数据及相关处理）和展现分离，
 使模块功能内聚获得更高的复用程度，提升代码的易维护性和可伸缩性。
@@ -41,7 +41,7 @@ Rocket使用`Backbone`提供的MVC实现机制，与传统MVC的关系可以归�
 
 @todo: model共享，页面内，跨页面
 
-## 2. view与model的对应关系
+## view与model的对应关系
 
 现实使用中，对于view和model的引用关系有多种方式：
 
@@ -62,7 +62,7 @@ Rocket对model和view的关系做了如下约定，归纳为：
 * view可以不创建model，仅当有需求才进行创建
 * model和view通过事件进行交互，也可以通过直接引用进行交互，视具体情况而定，以简单优先
 
-## 3. MVC视图控制器树（view tree）
+## MVC视图控制器树（view tree）
 
 为了达到分而治之，view的创建按照一定的规则进行，最终形成一个树形结构，树形结构的每个节点都是一个view，
 其负责子视图控制器的创建（`仅此而已`），以及其所在级别应该关注的逻辑，比如同级别model创建，事件响应，DOM操作等。
@@ -71,7 +71,7 @@ Rocket对model和view的关系做了如下约定，归纳为：
 最终完成复杂的页面逻辑。相比集中控制的模型，view tree有更好的扩展性和易维护性。
 
 
-### 3.1 view tree及其创建
+### view tree及其创建
 
 简单view tree，以新闻应用的`detail page`为例，如下所示：
 
@@ -97,7 +97,7 @@ Rocket对model和view的关系做了如下约定，归纳为：
 
 每个页面都有一棵view tree，根结点是pageview类型，其它节点都是subview类型。
 
-### 3.2 view tree 代码示例
+### view tree 代码示例
 
 pageview.detail在其`init方法`中创建subview.detail_toolbar以及subview.detail_content，并进行`setup（预先存在）`。具体如下：
 
@@ -159,14 +159,14 @@ subview.detail_content_news在其`init方法`中创建model.detail_news，具体
     });
 
 
-### 3.3 视图与DOM节点的关系
+### 视图与DOM节点的关系
 
 视图`总对应某个DOM节点`，该节点可以是已经存在与DOM Tree的某个DOM节点，也可以通过动态创建的节点。
 视图创建时，所对应的DOM节点`初始状态都为隐藏`，须由视图控制器在适当的时候展现。
 
 大部分情况下，视图的层次关系与其DOM节点的层次关系是匹配的。当然也存在不匹配的情况，比如`appendTo`方法。
  
-## 4. MVC分解思路
+## MVC分解思路
 
 MVC分解，可以综合考虑以下维度：
 

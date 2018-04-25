@@ -1,8 +1,9 @@
 # map-api
 
 
-20161216
+> changelog: 20161216
 
+> 注意：本地打开文档时，Safari浏览器由于其`SecurityError: The operation is insecure`问题，无法正常加载百度地图API的代码，最好在Chrome浏览器中打开，或者启动本地服务器访问。
 
 
 ## map-api
@@ -32,6 +33,9 @@
 
 * <http://lbsyun.baidu.com/index.php?title=jspopular>
 * <http://lbsyun.baidu.com/jsdemo.htm#a1_2>
+* 百度地图拾取坐标系统 <http://api.map.baidu.com/lbsapi/getpoint/index.html>
+* 百度地图生成器 <http://api.map.baidu.com/lbsapi/createmap/index.html>
+* 形成区划覆盖物 <http://lbsyun.baidu.com/jsdemo.htm#c1_10>
 
 
 
@@ -65,7 +69,7 @@
         var map = new BMap.Map( $mapContainer[ 0 ] );   // 创建Map实例
         // 初始化地图,设置中心点坐标和地图级别
         map.centerAndZoom( new BMap.Point(116.404, 39.915), 11 );  
-        map.addControl( new BMap.MapTypeControl() );    //添加地图类型控件
+        map.addControl( new BMap.MapTypeControl() );    // 添加地图类型控件
         map.setCurrentCity( "北京" );                   // 设置地图显示的城市 此项是必须设置的
         // map.enableScrollWheelZoom( true );           // 开启鼠标滚轮缩放
 
@@ -112,6 +116,110 @@
 <div class="test-console"></div>
 <div class="test-panel">
 </div>
+</div>
+
+
+
+
+#### 添加行政区划
+
+* 通过地址输入，自动获取并绘制行政区划
+* 获取行政区划的可视范围
+
+<div id="test_baidu_district" class="test">
+<div class="test-container">
+
+    @[data-script="javascript"](function(){
+
+        var contID = '#test_baidu_district';
+        var s = fly.createShow( contID );
+        var $cont = $( contID );
+        var $mapContainer = $( contID + ' .test-map-container' );
+
+        var map = new BMap.Map( $mapContainer[ 0 ] );
+		var point = new BMap.Point( 116.292404, 39.864938 );
+		map.centerAndZoom( point, 15 );
+        // map.enableScrollWheelZoom( true );                  // 开启鼠标滚轮缩放
+        map.addControl( new BMap.NavigationControl() );     // 添加平移、缩放控件
+
+        s.show( '绘制行政区划' );
+
+        function getBoundary( address ){
+            if ( ! address ) {
+                s.append_show( '输入地址为空' );
+                return;
+            }
+            var bdary = new BMap.Boundary();
+            s.append_show( '搜索： ' + address );
+            bdary.get( address, function(rs){               // 获取行政区域
+                map.clearOverlays();                        // 清除地图覆盖物
+                var count = rs.boundaries.length;           // 行政区域的点有多少个
+                if (count === 0) {
+                    s.append_show( '未能获取当前输入行政区域' );
+                    return ;
+                }
+                var pointArray = [];
+                for (var i = 0; i < count; i++) {
+                    var ply = new BMap.Polygon(
+                        rs.boundaries[i]
+                        , { strokeWeight: 2, strokeColor: "#ff0000" }
+                    );                                      // 建立多边形覆盖物
+                    map.addOverlay(ply);                    // 添加覆盖物
+                    pointArray = pointArray.concat( ply.getPath() );
+                }
+                map.setViewport( pointArray );              // 调整视野
+                s.append_show( '搜索成功！' );
+            });
+        }
+
+        var $address = $cont.find( 'input[name=address]' )
+            , $btnShowDistrict = $cont.find( 'button[name=show-district]' )
+            , $btnShowRange= $cont.find( 'button[name=show-range]' )
+            ;
+
+        console.log( 
+            $address[ 0 ]
+            , $btnShowDistrict[ 0 ]
+            , $btnShowRange[ 0 ]
+        );
+
+        $btnShowDistrict.on( 'click', function( e ) {
+            var address = $address.val();
+            getBoundary( address );
+            e.preventDefault();
+        } );
+
+        $btnShowRange.on( 'click', function( e ) {
+            var bs = map.getBounds();       // 获取可视区域
+            var bssw = bs.getSouthWest();   // 可视区左下角
+            var bsne = bs.getNorthEast();   // 可视区右上角
+
+            s.append_show(
+                '当前可视范围是：'
+                + '左下'
+                + bssw.lng + ',' + bssw.lat
+                + ' | '
+                + '右上'
+                + bsne.lng + ',' + bsne.lat
+                + ' | '
+                + '中心'
+                + ( bssw.lng + bsne.lng ) / 2 + ',' + ( bssw.lat + bsne.lat ) / 2
+            );
+            e.preventDefault();
+        } );
+
+    })();
+
+</div>
+<div class="test-map-container" style="height: 700px;"></div>
+<div class="test-panel">
+<form class="form-inline">
+<input class="form-control" type="text" name="address" value="北京市海淀区">    
+<button class="form-control" name="show-district">展示区划</button>
+<button class="form-control" name="show-range">展示显示范围</button>
+</form>
+</div>
+<div class="test-console"></div>
 </div>
 
 
