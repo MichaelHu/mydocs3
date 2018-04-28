@@ -133,4 +133,20 @@
     parser: flow
 
 
+### Ignoring Code
+
+> 配置忽略文件或代码
+
+* 忽略`文件`，可以在`.prettierignore`文件中配置
+* 忽略`代码`部分：
+
+        type        comment 
+        ================================================
+        js          // prettier-ignore
+        jsx         {/* prettier-ignore */}
+        css         /* prettier-ignore */
+        markdown    <!-- prettier-ignore -->
+        range       <!-- prettier-ignore-start -->
+                    <!-- prettier-ignore-end -->
+
 
