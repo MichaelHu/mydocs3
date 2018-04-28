@@ -6,6 +6,7 @@
 * webpack 1 and common things: <ref://./webpack.md.html>
 * core concepts: <https://webpack.js.org/concepts/>
 * configuration: <https://webpack.js.org/configuration/>
+* webpack-cli: <https://github.com/webpack/webpack-cli>
 
 
 ## Tips
@@ -15,6 +16,8 @@
         /webpack-dev-server                 列出所有由webpack生成的文件
         /webpack-dev-server/                开启iframe访问模式
         /webpack-dev-server/index.html      开启iframe访问模式
+
+* `webpack-cli`，封装命令行相关功能，除了调用webpack相关功能外，还可以进行webpack版本迁移，或者使用脚手架快速建立一个项目
 
 
 ## 四个关键概念

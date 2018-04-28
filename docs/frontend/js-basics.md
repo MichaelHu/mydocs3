@@ -359,6 +359,25 @@
 
 
 
+## 调用堆栈和参数列表的最大长度
+
+> todo
+
+<https://www.cnblogs.com/bhlsheji/p/5377710.html>
+
+    // Maximum Supported Arguments Length
+    // CH34 124782
+    // FF29 500000
+    // SF7  65536
+
+    // Maximum Call Stack Size
+    // CH34 20926 in <script>, 20804 in console
+    // FF29 21###(varies) in <script>, 49993 in console
+    // SF7  43517 in <script>, 43509 in console
+
+
+
+
 ## window.onerror
 
 处理`未被捕获`的异常，通过它可以设置一个异常处理函数。该函数接收`三个字符串类型`的参数。
