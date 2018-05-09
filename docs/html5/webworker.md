@@ -10,7 +10,7 @@
 ## Features
 
 * 无法访问DOM元素以及window, document
-* 无法访问localStorage
+* 无法访问`localStorage`，但可以支持`indexedDB`
 * 不支持跨域
 * 无法和主线程共享内存，worker之间也无法共享内存
 

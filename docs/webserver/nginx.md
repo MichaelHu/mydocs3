@@ -235,7 +235,7 @@
         !~      no match case-sensitive regular expression
         !~*     no match case-insensitive regular expression
 
-    其中，`^~`后跟的表达式并不是正则，而是prefix strings，它的含义是如果后方的匹配串是当前最长前缀匹配串，那么就不启动正则匹配了。
+    其中，`^~`后跟的表达式并`不是正则`，`而是prefix strings`，它的含义是如果后方的匹配串是当前最长前缀匹配串，那么就不启动正则匹配了。
 * 使用过程中，发现`^~`的以下用法会导致服务器`502`错误：
 
         # error: 502

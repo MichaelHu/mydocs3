@@ -5,10 +5,13 @@
 
 > `SecurityError` (DOM Exception 18): The operation is insecure.
 
-以上错误在`file:`协议下，引用`localStorage`时提示的Error。这种情况下，`Chrome`不会报错，可以正常使用localStorage。
+以上错误在升级到Safari 11.x出现。使用`file:`协议，引用`localStorage`时提示的Error。这种情况下，`Chrome`不会报错，可以正常使用localStorage。
+
+如果希望通过`file:`协议，也能正常使用localStorage, indexedDB等本地存储，可以在safari的开发者菜单中选择`停用本地文件先知`
 
 另外Safari的隐私设置里面，如果针对某些站点设置了阻止的话，也会报以上错误。在stackoverflow上面有相关topic，建议的解决办法是针对localStorage部分的操作包含到`try-catch`中。
 <https://stackoverflow.com/questions/23673148/security-err-dom-exception-18-only-in-safari-when-using-canvas-todataurlimage>
+
 
 
 
