@@ -1,9 +1,10 @@
-# web storage
+# web-storage
 
 ## Resources
 
 * w3c: <https://www.w3.org/TR/webstorage>
-* 150502 详说 Cookie, LocalStorage 与 SessionStorage <https://segmentfault.com/a/1190000002723469>
+* IndexedDB: <ref://./indexed-db.md.html>
+* [ 150502 ] 详说 `Cookie`, `LocalStorage` 与 `SessionStorage` <https://segmentfault.com/a/1190000002723469>
 
 
 ## sessionStorage

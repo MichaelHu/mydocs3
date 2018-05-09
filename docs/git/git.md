@@ -294,7 +294,11 @@ todo:
 
     # 设定时间格式
     git log --date=format:"%Y-%m-%d %H:%M:%S"
-    git log --data=iso
+    git log --date=iso
+
+    # 提交日志过滤
+    git log --grep='sequence.*'
+    git log --grep='sequence.*' --invert-grep
 
     # 从commit1到commit2之间的提交日志，不包含commit1
     git log commit1..commit2

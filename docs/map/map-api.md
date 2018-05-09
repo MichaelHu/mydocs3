@@ -1,7 +1,7 @@
 # map-api
 
 
-> changelog: 20161216
+> changelog: 180425, 161216
 
 > 注意：本地打开文档时，Safari浏览器由于其`SecurityError: The operation is insecure`问题，无法正常加载百度地图API的代码，最好在Chrome浏览器中打开，或者启动本地服务器访问。
 
@@ -16,6 +16,16 @@
 * 提供`数据接口`的样板格式
 * 提供满足需求的最小接口集合，额外的不提供
 * 按jssdk的思路来做，但前期不是做成jssdk，而是一个提供基本功能和工具箱的地图底层库
+
+
+### 数据集合
+
+* Bulk GPS point data: <https://blog.openstreetmap.org/2012/04/01/bulk-gps-point-data/> OSM贡献者提供的GPS点信息，可供下载 <http://planet.osm.org/gps/>，总共有`27亿`之多的POI点，echarts GL提供的千万级数据点，也用到了一部分这里的数据 <http://echarts.baidu.com/examples/editor.html?c=scatterGL-gps&gl=1>
+* 全国shp矢量数据汇总：全国行政区划基础矢量数据（精确到区县级别） <https://blog.csdn.net/u010784236/article/details/77327539>
+* 如何制作行政区划矢量图（`shp`格式） <https://jingyan.baidu.com/article/0eb457e53b00a003f1a905c8.html>
+* 根据行政区划图制作各个区的矢量图及属性编辑 <https://jingyan.baidu.com/article/adc815139e30c3f722bf7355.html>
+* 北京市乡镇行政区划 - 付费定制下载 <http://www.dsac.cn/DataProduct/Detail/201903>
+
 
 
 

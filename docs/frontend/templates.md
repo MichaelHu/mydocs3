@@ -4,7 +4,7 @@
 
 > 只是js库提供的一个子功能而已，underscore不是一个纯粹的模板引擎
 
-* github: <https://github.com/jashkenas/underscore>
+* github: <https://github.com/jashkenas/underscore> <iframe src="http://258i.com/gbtn.html?user=jashkenas&repo=underscore&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 * site: <http://underscorejs.org/>
 
 ### api 
@@ -30,7 +30,7 @@
 ## handlebars
 
 * site: <http://handlebarsjs.com>
-* github: <https://github.com/wycats/handlebars.js/>
+* github: <https://github.com/wycats/handlebars.js/> <iframe src="http://258i.com/gbtn.html?user=wycats&repo=handlebars.js&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 * 和`underscore.js`挺像
 
 模板格式：
@@ -50,7 +50,7 @@
 
 > `性能卓越`的js模板引擎
 
-* <https://github.com/aui/artTemplate>
+* <https://github.com/aui/art-template> <iframe src="http://258i.com/gbtn.html?user=aui&repo=art-template&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 * 两种语法使用`不同`的脚本文件。
 * `aui`个人作品，`4k+` starts
 * `2015年11月`有更新
@@ -113,7 +113,7 @@
 
 ## baiduTemplate
 
-* github: <https://github.com/BaiduFE/BaiduTemplate>
+* github: <https://github.com/BaiduFE/BaiduTemplate> <iframe src="http://258i.com/gbtn.html?user=BaiduFE&repo=BaiduTemplate&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 * docs: <http://baidufe.github.io/BaiduTemplate/>
 * fex出品, 最近更新`2013年4月份`
 
@@ -199,7 +199,7 @@
 > Pug – `robust, elegant, feature rich` template engine for Node.js 
 
 * 面向`nodejs`设计
-* github: <https://github.com/pugjs/pug>
+* github: <https://github.com/pugjs/pug> <iframe src="http://258i.com/gbtn.html?user=pugjs&repo=pug&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 * `docs`: <https://pugjs.org/api/getting-started.html>
 * install: `npm install pug`
 
@@ -243,7 +243,7 @@
 
 > `Enterprise Template`: ETPL是一个`强复用、灵活、高性能`的JavaScript模板引擎，适用于`浏览器端`或`Node环境`中视图的生成。
 
-* github: <https://github.com/ecomfe/etpl>
+* github: <https://github.com/ecomfe/etpl> <iframe src="http://258i.com/gbtn.html?user=ecomfe&repo=etpl&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 * `2016年6月`尚有更新，`357` stars
 
 ### Install
@@ -269,7 +269,7 @@
 
 ## mustache
 
-* github ( 1w+ stars ): <https://github.com/janl/mustache.js>
+* github: <https://github.com/janl/mustache.js> <iframe src="http://258i.com/gbtn.html?user=janl&repo=mustache.js&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 * 支持`nodejs`以及`浏览器`中使用
 * 也有node命令行工具
         mustache dataView.json myTemplate.mustache > output.html
@@ -322,7 +322,7 @@
 
 * `mozilla`出品，语法参考了`Jinja2`，官方站点：<http://mozilla.github.io/nunjucks/>
 * 开源项目`gitbook`使用的模板解决方案
-* `github`: <https://github.com/mozilla/nunjucks>
+* `github`: <https://github.com/mozilla/nunjucks> <iframe src="http://258i.com/gbtn.html?user=mozilla&repo=nunjucks&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 * `node`: `$ npm install numjucks`
 * `browser`: <https://mozilla.github.io/nunjucks/files/nunjucks.js> or <https://mozilla.github.io/nunjucks/files/nunjucks-slim.js>
 
