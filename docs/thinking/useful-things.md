@@ -49,9 +49,12 @@
 
 ### *AAS
 
+> changelog: 180511
+
 * `Saas` ( Software-as-a-service ) - 软件即服务
 * `Paas` ( Platform-as-a-service ) - 平台即服务
 * `Iaas` ( Infrastructure-as-a-service ) - 基础架构即服务
+* `Daas` ( Data-as-a-service ) - 数据即服务
 * 参考：<http://www.ruanyifeng.com/blog/2017/07/iaas-paas-saas.html>
 
 

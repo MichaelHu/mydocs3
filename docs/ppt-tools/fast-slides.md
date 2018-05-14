@@ -17,8 +17,9 @@
         ALT-P      引入PDF样式，后续可用于PDF导出
         ALT-R      切换转场动画
 
-* 可在文档的Script标签中通过设置`window.RevealOptions`传入自定义配置，默认配置参考`Options`小节
+* 可在文档的Script标签中通过设置`window.RevealOptions`传入自定义配置，该配置能覆盖内部默认配置。默认配置参考`Options`小节
 * 使用`.reveal`作为祖先选择器定制在slides中的样式，使用`.markdown-body`作为祖先选择器定制在markdown文档中的样式，避免两者互相冲突
+* 支持直接启用`Server Side Speaker`模式，启用前需要在文档的Script标签中设置`window.RevealOptions.serverSideSpeaker`为true - todo
 
 
 ## Todo

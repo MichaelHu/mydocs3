@@ -24,6 +24,9 @@
 
 
 
+
+
+
 ## Versions
 
 > releases: <https://electron.atom.io/releases/>
@@ -202,11 +205,24 @@
 
 ## Installer
 
+### MAS发布相关
+
+> `MAS` - Mac App Store
+
+* Mac App Store 应用程序提交指南 <https://electronjs.org/docs/tutorial/mac-app-store-submission-guide>
+
+
+
 ### nodec
 
 todo: 编译成二进制文件
 
 * `nodec` - node代码转换成二进制可执行文件 <https://github.com/pmq20/node-compiler> 支持windows/mac/linux平台，需要预装依赖软件，一些`应用场景`：知识产权保护、向非技术用户发布node应用、商业软件发布等
+
+
+
+
+
 
 
 
