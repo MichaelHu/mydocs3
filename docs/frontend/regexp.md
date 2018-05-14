@@ -1,4 +1,4 @@
-# RegExp Memo
+# regexp
 
 
 > JS, PHP, vim, sed, grep, awk等，都有正则表达式的使用。
@@ -103,6 +103,30 @@ JavaScript正则表达式语法是`Perl5`正则的`大型子集`，在字符串�
     str.replace()
     str.search()
     str.split()
+
+#### 关于string.split
+
+    string.prototype.split( separator, limit )
+
+如果separator是一个正则表达式，那么会调用`RegExp.prototype[ @@split ]( string, limit )`
+
+* 如果正则表达式reg为空的表达式，或者能匹配空字符串，那么split的结果为一个和字符串长度相等的数组，每个数组成员为一个字符，这种情况下，reg不会匹配字符串的首尾空串
+* Only the first match at a given index of the String is considered, even if backtracking could yield a non-empty-substring match at that index, for example:
+
+        // non-greedy
+        /a*?/[ Symbol.split ]( 'ab' )           =>      [ 'a', 'b' ]
+        // greedy
+        /a*/[ Symbol.split ]( 'ab' )            =>      [ '', 'b' ]
+
+* 如果正则表达式中包含`捕获`，那么每次匹配的反向引用结果也会被插入输出数组中，这个部分的理解很关键，否则对以下例子的理解会出现困难：
+
+        /(a|b)/[ Symbol.split ]( 'abcab' )      =>      [ '', 'a', '', 'b', 'c', 'a', '', 'b', '' ]
+        /a|b/[ Symbol.split ]( 'abcab' )        =>      [ '', '', 'c', '', '']
+        /<(\/)?([^<>]+)>/[ Symbol.split ]( 'A<B>bold</B>and<CODE>coded</CODE>' )
+            => 
+        [ 'a', undefined, 'B', 'bold', '/', 'B', 'and', 'undefined, 'CODE', 'coded', '/', 'CODE', '' ]
+
+    以上说明具体参考ECMAScript规范文档 <https://tc39.github.io/ecma262/#sec-regexp.prototype-@@split>
 
 
 

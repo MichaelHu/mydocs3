@@ -196,6 +196,17 @@
     * 选择器搜索，元素高亮使用`content-search_element-highlight`样式类
 
 
+## 180514
+
+由于使用`String.prototype.split()`进行正则匹配，所以关于正则表达式中包含捕获模式的情况，具体参考 <ref://../frontend/regexp.md.html>相关说明，实际使用时，避免使用捕获模式，可以通过`?:`关闭模式捕获
+
+    (a|b)               =>      (?:a|b)
+    @(Michael|Even)     =>      @(?:Michael|Even)
+
+
+以上说明具体参考ECMAScript规范文档 <https://tc39.github.io/ecma262/#sec-regexp.prototype-@@split>
+
+
 
 
 ## Resources
