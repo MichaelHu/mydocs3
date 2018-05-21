@@ -17,7 +17,7 @@
 
     define( [ id , ] [ dependencies , ] factory );
 
-#### 3参数
+#### 三参数
 
     define("alpha", ["require", "exports", "beta"], function (require, exports, beta) {
         exports.verb = function() {
@@ -28,7 +28,7 @@
     });
 
 
-#### 2参数
+#### 二参数
 
     define(["alpha"], function (alpha) {
         return {
@@ -38,7 +38,7 @@
         };
     });
 
-#### 1参数
+#### 一参数
 
     define({
         add: function(x, y){

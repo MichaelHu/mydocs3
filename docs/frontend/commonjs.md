@@ -2,7 +2,7 @@
 
 > `CommonJS Modules/1.1.1`
 
-> A way to build up the JavaScript ecosystem for web servers, desktop and command line 
+> A way to build up `the JavaScript ecosystem` for web servers, desktop and command line 
 > apps and in the browser.
 
 ## Resources
@@ -10,6 +10,12 @@
 * `CommonJS wiki:` <http://wiki.commonjs.org/wiki/CommonJS>
 * `amd`: <ref://./amd.md.html>
 * `umd`: <ref://./umd.md.html>
+
+
+## Tips
+
+* 基于CommonJS规范，有多种实现
+* 前端领域，影响力较大的模块加载方式有AMD、CMD、UMD
 
 
 ## require
@@ -26,7 +32,7 @@
         * `main`属性如果可行的话，应该是只读的，不能删除
         * `main`属性要么`undefined`，要么等同于上下文中的一个已加载模块的`module`对象 
     * 函数可能有`paths`属性，是一个路径字符串组成的优先级数组，从高到低排列
-        * 该属性必须不能存在与`sandbox`（一个安全模块系统） 
+        * 该属性必须不能存在于`sandbox`（一个安全模块系统） 
         * 该属性必须在所有模块中引用一致 
         * 将`paths`对象替换成另一对象无法生效
         * 如果`paths`属性存在，原地修改其对象内容必须影响其对应模块的搜索行为
@@ -39,12 +45,11 @@
 ## module上下文
 
 1. 有一个自由变量`require`
-2. 有一个自由变量`exports`，在模块执行过程中，可能将其API添加到该对象中
-    使用`exports`必须是模块导出API的唯一方法
+2. 有一个自由变量`exports`，在模块执行过程中，可能将其API添加到该对象中，使用`exports`必须是模块导出API的`唯一方法`
 3. 有一个自由变量`module`，该变量是一个对象，代表模块本身
     * module必须有一个`id`属性作为该对象的顶级属性，可用于类似调用
             
-            require (module.id )
+            require ( module.id )
 
     * module可能有一个`uri`属性，该属性不能存在于sandbox中
 

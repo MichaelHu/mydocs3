@@ -27,8 +27,8 @@
 
 `要求`：
 1. 编写trim函数: `function trim( s ) { ... }`
-2. 返回值类型为`string`。
-3. 有一定的错误处理功能。
+2. 返回值类型为`string`
+3. 要求`bug-free`
 
 `分析`：
 1. 有`缜密`思考的，表明编写代码有较强的健壮性，质量可以保证。比如对非字符串的判断
@@ -169,6 +169,12 @@
 2. 正则表达式的修饰符：`g` & `i`
 3. 贪婪匹配与非贪婪匹配，默认是哪种模式？
 4. 反向引用 
+5. `String.prototype.split`考察
+
+        let str = 'abcab';
+        str.split( /a|b/ );
+        str.split( /(a|b)*/ );
+        str.split( /(a|b)*?/ );
 
 
 
@@ -299,27 +305,48 @@
     参考：<a href="../frontend/class_extend.md.html">js类扩展方式</a>
 
 
-7. `typeof x`有几种结果：number, string, boolean, function, object, undefined 
+7. `typeof x`有几种结果？
 
-    知道es6中增加了`symbol`类型，可以加分。
+        // 6种
+        number
+        string
+        boolean
+        function
+        object
+        undefined
 
-8. typeof null == 'object'
-9. typeof undefined == 'object'
+    另外，知道`es6`中增加了`symbol`类型，可以加分。
 
-10. Promise, Generator函数 
+        null        'object'
+        []          'object'
+        undefined   'undefined'
 
-11. `use strict`
+8. 谈谈`Promise`，最好包含其产生背景、技术细节、常用方法等
+    * 回调地狱
+    * 状态( pending, fulfilled, rejected ) ，参数传递
+    * 常用方法：
+            Promise.resolve( value )
+            Promise.reject( value )
+            Promise.all( iterable )
+            Promise.race( iterable )
+            Promise.prototype.then()
+            Promise.prototype.catch()
+    * 其他衍生：
+            async/await
+            Generator
 
-12. ES6新特性
+9. `use strict`指令
 
-13. Koa/Express
+10. ES6新特性
 
-14. new关键字的作用
+11. Koa/Express
+
+12. new关键字的作用
 
         new func1(); // 创建对象，并设置原型链
         func1();     // 执行函数
 
-15. 在浏览器的地址栏输入URL到网页展现完毕，这期间都发生了什么？
+13. 在浏览器的地址栏输入URL到网页展现完毕，这期间都发生了什么？
     
     * DNS解析
     * 浏览器缓存
@@ -328,16 +355,42 @@
     * 服务端发生什么
 
 
-16. 橡皮擦效果，关键使用了哪个关键的Canvas属性？
+14. 橡皮擦效果，关键使用了哪个关键的Canvas属性？
 
         context.globalCompositeOperation = 'destination-out';
 
-17. AMD与CMD的区别？
+15. 谈谈`AMD`、`CMD`、`UMD`
 
-18. Function之apply与call的区别？
+16. Function之apply与call的区别？
 
-19. 编写UMD方案，参考<ref://../frontend/umd.md.html>
+19. 编写`UMD`方案，参考<ref://../frontend/umd.md.html>
 
+
+
+## 应用框架
+
+1. backbone
+2. react
+    * 定位
+    * 生命周期方法
+3. vue
+4. virtual-dom  
+5. 前端mvc, mvvm, mvp ( todo )
+6. redux定位、运行原理
+
+
+
+## 前沿知识
+
+> 谈谈对以下概念，你所掌握的基础知识，应用场景，开发经验
+
+1. webworker
+2. service worker
+3. workerlet
+4. webassembly
+5. websocket
+6. webGL
+7. pwa
 
 
 
@@ -357,9 +410,19 @@
 1. 编译原理：lex/yacc, flex/bison
 2. 前端性能优化
 3. 如何看待`单元测试`，有没有为自己的项目写过`单测用例`，用过哪些`单测框架`？
-
-
-
+4. 如何实现`前端全文查找`
+    * DOM树遍历，查找TextNode
+    * 如何实现查找文本结果高亮
+5. 如何实现print样式
+    * `@media`指令
+    * 使用`! important`提升优先级
+    * `@page`指令等
+6. `canvas`性能优化
+    * `drawImage()`
+    * path汇集，统一绘制
+    * 分层渲染
+    * 文本性能低
+    * 矩形比圆形性能高
 
 
 
@@ -367,16 +430,32 @@
 
 1. 删除当前目录下（包含子目录）所有以`.png`为后缀的文件
 
+        # example
         find . -type f -iregex '.*\.png$' -exec rm -rf {} \;
 
+2. 过滤指定目录下（包含子目录）所有文本文件`*.md`中，哪些文件包含关键词`react`
+
+        # examples
+        grep -r 'react' .
+        grep -ri 'react' .
+        grep -r --include '*.md' 'react' .
+        grep -ri --include '*.md' 'react' .
+        grep -rI 'react' .
+        grep -rIi 'react' .
+        grep -rI --include '*.md' 'react' .
+        grep -rIi --include '*.md' 'react' .
 
 
 
 ## css面试
 
 1. 垂直居中 
-2. 二列布局
+2. 二列布局：左固定，右固定
+    * margin - float
+    * absolute position
 3. flex-box
+4. css-grid
+5. `start / end`与`left / right`的区别
 
 
 
@@ -407,6 +486,13 @@
 
     * 需要用到哪些前端技术，需要发起哪些技术调研？
     * 前端程序架构上，有什么考虑，怎样去推进？
+
+## 团队管理能力
+
+1. 谈谈团队管理中，你觉得最重要的`三个关键词`
+    * 以身作则
+    * 定期review
+    * 坚持以身作则、定期review
 
 
 
