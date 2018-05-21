@@ -3,7 +3,7 @@
 ## Features
 
 * 图片创建、编辑、组合以及转换工具，包括压缩，支持png, jpeg, jpeg-2000, gif, tiff, dpx, exr, webp, postscript, pdf, svg等
-* 强大的`命令行`支持，同时也提供编程库
+* 强大的`命令行`支持，同时也提供`编程库`
 * 支持`批量`处理文件，读取文件和输出文件均可自动映射文件名，使用`%d`表示，从1开始。格式同C的format string
 * 支持从一批图片快速生成`gif`图片，扩展阅读：视频生成gif - <ref://../other/common-softwares.md.html>
 * 支持从gif图片中获取`指定帧`
@@ -27,7 +27,7 @@
         $ brew install imagemagick        # 注意区分大小写，不能是ImageMagick
 * port
         $ sudo port install ImageMagick
-* 二进制包，解压直接使用等
+* `二进制包`，解压直接使用等
         $ curl -OL https://www.imagemagick.org/download/binaries/ImageMagick-x86_64-apple-darwin16.7.0.tar.gz
         $ tar xzvf ImageMagick-x86_64-apple-darwin16.7.0.tar.gz 
         $ export MAGICK_HOME="$HOME/ImageMagick-7.0.7"
@@ -41,13 +41,29 @@
 
     $ man magick
 
-        magick [input-options] input-file [output-options] output-file
+        NAME
+
+           magick  -  convert  between  image  formats as well as resize an image, blur, crop,
+           despeckle, dither, draw on, flip, join, re-sample, and much more.
+
+        SYNOPSIS
+
+            magick [input-options] input-file [output-options] output-file
 
     $ magick -usage
 
         magick [ {option} | {image} ... ] {output_image}
         magick [ {option} | {image} ... ] -script {filename} [ {script_args} ... ]
         magick -help | -version | -usage | -list {option}
+
+
+### Tips
+
+* `logo:`, `rose:`等，作为`<input-file>`提供，指的是magick提供的`内部图片`，比如：
+
+        magick logo: -resize '200%' bigWiz.png
+
+
 
 
 ### Options

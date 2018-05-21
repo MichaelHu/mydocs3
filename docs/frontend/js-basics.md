@@ -171,6 +171,123 @@
 </div>
 
 
+## use strict
+
+### Resources
+
+* 严格模式 - MDN <https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Strict_mode>
+* Strict Mode Code - ES6 <https://www.ecma-international.org/ecma-262/6.0/#sec-strict-mode-code>
+* Static Semantics: Early Errors - ES6 <https://www.ecma-international.org/ecma-262/6.0/#sec-identifiers-static-semantics-early-errors>
+
+
+### Tips
+
+* 是`可选择的`一个限制JavaScript的变体一种方式，它不仅仅是一个子集：它故意地具有与正常代码不同的语义
+* 消除了一些 JavaScript的`静默错误`，通过改变它们来`抛出错误`
+* 修复了 JavaScript引擎难以执行优化的错误，提高编译器的效率：有时候，严格模式代码可以比非严格模式的相同的代码运行得更快
+* 严格模式禁用了在ECMAScript的`未来版本`中可能会定义的一些语法，担负承接未来的使命
+
+### Features
+
+* 作用域：`script标签`或`函数体`，在所有语句之前放置一个特定的语句：
+        "use strict";
+        // or
+        'use strict';
+
+* `将问题转化为错误`，比如变量拼写失误，而导致新创建了全局变量，这种问题会直接报错
+
+    * 无法再意外创建全局变量
+
+            "use strict";
+                                   // 假如有一个全局变量叫做mistypedVariable
+            mistypedVaraible = 17; // 因为变量名拼写错误
+                                   // 这一行代码就会抛出 ReferenceError
+
+    * 会使`静默失败`( silently failed )的赋值抛出异常
+
+            "use strict";
+
+            // 给不可写属性赋值
+            var obj1 = {};
+            Object.defineProperty(obj1, "x", { value: 42, writable: false });
+            obj1.x = 9; // 抛出TypeError错误
+
+            // 给只读属性赋值
+            var obj2 = { get x() { return 17; } };
+            obj2.x = 5; // 抛出TypeError错误
+
+            // 给不可扩展对象的新属性赋值
+            var fixed = {};
+            Object.preventExtensions(fixed);
+            fixed.newProp = "ohai"; // 抛出TypeError错误
+
+    * 试图删除`不可删除的属性`，会抛出异常
+
+            "use strict";
+            delete Object.prototype; // 抛出TypeError错误
+
+    * `重名属性`抛出异常，实际上这个限制在ES6中已经作为标准了
+    * 函数参数名必须唯一，避免书写错误导致的代码问题
+    * 禁止使用`"0"`开头的八进制数字，避免错误地使用八进制数。另外ES6中增加了`"0o"`开头的八进制数
+
+            "use strict";
+            var sum = 015 + // !!! 语法错误
+                      197 +
+                      142;
+    * 禁止设置primitive值的属性。不采用严格模式，设置属性将会简单忽略(no-op)，采用严格模式，将抛出TypeError错误
+
+            (function() {
+
+                "use strict";
+
+                false.true = "";              //TypeError
+                (14).sailing = "home";        //TypeError
+                "with".you = "far away";      //TypeError
+
+            })();
+
+* 简化变量的使用
+    * 禁用with
+    * eval不再为上层作用域引入变量
+    * 禁止删除声明变量
+
+            "use strict";
+
+            var x;
+            delete x; // !!! 语法错误
+
+            eval("var y; delete y;"); // !!! 语法错误
+
+* 让eval和arguments变得简单
+    * eval和arguments不再能作为变量名
+    * 不再支持`arguments.callee`
+
+* 更`“安全的”`Javascript
+    * `this`关键字，不再默认被封装为对象，除非显式指定，否则都为undefined
+    * `func.caller`, `func.arguments`不再可用
+
+* 为未来版本的ECMAScript铺平道路
+    * 一部分字符变成了保留关键字，如下：
+
+            implements, interface, let, package, private, protected, public, static和yield
+
+    * 禁止了不在脚本或函数层面上的函数声明
+
+            "use strict";
+            if (true){
+              function f() { } // !!! 语法错误
+              f();
+            }
+
+            for (var i = 0; i < 5; i++){
+              function f2() { } // !!! 语法错误
+              f2();
+            }
+
+            function baz() { // 合法
+              function eit() { } // 同样合法
+            }
+
 
 ## 分号的省略
 

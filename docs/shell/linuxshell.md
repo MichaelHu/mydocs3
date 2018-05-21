@@ -1,19 +1,10 @@
 # Linux Shell
 
 
-> 简单是终极的复杂。 —— 达芬奇
-
+> `简单`是终极的复杂。 -- 达芬奇<br>
 > No programming language is perfect. There is not even a single best language; there are only languages well suited or perhaps poorly suited for particular purposes.   -- Herbert Mayer
 
-2017-12
-, 2017-11
-, 2017-10
-, 2017-5
-, 2017-4
-, 2017-1
-, 2016-11
-, 2016 , 2015
-, 2014 hudamin
+changelog: 2018, 2017, 2016, 2015, 2014
 
 
 ## .bashrc和.bash_profile
@@ -2371,7 +2362,7 @@ sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://.
 
 
 
-## 实用例子
+## Examples
 
 
 ### 清空文件
@@ -2733,6 +2724,12 @@ output：
 
     sed -e '1!G;h;$!d' file
 
+#### 方法三
+
+    tail -r file
+
+
+
 
 ### 批量更新node_modules
 
@@ -2825,6 +2822,18 @@ output：
             | awk '{print $1}'`; \
         do let c=c+$i; done; \
         echo $c
+
+
+### 逆序列出子目录占用空间
+
+    # 按block数逆序
+    du -s * | sort -rn
+
+    # 按K字节数逆序
+    du -sk * | sort -rn
+
+    # 按M字节数逆序
+    du -sm * | sort -rn
 
 
 
