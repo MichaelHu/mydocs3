@@ -2,13 +2,6 @@
 
 > Immutable persistent data collections for Javascript which increase efficiency and simplicity.
 
-* github: <https://github.com/facebook/immutable-js>
-* docs: <http://facebook.github.io/immutable-js/docs/>
-
-
-> Immutable data cannot be changed once created, leading to much simpler application development, no defensive copying, and enabling advanced memoization and change detection techniques with simple logic. Persistent data presents a mutative API which does not update the data in-place, but instead always yields new updated data.
-
-
 <style type="text/css">
 @import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
 span.line-through {
@@ -18,6 +11,17 @@ span.line-through {
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <script src="http://258i.com/static/build/immutablejs/immutable.min.js"></script>
 
+
+## Resources
+
+* github: <https://github.com/facebook/immutable-js> <iframe src="http://258i.com/gbtn.html?user=facebook&repo=immutable-js&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+* docs: <http://facebook.github.io/immutable-js/docs/>
+
+
+
+## Features
+
+> Immutable data cannot be changed once created, leading to much simpler application development, no defensive copying, and enabling advanced memoization and change detection techniques with simple logic. Persistent data presents a mutative API which does not update the data in-place, but instead always yields new updated data.
 
 * facebook出品
 * 一旦创建，不再改变 

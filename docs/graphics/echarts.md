@@ -3,7 +3,7 @@
 ## Resources
 
 * site: <http://echarts.baidu.com>
-* github: <https://github.com/ecomfe/echarts> <iframe src="http://258i.com/gbtn.html?user=ecomfe&repo=echarts&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+* github: <https://github.com/apache/incubator-echarts> <iframe src="http://258i.com/gbtn.html?user=apache&repo=incubator-echarts&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 * echarts-insights: <ref://./echarts-insights.md.html> 
 * examples: <http://echarts.baidu.com/examples.html>
 * 配置项文档: <http://echarts.baidu.com/option.html>
@@ -33,7 +33,7 @@
         custom          自定义图
 
 * webpack中使用ECharts: <http://echarts.baidu.com/tutorial.html#在%20webpack%20中使用%20ECharts>
-* 基于map的heatmap，其china.js等文件暂停官方下载，但可从echarts的github上获取：<https://github.com/ecomfe/echarts/blob/master/map/js/china.js>
+* 基于map的heatmap，其china.js等文件暂停官方下载，但可从echarts的github上获取：<https://github.com/apache/incubator-echarts/blob/master/map/js/china.js>
 
 
 ## Features

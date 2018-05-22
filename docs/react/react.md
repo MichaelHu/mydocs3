@@ -144,7 +144,7 @@ jsx只是一个`句法糖`，目的是简化`React.createElement( component, pro
 1. Do Not Modify State Directly
     * `constructor`是唯一一个可以对`this.state`赋值的地方
     * 其他地方，只能通过`this.setState( ... )`改变state的值
-2. State Updates May Be Asynchronous
+2. State Updates May Be Asynchronous ( by callback )
 
         this.setState( ( prevState, props ) => ( {
             counter: prevState.counter + props.increment

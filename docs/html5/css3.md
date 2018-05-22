@@ -30,6 +30,12 @@
 * 深入了解CSS字体度量，行高和vertical-align <https://www.w3cplus.com/css/css-font-metrics-line-height-and-vertical-align.html>
 
 
+## 水平垂直居中
+
+* CSS未知宽高元素水平垂直居中 <https://www.cnblogs.com/jogen/p/5213566.html> 有`四种方式`
+
+
+
 ## 文本处理相关
 
 ### white-space
@@ -397,7 +403,7 @@ todo
             display: flex | inline-flex;
 
 
-### Features
+### Tips
 
 * flex是`一维`的，css grid是`二维`的
 * `flex`属性的理解是关键
@@ -421,6 +427,14 @@ todo
         height: 200px;
         overflow: hidden;
 
+* flex alignment，有三种方式：
+    1. `auto margin`，能方便实现水平垂直居中
+
+        Note: If free space is distributed to auto margins, the alignment properties will have no effect in that dimension because the margins will have stolen all the free space left over after flexing.
+
+    2. 在flex container上使用`justify-content`, `align-items`
+    3. 在flex item上使用`align-self`
+
 
 ### 可用属性
 
@@ -436,8 +450,16 @@ todo
 
     flex-wrap: nowrap | wrap | wrap-reverse;
     
-    /* 设定子元素排布规则，此时text-align不生效 */
+    /* 设定axis上子元素排布规则，此时text-align不生效 */
     justify-content: flex-start | flex-end | center | space-between | space-around;
+
+    /* 设定cross-axis上子元素排布规则 */
+    align-items: flex-start | flex-end | center | baseline | stretch
+    align-self: auto | flex-start | flex-end | center | baseline | stretch
+
+    / * packing flex lines */
+    align-content: flex-start | flex-end | center | space-between | space-around | stretch
+    
 
     /* 设定flex元素本身的自适应布局配置 */
     flex: none | [<flex-grow> <flex-shrink>? || <flex-basis>]
@@ -474,12 +496,7 @@ todo
         order: -1;
 
 
-### 空间分配
-
-
-
-
-### 例子1
+### 例子 1
 
 
 <div id="test_flex_case_1_css" class="test">
@@ -546,9 +563,9 @@ todo
 
 
 
-### 例子2
+### 例子 2
 
-* float儿子，float行为会被忽略
+* float儿子，float行为会被`忽略`
 * inline内容会被匿名块状盒子包围
 * inline儿子也会成为一个块状盒子
 
@@ -577,7 +594,7 @@ todo
 	</div>
 
 
-### 例子3
+### 例子 3
 
 * `flex`是一个`简写属性`，本例子可以测试以下值的布局表现，尝试修改后点击`Restart`按钮：
 
@@ -627,6 +644,110 @@ todo
 
         .item-3-2 {
             order: -1;
+        }
+    </style>
+
+
+
+### 例子 4
+
+> 关于flex布局中的alignment 1
+
+* flex元素的auto margin，与block元素的auto margin效果类似
+    1. 计算`flex bases`和`flexible lengths`，auto margin被视为0
+    2. 优先于`justify-content`和`align-self`，任何正的空闲空间都会分配给该方向上的auto margins，如下方例子的Login元素，其`margin-left: auto`
+    3. 溢出box的auto margin会被忽略，而`向end端溢出`
+
+案例代码如下，重点为`.login元素`的`margin-left: auto`：
+
+    @[data-script="html editable"]<nav class="flex-layout-container-alignment">
+        <ul>
+            <li><a href=/about>About</a>
+            <li><a href=/projects>Projects</a>
+            <li><a href=/interact>Interact</a>
+            <li class="login"><a href=/login>Login</a> 
+        </ul>
+    </nav>
+    <style type="text/css">
+        .flex-layout-container-alignment {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #eee;
+            border: 1px solid #ccc;
+        }
+
+        .flex-layout-container-alignment > ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+        }
+
+        .flex-layout-container-alignment > ul > li::before {
+            content: '|';
+            margin: 0 10px;
+        }
+
+        .flex-layout-container-alignment > ul > li:first-child::before, 
+        .flex-layout-container-alignment > ul > .login::before {
+            content: '';
+            margin: 0;
+        }
+
+        .flex-layout-container-alignment > ul > .login {
+            margin-left: auto;
+        }
+
+    </style>
+
+
+### 例子 5
+
+> 关于flex布局中的alignment 2
+
+案例代码如下，`flex container`使用`justify-content`与`align-items`实现未知宽高的元素的`水平垂直居中`：
+
+    @[data-script="html editable"]<div class="flex-layout-container-alignment-2">
+        <div class="block">未知宽高的块元素</div>
+    </div>
+    <style type="text/css">
+        .flex-layout-container-alignment-2 {
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+            margin: 5px 0;
+            background-color: #eee;
+            border: 1px solid #ccc;
+        }
+        .flex-layout-container-alignment-2 .block {
+            border: 1px dotted red;
+            background-color: #fff;
+            text-align: center;
+        }
+    </style>
+
+> 关于flex布局中的alignment 3
+
+案例代码如下，`flex元素`使用`auto margin`实现自身的`水平垂直居中`：
+
+    @[data-script="html editable"]<div class="flex-layout-container-alignment-3">
+        <div class="block">未知宽高块元素</div>
+    </div>
+    <style type="text/css">
+        .flex-layout-container-alignment-3 {
+            display: flex;
+            flex-flow: row wrap;
+            height: 100px;
+            margin: 5px 0;
+            background-color: #eee;
+            border: 1px solid #ccc;
+        }
+        .flex-layout-container-alignment-3 .block {
+            margin: auto;
+            border: 1px dotted red;
+            background-color: #fff;
+            text-align: center;
         }
     </style>
 
