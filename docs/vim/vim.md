@@ -1,9 +1,10 @@
 # vim
 
-2017-10, 2017-02-10, 2016-10-22, 2016-07-23
+> 向编辑神器`VIM`致敬！ 
+
+changelog: 2018-05, 2017-10, 2017-02-10, 2016-10-22, 2016-07-23
 , 2016-07-07, 2014-11-05 hudamin - 转载请注明出处
 
-> 向编辑神器`VIM`致敬！ 
 
 
 ## Resources
@@ -1409,13 +1410,16 @@ todo
     :f[ile][!] {name}
     :0f[ile][!]
 
-    " list all know buffer and file names
-    :buffers
-    :files
-    :ls
+    " list all buffer and file names
+    :buffers[!] [flags]
+    :files[!] [flags]
+    :ls[!] [flags]
 
     " edit all buffers
     :ball
+
+    " edit buffer whose id is {ID}
+    :b{ID}
 
     " edit all loaded buffers
     :unhide
@@ -1424,10 +1428,41 @@ todo
     :bunload[!] [N]
     :bdelete[!] [N]
 
-    :bfirst
-    :blast
+    :bf[irst]
+    :bl[ast]
+    :bn[ext]
+    :bp[revious]
 
     :[N]bmod [N]
+
+
+### ls, buffers, files
+
+> flags
+
+    flag    description
+    ------------------------------------------------------------------------------------------
+    u       an unlisted buffer ( only displayed when [!] is used )
+    %       the buffer in the current window
+    #       the alternate buffer for ":e #" and CTRL_^
+    a       an active buffer: it is loaded and visible
+    h       a hidden buffer: it is loaded, but currently not displayed in a window
+    -       a buffer with 'modifiable' off
+    =       a readonly buffer
+    +       a modified buffer
+    x       a buffer with read errors
+
+* `[flags]`可以是以上flag的拼接
+* 拼接的逻辑含义为`AND`
+* 比如：
+
+        :ls a+
+        :ls h+
+
+
+
+
+
 
 
 ## Automatic Commands
@@ -1438,8 +1473,11 @@ syntax:
 
 比较有用的比如：`:au, :au {event}, :au {event} {pat}`
 
+    " read from viminfo file [file]
     :rv[iminfo] [file]
     :rv[iminfo]! [file]
+
+    " write to viminfo file [file]
     :wv[iminfo] [file]
     :wv[iminfo]! [file]
 
@@ -1517,6 +1555,10 @@ syntax:
     :browse {command}
     CTRL-Break
     :mode N 
+    :ol[dfiles]                 list the files that have marks stored in the viminfo file
+    :filt[er] {pat} {command}   restrict the output of {command} to matches with {pat}
+    :filt[er] /{pat}/ {command}     , without the enclosing character the pattern cannot include
+                                    the bar character
 
 
 
@@ -1663,6 +1705,10 @@ command line模式的行注释。
     :set keywordprg
     keywordprg=man -s
 
+
+### 快速查找特定文件的buffer id
+
+    :filt /search.*\.md/ ls
 
 
 

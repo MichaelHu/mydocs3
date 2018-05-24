@@ -143,3 +143,8 @@
     $ tm <-H | --help>
     $ tm <file> [--local] [--no-preview]
 
+
+## Todos
+
+* 生成文档中，增加`turbo-markdown`版本信息
+

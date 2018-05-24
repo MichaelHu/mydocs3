@@ -9,7 +9,7 @@
 ## Resources
  
 * `site`: <http://redux.js.org/index.html>
-* `github`: <https://github.com/reactjs/redux> <iframe src="http://258i.com/gbtn.html?user=reactjs&repo=redux&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+* `github`: <https://github.com/reduxjs/redux> <iframe src="http://258i.com/gbtn.html?user=reduxjs&repo=redux&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 
 
 ## Features
@@ -737,7 +737,7 @@ Store包含`getState()`和`dispatch()`接口，所以有以上`解构`的表示�
 
 ### 关键帧执行的例子 
 
-`refScheduler` middleware，通过该middleware`扩展`来支持`关键帧`执行`action`。可以处理`{meta:{ ref: true }}`形式的action。
+`refScheduler` middleware，通过该middleware`扩展`来支持`关键帧`执行`action`。可以处理`{meta:{ raf: true }}`形式的action。
 
 
     /**

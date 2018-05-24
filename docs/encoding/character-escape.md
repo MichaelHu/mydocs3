@@ -199,12 +199,31 @@
 
 ## html entity
 
-    &nbsp;
-    &ensp;
-    &emsp;
-    &#8194;
-    &#8195;
-    &#12288;
+### space entity
+
+    name        id ( decimal )      escape ( hex )  description
+    -----------------------------------------------------------------------------
+    &nbsp;      &#160;              %u20            non-breaking space
+    &ensp;      &#8194;             %u2002          en space
+    &emsp;      &#8195;             %u2003          em space
+    &thinsp;    &#8201;             %u2009          thin space
+                &#12288;            %u3000          full-width space( 全角空格 )
+
+* `non-breaking space`:|<span style="background-color: #ff0;">&#160;</span>|
+* `en space`:|<span style="background-color: #ff0;">&#8194;</span>|
+* `em space`:|<span style="background-color: #ff0;">&#8195;</span>|
+* `thin space`:|<span style="background-color: #ff0;">&#8201;</span>|
+* `全角空格`：|<span style="background-color: #ff0;">&#12288;</span>|
+
+
+### other entity
+
+    &zwnj;      &#8204;             zero width non-joiner
+    &zwj;       &#8205;             zero width joiner
+    &ndash;     &#8211;             en dash
+    &mdash;     &#8212;             em dash
+    &trade;     &#8482;
+
 
 另外可参考：<ref://../other/common-characters.md.html>
 
