@@ -148,10 +148,7 @@ JavaScript正则表达式语法是`Perl5`正则的`大型子集`，在字符串�
 
 ## VIM正则
 
-    magic
-        \<
-        \>
-    non-magic
+具体参考 <ref://../vim/vim.md.html> 的`Searching and Replacing`节的`pattern`部分。
 
 
 

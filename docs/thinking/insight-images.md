@@ -87,13 +87,6 @@
  <img class="lazy" data-url="./img/a915e6af200945afa2785a72da8682c2.jpg">
 
 
-## 付出才有收获
-
-> 有时候你觉得特别难，也许因为有更大的收获
-
- <img class="lazy" data-url="./img/613c6702fb7940eea9f698bb8906730b.jpg">
-
-
 ## 不要试图满足所有人
 
 > 你永远无法满足所有人
@@ -165,6 +158,13 @@
  <img class="lazy" data-url="./img/ea3c1e3c7586415b8ffbc160ed31f813.jpg">
 
 
+## 付出才有收获
+
+> 有时候你觉得特别难，也许因为有更大的收获
+
+ <img class="lazy" data-url="./img/613c6702fb7940eea9f698bb8906730b.jpg">
+
+
 ## 表里如一 
 
 > 表面繁荣未必是好事，抛开表象看实质才是人生真谛
@@ -178,5 +178,14 @@
 
  <img class="lazy" data-url="./img/ff931726163d47248dde4dbd79073a34.jpg">
 
+
+## 产品迭代路径
+
+> `MVP` ( Minimal Viable Product ) `最小可行性产品`
+
+* 产品迭代路径应按照MVP原则，尽快向用户提供`能用的`产品，再根据用户需求，`逐步提供（迭代）`更好用的产品
+* 而不是，一开始就规划一个非常完美的方案，然后花上好几个月，甚至一两年来实现，说不定等你实现所谓`“完美”`的产品，用户需求早已发生翻天覆地的变化
+
+ <img class="lazy" data-url="./img/prod-iteration.jpg">
 
 

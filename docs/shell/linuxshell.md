@@ -2125,7 +2125,7 @@ sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://.
 	$ awk '/pattern/{printf "..%s..%s..", $2, $1}' file
 	
     # 为每一行添加行号
-    $ awk 'BEGIN{k=1}{printf("%d %s\n",k,$0)}' file
+    $ awk 'BEGIN{k=1}{printf("%d %s\n",k++,$0)}' file
 
     # 外部变量传入
     $ awk -v var1=value1 '{printf "-%s-", var1}'
@@ -2184,7 +2184,7 @@ sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://.
     # vim下将awk作为外部命令调用
     :'<,'>!awk '{printf("\%s \%.2f\n", $0, $2*0.6+$3*0.2+$4*0.1+$5*0.1 )}' 
 
-注意，在vim中使用外部命令，`%`需要转义。
+> 在vim中调用外部命令，`%`具有特殊含义，会替换成文件名；如果不希望被替换，则需要使用`反斜线转义`
 
 
 

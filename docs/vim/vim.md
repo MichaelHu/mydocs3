@@ -376,6 +376,171 @@ changelog: 2018-05, 2017-10, 2017-02-10, 2016-10-22, 2016-07-23
 * substitute中的`\n`实际上是`<NL>`，代表0x00, vim中显示`^@`
 
 
+#### pattern
+
+##### multi items
+
+> `:help pattern-overview`获取pattern的相关帮助，默认情况下为`magic模式`
+
+    magic   nomagic     matches of the preceding atom 
+    ---------------------------------------------------------------------
+    *       \*          0 or more    as many as possible
+    \+      \+          1 or more    as many as possible (*)
+    \=      \=          0 or 1       as many as possible (*)
+    \?      \?          0 or 1       as many as possible (*)
+
+    \{n,m}  \{n,m}      n to m       as many as possible (*)
+    \{n}    \{n}        n            exactly (*)
+    \{n,}   \{n,}       at least n   as many as possible (*)
+    \{,m}   \{,m}       0 to m       as many as possible (*)
+    \{}     \{}         0 or more    as many as possible (same as *) (*)
+
+    \{-n,m} \{-n,m}     n to m       as few as possible (*)
+    \{-n}   \{-n}       n            exactly (*)
+    \{-n,}  \{-n,}      at least n   as few as possible (*)
+    \{-,m}  \{-,m}      0 to m       as few as possible (*)
+    \{-}    \{-}        0 or more    as few as possible (*)
+
+    \@>     \@>         1, like matching a whole pattern (*)
+    \@=     \@=         nothing, requires a match |/zero-width| (*)
+    \@!     \@!         nothing, requires NO match |/zero-width| (*)
+    \@<=    \@<=        nothing, requires a match behind |/zero-width| (*)
+    \@<!    \@<!        nothing, requires NO match behind |/zero-width| (*)
+
+* 支持`零宽`正向或负向的先行或后行断言，包括
+
+        \@=     零宽正向先行断言
+        \@!     零宽负向先行断言
+        \@<=    零宽正向后行断言
+        \@<!    零宽负向后行断言
+
+    举个实际例子，如下：
+
+        " 以e结尾的单词，去掉结尾e剩余的部分，使用正向零宽先行匹配
+        /\<\w*\(e\>\)\@=
+
+        " markdown文档中所有标题文本，使用正向零宽后行匹配
+        /\(^#\+ \+\)\@<=.\+
+
+    注意，使用`零宽先行`匹配，该断言必须出现在`最后`；或使用`零宽后行`匹配，该断言必须出现在`最前`，也就是以上两个pattern，如果按如下写法，则是错误的：
+
+        " [ error ] 以e结尾的单词，去掉结尾e剩余的部分，使用正向零宽先行匹配
+        /\<\w*e\@=\>
+
+        " [ error ] markdown文档中所有标题文本，使用正向零宽后行匹配
+        /^\(#\+ \+\)\@<=.\+
+
+* 实际上比js的正则模式还功能强大
+* `magic`和`nomagic`的区别，只在`*`的使用，前者表达特殊含义，`不需要反斜线转义`
+
+
+##### ordinary atom
+
+> 常用pattern的原子符号
+
+    magic   nomagic     matches
+    ---------------------------------------------------------------------
+    ^       ^           start-of-line (at start of pattern)
+    \^      \^          literal '^'
+    \_^     \_^         start-of-line (used anywhere) |/zero-width
+    $       $           end-of-line (at end of pattern) |/zero-width
+    \$      \$          literal '$'
+    \_$     \_$         end-of-line (used anywhere) |/zero-width
+    .       \.          any single character (not an end-of-line)
+    \_.     \_.         any single character or end-of-line
+    \<      \<          beginning of a word |/zero-width|
+    \>      \>          end of a word |/zero-width|
+    \zs     \zs         anything, sets start of match
+    \ze     \ze         anything, sets end of match
+    \%^     \%^         beginning of file |/zero-width|
+    \%$     \%$         end of file |/zero-width|
+    \%V     \%V         inside Visual area |/zero-width|
+    \%#     \%#         cursor position |/zero-width|
+    \%'m    \%'m        mark m position |/zero-width|
+    \%23l   \%23l       in line 23 |/zero-width|
+    \%23c   \%23c       in column 23 |/zero-width|
+    \%23v   \%23v       in virtual column 23 |/zero-width|
+
+* 支持`第几行`、`第几列`，`是否在选区内`等模式匹配
+* 支持`光标查找`、`mark查找`
+* `magic`和`nomagic`的区别，主要在`.`的使用，前者表达特殊含义，`不需要反斜线转义`
+
+
+##### character classes
+
+> 字符类
+
+    magic   nomagic     matches
+    ---------------------------------------------------------------------
+    \i      \i          identifier character (see 'isident' option)
+    \I      \I          like "\i", but excluding digits
+    \k      \k          keyword character (see 'iskeyword' option)
+    \K      \K          like "\k", but excluding digits
+    \f      \f          file name character (see 'isfname' option)
+    \F      \F          like "\f", but excluding digits
+    \p      \p          printable character (see 'isprint' option)
+    \P      \P          like "\p", but excluding digits
+    \s      \s          whitespace character: <Space> and <Tab>
+    \S      \S          non-whitespace character; opposite of \s
+    \d      \d          digit:                [0-9]
+    \D      \D          non-digit:            [^0-9]
+    \x      \x          hex digit:            [0-9A-Fa-f]
+    \X      \X          non-hex digit:            [^0-9A-Fa-f]
+    \o      \o          octal digit:            [0-7]
+    \O      \O          non-octal digit:        [^0-7]
+    \w      \w          word character:            [0-9A-Za-z_]
+    \W      \W          non-word character:        [^0-9A-Za-z_]
+    \h      \h          head of word character:        [A-Za-z_]
+    \H      \H          non-head of word character:    [^A-Za-z_]
+    \a      \a          alphabetic character:        [A-Za-z]
+    \A      \A          non-alphabetic character:    [^A-Za-z]
+    \l      \l          lowercase character:        [a-z]
+    \L      \L          non-lowercase character:    [^a-z]
+    \u      \u          uppercase character:        [A-Z]
+    \U      \U          non-uppercase character        [^A-Z]
+    \_x     \_x         where x is any of the characters above: character
+                        class with end-of-line included
+
+    \e      \e          <Esc>
+    \t      \t          <Tab>
+    \r      \r          <CR>
+    \b      \b          <BS>
+    \n      \n          end-of-line
+    ~       \~          last given substitute string
+    \1      \1          same string as matched by first \(\) {not in Vi}
+    \2      \2          Like "\1", but uses second \(\)
+    ...
+    \9      \9          Like "\1", but uses ninth \(\)
+    \z1     \z1         only for syntax highlighting, see |:syn-ext-match|
+    ...
+    \z9     \z9         only for syntax highlighting, see |:syn-ext-match|
+
+    x       x           a character with no special meaning matches itself
+
+    []      \[]         any character specified inside the []
+    \%[]    \%[]        a sequence of optionally matched atoms
+
+    \c      \c          ignore case, do not use the 'ignorecase' option
+    \C      \C          match case, do not use the 'ignorecase' option
+    \Z      \Z          ignore differences in Unicode "combining characters".
+                        Useful when searching voweled Hebrew or Arabic text.
+    \m      \m          'magic' on for the following chars in the pattern
+    \M      \M          'magic' off for the following chars in the pattern
+    \v      \v          the following chars in the pattern are "very magic"
+    \V      \V          the following chars in the pattern are "very nomagic"
+    \%#=1   \%#=1       select regexp engine |/zero-width|
+
+    \%d     \%d         match specified decimal character (eg \%d123)
+    \%x     \%x         match specified hex character (eg \%x2a)
+    \%o     \%o         match specified octal character (eg \%o040)
+    \%u     \%u         match specified multibyte character (eg \%u20ac)
+    \%U     \%U         match specified large multibyte character (eg \%U12345678)
+    \%C     \%C         match any composing characters
+
+* `magic`和`nomagic`的区别，主要在`[]`的使用，前者表达特殊含义，`不需要反斜线转义`
+
+
+
 #### substitution
 
 > 获取帮助： `:help sub-replace-special` , `:help sub-replace-expression`
@@ -392,8 +557,8 @@ changelog: 2018-05, 2017-10, 2017-02-10, 2016-10-22, 2016-07-23
     \\          反斜线
     \u          下一个字符变成大写
     \U          后面的字符都变成大写，直到\e或\E
-    \l          下一个字符变成大写
-    \L          后面的字符都变成大写，直到\e或\E
+    \l          下一个字符变成小写
+    \L          后面的字符都变成小写，直到\e或\E
     \e, \E      \u, \U, \l, \L的结尾
     \=          替换成表达式执行的结果，匹配串的内容通过submatch( [0-9] )获得
                 ，也可以用在substitute()函数的substitute部分中
@@ -413,10 +578,13 @@ changelog: 2018-05, 2017-10, 2017-02-10, 2016-10-22, 2016-07-23
     :%s@#\+@\="#" . strlen( submatch( 0 ) )@g
     :%s/#\+/\="#" . strlen( submatch( 0 ) )/g
 
+    " 将两个半角空格替换成一个全角空格
+    :s/\%d32\%d32/\= "\u3000"/g
+
     " 将<NL>替换成换行符
     :%s/\%x00/\r/g
 
-注意：使用`\=`时，替换的分隔符不能出现在表达式中，可用`@`或`/`
+注意：使用`\=`时，替换的`分隔符`不能出现在表达式中。分隔符可用`@`或`/`
 
 
 
