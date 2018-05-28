@@ -4,6 +4,9 @@
 
 > changelog: 170602, 170504, 170418
 
+<style type="text/css">
+.highlight { background-color: #ff0; }
+</style>
 
 ## ascii table
 
@@ -141,13 +144,27 @@
 
 ## vim magic
 
-    \%d	match specified decimal character (eg \%d123)
-    \%x	match specified hex character (eg \%x2a)
-    \%o	match specified octal character (eg \%o040)
-    \%u	match specified multibyte character (eg \%u20ac)
-    \%U	match specified large multibyte character (eg \%U1234abcd)
+> 以下转义序列可以出现在`search pattern`和`substitue pattern`中
 
+    \%d	    match specified decimal character (eg \%d123)
+    \%x	    match specified hex character (eg \%x2a)
+    \%o	    match specified octal character (eg \%o040)
+    \%u	    match specified multibyte character (eg \%u20ac)
+    \%U	    match specified large multibyte character (eg \%U1234abcd)
 
+    \%[]    A sequence of optionally matched atoms 
+            /r\%[ead]           matches 'r', 're', 'rea', 'read'
+            /\<r\%[[eo]ad]\>    matches 'r', 're', 'ro', 'rea', 'roa', 'read', 'road'
+
+    ...
+
+如果需要在substitute的`replacement string`中使用码点表示的字符，可以使用`\= expression`方式，比如：
+
+    " 将两个半角空格替换成一个全角空格
+    :s/\%d32\%d32/\= "\u3000"/g
+
+更多具体内容，参考<ref://../vim/vim.md.html>的`Searching and Replacing`节的`pattern`部分。
+而其中`全角空格`等特殊字符，参考本文的`html entity`节。
 
 
 ## sed
@@ -209,11 +226,11 @@
     &thinsp;    &#8201;             %u2009          thin space
                 &#12288;            %u3000          full-width space( 全角空格 )
 
-* `non-breaking space`:|<span style="background-color: #ff0;">&#160;</span>|
-* `en space`:|<span style="background-color: #ff0;">&#8194;</span>|
-* `em space`:|<span style="background-color: #ff0;">&#8195;</span>|
-* `thin space`:|<span style="background-color: #ff0;">&#8201;</span>|
-* `全角空格`：|<span style="background-color: #ff0;">&#12288;</span>|
+* `non-breaking space`:|<span class="highlight">&#160;</span>|
+* `en space`:|<span class="highlight">&#8194;</span>|
+* `em space`:|<span class="highlight">&#8195;</span>|
+* `thin space`:|<span class="highlight">&#8201;</span>|
+* `全角空格`：|<span class="highlight">&#12288;</span>|
 
 
 ### other entity
