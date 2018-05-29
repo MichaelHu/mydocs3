@@ -12,7 +12,7 @@
 > `2016-8月起`，新上传的Chrome App仅限于Chrome OS使用，其他平台的Chrome浏览器不再可用。 <https://blog.chromium.org/2016/08/from-chrome-apps-to-web.html> [ 这貌似不影响本文谈的extension ]
 
 
-## References
+## Resources
 
 * `Getting started` [ `YouTube 插件` ]: <https://developer.chrome.com/extensions/getstarted>
 * `Chrome Extension Overview`: <https://developer.chrome.com/extensions/overview>
@@ -22,6 +22,7 @@
 * 发布产品的`详细参考文档`，可以发布4类产品「Websites, Chrome App, Extensions以及Themes」: <http://code.google.com/chrome/webstore>
 * chrome extension CSP ( Content Security Policy ): <https://developer.chrome.com/extensions/contentSecurityPolicy>
 * `CSP on W3C`: <https://w3c.github.io/webappsec-csp/>
+* Chrome扩展开发（Gmail附件管理助手）系列 <http://www.cnblogs.com/ligerleng/p/gmail_assist_0.html>
 
 
 
@@ -89,7 +90,7 @@ popup.html源码不使用`html、header、body`标签
 
 
 
-## 注意事项
+## Tips
 
 * html和js`必须分开`成两个文件，不能在html中直接编写js。参考 <https://developer.chrome.com/extensions/contentSecurityPolicy>。`默认情况`下，提供`严格`的资源`限制`，你需要`显式设置`黑白名单来确定资源的可访问性。
 
@@ -126,6 +127,7 @@ popup.html源码不使用`html、header、body`标签
 
                 
 
+* Chrome插件能直接访问本地硬盘的文件吗？<https://www.zhihu.com/question/21926079>
 
 
 

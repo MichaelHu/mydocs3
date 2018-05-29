@@ -376,7 +376,7 @@
 3. vue
 4. virtual-dom  
 5. 前端mvc, mvvm, mvp ( todo )
-6. redux定位、运行原理
+6. redux定位、运行原理；redux的middleware
 
 
 

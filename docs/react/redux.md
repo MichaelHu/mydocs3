@@ -461,7 +461,7 @@ enhancer可以是一个函数对象，称为`Store增强器`。可选参数。Re
 
 > 消化好`js运行在其所定义的上下文`，有助于理解middleware。
 
-middlewares符合以下格式：
+`middleware`符合以下`signature`：
 
     ({ getState, dispatch }) => next => action
 
@@ -490,7 +490,8 @@ middlewares符合以下格式：
       text: 'Understand the middleware'
     })
 
-具体例子可查看：<a href="./redux-workshop.md.preview.html">applyMiddleware</a>
+具体例子可查看：<ref://./redux-workshop.md.html>
+
 
 
 
@@ -620,20 +621,25 @@ middlewares符合以下格式：
 
 ## middlewares
 
-<http://redux.js.org/docs/advanced/Middleware.html>
-
 Redux的middleware与`Express`或`Koa`的middleware是类似的，只不过解决不同的问题。
-它在`派发一个action`和`action到达reducer`两个时间点`之间`为第三方插件提供介入的方式。
+它在`派发一个action`和`action到达reducer`两个时间点`之间`为第三方插件提供介入的方式。<http://redux.js.org/docs/advanced/Middleware.html>
 
 > `简单`的说，middleware`扩展`了`dispatch()`的实现，让它可以处理`更多`类型的action。
 
 通常`日志`、`奔溃报告`、`异步API`请求、`路由`等会用middleware来实现。
 
 
+
+
 ### 实现思路
 
 先重温一下middleware的`signature`，`next`是一个封装的dispatch：
 
+    /**
+     * { getState, dispath }        store对象
+     * next                         内层dispatch
+     * action                       action
+     */
     ({ getState, dispatch }) => next => action 
 
 Store包含`getState()`和`dispatch()`接口，所以有以上`解构`的表示方式。middleware`封装`了Store和next，返回一个接收`action`作为`参数`的函数。
@@ -656,8 +662,19 @@ Store包含`getState()`和`dispatch()`接口，所以有以上`解构`的表示�
       return Object.assign({}, store, { dispatch })
     }
 
-1. 封装了`store.dispatch()`，最终返回结果包含了被`多次封装`后的`dispatch`
-2. 以上实现并不是Redux API的实现，Redux的实现更复杂和谨慎，特别针对`异步action`做了特殊处理。
+> 以上实现并不是Redux API的实现，Redux的实现更复杂和谨慎，特别针对`异步action`做了特殊处理。
+
+### Tips
+
+* 扩展了`store.dispatch()`的实现，而不是与reducer同级别的扩展
+* 由middleware来决定`如何调用内层dispatch`的逻辑，通过`next`参数将`内层dispatch`引用传递给middleware
+* `applyMiddleware()`的作用是，将dispatch()按层次进行封装，并`不直接调用`dispatch()
+* 封装了`store.dispatch()`，最终返回结果包含了被`多次封装`后的`dispatch`
+* 原始的`store.dispatch()`被封装到`最里层`，最终返回的store，其dispatch方法是`多次封装`后的版本
+* 以`Store为单位`应用middleware，返回新的Store
+* 调用`dispatch()`时，按middlewares的`数组顺序`依次调用各个middleware封装的dispatch()，所有封装的dispatch()执行完毕后，才执行原始的`store.dispatch()`
+* dispatch()`按封装层次由厚到薄`依次调用，`异步middleware`封装的dispatch()，会`中止`当前dispatch()，将`内层dispatch()`的调用放到`异步callback`中调用
+* applyMiddleware()是一个`长洋葱`的过程，dispatch()过程是一个`剥洋葱`的过程
 
 
 
