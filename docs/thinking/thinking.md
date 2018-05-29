@@ -4,17 +4,22 @@
 .snapshot-wrapper { max-height:300px; overflow: hidden; }
 .snapshot { border-left: 5px solid #000 !important; }</style>
 
-> 思维是灵魂的自我谈话。 —— 柏拉图
-
-> 真知灼见，首先来自多思善疑。 —— 洛克威尔
-
-> 生活中只有一种英雄主义，那就是在认清生活真相之后依然热爱生活。-- 罗曼·罗兰
-
-> 技术leader不是靠单兵作战能力取胜，而是靠有效地组织和利用技术资源获得最大化的产出来取胜。
-
-> Impossible is nothing, `just do it`.
-
+> 思维是灵魂的自我谈话。 —— 柏拉图<br>
+> 真知灼见，首先来自多思善疑。 —— 洛克威尔<br>
+> 生活中只有一种英雄主义，那就是在认清生活真相之后依然热爱生活。-- 罗曼·罗兰<br>
+> 技术leader不是靠单兵作战能力取胜，而是靠有效地组织和利用技术资源获得最大化的产出来取胜。<br>
+> Impossible is nothing, `just do it`.<br>
 > Stick to the end.
+
+
+## 2018-05-29
+
+如何给下属安排任务，是管理者必修的一课。
+
+* 说明任务背景
+* 明确预期达到的目标
+* 明确时间点
+* 明确大体进行步骤，以及check point
 
 
 ## 2018-05-22
