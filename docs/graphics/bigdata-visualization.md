@@ -5,6 +5,7 @@
 video {
     max-width: 100%;
 }
+.lazy { max-height: 300px; }
 </style>
 
 > 大数据可视化
@@ -69,8 +70,8 @@ video {
 
 ### 阿里DataV
 
-* 自我介绍：DataV旨让更多的人看到数据可视化的魅力，帮助非专业的工程师通过图形化的界面轻松搭建专业水准的可视化应用，满足您会议展览、业务监控、风险预警、地理信息分析等多种业务的展示需求。
-* site: <https://data.aliyun.com/visual/datav>
+* 简介：`DataV`旨在让更多的人看到数据可视化的魅力，帮助非专业的工程师通过图形化的界面轻松搭建专业水准的可视化应用，满足您会议展览、业务监控、风险预警、地理信息分析等多种业务的展示需求。
+* Site: <https://data.aliyun.com/visual/datav>
 
 #### Features
 
@@ -83,7 +84,11 @@ video {
 
 * XX市双创数据大屏 <http://datav.aliyun.com/share/1598fb80658b9b656899c10338b6f1ac?spm=a2c0j.8903112.779858.1.436599ebZt7xb8>
 
-    <img src="./img/datav-01.png">
+    <img class="lazy" data-url="./img/datav-01.png">
+
+* ET Brain - ET城市大脑 
+
+    <img class="lazy" data-url="./img/bigdata-visualization/et-brain.png">
 
 
 
@@ -100,7 +105,7 @@ video {
 
 以下为图说作品展示：
 
- <img src="./img/tushuo-01.png">
+ <img class="lazy" data-url="./img/tushuo-01.png">
 
 
 
@@ -128,12 +133,14 @@ site: <https://bigdata.163yun.com/youdata>
 
 ### 数字冰雹
 
+#### 简介
+
+* 中国大数据可视化分析决策领导者，助您释放大数据价值最后一公里
 * site: <http://www.digihail.com>
-* 自我介绍：中国大数据可视化分析决策领导者，助您释放大数据价值最后一公里
 
 #### Features
 
-* 多行业领域产品支持：航天战场、智慧城市、网络安全、商业智能、工业监控
+* 多行业领域产品支持：`航天战场`、`智慧城市`、网络安全、商业智能、工业监控
 * 某部对海作战指挥显示系统、某部海战场视景仿真系统、某部无人机操作控制平台等
 * 公安厅指挥中心、应急管理指挥决策系统、城市交通智能化监控分析平台、智慧园区运行监控平台等等
 
@@ -159,9 +166,9 @@ site: <https://bigdata.163yun.com/youdata>
 
 ### Resources
 
+* github - Data Visualization <https://github.com/showcases/data-visualization>
 * 140626 `Visualizing Algorithms` 来自d3作者Mike Bostock，综述了各类可视化算法 <https://bost.ocks.org/mike/algorithms/>
 * 常用`图谱库` <http://anvaka.github.io/graph-drawing-libraries/#/all>
-* github - Data Visualization <https://github.com/showcases/data-visualization>
 * `百度地图`开放API示例：<http://lbsyun.baidu.com/jsdemo.htm>
 * `Echarts`官方示例：<http://echarts.baidu.com/examples.html>
 * `Echarts`三维展示：<http://gallery.echartsjs.com/editor.html?c=xryhZvyGr->
@@ -188,7 +195,10 @@ site: <https://bigdata.163yun.com/youdata>
 * Polymaps <http://polymaps.org/> no github
 * Processing.js <http://processingjs.org/> no github
 
+
+
 #### 收费
+
 * Highcharts <https://www.highcharts.com/> 收费
 * FusionCharts <http://www.fusioncharts.com/> 收费
 
