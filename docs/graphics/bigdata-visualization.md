@@ -6,6 +6,15 @@ video {
     max-width: 100%;
 }
 .lazy { max-height: 300px; }
+.dv-items > ul { 
+    display: flex; 
+    flex-flow: row wrap;
+}
+.dv-items > ul > li { 
+    flex: 160px;
+    text-align: center;
+    list-style: none;
+}
 </style>
 
 > 大数据可视化
@@ -28,9 +37,83 @@ video {
 
 * 报表类
 * BI分析工具
+* 指挥控制中心大屏
 
 
 ## 表现形式
+
+<div class="dv-items">
+
+* Arc Diagram <br><img src="./img/bigdata-visualization/arc_diagram.svg">
+* Area Graph <br><img src="./img/bigdata-visualization/area_graph.svg">
+* Bar Chart <br><img src="./img/bigdata-visualization/bar_graph.svg">
+* Box & Whisker Plot <br><img src="./img/bigdata-visualization/box_plot.svg">
+* Brainstorm <br><img src="./img/bigdata-visualization/brainstorm.svg">
+* Bubble Chart <br><img src="./img/bigdata-visualization/bubble_chart.svg">
+* Bubble Map <br><img src="./img/bigdata-visualization/bubble_map.svg">
+* Bullet Graph <br><img src="./img/bigdata-visualization/bullet_chart.svg">
+* Calendar <br><img src="./img/bigdata-visualization/calendar.svg">
+* Candlestick Chart <br><img src="./img/bigdata-visualization/candlestick_chart.svg">
+* Chord Diagram <br><img src="./img/bigdata-visualization/chord_diagram.svg">
+* Choropleth Map - 分级统计图 <br><img src="./img/bigdata-visualization/choropleth_map.svg">
+* Circle Packing <br><img src="./img/bigdata-visualization/circle_packing.svg">
+* Connection Map <br><img src="./img/bigdata-visualization/connection_map.svg">
+* Density Plot - 密度图 <br><img src="./img/bigdata-visualization/density_plot.svg">
+* Donut Chart - 圆环图 <br><img src="./img/bigdata-visualization/donut_chart.svg">
+* Dot Map - 点图 <br><img src="./img/bigdata-visualization/dot_map.svg">
+* Dot Matrix Chart - 点矩阵图 <br><img src="./img/bigdata-visualization/dot_matrix_chart.svg">
+* Error Bars - 误差条 <br><img src="./img/bigdata-visualization/error_bars.svg">
+* Flow Chart - 流程图 <br><img src="./img/bigdata-visualization/flow_chart.svg">
+* Flow Map <br><img src="./img/bigdata-visualization/flow_map.svg">
+* Gantt Chart - 甘特图 <br><img src="./img/bigdata-visualization/gantt_chart.svg">
+* Heatmap - 热力图 <br><img src="./img/bigdata-visualization/heat_map.svg">
+* Histogram - 柱状图 <br><img src="./img/bigdata-visualization/histogram.svg">
+* Illustration Diagram - 说明图 <br><img src="./img/bigdata-visualization/illustration_diagram.svg">
+* Kagi Chart - 卡吉图 <br><img src="./img/bigdata-visualization/kagi_chart.svg">
+* Line Graph - 折线图 <br><img src="./img/bigdata-visualization/line_graph.svg">
+* Marimekko Chart <br><img src="./img/bigdata-visualization/marimekko_chart.svg">
+* Multi-set Bar Chart <br><img src="./img/bigdata-visualization/multiset_bar_chart.svg">
+* Network Diagram - 网络图 <br><img src="./img/bigdata-visualization/network_diagram.svg">
+* Nightingale Rose Chart - 南丁格尔玫瑰图 <br><img src="./img/bigdata-visualization/nightingale_rose_chart.svg">
+* Non-ribbon Chord Diagram - 非带状弦图 <br><img src="./img/bigdata-visualization/non_ribbon_chord_diagram.svg">
+Open-high-low-close Chart <br><img src="./img/bigdata-visualization">
+Parallel Coordinates Plot <br><img src="./img/bigdata-visualization">
+Parallel Sets <br><img src="./img/bigdata-visualization">
+Pictogram Chart <br><img src="./img/bigdata-visualization">
+Pie Chart <br><img src="./img/bigdata-visualization">
+Point & Figure Chart <br><img src="./img/bigdata-visualization">
+Population Pyramid <br><img src="./img/bigdata-visualization">
+Proportional Area Chart <br><img src="./img/bigdata-visualization">
+Radar Chart <br><img src="./img/bigdata-visualization">
+Radial Bar Chart <br><img src="./img/bigdata-visualization">
+Radial Column Chart <br><img src="./img/bigdata-visualization">
+Sankey Diagram <br><img src="./img/bigdata-visualization">
+Scatterplot <br><img src="./img/bigdata-visualization">
+Span Chart <br><img src="./img/bigdata-visualization">
+Spiral Plot <br><img src="./img/bigdata-visualization">
+Stacked Area Graph <br><img src="./img/bigdata-visualization">
+Stacked Bar Graph <br><img src="./img/bigdata-visualization">
+Stem & Leaf Plot <br><img src="./img/bigdata-visualization">
+Stream Graph <br><img src="./img/bigdata-visualization">
+Sunburst Diagram <br><img src="./img/bigdata-visualization">
+Tally Chart <br><img src="./img/bigdata-visualization">
+Timeline <br><img src="./img/bigdata-visualization">
+Timetable <br><img src="./img/bigdata-visualization">
+Tree Diagram <br><img src="./img/bigdata-visualization">
+Treemap <br><img src="./img/bigdata-visualization">
+Venn Diagram <br><img src="./img/bigdata-visualization">
+Violin Plot <br><img src="./img/bigdata-visualization">
+Word Cloud <br><img src="./img/bigdata-visualization">
+
+</div>
+
+* 数据可视化图表分类 <https://datavizcatalogue.com/>，相关的icons可以从这里获取到<https://datavizcatalogue.com/store/product-category/icons/>
+* Chart Primers - 图表基础介绍 <https://www.fusioncharts.com/chart-primers/>
+    
+    <img src="./img/bigdata-visualization/chart-primers.png">
+    
+* [ 171212 ] D3.js中Circle Packing详解 <https://blog.csdn.net/wan353694124/article/details/78778516>
+* Marimekko Chart <https://www.fusioncharts.com/chart-primers/marimekko-chart/>
 
 图表
 
