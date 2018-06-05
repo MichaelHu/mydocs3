@@ -1,4 +1,4 @@
-# D3.js API
+# d3-api
 
 > <https://github.com/mbostock/d3/wiki/API-Reference>
 
@@ -1028,6 +1028,35 @@ todo
 
 
 
+
+## interpolate
+
+### d3.interpolateRgb( a, b )
+
+<div id="test_interpolateRgb" class="test">
+<div class="test-container">
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_interpolateRgb');
+        s.show( 'interpolate color: ' );
+
+        // var interpolate = d3.interpolateRgb( '#b5e19b', '#ff4601' );
+        var interpolate = d3.interpolateRgb( '#ffe100', '#e50312' );
+
+        var total = 20, i = 0;
+        while( i <= total ) {
+            s.append_show( ", '" + interpolate( i / total  ) + "'" ); 
+            i++;
+        }
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
 
 
 

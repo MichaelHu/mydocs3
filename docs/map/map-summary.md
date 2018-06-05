@@ -12,17 +12,14 @@
 
 ## 相关名词
 
-* `lat` latitude 纬度，胖(fat)纬度
-* `lng` longitude 经度，长(long)经度
+* `lat` latitude 纬度，胖(`fat`)纬度
+* `lng` longitude 经度，长(`long`)经度
     
-* `gps` Global Positioning System 全球定位系统。
-    GPS起始于1958年美国军方的一个项目，1964年投入使用。20世纪70年代，美国陆海空三军
-    联合研制了新一代卫星定位系统GPS 
+* `gps` Global Positioning System 全球定位系统。GPS起始于`1958年`美国军方的一个项目，1964年投入使用。20世纪70年代，美国陆海空三军联合研制了新一代卫星定位系统GPS 
 
 * `lbs` Location Based Service 基于位置的服务
 
-* `gis`
-    Geographic Information System 或者 Geo-Information System， 地理信息系统
+* `gis` Geographic Information System 或者 Geo-Information System， 地理信息系统
 
 * `webgis` 使用Internet技术的gis
 
@@ -32,9 +29,7 @@
 
 * `ogc` Open GIS Consortium，开放地理空间信息联盟，它定义了三种地理信息参考模型，分别是`wms`, `wfs`, `wcs`
 
-* `gml` Geography Markup Language，地理标记语言，由OGC于1999年提出，并得到许多公
-    司的大力支持，包括Oracle、Galdos、MapInfo、CubeWerx等，它能表示地理空间对象的
-    空间数据和非空间属性数据。
+* `gml` Geography Markup Language，地理标记语言，由OGC于1999年提出，并得到许多公司的大力支持，包括Oracle、Galdos、MapInfo、CubeWerx等，它能表示地理空间对象的空间数据和非空间属性数据。
 
 * `wms` Web Map Service，Web地图服务，返回`图层级`的地图影像
 
@@ -48,9 +43,7 @@
 
 * `crs` Coordinate Reference System，坐标参考系统。
 
-* `geojson` 用于编码各类地理数据结构的JSON格式。现由IETF(The Internet
-    Engineering Task Force)和原作者一起组成的`Geographic JSON WG`在推进其标准化工作
-    。官网：<http://geojson.org>
+* `geojson` 用于编码各类`地理数据结构`的JSON格式。现由IETF(The Internet Engineering Task Force)和原作者一起组成的`Geographic JSON WG`在推进其标准化工作。官网：<http://geojson.org>
 
 * `kml` Keyhole Markup Language，最初由`Keyhole`公司开发，是一种基于XML语法与格
     式，用于描述和保存地理信息（如点、线、图像、多边形等）的编码规范，可以被Google
@@ -65,26 +58,22 @@
     * local
 
 
-`坐标系统`：百度地图API详解之地图坐标系统: <http://www.jiazhengblog.com/blog/2011/07/02/289/>
+> `坐标系统`：百度地图API详解之地图坐标系统: <http://www.jiazhengblog.com/blog/2011/07/02/289/>
 
-* `经纬度`，一般`GPS设备`获取的经纬度属于`WGS84`坐标系，这是一个比较通用的坐标体系。
-    由于某些原因国内不能直接使用WGS84坐标，因此百度地图API的经纬度是经过加密偏移的。
-* `平面坐标`，经纬度是`球面`坐标，通过投影转换成`平面坐标`。以百度为例，它默认使用
-    `墨卡托投影`(Mercator Projection)。平面坐标系的`原点`与经纬度的原点`一致`，即
-    赤道与`0度经线`相交的位置。
+* `经纬度`，一般`GPS设备`获取的经纬度属于`WGS84`坐标系，这是一个比较通用的坐标体系。由于某些原因国内不能直接使用`WGS84坐标`，因此百度地图API的经纬度是经过加密偏移的。
+
+* `平面坐标`，经纬度是`球面`坐标，通过`投影`转换成`平面坐标`。以百度为例，它默认使用`墨卡托投影`(Mercator Projection)。平面坐标系的`原点`与经纬度的原点`一致`，即赤道与`0度经线`相交的位置。
     
     <img src="./img/coords.png" height="200">
 
-    百度地图的平面坐标以最大级别18级为基准，也就是说
-    在18级的时候，平面坐标的`1个单位`就代表了屏幕上的`1个像素`。平面坐标与地图所展示的
-    级别`没有关系`，也就是说在1级和18级，天安门位置的平面坐标都是一致的。
+    百度地图的平面坐标以最大级别`18级`为基准，也就是说在18级的时候，平面坐标的`1个单位`就代表了屏幕上的`1个像素`。平面坐标与地图所展示的级别`没有关系`，也就是说在1级和18级，天安门位置的平面坐标都是一致的。
+
 * `像素坐标`，以百度为例，18级下，直接将平面坐标向下取整就得到了像素坐标。其他级
     别可以通过公式换算：
     
         像素坐标 = Math.floor(平面坐标 * 2^(zoom - 18))
 
-* `瓦片坐标`，百度地图的瓦片坐标`原点`与平面坐标一致，从原点向`右上方`开始编号为0,0，
-    瓦片坐标计算：
+* `瓦片坐标`，百度地图的瓦片坐标`原点`与平面坐标一致，从原点向`右上方`开始编号为0,0，瓦片坐标计算：
     
         瓦片坐标 = Math.floor(像素坐标 / 256)
 
@@ -93,29 +82,29 @@
 * `可视区域坐标`：地图DOM容器的坐标
 * `覆盖物坐标`
 
+* `GIS`，全名是Geographic Information System
 
-
-
-
-
-GIS的全名是Geographic Information System
+> WebGIS三种数据：
 
 WebGIS的数据大致可以分为三种，一种是地图、影像数据，一种是空间属性数据、一种是业务数据。地图、影像数据一般是一些png或者其他格式的数据组成。
-在GIS中有个很重要的概念，即影像金字塔。这个概念主要是为了加速地图在前端的显示。而我们准备地图、影像数据时，也一般会首先对这些数据进行切图。
-空间属性数据，是通过一些工具将已经整理好的数据进行入库。对于AGS，只有连接的是入库数据的mxd，才能发布成FeatureServer服务，以供数据的编辑。当然，空间数据入库后还可以支持业务逻辑的使用。
 
-第三种数据，业务逻辑数据，是每个Web项目必须有的，它根据不同的业务需求将业务所需的数据进行采集和入库。
+* `影像金字塔`：在GIS中有个很重要的概念，即影像金字塔。这个概念主要是为了加速地图在前端的显示。而我们准备地图、影像数据时，也一般会首先对这些数据进行切图。
+
+* `空间属性数据`，是通过一些工具将已经整理好的数据进行入库。对于AGS，只有连接的是入库数据的mxd，才能发布成FeatureServer服务，以供数据的编辑。当然，空间数据入库后还可以支持业务逻辑的使用。
+
+* 第三种数据，`业务逻辑数据`，是每个Web项目必须有的，它根据不同的业务需求将业务所需的数据进行采集和入库。
 
 影像金字塔
 
 1像素代表实际距离是多少？
 
-假设dpi为96
-1英寸 = 2.54厘米
-1英寸 = 96像素
+    假设dpi为96
+    1英寸 = 2.54厘米
+    1英寸 = 96像素
 
 
 英寸转厘米： 2.5399998
+
 当用AGS所切之图时，此参数变成了：2.54000508001016
 
 
@@ -214,20 +203,19 @@ GIS系统中，三种需要了解的坐标类型：`投影坐标`、`地理坐�
 
 ## 坐标系统
 
-WGS-84, Web墨卡托, 火星坐标, 百度坐标。还有不常见的北京54坐标，西安80坐标。
+`WGS-84`, `Web墨卡托`, `火星坐标`, `百度坐标`。还有不常见的`北京54坐标`，`西安80坐标`。
 
 
 ### 地球坐标系
 
 > WGS-84
 
-WGS-84坐标系是美国国防部研制确定的大地坐标系，是一种协议地球坐标系。
+`WGS-84`坐标系是`美国国防部`研制确定的`大地坐标系`，是一种协议地球坐标系。
 
-WGS-84坐标系的定义是：原点是地球的`质心`，空间直角坐标系的Z轴指向BIH（1984.0）定义的地极（CTP）方向，即国际协议原点CIO，它由IAU和IUGG共同推荐。X轴指向BIH定义的零度子午面和CTP赤道的交点，Y轴和Z，X轴构成右手坐标系。WGS-84椭球采用国际大地测量与地球物理联合会第17届大会测量常数推荐值，采用的两个常用基本几何参数：  
+WGS-84坐标系的定义是：`原点`是地球的`质心`，空间直角坐标系的Z轴指向`BIH（1984.0）`定义的地极（CTP）方向，即国际协议原点CIO，它由IAU和IUGG共同推荐。X轴指向BIH定义的零度子午面和CTP赤道的交点，Y轴和Z，X轴构成右手坐标系。WGS-84椭球采用国际大地测量与地球物理联合会第17届大会测量常数推荐值，采用的两个常用基本几何参数：  
 
-长半轴  a = 6378137m
-
-扁率  f = 1:298.257223563
+    长半轴  a = 6378137m
+    扁率  f = 1:298.257223563
 
 
 
@@ -240,7 +228,7 @@ WGS-84坐标系的定义是：原点是地球的`质心`，空间直角坐标系
 
 火星坐标系百科参考：<http://baike.baidu.com/link?url=FMaVjWjAFmRZY-NxSeJKaCF1bmsm4KJkI-gRXHvbGfCciveUddhqnWi0eR3OXQMTRcFbZoAJaWhDn5UBguiP-xLeAvlTeDBCQ4j7jGuTVLEMyIPWoAJJJDmiEXKKsmMWyphfiy0DUMGFbElwRuG8Sq>
 
-是一种`国家保密`插件，也叫做加密插件或者加偏或者SM模组，其实就是对真实坐标系统进行人为的加偏处理，按照特殊的算法，将真实的坐标加密成虚假的坐标，而这个加偏并不是线性的加偏，所以各地的偏移情况都会有所不同。而加密后的坐标也常被人称为火星坐标系统
+是一种`国家保密`插件，也叫做`加密插件`或者`加偏`或者`SM模组`，其实就是对真实坐标系统进行人为的加偏处理，按照特殊的算法，将真实的坐标加密成虚假的坐标，而这个加偏`并不是线性的加偏`，所以各地的偏移情况都会有所不同。而加密后的坐标也常被人称为火星坐标系统。
 
 `所有的电子地图、导航设备，都需要加入国家保密插件`。
 
@@ -251,17 +239,37 @@ WGS-84坐标系的定义是：原点是地球的`质心`，空间直角坐标系
 
 ### 百度坐标系
 
-> BD-09，二次加密
+> `BD-09`，二次加密
 
-国际经纬度坐标标准为`WGS-84`,国内必须至少使用`国测局`制定的`GCJ-02`,对地理位置进行`首次加密`。
+国际经纬度坐标标准为`WGS-84`，国内必须至少使用`国测局`制定的`GCJ-02`，对地理位置进行`首次加密`。
 
-百度坐标在此基础上，进行了BD-09`二次加密`措施,更加保护了个人隐私。百度对外接口的坐标系并不是GPS采集的真实经纬度，需要通过坐标转换接口进行转换。
+百度坐标在此基础上，进行了BD-09`二次加密`措施，更加保护了个人隐私。百度对外接口的坐标系并不是GPS采集的真实经纬度，需要通过坐标转换接口进行转换。
+
+    真实经纬度  <---   转换  --->   百度坐标
 
 
 
-### 墨卡托坐标
+### 墨卡托坐标系
 
-Google Maps、Virtual Earth等网络地理所使用的地图投影，常被称作`Web Mercator`或`Spherical Mercator`，它与常规墨卡托投影的主要区别就是把地球`模拟为球体`而非椭球体。
+Google Maps、Virtual Earth等网络地理所使用的`地图投影`，常被称作`Web Mercator`或`Spherical Mercator`，它与常规墨卡托投影的主要区别就是把地球`模拟为球体`而非椭球体。
+
+#### 墨卡托投影
+
+墨卡托( Mercator )投影，又名`“等角正轴圆柱投影”`，`荷兰地图学家`墨卡托（Mercator）在`1569年`拟定，假设地球被围在一个中空的圆柱里，其赤道与圆柱相接触，然后再假想地球中心有一盏灯，把球面上的图形投影到圆柱体上，再把圆柱体展开，这就是一幅标准纬线为零度（即赤道）的“墨卡托投影”绘制出的世界地图。
+
+通过墨卡托投影，将`球面坐标`转换成了`平面坐标（墨卡托坐标）`。
+
+> 墨卡托投影的`“等角”`特性
+
+墨卡托投影的“等角”特性，保证了对象的形状`不变形`，`正方形`的物体投影后不会变为`长方形`。“等角”也保证了方向和相互位置的正确性
+
+> 墨卡托投影的`“圆柱”`特性
+
+墨卡托投影的“圆柱”特性，保证了南北（纬线）和东西（经线）都是`平行直线`，并且`相互垂直`。而且经线间隔是相同的，纬线间隔从标准纬线（此处是赤道，也可能是其他纬线）向两级逐渐增大。
+
+> 墨卡托投影的`“面积变化”`问题
+
+“等角”不可避免的带来的`面积的巨大变形`，特别是`两极地区`，明显的如`格陵兰岛`比实际面积扩大了N倍。不过要是去两极地区探险或科考的同志们，一般有更详细的资料，不会来查看网络地图的，这个不要紧。
 
 
 
@@ -272,26 +280,110 @@ Google Maps、Virtual Earth等网络地理所使用的地图投影，常被称�
 
 ## GeoJSON
 
-* 官网：<http://geojson.org>
-* 规范：<http://geojson.org/geojson-spec.html>
-* 标准草案：<https://datatracker.ietf.org/doc/draft-ietf-geojson/>
+`GeoJSON` 用于编码各类地理数据结构的JSON格式。现由`IETF`(The Internet Engineering Task Force)和原作者一起组成的`Geographic JSON WG`在推进其标准化工作。
 
-`geojson` 用于编码各类地理数据结构的JSON格式。现由IETF(The Internet Engineering
-Task Force)和原作者一起组成的`Geographic JSON WG`在推进其标准化工作。
+### Resources
+
+* 官网：<http://geojson.org>
+* `2015`年，IETF（ Internet Engineering Task Force )组织与规范的原作者联合创立了GeoJSON工作组，并于2016年8月发布了RFC 7946，对GeoJSON格式进行了标准化，取代了2008年的GeoJSON规范
+* 标准草案 - 2016 `RFC 7946`：<https://datatracker.ietf.org/doc/draft-ietf-geojson/>
+* 规范 - 2008旧版规范：<http://geojson.org/geojson-spec.html>
+* china-geojson: <https://github.com/yezongyang/china-geojson>
+
+
+### Examples
 
     {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [125.6, 10.1]
-      },
-      "properties": {
-        "name": "Dinagat Islands"
-      }
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [125.6, 10.1]
+        },
+        "properties": {
+            "name": "Dinagat Islands"
+        }
     } 
 
-GeoJSON对象可以表示`几何(geometry)`、`特征(feature)`或者`特征集合(feature collection)`。
-GeoJSON支持的几何图形类型有：`Point`, `LineString`, `Polygon`, `MultiPoint`, `MultiLineString`以及`MultiPolygon`
+* GeoJSON对象可以表示`几何(geometry)`、`特征(feature)`或者`特征集合(feature collection)`。
+* GeoJSON支持的几何图形类型有：`Point`, `LineString`, `Polygon`, `MultiPoint`, `MultiLineString`以及`MultiPolygon`
+
+#### FeatureCollection
+
+    {
+       "type": "FeatureCollection",
+       "features": [{
+           "type": "Feature",
+           "geometry": {
+               "type": "Point",
+               "coordinates": [102.0, 0.5]
+           },
+           "properties": {
+               "prop0": "value0"
+           }
+       }, {
+           "type": "Feature",
+           "geometry": {
+               "type": "LineString",
+               "coordinates": [
+                   [102.0, 0.0],
+                   [103.0, 1.0],
+                   [104.0, 0.0],
+                   [105.0, 1.0]
+               ]
+           },
+           "properties": {
+               "prop0": "value0",
+               "prop1": 0.0
+           }
+       }, {
+           "type": "Feature",
+           "geometry": {
+               "type": "Polygon",
+               "coordinates": [
+                   [
+                       [100.0, 0.0],
+                       [101.0, 0.0],
+                       [101.0, 1.0],
+                       [100.0, 1.0],
+                       [100.0, 0.0]
+                   ]
+               ]
+           },
+           "properties": {
+               "prop0": "value0",
+               "prop1": {
+                   "this": "that"
+               }
+           }
+       }]
+   }
+
+
+
+
+
+### RFC 7946解析
+
+> <https://datatracker.ietf.org/doc/rfc7946/?include_text=1>
+
+    GeoJSON Text
+    GeoJSON Object
+        GeoJSON Object
+            Position
+            Point
+            MultiPoint
+            LineString
+            MultiLineString
+            Polygon
+            MultiPolygon
+            GeometryCollection
+            Antimeridian Cutting
+            Uncertainty and Precision
+        Feature Object
+        FeatureCollection Object
+    Coordinate Reference System
+    Bounding Box
+    Extending GeoJSON
 
 
 
