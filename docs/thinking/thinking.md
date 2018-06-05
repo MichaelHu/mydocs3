@@ -12,6 +12,25 @@
 > Stick to the end.
 
 
+## 2018-06-03
+
+具有强Delta能量的技术同学，一般都具备很强的`用Demo说话的能力`
+
+
+
+## 2018-06-02
+
+### DK效应
+
+> 能力不足的人没有能力认识到自己的不足 
+
+ <img class="lazy" data-url="./img/dk-effect.jpg" style="max-height: 300px;">
+
+from @凯哥
+
+
+
+
 ## 2018-05-31
 
 ### 光绪年间一个真实的故事

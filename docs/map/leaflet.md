@@ -1,25 +1,9 @@
 # leaflet
 
-
+changelog:
 161219
 , 16-09
 , 16-07
-
-
-* 官网: <http://leafletjs.com>
-* github: <https://github.com/Leaflet/Leaflet>
-* 1.0 docs: <http://leafletjs.com/reference-1.0.0.html>
-
- <img src="./img/leaflet-logo.png" height="36">创始人是Mapbox的`Vladimir Agafonkin`
-
-* 移动端友好
-* 轻量，gzip压缩以后`30+k`
-
-`change logs:`
-
-* 2016-09-27, `1.0`
-* 2016-10-21, `1.0.2`, bugfix
-* 2017-01-23, `1.0.3`, bugfix
 
 
 <style type="text/css">
@@ -36,23 +20,40 @@
 
 
 
-## Features
+## Resources
 
+* <img src="./img/leaflet-logo.png" height="36">创始人是Mapbox的`Vladimir Agafonkin`
+* 官网: <http://leafletjs.com>
+* github: <https://github.com/Leaflet/Leaflet>
+* 1.0 docs: <http://leafletjs.com/reference-1.0.0.html>
+
+
+## Versions
+
+* 2016-09-27, `1.0`
+* 2016-10-21, `1.0.2`, bugfix
+* 2017-01-23, `1.0.3`, bugfix
+
+
+## Features
 
 ### 浏览器支持
 
-Desktop: Chrome, Firefox, Safari 5+, Opera 12+, `IE7+`
+* 移动端友好
+    * Desktop: Chrome, Firefox, Safari 5+, Opera 12+, `IE7+`
+    * Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
+* `轻量`，gzip压缩以后`30+k`
 
-Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
 
 
 ### 支持的Layer
 
-* Tile Layers, WMS
+* `Tile` Layers, WMS
 * Markers, Popups
-* Vector layers: polylines, polygons, circles, rectangles
+* `Vector` layers: polylines, polygons, circles, rectangles
 * Image overlays
 * GeoJSON
+
 
 
 ### 支持的交互
@@ -61,7 +62,7 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
 * Scroll wheel zoom
 * Pinch-zoom on mobile
 * Double click zoom
-* Zoom to area (shift-drag)
+* Zoom to area ( shift-drag )
 * Keyboard navigation
 * Events: click, mouseover, etc.
 * Marker dragging
@@ -74,7 +75,6 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
 * Scale
 * Layer switcher
 * Attribution
-
 
 
 
@@ -121,6 +121,7 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
         var proj = window.proj;
         var datum = window.datum;
 
+        // 百度墨卡托投影转换
         L.Projection.BaiduMercator = {
             project: function (latLng) {
                 var a = projection.baiduMercator.forward([latLng.lng, latLng.lat]);
@@ -151,7 +152,7 @@ Mobile: Safari iOS 7+, Android 2.2+/3.1+/4+, Chrome, Firefox, IE10 Win8
             })()
         };
 
-        // Coordinate Reference System
+        // Coordinate Reference System - 坐标引用系统
         L.CRS.baidu = L.extend({}, L.CRS, {
             code: 'baidu',
             projection: L.Projection.BaiduMercator,
