@@ -1,19 +1,23 @@
 # ie-open-chrome
 
+<style type="text/css">
+.markdown-body .wrap-code code { word-wrap: break-word; }
+</style>
+
 ## cli mode
 
-    $ cmd /v:on /k pushd c:\ ^&^& set continue=1^&^& for /f "tokens=*" %i in ('dir /s/b chrome.exe') do ((if ^!continue^!==1 @echo "%i" "http://www.baidu.com") ^&^& set continue=0) ^&^& popd
+    @[class="wrap-code"]$ cmd /v:on /k pushd c:\ ^&^& set continue=1^&^& for /f "tokens=*" %i in ('dir /s/b chrome.exe') do ((if ^!continue^!==1 @echo "%i" "http://www.baidu.com") ^&^& set continue=0) ^&^& popd
 
 ## batch file
 
-    rem ie-open-chrome.bat file    
+    @[class="wrap-code"]rem ie-open-chrome.bat file    
     @echo off
     setlocal enabledelayedexpansion
     pushd c:\ && set c=1&& for /f "tokens=*" %%i in ('dir /s/b chrome.exe') do (( if !c!==1 start "%%i" "http://www.baidu.com") && set c=0) && popd
 
 ## WshShell.Run  
 
-    <script>
+    @[class="wrap-code"]<script>
     function loadProg( path ){
         var shell = new ActiveXObject( 'WScript.Shell' );
         shell.Run( path, 1, false );

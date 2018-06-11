@@ -7,13 +7,14 @@
 * MDN: <https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API>
 * Cookie: <ref://./cookie.md.html>
 * WebStorage: <ref://./web-storage.md.html>， specs: <https://www.w3.org/TR/webstorage/>
+* 使用IndexedDB - IndexedDB开发指南<http://www.tfan.org/using-indexeddb/>
 
 
 ## Features
 
-* 大数据量存储
+* `大数据量`存储
 * 支持存储`file/blob`类型数据
-* 使用索引技术，支持高性能数据查找
+* 使用`索引`技术，支持高性能数据查找
 
 
 <style type="text/css">
@@ -43,6 +44,8 @@
 * 每个`origin`关联一组databases，每个database包含零或多个`对象存储`( `object store` )，由对象存储来保存数据
 * database有两个基本属性，`name`和`version`。`name`属性用于标识特定origin下的database，`version`属性用于标识`数据版本`，刚创建database时，其version为0
 * 同一时刻，database只有一个version；一个database在同一时刻不能同时存在多个版本；要更改database version的唯一方法是通过`upgrade transaction`
+* version属性的类型为`unsigned long long`，切记不要使用浮点数来表示
+* version代表的是数据库`schema`的版本，不同的ObjectStore以及索引形成不同的version，但`数据的改变`不会导致version的改变
 
 
 #### connection
@@ -68,7 +71,7 @@
 * `OSH`拥有一个索引集( index set )
 * `OSH`拥有`name`属性，在OSH创建时被初始化为其关联的OS的name值
 * record的`value`，可支持`任何可序列化对象`，比如String、Date、Object、Array、File、Blob、ImageData等
-* record的value是`按值存取`，而非按引用存取；后面的针对数据变化不影响以前保存的数据
+*  record的value是`按值存取`，而非按引用存取；后面的针对数据的变化不影响以前保存的数据
 * record的`key`，有一个关联的`type`属性，type是以下类型之一：number, date, string, binary, array，其中binary key是在2.0中引入，在Chrome 58， Firefox 51， Safari 10.1中已经支持；key还有一个关联的`value`属性，如果type为number或date，则value为一个`unrestricted double`；如果type为string，则value为一个DOMString；如果type为binary，则value为a list of octets；如果type为array，则value为其他keys的列表
 
 
@@ -82,6 +85,14 @@
 #### 其他
 
 * 同一页面的多个Tab可能对应多个使用IndexedDB的client
+* `onupgradeneeded`是我们唯一可以修改`数据库结构`的地方。在这里面，我们可以创建和删除对象存储空间以及构建和删除`索引`
+* 我们在`transaction`中进行数据的添加和删除操作
+* `unbounded key range` - An unbounded key range is a key range that has both lower bound and upper bound `equal to null`. All keys are in an unbounded key range.
+
+        index.getAll( null )
+        index.getAll( )
+
+    `Key Range`: <https://www.w3.org/TR/IndexedDB-2/#range-construct>
 
 
 ### Examples
@@ -107,6 +118,7 @@ In the following example, the API is used to access a "library" database that ho
     };
 
     request.onsuccess = function() {
+      // get the connection
       db = request.result;
     };
 
@@ -186,7 +198,7 @@ The following example shows how errors could be handled when a request fails.
     };
 
 
-The database connection can be closed when it is no longer needed.
+The `database connection` can be closed when it is no longer needed.
 
     db.close();
 
@@ -196,6 +208,7 @@ In the future, the database might have grown to contain other object stores and 
     var request = indexedDB.open("library", 3); // Request version 3.
 
     request.onupgradeneeded = function(event) {
+      // get the database connection
       var db = request.result;
       if (event.oldVersion < 1) {
         // Version 1 is the first version of the database.
@@ -400,6 +413,54 @@ The IDBObjectStore interface represents an object store handle.
 
 
 
+##### IDBIndex
+
+    [Exposed=(Window,Worker)]
+    interface IDBIndex {
+      attribute DOMString name;
+      [SameObject] readonly attribute IDBObjectStore objectStore;
+      readonly attribute any keyPath;
+      readonly attribute boolean multiEntry;
+      readonly attribute boolean unique;
+
+      [NewObject] IDBRequest get(any query);
+      [NewObject] IDBRequest getKey(any query);
+      [NewObject] IDBRequest getAll(optional any query,
+                                    optional [EnforceRange] unsigned long count);
+      [NewObject] IDBRequest getAllKeys(optional any query,
+                                        optional [EnforceRange] unsigned long count);
+      [NewObject] IDBRequest count(optional any query);
+
+      [NewObject] IDBRequest openCursor(optional any query,
+                                        optional IDBCursorDirection direction = "next");
+      [NewObject] IDBRequest openKeyCursor(optional any query,
+                                           optional IDBCursorDirection direction = "next");
+    };
+
+
+##### IDBKeyRange 
+
+    [Exposed=(Window,Worker)]
+    interface IDBKeyRange {
+      readonly attribute any lower;
+      readonly attribute any upper;
+      readonly attribute boolean lowerOpen;
+      readonly attribute boolean upperOpen;
+
+      // Static construction methods:
+      [NewObject] static IDBKeyRange only(any value);
+      [NewObject] static IDBKeyRange lowerBound(any lower, optional boolean open = false);
+      [NewObject] static IDBKeyRange upperBound(any upper, optional boolean open = false);
+      [NewObject] static IDBKeyRange bound(any lower,
+                                           any upper,
+                                           optional boolean lowerOpen = false,
+                                           optional boolean upperOpen = false);
+
+      boolean _includes(any key);
+    };
+
+
+
 ## localForage
 
 github: <https://github.com/localForage/localForage> <iframe src="http://258i.com/gbtn.html?user=localForage&repo=localForage&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
@@ -414,9 +475,10 @@ github: <https://github.com/localForage/localForage> <iframe src="http://258i.co
 * 如果 todo
 
 <div id="test_simple_access" class="test">
+<div class="test-console"></div>
 <div class="test-container">
 
-    @[data-script="javascript"](function(){
+    @[data-script="javascript editable"](function(){
 
         var s = fly.createShow('#test_simple_access');
         s.show( 'test simple indexedDB access' );
@@ -444,20 +506,42 @@ github: <https://github.com/localForage/localForage> <iframe src="http://258i.co
             store.put({title: "Bedrock Nights", author: "Barney", isbn: 345678});
         };
 
+
         request.onsuccess = function() {
             s.append_show( 'onsuccess' );
             var db = request.result;
             s.append_show( db.name, db.version );
 
-            var tx = db.transaction( 'books', 'readonly' );
+            db.onversionchange = function() {
+                // close the database
+                console.log( 'close the database' );
+                db.close();
+            };
+
+            var tx = db.transaction( 'books', 'readwrite' );
             var store = tx.objectStore( 'books' );
+
+            var now = Date.now();
+            store.put({title: "Title - " + now, author: "Author - " + now, isbn: 'isbn - ' + now});
+
             var index = store.index( 'by_author' );
 
-            var req = index.get( 'Fred' );
+            var req = index.getAll();
             req.onsuccess = function( e ) {
-                var record = e.target.result;
-                s.append_show( 'by index', record.isbn, record.title, record.author );
-                indexedDB.deleteDatabase( dbName );
+                var records = e.target.result;
+                s.append_show( 'by index: ' + records.length + ' records. The latest 5 records list below:' );
+                var count = 5, i = 0;
+                var record;
+                while ( i < count && i < records.length ) {
+                    record = records[ i ];
+                    s.append_show(  
+                        record.isbn
+                        , record.title
+                        , record.author
+                    );
+                    i++;
+                }
+                // indexedDB.deleteDatabase( dbName );
             };
 
             var req_cursor = index.openCursor( IDBKeyRange.only( 'Fred' ) );
@@ -479,7 +563,6 @@ github: <https://github.com/localForage/localForage> <iframe src="http://258i.co
     })();
 
 </div>
-<div class="test-console"></div>
 <div class="test-panel">
 </div>
 </div>

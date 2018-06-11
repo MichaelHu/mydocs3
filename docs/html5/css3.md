@@ -148,7 +148,8 @@ todo
 
 ### Tips
 
-`input`, `img`, `iframe`等元素不能设置伪元素，因为其不能插入内容。
+* `input`, `img`, `iframe`等元素不能设置`伪元素`，因为其不能插入内容。
+* `伪元素`不是真正的DOM元素，无法通过`document.querySelector( selector )`或`$( selector )`获取到
 
 
 ### 伪元素
@@ -188,6 +189,9 @@ todo
     @media print a[href]::after {
         content: "" ! important;
     }
+
+
+
     
 
 

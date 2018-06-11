@@ -677,6 +677,53 @@ L.Browser
     map.fitBounds(geojson.getBounds());
 
 
+### Tips
+
+* 是`DOM元素`( HTMLElement )，用于控制map layer的层级顺序
+* `map.getPane()`, `map.getPanes()`, `map.createPane()`
+* 默认Panes:
+
+        Pane                Z-index     Description
+        ==========================================================================
+        mapPane             'auto'      Pane that contains all other map panes
+        titePane            200         for GridLayers and TileLayers
+        overlayPane         400         for vector overlays ( Paths ), like Polylines
+        shadowPane          500         for overlay shadows ( Marker shadows )
+        markerPane          600         for Icons of Markers
+        tooltipPane         650         for tooltip
+        popupPane           700         for Popups
+
+
+
+
+## GeoJSON
+
+### Tips
+
+* 区分`GeoJSONLayer`和内部`vector layer`
+
+        let layer = L.geoJSON( ... );
+
+        layer.setStyle( feature => {
+            return { ... };
+        } );
+
+        // 1. 外面的layer能调用setStyle()，不能直接获取feature属性
+        // 2. 内部的layer能获取feature属性，但不能调用setStyle() 
+        layer.eachLayer( layer => {
+            console.log( layer.feature );
+        } );
+
+* 内部`vector layer`可以通过调用`GeoJSONLayer.eachLayer( layer => { ... } )`获取
+* 内部layer可以获取feature属性，GeoJSONLayer本身则不可以
+* 以下function在GeoJSONLayer上使用，涉及的Layer参数是内部layer <https://leafletjs.com/reference-1.0.0.html#geojson-adddata>
+
+        addData( data )
+        resetStyle( layer )
+        setStyle( style )
+        ...
+
+
 
 
 
