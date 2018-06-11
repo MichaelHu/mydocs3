@@ -1036,7 +1036,7 @@ todo
 <div id="test_interpolateRgb" class="test">
 <div class="test-container">
 
-    @[data-script="javascript"](function(){
+    @[data-script="javascript editable"](function(){
 
         var s = fly.createShow('#test_interpolateRgb');
         s.show( 'interpolate color: ' );
