@@ -1,9 +1,9 @@
 # map-api
 
 
-> changelog: 180425, 161216
+> changelog: 180613, 180425, 161216
 
-> 注意：本地打开文档时，Safari浏览器由于其`SecurityError: The operation is insecure`问题，无法正常加载百度地图API的代码，最好在Chrome浏览器中打开，或者启动本地服务器访问。
+> 注意：本地打开文档时，Safari浏览器由于其`SecurityError: The operation is insecure`问题，无法正常加载百度地图API的代码，最好在Chrome浏览器中打开，或者启动本地服务器访问。如果确实需要在Safari中访问，也可以通过菜单`开发` - `停用本地文件限制`，停用限制。
 
 
 ## map-api
@@ -164,6 +164,7 @@
             bdary.get( address, function(rs){               // 获取行政区域
                 map.clearOverlays();                        // 清除地图覆盖物
                 var count = rs.boundaries.length;           // 行政区域的点有多少个
+                console.log( rs.boundaries );
                 if (count === 0) {
                     s.append_show( '未能获取当前输入行政区域' );
                     return ;

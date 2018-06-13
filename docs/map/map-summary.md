@@ -274,6 +274,62 @@ Google Maps、Virtual Earth等网络地理所使用的`地图投影`，常被称
 
 
 
+## EPSG坐标系统
+
+### Resources
+
+> EPSG ( European Petroleum Survey Group )，`欧洲石油调查组织`
+
+* `EPSG`成立于1986年，2005年并入`IOGP`( International Association of Oil & Gas Producers )，国际油气生产者协会
+* EPSG对世界的每一个地方都制定了地图，但用了不同的坐标系
+* EPSG site: <https://epsg.io>
+* `EPSG:3587` - <https://epsg.io/3587>
+* `EPSG:4326` - <https://epsg.io/4326>
+* EPSG是什么？ <https://www.zhihu.com/question/52220968>
+
+### EPSG坐标系
+
+
+    Code    Name                                Accuracy    Area
+    ===================================================================================================
+    4326    WGS 84                              m           World.    
+    3857    WGS 84 / Pseudo-Mercator            m           World between 85.06°S and 85.06°N.
+    >27700  OSGB 1936 / British National Grid   2m          United Kingdom (UK) - offshore to boundary 
+                                                            of UKCS within 49°46'N to 61°01'N and 
+                                                            7°33'W to 3°33'E; onshore Great Britain 
+                                                            (England, Wales and Scotland). 
+                                                            Isle of Man onshore.
+    >2154    RGF93 / Lambert-93                 1m          France - onshore and offshore, 
+                                                            mainland and Corsica.
+    >27200    NZGD49 / New Zealand Map Grid     m           New Zealand - North Island, South Island
+                                                            , Stewart Island - onshore.
+    >31370    Belge 1972 / Belgian Lambert 72   m           Belgium - onshore.    
+    >28992    Amersfoort / RD New               m           Netherlands - onshore, including Waddenzee
+                                                            , Dutch Wadden Islands and 12-mile 
+                                                            offshore coastal zone.    
+    >3067    ETRS89 / TM35FIN(E,N)              1m          Finland - onshore and offshore.
+    >5514    S-JTSK / Krovak East North         6m          Czech Republic; Slovakia.
+    >21781    CH1903 / LV03                     1.5m        Liechtenstein; Switzerland.
+
+
+### EPSG:4326
+
+对应前文所提到的`WGS84`坐标系
+
+
+### EPSG:3857
+
+> WGS84 / Pseudo-Mercator
+
+* 一种通过墨卡托投影，由球面地理坐标投影成的平面坐标系
+* 使用Spherical Mercator（球面墨卡托坐标）的地图应用： Google Maps, OpenStreetMap, Bing, ArcGIS, ESRI 
+* 还有其他别名：`900913`, `3587`, `54004`, `41001`, `102113`, `102100`, `3785`
+
+
+
+
+
+
 
 
 

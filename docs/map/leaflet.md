@@ -1,7 +1,8 @@
 # leaflet
 
 changelog:
-161219
+1806
+, 161219
 , 16-09
 , 16-07
 
@@ -113,7 +114,64 @@ changelog:
 
 ## 使用百度地图
 
+
+### projzh项目
+
+* `projzh` <https://github.com/tschaub/projzh> <iframe src="http://258i.com/gbtn.html?user=tschaub&repo=projzh&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+* 该项目衍生自`maptalks/proj4m`项目 <https://github.com/MapTalks/proj4m> <iframe src="http://258i.com/gbtn.html?user=MapTalks&repo=proj4m&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+* 百度地图使用的`BD-09`经纬度坐标在`GCJ-02`经纬度坐标的基础上做了额外偏移，并且定义了自己的Mercator投影算法
+* 若要转换`WGS-84`经纬度坐标到百度地图使用的CRS，首先需要将`WGS-84`转换成`BD-09`，再使用Baidu Mercator算法转换成百度的墨卡托坐标
+
+        baiduMercator.forward( bd09.fromWGS84( point ) )
+
+* 反过来，要将百度墨卡托坐标转换成WGS-84经纬度坐标，需要先用Baidu Mercator进行逆投影，再将bd09经纬度坐标转换成WGS-84经纬度坐标
+
+        bd09.toWGS84( baiduMercator.inverse( point ) )
+* `projzh`提供的API列表：
+
+        // 地球墨卡托 -> 百度墨卡托
+        proj.smerc2bmerc( input, opt_output, opt_dimension )
+        // 百度墨卡托 -> 地球墨卡托
+        proj.bmerc2smerc( input, opt_output, opt_dimension )
+        // 百度墨卡托 -> wgs84
+        proj.bmerc2ll( input, opt_output, opt_dimension )
+        // wgs84 -> 百度墨卡托
+        proj.ll2bmerc( input, opt_output, opt_dimension )
+        // wgs84 -> 地球墨卡托
+        proj.ll2smerc( input, opt_output, opt_dimension )
+        // 地球墨卡托 -> wgs84
+        proj.smerc2ll( input, opt_output, opt_dimension )
+
+        // datum
+        datum.bd09.toGCJ02()
+        datum.bd09.fromGCJ02()
+        datum.bd09.toWGS84()
+        datum.bd09.fromWGS84()
+
+        datum.gcj02.toWGS84()
+        datum.gcj02.fromWGS84()
+
+        // projection
+        projection.baiduMercator.forward()
+        projection.baiduMercator.inverse()
+        projection.sphericalMercator.forward()
+        projection.sphericalMercator.inverse()
+
+* 坐标对应关系
+
+        球面坐标        平面坐标
+        ==============================================
+        wgs84           spherical mercator
+        bd09            baidu mercator
+
+    总之，`wgs84`之于`spherical mercator`，正如`bd09`之于`baidu mercator`
+
+
+
+
 ### 扩展开发
+
+leaflet提供自定义地图投影算法的扩展，通过提供百度的墨卡托投影转换算法，leaflet可以对接上百度的`瓦片系统`。
 
     @[data-script="javascript"](function(){
 
@@ -230,7 +288,13 @@ changelog:
 
 
 
-### 用例
+### 地图展示
+
+技术点：
+
+* 使用leaflet地图引擎，对接百度瓦片
+* wgs84球面坐标，通过projzh库转换成bd09球面坐标
+* 百度CRS需要bd09坐标在用于引擎接口前，先进行`逆序`转换
 
 <div id="test_50" class="test">
 <div class="test-container">
@@ -241,24 +305,32 @@ changelog:
         var s = fly.createShow('#test_50');
 
         // -----DEFINE- wgs84--
-        var point = [40.0455321506, 116.3452903556].reverse(); // 西小口地铁站
-        var point = [40.0455555555, 116.3497222222].reverse(); // 东升科技园B-6
-        var point2 = [39.9975,116.3044444444].reverse(); // 地铁四号线圆明园站附近 
-        var point = [23.5,116.3044444444].reverse(); // 北回归线上与圆明园同经度的地方
-        var point = [30.17444,120.17555].reverse(); // 杭州市滨江区江南大道附近
+        var point = [ 116.3452903556, 40.0455321506 ];  // 西小口地铁站
+        var point = [ 116.3497222222, 40.0455555555 ];  // 东升科技园B-6
+        var point2 = [ 116.3044444444, 39.9975 ];       // 地铁四号线圆明园站附近 
+        var point = [ 116.3044444444, 23.5 ];           // 北回归线上与圆明园同经度的地方
+        var point = [ 120.17555, 30.17444 ];            // 杭州市滨江区江南大道附近
         var zoom = 13;
-        var center = window.datum.bd09.fromWGS84(point).reverse();
-        var center2 = window.datum.bd09.fromWGS84(point2).reverse();
+
+        // 中心点坐标，使用bd09坐标系
+        var bd09Point = window.datum.bd09.fromWGS84( point );
+        var bd09Point2 = window.datum.bd09.fromWGS84( point2 );
+
+        // 地图使用前，需要逆序转换
+        var center = bd09Point.reverse();
+        var center2 = bd09Point2.reverse();
+
         var myMap = L.map(
                 'test_50_map'
                 , {
                     maxZoom: 18
                     , minZoom: 5
                     , fullscreenControl: true
+                    , scrollWheelZoom: false
                     , crs: L.CRS.baidu
                 }
             )
-            .setView(center, zoom)
+            .setView( center, zoom )
             ;
 
         L.tileLayer.baidu('Satellite.Map').addTo(myMap);
@@ -272,6 +344,126 @@ changelog:
 
 </div>
 <div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+### 添加多边形层
+
+技术点：
+
+* 在地图上增加`多边形层`
+* 使用的多边形数据为bd09坐标，只需`逆序后`在引擎中`直接使用`
+
+<div id="test_polygon" class="test">
+<div class="test-container">
+<div id="test_polygon_map" style="height:300px; margin-bottom: 20px;"></div>
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_polygon');
+
+        // -----DEFINE- wgs84--
+        var point = [ 116.3452903556, 40.0455321506 ];  // 西小口地铁站
+        var bd09Point = window.datum.bd09.fromWGS84( point );
+
+        var center = bd09Point.reverse();
+        var zoom = 13;
+
+        var myMap = L.map(
+                'test_polygon_map'
+                , {
+                    maxZoom: 18
+                    , minZoom: 5
+                    , fullscreenControl: true
+                    , scrollWheelZoom: false
+                    , crs: L.CRS.baidu
+                }
+            )
+            .setView( center, zoom )
+            ;
+
+        // L.tileLayer.baidu( 'Satellite.Map' ).addTo( myMap );
+        // L.tileLayer.baidu( 'Satellite.Road' ).addTo( myMap );
+        L.tileLayer.baidu( 'Normal.Map' ).addTo( myMap );
+
+        // 北京奥森北园、南园
+        var bdLatLngSeries = '116.3794313,40.0360071;116.3808686,40.0330239;116.3815873,40.0158959;116.4145731,40.0158959;116.4144293,40.026118;116.416729,40.039211;116.4073147,40.0393215;116.406093,40.0415311;116.4011344,40.0388244;116.3949541,40.0377196;116.3853961,40.0371671;116.3794313,40.0360071';
+
+        var bdLatLngs = bdLatLngSeries.split( ';' );
+        var len = bdLatLngs.length;
+
+        for ( var i = 0; i < len - 1; i++ ) {
+            bdLatLngs[ i ] = bdLatLngs[ i ].split( ',' );
+            bdLatLngs[ i ][ 0 ] -= 0;
+            bdLatLngs[ i ][ 1 ] -= 0;
+            bdLatLngs[ i ].reverse();
+        }
+        bdLatLngs.splice( len - 1, 1 ); 
+
+        var polygon = L.polygon( bdLatLngs, { color: 'red' } );
+        polygon.addTo( myMap );
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+### 坐标转换
+
+* bd09坐标转换成wgs84坐标，先将`bd09`转成`gcj-02`，再将`gcj-02`转成`wgs84`
+* 坐标对比如下：
+
+        bd09                            wgs84
+        ====================================================================
+        116.2376428,40.2724429          116.22495953606015,40.26548248013595
+        116.2317499,40.2659193          116.21903766616116,40.258997938543764
+
+
+> 代码示例如下：
+
+<div id="test_coords_transform" class="test">
+<div class="test-console"></div>
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_coords_transform');
+        s.show( 'bd09 -> wgs84 转换：' );
+
+        // 北京奥森北园、南园
+        var bdLatLngSeries = '116.3794313,40.0360071;116.3808686,40.0330239;116.3815873,40.0158959;116.4145731,40.0158959;116.4144293,40.026118;116.416729,40.039211;116.4073147,40.0393215;116.406093,40.0415311;116.4011344,40.0388244;116.3949541,40.0377196;116.3853961,40.0371671;116.3794313,40.0360071';
+
+        // 十三陵景区 
+        var bdLatLngSeries = '116.2376428,40.2724429;116.235954,40.2716722;116.2317499,40.2659193;116.2271506,40.2570551;116.2268631,40.2545773;116.2288394,40.256532;116.2373913,40.2713419;116.2376428,40.2724429';
+        var bdLatLngs = bdLatLngSeries.split( ';' );
+        var len = bdLatLngs.length;
+
+        for ( var i = 0; i < len; i++ ) {
+            bdLatLngs[ i ] = bdLatLngs[ i ].split( ',' );
+            bdLatLngs[ i ][ 0 ] -= 0;
+            bdLatLngs[ i ][ 1 ] -= 0;
+        }
+
+        var wgs84LatLngs = [];
+        bdLatLngs.forEach( function( item ) {
+            var latLng = window.datum.bd09.toWGS84( item );
+            wgs84LatLngs.push( latLng.join( ',' ) );
+        } );
+
+        s.append_show( '\nbd09', bdLatLngSeries );
+        console.log( wgs84LatLngs );
+        s.append_show( '\nwgs84', wgs84LatLngs.join( ';' ) );
+
+    })();
+
+</div>
 <div class="test-panel">
 </div>
 </div>

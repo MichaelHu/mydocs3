@@ -134,6 +134,26 @@
     global
     module
     process
+        process.argv                            <string []>
+            $ node --harmony script.js --version
+            ['/usr/local/bin/node', 'script.js', '--version']
+        process.chdir( directory )
+        process.config
+        process.cpuUsage( [previousValue] )
+        process.cwd()
+        process.env                             <Object>
+        process.execArgv                        <string []>
+            $ node --harmony script.js --version
+            ['--harmony']
+        process.execPath
+        process.exit( [code] )
+        process.getgid()
+        process.getgroups()
+        process.getuid()
+        process.kill( pid[, signal] )
+        process.memoryUsage()
+        process.nextTick( callback[, ...args])
+
     require()
         require.cache
         require.resolve()
