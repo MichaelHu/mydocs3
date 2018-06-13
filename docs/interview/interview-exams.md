@@ -176,6 +176,8 @@
         str.split( /(a|b)*/ );
         str.split( /(a|b)*?/ );
 
+    详细可参考 <ref://../frontend/regexp.md.html>
+
 
 
 ### 数组操作
@@ -423,6 +425,7 @@
     * 分层渲染
     * 文本性能低
     * 矩形比圆形性能高
+7. webpack, fis, grunt, gulp
 
 
 
