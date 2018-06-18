@@ -88,6 +88,13 @@ changelog:
 
 
 
+## Tips
+
+* 坐标系匹配以后，map的事件参数，比如click事件的latlng参数就能准确返回当前点击位置的`经纬度`。但是切记，如果地图的容器DOM元素设置了`transform: scale( sx, sy )`，此时得到的latlng参数是不准确的
+
+
+
+
 ## 用例
 
 ### 简单底图和标注
@@ -166,6 +173,7 @@ changelog:
 
     总之，`wgs84`之于`spherical mercator`，正如`bd09`之于`baidu mercator`
 
+* 除了projzh项目，也有直接自行调整的方案：leaflet加载百度地图(矫正篇) <https://blog.csdn.net/u012087400/article/details/53744756>
 
 
 
@@ -406,6 +414,10 @@ leaflet提供自定义地图投影算法的扩展，通过提供百度的墨卡�
         var polygon = L.polygon( bdLatLngs, { color: 'red' } );
         polygon.addTo( myMap );
 
+        myMap.on( 'click', function( e ) { 
+            console.log( e.latlng );
+        } );
+
     })();
 
 </div>
@@ -562,6 +574,54 @@ leaflet提供自定义地图投影算法的扩展，通过提供百度的墨卡�
 
 
 
+
+## CRS
+
+### Transformation
+
+geometry/Transformation.js
+
+    export function Transformation(a, b, c, d) {
+        if (Util.isArray(a)) {
+            // use array properties
+            this._a = a[0];
+            this._b = a[1];
+            this._c = a[2];
+            this._d = a[3];
+            return;
+        }
+        this._a = a;
+        this._b = b;
+        this._c = c;
+        this._d = d;
+    }
+
+    Transformation.prototype = {
+        // @method transform(point: Point, scale?: Number): Point
+        // Returns a transformed point, optionally multiplied by the given scale.
+        // Only accepts actual `L.Point` instances, not arrays.
+        transform: function (point, scale) { // (Point, Number) -> Point
+            return this._transform(point.clone(), scale);
+        },
+
+        // destructive transform (faster)
+        _transform: function (point, scale) {
+            scale = scale || 1;
+            point.x = scale * (this._a * point.x + this._b);
+            point.y = scale * (this._c * point.y + this._d);
+            return point;
+        },
+
+        // @method untransform(point: Point, scale?: Number): Point
+        // Returns the reverse transformation of the given point, optionally divided
+        // by the given scale. Only accepts actual `L.Point` instances, not arrays.
+        untransform: function (point, scale) {
+            scale = scale || 1;
+            return new Point(
+                    (point.x / scale - this._b) / this._a,
+                    (point.y / scale - this._d) / this._c);
+        }
+    };
 
 
 
