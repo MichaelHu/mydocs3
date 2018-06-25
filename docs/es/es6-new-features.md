@@ -159,6 +159,8 @@
 
         export var sex = 'female';
 
+    let, const同上。
+
 * export`不支持`此种类型的输出：`export { name: varB, sex: varA };`，
     但支持：`export { varB, varA };`或`export { varB as name, varA as sex };`
 * import`不支持`此种类型的解构：`import { name, sex: varA } from './a';`
@@ -170,6 +172,30 @@
     简写成 =>
 
         export { default } from './a';
+
+* `function, class`支持`default export`，`var/const/let`则不支持
+
+        // OK
+        export default function abc() { .... }
+        export default class Abc() { .... }
+
+        // Error
+        export default var abc;
+        export default const abc;
+        export default let abc;
+
+* `拓展参数`只支持`default export`，而不支持`object export`
+
+        import * as utils from './utils';
+        // ok
+        export default {
+            ...utils
+        };
+
+        // error
+        export {
+            ...utils
+        };
 
 
 ### Examples
@@ -386,6 +412,17 @@ import.js:
 
     export default {
         ...keys({})
+    };
+
+    import * as utils from './utils';
+    // ok
+    export default {
+        ...utils
+    };
+
+    // error
+    export {
+        ...utils
     };
 
 

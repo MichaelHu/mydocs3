@@ -21,10 +21,11 @@
 
 * `site`: <http://getbootstrap.com>
 * `github`: <https://github.com/twbs/bootstrap> <iframe src="http://258i.com/gbtn.html?user=twbs&repo=bootstrap&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe> 
-* `bootstrap-insights`: <ref://./bootstrap-insights.md.html>
+* ` bootstrap-insights`: <ref://./bootstrap-insights.md.html>
 * used in `webpack`: <https://getbootstrap.com/docs/4.0/getting-started/webpack/>
 * `reactstrap` - Bootstrap 4: <ref://../react/reactstrap.md.html>
 * `react-bootstrap` - Bootstrap 3: <https://react-bootstrap.github.io/> <https://github.com/react-bootstrap/react-bootstrap> <iframe src="http://258i.com/gbtn.html?user=react-bootstrap&repo=react-bootstrap&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+* `Glyphicons` - bootstrap字体图标 <http://www.runoob.com/bootstrap/bootstrap-glyphicons.html>
 
 
 ## Versions

@@ -187,8 +187,31 @@
         a.splice(1, 0, 1.5);
 
 2. sort
-
 3. slice, concat
+4. 实现函数，获取给定数组的总层次。
+    
+        层次    示例
+        ============================================
+        0       null
+        1       [ 1 ]
+        2       [ 1, [ 2, 3 ] ]
+        3       [ 1, [ 2 ], [ 3, [ 4 ] ] ]
+
+    参考实现：
+
+        function getArrayLevels( arr ) {
+            if ( Object.prototype.toString.call( arr ) == '[object Array]' ) {
+                let levels = [];
+                arr.forEach( ( item ) => {
+                    levels.push( 1 + getArrayLevels( item ) );
+                } );
+                return max( levels );
+            }
+            else {
+                return 0;
+            }
+        }
+
 
 
 
