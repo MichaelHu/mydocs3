@@ -26,6 +26,8 @@ changelog:
 * <img src="./img/leaflet-logo.png" height="36">创始人是Mapbox的`Vladimir Agafonkin`
 * 官网: <http://leafletjs.com>
 * github: <https://github.com/Leaflet/Leaflet>
+* 1.3.0 - 1.3.1 docs: <https://leafletjs.com/reference-1.3.0.html>
+* 1.2.0 docs: <https://leafletjs.com/reference-1.2.0.html>
 * 1.0 docs: <http://leafletjs.com/reference-1.0.0.html>
 
 
@@ -576,6 +578,25 @@ leaflet提供自定义地图投影算法的扩展，通过提供百度的墨卡�
 
 
 ## CRS
+
+### Tips
+
+* leaflet定义了最常用的CRS
+        
+        latLngToPoint( latlng, zoom )
+        pointToLatLng( point, zoom )
+        project( latlng )
+        unproject( point )
+        scale( zoom )
+        zoom( scale )
+        getPorjectedBounds( zoom )
+        wrapLatLng( latlng )
+        wrapLatLngBounds( bounds )
+
+* CRS定义了`地理坐标`和`平面坐标`的相互转换逻辑，以及`平面坐标`和`像素坐标`的转换
+* 地理坐标和平面坐标转换，主要由`project( latlng )`和`unproject( point )`来定义
+* 平面坐标和像素坐标转换，主要由`scale( zoom )`和`zoom( scale )`来定义
+* 如果需要使用为定义的CRS，可以查看<https://github.com/kartena/Proj4Leaflet>
 
 ### Transformation
 

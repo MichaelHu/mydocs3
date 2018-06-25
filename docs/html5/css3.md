@@ -140,6 +140,19 @@
 todo
 
 
+### text-overflow
+
+todo
+
+    .suggestion > div{
+        width: 100%;
+        height: 20px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+
 
 
 ## 伪元素&伪类

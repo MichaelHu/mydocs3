@@ -679,12 +679,17 @@ The return value of `dispatchEvent` indicates whether any of the listeners which
 
 ### Examples
 
-验证：`keydown`, `keyup`, `keypress`事件在input, document上的传递
+相关技术点：
+
+* `keydown`, `keyup`, `keypress`事件在input, document上的传递
+* keydown、keyup事件`无语义`，keypress事件`有语义`。比如按下`s`键，keydown、keyup事件的keyCode为`83`，而keypress事件的keyCode为`115`
+
+代码实现如下：
 
 <div id="test_keyboard_events" class="test">
 <div class="test-container">
 
-    @[data-script="javascript"](function(){
+    @[data-script="javascript editable"](function(){
 
         var s = fly.createShow('#test_keyboard_events');
         var $document = $( document );
@@ -704,11 +709,11 @@ The return value of `dispatchEvent` indicates whether any of the listeners which
         } );
 
         $document.on( 'keydown keyup keypress', function( e ) {
-            s.append_show( 'document key events', e.type );
+            s.append_show( 'document key events', e.type, e.keyCode );
         } );
 
         $input.on( 'keydown keyup keypress', function( e ) {
-            s.append_show( 'input key events', e.type );
+            s.append_show( 'input key events', e.type, e.keyCode );
             // e.stopPropagation();
         } );
 

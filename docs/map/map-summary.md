@@ -364,6 +364,24 @@ Google Maps、Virtual Earth等网络地理所使用的`地图投影`，常被称
 * google geojson drag and drop: <https://developers.google.com/maps/documentation/javascript/examples/layer-data-dragndrop>
 
 
+### Tips
+
+* GeoJSON的坐标是一个`二维坐标`，使用一个包含两个项的`一维数组`来表示
+* `coordinates`在表示`6种`type的geometry时，外围数组的`层数`如下： 
+
+        type                levels      example
+        =======================================================================================
+        Point               0           [ x, y ]
+        LineString          1           [ [ x1, y1 ], [ x2, y2 ], ... ]
+        Polygon             2           [ [ [ x1, y1 ], [ x2, y2 ], ... ], ... ]
+        MultiPoint          1           [ [ x1, y1 ], [ x2, y2 ], ... ]
+        MultiLineString     2           [ [ [ x1, y1 ], [ x2, y2 ], ... ], ... ]
+        MultiPolygon        3           [ [ [ [ x1, y1 ], [ x2, y2 ], ... ], ... ], ... ]
+
+* `Point`最简；`LineString`与`MultiPoint`格式相同；`Polygon`与`MultiLineString`格式相同；`MultiPolygon`最复杂
+
+
+
 ### Examples
 
     {
@@ -432,6 +450,64 @@ Google Maps、Virtual Earth等网络地理所使用的`地图投影`，常被称
    }
 
 
+#### Polygon与MultiPolygon
+
+* `Polygon`是一组闭合的多边形；`MultiPolygon`是多组闭合的多边形
+* `Polygon`在进行区域填充时，其包含的一组闭合多边形中，若只有一个Polygon，其内部会被填充上色；若包含多个Polygon，则会存在空洞( with holes )，第一个Polygon作为外圈( exterior ring )，后续的Polygon作为内圈（或者holes）。如下图所示：
+
+        <img src="./img/multipolygon-180621.png" style="max-height:400px">
+
+* `MultiPolygon`是多组Polygon坐标形成的数组，比Polygon多一个数组层级
+* `Polygon`的coordinates表达形式：
+
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+                // exterior ring
+                [
+                    [100.0, 0.0],
+                    [101.0, 0.0],
+                    [101.0, 1.0],
+                    [100.0, 1.0],
+                    [100.0, 0.0]
+                ],
+                // inner ring
+                [
+                    [100.8, 0.8],
+                    [100.8, 0.2],
+                    [100.2, 0.2],
+                    [100.2, 0.8],
+                    [100.8, 0.8]
+                ]
+            ]
+        }
+    
+* `MultiPolygon`的coordinates表达形式：
+
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+                [
+                    // exterior ring
+                    [
+                        [100.0, 0.0],
+                        [101.0, 0.0],
+                        [101.0, 1.0],
+                        [100.0, 1.0],
+                        [100.0, 0.0]
+                    ],
+                    // inner ring
+                    [
+                        [100.8, 0.8],
+                        [100.8, 0.2],
+                        [100.2, 0.2],
+                        [100.2, 0.8],
+                        [100.8, 0.8]
+                    ]
+                ]
+                , ...
+            ]
+        }
 
 
 
