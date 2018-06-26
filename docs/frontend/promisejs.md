@@ -93,6 +93,34 @@
 * `错误`处理：`.catch()`方法可以捕获error，并且`冒泡`，通过`then()链`传递往后面传
 
 
+## Tips
+
+* 如果不添加`.catch()`方法，则在`.then()`链中的reject()和fulfill()产生的异常都将被捕获，且不再往上抛出。如果需要及时获取异常信息，则需要添加`.catch()`方法，如下代码：
+
+        let p1 = new Promise( ... );
+        let p2 = new Promise( ... );
+
+        // 异常被捕获后不抛出，控制台无异常信息
+        Promise.all( [ p1, p2 ] )
+            .then( ( value ) => {
+                throw new Error( 123 );
+                console.log( dddd );
+            } )
+            ;
+
+        // 异常被捕获后主动抛出，控制台显示异常信息
+        Promise.all( [ p1, p2 ] )
+            .then( ( value ) => {
+                throw new Error( 123 );
+                console.log( dddd );
+            } )
+            .catch( ( e ) => {
+                console.error( e );
+            } );
+
+* `.catch( onReject )`方法，提供onReject函数，该函数接受参数e，表示异常原因。不能在onReject方法中抛出异常，可以通过调用`console.error( e )`在控制台中显示异常信息。
+
+
 
 
 ## 一些例子
