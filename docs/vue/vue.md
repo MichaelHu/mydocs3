@@ -28,6 +28,8 @@
 
 * 滴滴 webapp 5.0 Vue 2.0 重构经验分享: <https://github.com/DDFE/DDFE-blog/issues/13> 滴滴2017年1月份上线vue重构后的webapp
 * [ 170111 ] Vue`单元测试`case写法 <http://marxjiao.com/2017/01/11/write-vue-unit-test-case/> 使用`karma + jasmine`
+* [ 161120 ] Vue.js`双向绑定`的实现原理 <https://www.cnblogs.com/kidney/p/6052935.html> `表单`的双向绑定
+* [ 161011 ] Vue 源码解析：深入响应式原理 <https://github.com/DDFE/DDFE-blog/issues/7>
 
 
 <style type="text/css">

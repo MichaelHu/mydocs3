@@ -298,8 +298,10 @@ Google Maps、Virtual Earth等网络地理所使用的`地图投影`，常被称
 * `EPSG`成立于1986年，2005年并入`IOGP`( International Association of Oil & Gas Producers )，国际油气生产者协会
 * EPSG对世界的每一个地方都制定了地图，但用了不同的坐标系
 * EPSG site: <https://epsg.io>
+* `EPSG:4326` - WGS84 ( World Geodetic System 1984, used in GPS ) <https://epsg.io/4326>
+* `EPSG:4214` - Beijing 1954 <https://epsg.io/4214>
+* `EPSG:4610` - Xian 1980 <https://epsg.io/4610>
 * `EPSG:3587` - <https://epsg.io/3587>
-* `EPSG:4326` - <https://epsg.io/4326>
 * EPSG是什么？ <https://www.zhihu.com/question/52220968>
 
 ### EPSG坐标系
