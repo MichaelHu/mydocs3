@@ -182,10 +182,10 @@
 
 ### Tips
 
-* 是`可选择的`一个限制JavaScript的变体一种方式，它不仅仅是一个子集：它故意地具有与正常代码不同的语义
+* 是`可选择的`一个限制JavaScript的变体的一种方式，它不仅仅是一个子集：它故意地具有与正常代码不同的语义
 * 消除了一些 JavaScript的`静默错误`，通过改变它们来`抛出错误`
-* 修复了 JavaScript引擎难以执行优化的错误，提高编译器的效率：有时候，严格模式代码可以比非严格模式的相同的代码运行得更快
-* 严格模式禁用了在ECMAScript的`未来版本`中可能会定义的一些语法，担负承接未来的使命
+* 修复了JavaScript引擎难以执行优化的错误，`提高编译器的效率`：有时候，严格模式代码可以比非严格模式的相同的代码运行得更快
+* 严格模式禁用了在ECMAScript的`未来版本`中可能会定义的一些语法，担负`承接未来`的使命
 
 ### Features
 
@@ -587,6 +587,8 @@ IE9以下，`hasEnumBug`
     !!Infinity
 
 
+
+
 ## 位运算符
 
 `~a`相当于
@@ -836,12 +838,20 @@ todo
 
 
 
+## Array sort
+
+    Array.prototype.sort( sortBy )
+
+* sortBy： `sortBy( a, b )`，需要返回一个数字，而不是布尔值
+* 如果`返回a - b`，则`由小到大`排序；`返回b - a`，则`由大到小`排序
+
+
 
 ## arguments是Array-like的
 
-    (function(){
-        console.log(arguments);
-    })();
+    ( function() {
+        console.log( arguments );
+    } )();
 
 `output`:
 
