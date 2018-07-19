@@ -177,7 +177,7 @@
 
 
     selection.datum()
-    selection.daa()
+    selection.data()
 
 
 ### 理解key函数
@@ -798,7 +798,7 @@ padding取值区间为`[0, 1]`
 
 
 
-参考：<a href="./svg.md.preview.html">SVG</a>
+参考：<ref://./svg.md.html>
 
 `path`的`d属性`生成比较麻烦，需要各类构造器。
 

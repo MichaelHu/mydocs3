@@ -11,6 +11,12 @@
 > Impossible is nothing, `just do it`.<br>
 > Stick to the end.
 
+## 2018-07-11
+
+* 工作的`延续性`，不要浪费历史工作沉淀的价值
+* 编程过程中，熟练使用debugger是很重要的一项技能
+
+
 
 ## 2018-07-05
 

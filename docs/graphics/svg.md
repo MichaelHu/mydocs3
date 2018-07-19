@@ -1,4 +1,4 @@
-# SVG
+# svg
 
 > SVG 意为`可缩放矢量图形`（Scalable Vector Graphics）。
 
@@ -16,7 +16,7 @@
 ## Resources
 
 * w3c: <https://www.w3.org/TR/SVG11/>
-
+* 理解SVG viewport, viewBox, preserveAspectRatio缩放 <https://www.zhangxinxu.com/wordpress/2014/08/svg-viewport-viewbox-preserveaspectratio/>
 
 
 ## Overview
@@ -24,6 +24,7 @@
 SVG于`2003年1月14日`成为W3C推荐标准。目前最新推荐标准为`2011年8月16日`的`SVG1.1`推荐标准。
 
 参与定义 SVG 的组织有：`太阳微系统、Adobe、苹果公司、IBM 以及柯达`。
+
 
 ### 优势
 
@@ -39,8 +40,161 @@ SVG于`2003年1月14日`成为W3C推荐标准。目前最新推荐标准为`2011
 * 文件是纯粹的`XML`
 * 可以与 Java 技术一起运行
 
-SVG 的主要竞争者是 Flash。
-与 Flash 相比，SVG 最大的优势是与其他标准（比如 XSL 和 DOM）相兼容。而 Flash 则是未开源的私有技术。
+SVG 的主要竞争者是`Flash`。与 Flash 相比，SVG 最大的优势是与其他标准（比如 XSL 和 DOM）相兼容。而 Flash 则是未开源的私有技术。
+
+
+## viewBox & perserveAspectRatio 
+
+### Tips
+
+* 定义`视野范围`，使用viewBox属性：`viewBox="<min-x> <min-y> <width> <height>"`
+* 与viewBox配合，定义视野匹配过程中scale的行为，使用`preserveAspectRatio`属性: `preserveAspectRatio="[defer] <align> [<meetOrSlice>]"`
+    
+    `align`可选值：
+
+        none            进行非常规视野匹配，不保持长宽比
+        xMinYMin
+        xMidYMin
+        xMaxYMin
+        xMinYMid
+        xMidYMid        default
+        xMaxYMid
+        xMinYMax
+        xMidYMax
+        xMaxYMax
+
+    `meetOrSlice`可选值：
+
+        meet            default
+        slice
+
+* 视野范围与viewport的匹配的过程，是将视野范围`等比缩放`至整体刚好包含在viewport所包围的可视区域内，缩放完毕后，视野范围在水平或竖直方向上`至少有一个方向的边界与viewport重合`
+* 视野范围与viewport的匹配过程，效果等同于对svg内部元素做了transform，使得`坐标系`发生了scale
+* 在视野范围与viewport边界重合所在的方向（水平或竖直）上，`无法再扩展`，此时Min/Mid/Max在效果上没有区别，都等同与Min
+* svg标签的宽高尺寸定义了一个viewport，svg内部的元素按
+
+
+### Demos
+
+#### 视野范围同viewport
+
+> 默认情况下，视野范围同viewport在水平和竖直方向上都重合
+
+    @[data-script="html editable"]<svg width="400" height="200" style="border: 1px solid #0f0">
+        <rect x="0" y="0" width="400" height="200" fill="#ccc" />
+        <rect x="150" y="80" width="100" height="40" fill="#f00" />
+    </svg>
+
+
+#### 视野范围小于viewport 1
+
+* 视野范围与viewport`等比例`，匹配后，水平和竖直方向都重合，都无法再扩展
+* 由于水平和竖直方向都无法再扩展，所以`Min/Mid/Max无区别`，都等同与Min
+* 视野范围是viewport的四分之一，svg内部元素的坐标系相当于做了`scale(2)`，整体上只能看到内部元素的位于左上角的那四分之一
+
+代码示例如下：
+
+    @[data-script="html editable"]<svg width="400" height="200" 
+        viewBox="0 0 200 100"
+        style="border: 1px solid #0f0">
+        <rect x="0" y="0" width="400" height="200" fill="#ccc" />
+        <rect x="150" y="80" width="100" height="40" fill="#f00" />
+    </svg>
+
+
+#### 视野范围小于viewport 2
+
+* 视野范围与viewport`不成比例`，匹配后，水平和竖直方向只有一个方向重合，在该方向上无法再扩展
+* 视野范围是原坐标范围的一半，匹配后，原坐标范围左半部分可见，由于`水平方向可扩展，在viewport内的部分也可见`
+* 在未重合的方向上，Min/Mid/Max有不同的效果，本例中水平方向可扩展，所以水平方向上`Min/Mid/Max`生效；而竖直方向不再可扩展，故竖直方向不生效
+
+代码示例如下：
+
+> 左对齐
+
+    @[data-script="html editable"]<svg width="400" height="200" 
+        viewBox="0 0 200 200"
+        preserveAspectRatio="xMinYMin"
+        style="border: 1px solid #0f0">
+        <rect x="0" y="0" width="400" height="200" fill="#ccc" />
+        <rect x="150" y="80" width="100" height="40" fill="#f00" />
+    </svg>
+
+> 中对齐
+
+    @[data-script="html editable"]<svg width="400" height="200" 
+        viewBox="0 0 200 200"
+        preserveAspectRatio="xMidYMin"
+        style="border: 1px solid #0f0">
+        <rect x="0" y="0" width="400" height="200" fill="#ccc" />
+        <rect x="150" y="80" width="100" height="40" fill="#f00" />
+    </svg>
+
+> 右对齐
+
+    @[data-script="html editable"]<svg width="400" height="200" 
+        viewBox="0 0 200 200"
+        preserveAspectRatio="xMaxYMin"
+        style="border: 1px solid #0f0">
+        <rect x="0" y="0" width="400" height="200" fill="#ccc" />
+        <rect x="150" y="80" width="100" height="40" fill="#f00" />
+    </svg>
+
+
+
+#### 视野范围大于viewport 1
+
+* 视野范围大于viewport`，且等比例`，匹配后，视野范围与viewport在水平和竖直方向重合，所以都不可以再扩展
+* 由于水平和竖直方向都无法再扩展，所以`Min/Mid/Max无区别`，都等同与Min
+* 视野范围是viewport的四倍，svg内部元素的坐标系相当于做了`scale(0.5)`，整体上，内部元素的位于viewport的左上角的四分之一部分
+
+代码示例如下：
+
+    @[data-script="html editable"]<svg width="400" height="200" 
+        viewBox="0 0 800 400"
+        style="border: 1px solid #0f0">
+        <rect x="0" y="0" width="400" height="200" fill="#ccc" />
+        <rect x="150" y="80" width="100" height="40" fill="#f00" />
+    </svg>
+
+
+
+#### 视野范围大于viewport 2
+
+* 视野范围大于viewport`，且不成比例`，匹配后，视野范围与viewport在水平或竖直方向上至少一个方向重合
+* 匹配完成后，竖直方向重合，不可再扩展，水平方向可以再扩展，所以`xMid`生效
+* 视野范围是viewport的2倍，svg内部元素的坐标系相当于做了`scale(0.5)`，整体上，内部元素的位于viewport的左上角的四分之一部分，另外xMid生效，故使用了xMid能使内部元素居中于viewport显示
+
+代码示例如下：
+
+    @[data-script="html editable"]<svg width="400" height="200" 
+        viewBox="0 0 400 400"
+        style="border: 1px solid #0f0">
+        <rect x="0" y="0" width="400" height="200" fill="#ccc" />
+        <rect x="150" y="80" width="100" height="40" fill="#f00" />
+    </svg>
+
+
+#### 视野范围大于viewport 3
+
+* 视野范围大于viewport`，且不成比例`，匹配后，视野范围与viewport在水平或竖直方向上至少一个方向重合
+* 匹配完成后，竖直方向重合，不可再扩展，`水平方向可以再扩展`，由于使用了`非等比例缩放`，故在水平方向上内部元素将拉伸至整个viewport
+
+代码示例如下：
+
+    @[data-script="html editable"]<svg width="400" height="200" 
+        viewBox="0 0 400 400"
+        preserveAspectRatio="none"
+        style="border: 1px solid #0f0">
+        <rect x="0" y="0" width="400" height="200" fill="#ccc" />
+        <rect x="150" y="80" width="100" height="40" fill="#f00" />
+    </svg>
+
+
+
+
+
+
 
 
 
@@ -2032,6 +2186,28 @@ svg的text标签没有以下类似的属性（<http://stackoverflow.com/question
 
 ## 滤镜
 
+> 滤镜效果( `Filter Effects` )
+
+### 滤镜指令
+
+    feBlend
+    feColorMatrix
+    feComponentTransfer
+    feComposite
+    feConvolveMatrix
+    feDiffuseLighting
+    feDisplacementMap
+    feFlood
+    feGaussianBlur
+    feImage
+    feMerge
+    feMorphology
+    feOffset
+    feSpecularLighting
+    feTile
+    feTurbulence
+
+
 
 ### 高斯模糊
 
@@ -2053,6 +2229,62 @@ svg的text标签没有以下类似的属性（<http://stackoverflow.com/question
             filter:url(#Gaussian_Blur)
         "/>
     </svg>
+
+
+
+### 滤镜组合
+
+
+    @[data-script="html editable"]<svg width="200" height="120">
+        <defs>
+            <filter
+                id="MyFilter"
+                filterUnits="userSpaceOnUse"
+                x="0" y="0" width="200" height="120"
+            >
+                <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur" />
+                <feOffset in="blur" dx="4" dy="4" result="offsetBlur" />
+                <feSpecularLighting
+                    in="blur"
+                    surfaceScale="5"
+                    specularConstant=".75"
+                    specularExponent="20"
+                    lighting-color="#bbbbbb"
+                    result="specOut"
+                >
+                    <fePointLight x="-5000" y="-10000" z="20000" />
+                </feSpecularLighting>
+                <feComposite
+                    in="specOut"
+                    in2="SourceAlpha"
+                    operator="in"
+                    result="specOut"
+                />
+                <feComposite
+                    in="SourceGraphic"
+                    in2="specOut"
+                    operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="litPaint"
+                />
+                <feMerge>
+                    <feMergeNode in="offsetBlur" />
+                    <feMergeNode in="litPaint" />
+                </feMerge>
+            </filter>
+        </defs>
+        <rect x="1" y="1" width="198" height="118" fill="#888888" stroke="blue" />
+        <g filter="url(#MyFilter)">
+            <g>
+                <path fill="none" stroke="#D90000" stroke-width="10"
+                    d="M50,90 C0,90 0,30 50,30 L150,30 C200,30 200,90 150,90 z" />
+                <path fill="#D90000"
+                    d="M60,80 C30,80 30,40 60,40 L140,40 C170,40 170,80 140,80 z" />
+                <g fill="#FFFFFF" stroke="black" font-size="45" font-family="Verdana" >
+                    <text x="52" y="76">SVG</text>
+                </g>
+            </g>
+        </g>
+    </svg>
+
 
 
 

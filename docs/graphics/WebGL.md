@@ -42,6 +42,12 @@
                     zNear and zFar values are clamped to the range 0 to 1.
 
 
+## 待整理的记事
+
+    _canvas.addEventListener( 'webglcontextlost', onContextLost, false );
+    _canvas.addEventListener( 'webglcontextrestored', onContextRestore, false );
+
+
 
 
 ## WebGL Resources
