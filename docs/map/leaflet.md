@@ -94,6 +94,7 @@ changelog:
 ## Tips
 
 * 坐标系匹配以后，map的事件参数，比如click事件的latlng参数就能准确返回当前点击位置的`经纬度`。但是切记，如果地图的容器DOM元素设置了`transform: scale( sx, sy )`，此时得到的latlng参数是不准确的
+* `CRS.scale( zoom )`返回当前zoom下平面坐标范围边长的`单位数`，比如`256 * Math.pow( 2, zoom )`
 
 
 

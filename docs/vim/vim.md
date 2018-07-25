@@ -191,20 +191,17 @@ changelog: 2018-05, 2017-10, 2017-02-10, 2016-10-22, 2016-07-23
     :help key-codes
 
 
+## 特殊命令参数
 
-## Inserting Commands
+### ++opt参数
 
-
-`特殊insert：`
-
-    :r {file}
-    :r! command
-
-关于`++opt`：
-
-> The [++opt] argument can be used to force the value of 'fileformat',
+> The `[++opt]` argument can be used to force the value of 'fileformat',
 > 'fileencoding' or 'binary' to a value for one command, and to specify the
 > behavior for bad characters.
+
+* 用于`强行设置`编辑命令所使用的对应设置
+* 使用`++opt`参数设置的值，能覆盖`.vimrc`的相关设置
+* `++opt`参数能对fileformat, fileencoding, binary, nobinary, 失败字符识别后的操作等
 
 格式为：
 
@@ -218,14 +215,37 @@ changelog: 2018-05, 2017-10, 2017-02-10, 2016-10-22, 2016-07-23
     bin    or  binary       sets 'binary'               
     nobin  or  nobinary     resets 'binary'
     bad                     specifies behavior for bad characters
-    edit                    for |:read| only: keep option values as if editing
-                            a file
+    edit                    for |:read| only: keep option values as if editing a file
 
 举例如下：
 
+    " 重新编辑当前文件，将文件格式强行设置为unix格式 
     :e ++ff=unix
-    :w ++enc=latin1 newfile
+    " 使用gb18030编码保存文件 
+    :w ++enc=gb18030 gbk-file
 
+    " 编辑当前文件，无法识别的字符使用X代替，默认使用?代替
+    :e ++bad=X
+    " 不代替
+    :e ++bad=keep
+    " 丢弃
+    :e ++bad=drop
+
+
+### +cmd参数
+
+todo
+
+
+
+
+## Inserting Commands
+
+
+`特殊insert：`
+
+    :r {file}
+    :r! command
 
 
 ## Left-right motions
