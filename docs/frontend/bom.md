@@ -120,7 +120,7 @@
     hash         |                          
 
 * 完整URL用`location.href`表示
-* 将完整URL分割成`6个`部分，分别为protocol, hostname, prot, pathname, search, hash
+* 将完整URL分割成`6个`部分，分别为`protocol, hostname, port, pathname, search, hash`
 * host包含`hostname + port`
 * origin包含`protocol + host`
 * host以及origin`都不包含`末尾的`斜线`，形如`http://www.258i.com`
