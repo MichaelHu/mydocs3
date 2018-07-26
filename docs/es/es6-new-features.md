@@ -237,7 +237,7 @@ import.js:
 
 * 参数部分与`=>`之间不能有换行
 * `this`关键字在函数体中能直接体现当前上下文的this，不同于function内的this
-* `arguments, super, new.target`也同this关键词类似，它们都指向父scope的对应对象
+* `arguments, super, new.target`也同this关键词类似，它们都指向`父scope`的对应对象
 * 简单情况下`()`与`{}`可以省略。省略`{}`时，`return`关键字也可省略（实际上`必须省略`）
         
         a => a + 5                          // (), {}, return都省略
@@ -248,6 +248,12 @@ import.js:
             return { name: a, age: b }; 
         }
         
+* 箭头函数`不能作为构造函数`
+* 箭头函数`没有原型链`属性
+* 如上，箭头函数的arguments指向的是父scope的对象，需要用`不定参数`来引用
+        
+        const A = ( ...x ) => { console.log( x ); };
+
 
 
 

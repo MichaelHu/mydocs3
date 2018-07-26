@@ -14,6 +14,15 @@
 * github: <https://github.com/maptalks/maptalks.js> <iframe src="http://258i.com/gbtn.html?user=maptalks&repo=maptalks.js&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe> 
 * examples: <https://maptalks.org/examples/en/map/load/#map_load>
 
+## 通用插件
+
+* Mapbox gl Layer
+* Heatmap Layer <https://github.com/maptalks/maptalks.heatmap>
+* Marker Cluster Layer
+* THREE.js Layer <https://github.com/maptalks/maptalks.three>
+* Echarts Layer <https://github.com/maptalks/maptalks.e3>
+
+
 ## Usage
 
     var map = new maptalks.Map("map",{
@@ -27,3 +36,10 @@
              new maptalks.VectorLayer('v', [new maptalks.Marker([180, 0])])
          ]
     });
+
+
+## Examples
+
+### 迁徙图 
+
+

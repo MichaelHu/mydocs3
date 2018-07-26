@@ -12,9 +12,18 @@
 * `wiki`: <https://github.com/jacomyal/sigma.js/wiki>
 
 
+## Features
+
+* 致力于`网络图`( Network Graph )的展示
+* 底层`图形技术`支持：2d Canvas, WebGL, SVG
+* 支持`导出SVG`
+
+
+
 ## Versions
 
-* `lateset`: 2016-11-03 `1.2.0`
+* latest: 2017-10-13 `1.2.1` 
+* 2016-11-03 `1.2.0`
 * 2016-02-17 `1.1.0`
 * 2014-08-22 `1.0.3`
 * 2014-04-02 `1.0.2`
@@ -23,7 +32,7 @@
 * 2013-11-27 `1.0.0` draft
 
 
-## Misc
+## Tips
 
 * 需要注意并理解其`插件机制`，有些时候配置了，没有效果，甚至代码报错，可能是插件没有加载，需要`显式引入`插件代码，比如：<http://258i.com/static/build/sigma/plugins/sigma.renderers.edgeLabels.js>
 * 显示`边的label`，注意其`类型`必须为`string`，否则不展示 
@@ -35,6 +44,158 @@
 <script src="http://258i.com/static/build/sigma/sigma.js"></script>
 <script src="http://258i.com/static/build/sigma/plugins/sigma.renderers.edgeLabels.js"></script>
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
+
+
+## Usage
+
+### 基本用法
+
+<div id="test_simple_usage" class="test">
+<div class="test-container">
+<div class="test-graph"></div>
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_simple_usage');
+        // s.show(1);
+        // s.append_show(2);
+
+        var container = $( '#test_simple_usage .test-graph' )[ 0 ];
+        var sInst = new sigma( {
+            container: container
+            , settings: {
+                mouseWheelEnabled: false
+                , sideMargin: 1
+            }
+        } );
+
+        sInst.graph
+            .addNode({
+                // Main attributes:
+                id: "n0",
+                label: "Hello",
+                // Display attributes:
+                x: 0,
+                y: 0,
+                size: 1,
+                color: "#f00"
+            })
+            .addNode({
+                // Main attributes:
+                id: "n1",
+                label: "World !",
+                // Display attributes:
+                x: 1,
+                y: 1,
+                size: 1,
+                color: "#00f"
+            })
+            .addEdge({
+                id: "e0",
+                // Reference extremities:
+                source: "n0",
+                target: "n1"
+            });
+
+        // Finally, let's ask our sigma instance to refresh:
+        sInst.refresh();
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+## default settings
+
+    animationsTime: 200
+    autoRescale: true
+    autoResize: true
+    batchEdgesDrawing: false
+    borderSize: 0
+    canvasEdgesBatchSize: 500
+    classPrefix: "sigma"
+    clone: true
+    defaultEdgeColor: "#000"
+    defaultEdgeHoverColor: "#000"
+    defaultEdgeLabelActiveColor: "#000"
+    defaultEdgeLabelColor: "#000"
+    defaultEdgeLabelSize: 10
+    defaultEdgeType: "def"
+    defaultHoverLabelBGColor: "#fff"
+    defaultLabelColor: "#000"
+    defaultLabelHoverColor: "#000"
+    defaultLabelSize: 14
+    defaultNodeBorderColor: "#000"
+    defaultNodeColor: "#000"
+    defaultNodeHoverColor: "#000"
+    defaultNodeType: "def"
+    doubleClickEnabled: true
+    doubleClickTimeout: 300
+    doubleClickZoomDuration: 200
+    doubleClickZoomingRatio: 2.2
+    doubleTapTimeout: 300
+    dragTimeout: 200
+    drawEdgeLabels: true
+    drawEdges: true
+    drawLabels: true
+    drawNodes: true
+    edgeColor: "source"
+    edgeHoverColor: "edge"
+    edgeHoverExtremities: false
+    edgeHoverPrecision: 5
+    edgeHoverSizeRatio: 1
+    edgeLabelSize: "fixed"
+    edgeLabelSizePowRatio: 1
+    edgeLabelThreshold: 1
+    edgesPowRatio: 0.5
+    enableCamera: true
+    enableEdgeHovering: false
+    enableHovering: true
+    eventsEnabled: true
+    font: "arial"
+    fontStyle: ""
+    hideEdgesOnMove: false
+    hoverFont: ""
+    hoverFontStyle: ""
+    immutable: true
+    labelColor: "default"
+    labelHoverBGColor: "default"
+    labelHoverColor: "default"
+    labelHoverShadow: "default"
+    labelHoverShadowColor: "#000"
+    labelSize: "fixed"
+    labelSizeRatio: 1
+    labelThreshold: 8
+    maxEdgeSize: 1
+    maxNodeSize: 8
+    minArrowSize: 0
+    minEdgeSize: 0.5
+    minNodeSize: 1
+    mouseEnabled: true
+    mouseInertiaDuration: 200
+    mouseInertiaRatio: 3
+    mouseWheelEnabled: true
+    mouseZoomDuration: 200
+    nodeHoverColor: "node"
+    nodesPowRatio: 0.5
+    rescaleIgnoreSize: false
+    scalingMode: "inside"
+    sideMargin: 0
+    singleHover: true
+    skipErrors: false
+    touchEnabled: true
+    touchInertiaDuration: 200
+    touchInertiaRatio: 3
+    verbose: false
+    webglEdgesBatchSize: 1000
+    webglOversamplingRatio: 2
+    zoomMax: 2
+    zoomMin: 0.0625
+    zoomingRatio: 1.7
 
 
 ## 工具函数

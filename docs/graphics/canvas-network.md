@@ -906,7 +906,7 @@ todo：hover层渲染／节点hover／拖动／动画
 
 ### Network2
 
-> 临时测试用
+> 支持`Camera`、`Renderer`的版本
 
 * settings`层级链`，Network -> Camera -> Renderer，下层配置覆盖上层配置
 * camera的id由内部通过`Network.fromCameraId`自增id生成，外部可以通过`camera.id`获得
@@ -1053,9 +1053,9 @@ todo：hover层渲染／节点hover／拖动／动画
 
 ### Camera
 
-> 投影机，管理`视角`，包括视中心、缩放、旋转等参数
+> `投影机`，管理`视角`，包括视中心、缩放、旋转等参数
 
-* camera管理`从属`于它的renderer
+* camera管理`从属`于它的renderer，只要是荧幕，camera都可以往上面投射影像，一个camera可以对应多个荧幕
 * camera需要有一套独立于graph的`标准化`坐标（可能是`rescale`以后的坐标），其相关的renderer的渲染基于这套标准化坐标
 * 坐标统一保存在graph中，不同套坐标使用`前缀`区分
 * camera是自带`胶片`（graph数据）的，`goTo( x, y, ratio, angle )`的含义是将胶片的`(x,y)`投射到荧幕（renderer）的`中心点`，也就是`(0, 0)`；将胶片`放大`ratio倍，再`逆时针`旋转angle弧度

@@ -1,8 +1,11 @@
 # gcc
 
+## Resources
 
 * 官网：<http://gcc.gnu.org>
 * gcc下载镜像：<https://gcc.gnu.org/mirrors.html>
+
+
 
 
 ## gcc 4.5+ 源码安装( failed )
@@ -13,6 +16,9 @@
 
 * Centos 源码编译安装gcc 4.7.0: <http://www.stamhe.com/?p=991>
 * CentOS 5上编译安装 GCC: <http://kodango.com/compile-gcc-on-centos-5>
+
+
+
 
 
 ### 安装包说明
@@ -43,6 +49,8 @@
 依赖下载，可以使用 `./contrib/download_prerequisites` 脚本自动下载，也可打开自行下载。
 
 
+
+
 ### 安装步骤
 
 #### 系统说明
@@ -55,6 +63,7 @@
         Codename:   Final
 
 云主机当前有g++编译器，版本号是`4.4.7`。
+
 
 
 #### 下载
@@ -151,6 +160,8 @@
 因为系统默认`未提供`32位库，所以选择只`输出64位`程序，使用`--disable-multilib`
 
 
+
+
 #### 各类configure error
 
 ppl
@@ -202,7 +213,7 @@ gcc
 
 ## yum安装
 
-这是成功的安装，默认的`yum repo`无`4.8`的安装包，需要自行添加repo。步骤如下：
+这是`成功`的安装，默认的`yum repo`无`4.8`的安装包，需要自行添加repo。步骤如下：
 
 
     su root

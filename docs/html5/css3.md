@@ -501,7 +501,7 @@ todo
     flex-basis: auto | content | <width>
         /* 综合考虑内容宽度或高度、额外空间等因素 */
         flex-basis: auto;
-        /* 根据内容宽度或高度 */
+        /* 根据内容宽度或高度，浏览器不一定支持，可用auto代替 */
         flex-basis: content;
         /* 根据所提供的值设置宽度或高度 */
         flex-basis: <width>;

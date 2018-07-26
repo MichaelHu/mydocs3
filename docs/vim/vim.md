@@ -191,20 +191,17 @@ changelog: 2018-05, 2017-10, 2017-02-10, 2016-10-22, 2016-07-23
     :help key-codes
 
 
+## 特殊命令参数
 
-## Inserting Commands
+### ++opt参数
 
-
-`特殊insert：`
-
-    :r {file}
-    :r! command
-
-关于`++opt`：
-
-> The [++opt] argument can be used to force the value of 'fileformat',
+> The `[++opt]` argument can be used to force the value of 'fileformat',
 > 'fileencoding' or 'binary' to a value for one command, and to specify the
 > behavior for bad characters.
+
+* 用于`强行设置`编辑命令所使用的对应设置
+* 使用`++opt`参数设置的值，能覆盖`.vimrc`的相关设置
+* `++opt`参数能对fileformat, fileencoding, binary, nobinary, 失败字符识别后的操作等
 
 格式为：
 
@@ -218,14 +215,37 @@ changelog: 2018-05, 2017-10, 2017-02-10, 2016-10-22, 2016-07-23
     bin    or  binary       sets 'binary'               
     nobin  or  nobinary     resets 'binary'
     bad                     specifies behavior for bad characters
-    edit                    for |:read| only: keep option values as if editing
-                            a file
+    edit                    for |:read| only: keep option values as if editing a file
 
 举例如下：
 
+    " 重新编辑当前文件，将文件格式强行设置为unix格式 
     :e ++ff=unix
-    :w ++enc=latin1 newfile
+    " 使用gb18030编码保存文件 
+    :w ++enc=gb18030 gbk-file
 
+    " 编辑当前文件，无法识别的字符使用X代替，默认使用?代替
+    :e ++bad=X
+    " 不代替
+    :e ++bad=keep
+    " 丢弃
+    :e ++bad=drop
+
+
+### +cmd参数
+
+todo
+
+
+
+
+## Inserting Commands
+
+
+`特殊insert：`
+
+    :r {file}
+    :r! command
 
 
 ## Left-right motions
@@ -462,8 +482,18 @@ changelog: 2018-05, 2017-10, 2017-02-10, 2016-10-22, 2016-07-23
     \%23v   \%23v       in virtual column 23 |/zero-width|
 
 * 支持`第几行`、`第几列`，`是否在选区内`等模式匹配
+
+        " 第23行的img全部替换成video
+        :%s/\%23limg/video/g
+
+        " 第18列开始的m替换成@@@，使用提示方式
+        :%s/\%18cm/@@@/c
+
+        " 第18列开始的at替换成@，使用提示方式
+        :%s/\%18cat/@/c
+
 * 支持`光标查找`、`mark查找`
-* `magic`和`nomagic`的区别，主要在`.`的使用，前者表达特殊含义，`不需要反斜线转义`
+* 仅`原子符号`来说，`magic`和`nomagic`的区别，主要在`.`的使用，前者表达特殊含义，`不需要反斜线转义`
 
 
 ##### character classes
@@ -1746,7 +1776,7 @@ syntax:
 
 ### 行注释
 
-command line模式的行注释。
+command line模式的`行注释`。
 
     :#!{anything}
 
@@ -1754,7 +1784,8 @@ command line模式的行注释。
 
     :%!awk '/^\#/'
 
-过滤出所有以`#`开头的行，这里的`\#`
+过滤出所有以`#`开头的行，这里的`\#`。其他需要转义的特殊字符，参考`执行外部命令`节。
+
 
 
 
@@ -1813,6 +1844,15 @@ command line模式的行注释。
 7. 将选中的所有行`按行号逆序`输出，并替换，注意`!`需要转义。相关参考：<ref://../shell/linuxshell.md.html>中关于`sed`命令的部分。
 8. 同上，`更简单`的按行号逆序输出
 9. 将选中区域文本使用prettier命令`格式化`
+
+
+> 目前已知在调用`外部命令`时，以下字符在vim命令行中具有`特殊含义`，要避免执行外部命令前被转义，需要`反斜线转义`这些字符有：
+
+    字符        转义        特殊含义
+    =================================================
+    #           \#          alternate file name
+    %           \%          current file name
+    !           \!          最近执行命令 
 
 
 

@@ -540,7 +540,9 @@
 
     set $variable value;
 
+* 所属module：`ngx_http_rewrite_module`
 * Context：`server, location, if`
+* 支持使用变量的地方比较有限，需要注意，比如`listen <PORT>`就不支持变量
 
 todo
 

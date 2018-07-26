@@ -33,9 +33,10 @@ changelog:
 
 ## Versions
 
-* 2016-09-27, `1.0`
-* 2016-10-21, `1.0.2`, bugfix
+* 2018-01-18, `1.3.1`, stable
 * 2017-01-23, `1.0.3`, bugfix
+* 2016-10-21, `1.0.2`, bugfix
+* 2016-09-27, `1.0`
 
 
 ## Features
@@ -93,6 +94,7 @@ changelog:
 ## Tips
 
 * 坐标系匹配以后，map的事件参数，比如click事件的latlng参数就能准确返回当前点击位置的`经纬度`。但是切记，如果地图的容器DOM元素设置了`transform: scale( sx, sy )`，此时得到的latlng参数是不准确的
+* `CRS.scale( zoom )`返回当前zoom下平面坐标范围边长的`单位数`，比如`256 * Math.pow( 2, zoom )`
 
 
 
@@ -304,7 +306,7 @@ leaflet提供自定义地图投影算法的扩展，通过提供百度的墨卡�
 
 * 使用leaflet地图引擎，对接百度瓦片
 * wgs84球面坐标，通过projzh库转换成bd09球面坐标
-* 百度CRS需要bd09坐标在用于引擎接口前，先进行`逆序`转换
+* 百度CRS需要`bd09`坐标在用于引擎接口前，先进行`逆序`转换
 
 <div id="test_50" class="test">
 <div class="test-container">
@@ -581,7 +583,7 @@ leaflet提供自定义地图投影算法的扩展，通过提供百度的墨卡�
 
 ### Tips
 
-* leaflet定义了最常用的CRS
+* leaflet定义了最常用的CRS ( `CRS.js`: <https://github.com/Leaflet/Leaflet/blob/master/src/geo/crs/CRS.js> )
         
         latLngToPoint( latlng, zoom )
         pointToLatLng( point, zoom )
@@ -596,7 +598,8 @@ leaflet提供自定义地图投影算法的扩展，通过提供百度的墨卡�
 * CRS定义了`地理坐标`和`平面坐标`的相互转换逻辑，以及`平面坐标`和`像素坐标`的转换
 * 地理坐标和平面坐标转换，主要由`project( latlng )`和`unproject( point )`来定义
 * 平面坐标和像素坐标转换，主要由`scale( zoom )`和`zoom( scale )`来定义
-* 如果需要使用为定义的CRS，可以查看<https://github.com/kartena/Proj4Leaflet>
+* 如果需要使用未定义的CRS，可以查看<https://github.com/kartena/Proj4Leaflet>
+
 
 ### Transformation
 
