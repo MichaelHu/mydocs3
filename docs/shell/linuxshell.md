@@ -1664,7 +1664,7 @@ todo
     $ telnet 132.148.22.238 3128
 
 * `telnet`协议，相较ssh协议，其明文传输安全性得不到保障，现已基本被ssh取代
-* 常用语测试目标机器的`网络端口`是否打开
+* 常用于测试目标机器的`网络端口`是否打开
 
 
 
@@ -1862,6 +1862,14 @@ todo
 todo
 
     lsof -i TCP:9000
+    lsof -i :5858
+
+### Examples
+
+关闭被占用的端口，参考<https://blog.csdn.net/joyeu/article/details/18923087>
+
+    $ lsof -i :5858
+    $ kill -9 pid
 
 
 

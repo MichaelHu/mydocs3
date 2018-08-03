@@ -2,6 +2,8 @@
 
 > 技术站点
 
+综合导航 - from AlloyTeam：<http://www.alloyteam.com/nav/>
+
 ## 各公司技术／设计部门blog
 
 * FEX: <http://fex.baidu.com>

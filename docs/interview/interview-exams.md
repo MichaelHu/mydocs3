@@ -367,7 +367,7 @@
 
 11. Koa/Express
 
-12. new关键字的作用
+12. `new`关键字的作用
 
         new func1(); // 创建对象，并设置原型链
         func1();     // 执行函数
@@ -381,7 +381,7 @@
     * 服务端发生什么
 
 
-14. 橡皮擦效果，关键使用了哪个关键的Canvas属性？
+14. Canvas实现`橡皮擦`效果，关键使用了哪个关键属性？
 
         context.globalCompositeOperation = 'destination-out';
 

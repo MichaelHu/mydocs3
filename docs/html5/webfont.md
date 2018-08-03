@@ -26,7 +26,7 @@
 
     介绍文章：<http://efe.baidu.com/blog/use-fonteditor-to-build-webfont/>
 
-3. `FontMin:` <http://ecomfe.github.io/fontmin/>
+3. `FontMin:` <http://ecomfe.github.io/fontmin/> github: <https://github.com/ecomfe/fontmin> <iframe src="http://258i.com/gbtn.html?user=ecomfe&repo=fontmin&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
 
     支持从ttf等格式的TrueType字体中按需生成多种格式的字体文件，能兼容性好的
     运行在多平台浏览器上。
