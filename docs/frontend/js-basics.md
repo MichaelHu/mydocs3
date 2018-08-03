@@ -875,10 +875,78 @@ todo
 
 ## JSON.stringify
 
-    JSON.stringigy(document.body.getBoundingClientRect())
+### Resources
 
-`Safari`能输出`ClientRect`类型对象的内部内容，而`Chrome`只输出空对象`"{}"`。
-这也是上方`objectParse()`方法存在的原因，能保证`Chrome`能输出其内容。
+* ecma 262: <https://tc39.github.io/ecma262/#sec-json-object>
+* MDN: <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify>
+
+
+### Syntax
+
+    JSON.stringify( value[, replacer[, space]] )
+
+* `value` - object, array, string, boolean, number, null
+* `replacer` - function( key, value ) { ... }, array, null
+* `space` - number, string
+
+### Tips
+
+* `space`参数`必须作为第三个参数`才会生效
+* replacer参数或者为函数，或者为数组，或者为null
+    * 作为`函数`时，接收key, value参数，返回对应value的值
+    * 作为`数组`时，指定需要输出的字段名称
+    * 作为`null`时，表示输出所有字段
+* 以下调用：
+
+        JSON.stringigy(document.body.getBoundingClientRect())
+
+    `Safari`能输出`ClientRect`类型对象的内部内容，而`Chrome`只输出空对象`"{}"`。
+    这也是上方`objectParse()`方法存在的原因，能保证`Chrome`能输出其内容。
+
+### Examples
+
+    JSON.stringify( value )
+    {"nodes":[{"id":1,"name":"node1"},{"id":2,"name":"node2"}],"edges":[{"id":100,"name":"edge1","source":1,"target":2}]}
+
+    JSON.stringify( value, [ 'nodes' ] )
+    {"nodes":[{},{}]}
+
+    JSON.stringify( value, [ 'nodes', 'id' ] )
+    {"nodes":[{"id":1},{"id":2}]}
+
+    JSON.stringify( value, [ 'nodes', 'id' ], 4 )
+    {
+        "nodes": [
+            {
+                "id": 1
+            },
+            {
+                "id": 2
+            }
+        ]
+    }
+
+    JSON.stringify( value, function( key, value ) { if ( typeof value == 'number' ) return 'is a number'; else return value; }, 4 )
+    {
+        "nodes": [
+            {
+                "id": "is a number",
+                "name": "node1"
+            },
+            {
+                "id": "is a number",
+                "name": "node2"
+            }
+        ],
+        "edges": [
+            {
+                "id": "is a number",
+                "name": "edge1",
+                "source": "is a number",
+                "target": "is a number"
+            }
+        ]
+    }
 
 
 
