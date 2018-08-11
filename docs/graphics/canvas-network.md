@@ -504,7 +504,7 @@ todo：hover层渲染／节点hover／拖动／动画
         }
 
         function defaults( target, ...sources ) {
-            for ( let i = 0; i < sources.length; i++ ) {
+            for ( let i = sources.length - 1; i >= 0; i-- ) {
                 let source = sources[ i ];
                 for ( let key in source ) {
                     if ( source.hasOwnProperty( key ) && target[ key ] == undefined ) {
