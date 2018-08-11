@@ -572,6 +572,19 @@
     col()
     append()
 
+* vim没有`random()`函数，可以通过以下方式模拟：
+
+        :fu! Random()
+        :   return abs( sin( localtime() * localtime() ) )
+        :endfu
+
+    在替换命令中使用Random函数：
+
+        :109,118s/data: \([^ ]\+\)/\= submatch(0) . ', compareData: ' . printf( '%f', str2float( submatch( 1 ) ) - 5 * Random() )/g
+
+
+
+
 
 ### 命令列表
 
@@ -692,7 +705,7 @@
 
 ## Built-in Functions
 
-> 查询内建函数概要用法：`:help functions`<br>
+> 查询`内建函数`概要用法：`:help functions`<br>
 > 查询内建函数具体用法：`:help funcname()`<br>
 > 查询内建函数列表：`:help function-list`
 
