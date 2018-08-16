@@ -489,6 +489,40 @@ todo: `git config --set push.default ...`
 
     git push origin master^:abc
 
+
+### push.default
+
+#### 命令提示
+
+在git `1.8.3.1`版本上，如果没有明确进行`push.default`设置，将会有如下提示：
+
+    $ git push
+    warning: push.default is unset; its implicit value is changing in
+    Git 2.0 from 'matching' to 'simple'. To squelch this message
+    and maintain the current behavior after the default changes, use:
+
+      git config --global push.default matching
+
+    To squelch this message and adopt the new behavior now, use:
+
+      git config --global push.default simple
+
+    See 'git help config' and search for 'push.default' for further information.
+    (the 'simple' mode was introduced in Git 1.7.11. Use the similar mode
+    'current' instead of 'simple' if you sometimes use older versions of Git)
+
+
+#### Tips
+
+1. git `2.0`开始，命令`git push`的默认操作方式，从原来的`matching`改成了`simple`
+2. `current`将本地当前分支推送至远程与其分支名匹配的分支
+3. `matching`会将本地所有分支的内容都推送到远程分支名匹配的分支
+3. `upstream`会将本地分支推送至其远程upstream分支，不管分支名是否匹配
+5. `simple`在`upstream`的模式上，增加了分支名必须匹配的安全限制
+6. 安全性：simple > upstream > current >  matching
+
+
+
 ## git config
 
     # 查看当前git账户配置

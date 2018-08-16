@@ -1945,6 +1945,14 @@ for `MAC`
     # 执行替换编辑命令，输出到标准输出
     sed -e 's/pattern/replacement/g' file
 
+    # 获取文件特定行，并输出。其中-n选项用于关闭输入行的输出，只输出处理后的行
+    # 输出文件第5行 
+    sed -n -e '5p' file
+    # 输出文件第5-8行 
+    sed -n -e '5,8p' file
+    # 输出文件第5-8行，并在第9行结束后续行的处理，提高性能
+    sed -n -e '5,8p;9q' file
+
 
 ### 理解两个spaces
 
