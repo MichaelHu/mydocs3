@@ -13,6 +13,276 @@ changelog: 2018, 2017, 2016, 2015, 2014
 * `.bash_profile`与`登录`相关，用户登录后会执行一次`.bash_profile`
 
 
+## Tips
+
+* `单引号内`的内容，不进行变量替换，反斜线不作为转义字符前缀，命令替换不起作用( `\`\``内部的内容不作为命令执行 )
+* `双引号内`的内容，会进行变量替换，反斜线作为转义字符前缀，命令替换会起作用
+* `变量替换`，包含`$(...)`以及`\`...\``，其运行分两步：
+
+    1. 解析命令，进行变量替换，转义字符解析，命令替换等
+    2. 执行命令，执行第一步解析后的命令
+
+    两种方式可以互相嵌套，比如：
+
+        $ echo `echo $(echo 1)`
+        $ echo `echo \`echo 1\``
+        $ echo `echo \`echo \\\`echo 1\\\` \` `
+        $ echo $(echo `echo 1`)
+        $ echo $(echo `echo \`echo l\` `)
+
+    `\`...\``是旧版方式，`$(...)`是新版方式，`推荐新版写法`，其编写逻辑更加清晰。
+
+
+* `命令解析`过程，示意如下：( 注：根据自己的理解获得，不一定是内部实现的说明 )。
+
+        $ echo `echo \`echo \\\`echo 1\\\` \` `
+
+            '' + $( echo `echo \`echo 1\` ` ) + ''
+            '' + $( echo $( echo `echo 1` ) ) + ''
+            '' + $( echo $( echo 1 ) ) + ''
+            '' + $( echo 1 ) + ''
+            '' + '1' + ''
+            '1'
+
+        1
+
+    * 命令解析过程，`反斜线`会作为转义字符前缀进行解析，有特殊含义的转义字符为：`\``, `$`, `"`, `'`, `\\`，其他的字符即使放在反斜线后面，也仅仅是输出原字符。
+
+            $ echo `echo 1`
+            1
+            $ echo $(echo 1)
+            1
+
+            $ echo \`\$\"\'\\
+            `$"'\
+            $ echo \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+            abcdefghijklmnopqrstuvwxyz
+            $ echo \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+            ABCDEFGHIJKLMNOPQRSTUVWXYZ
+
+    * 命令解析过程中，`反斜线`逻辑对`双引号`包围的内容、`单引号`包围的内容、`$()`包围的内容不做处理，但会对`\`\``包围的内容进行处理
+
+            $ echo "\1\2\3"
+            \1\2\3 
+            $ echo '\1\2\3'
+            \1\2\3
+            $ echo '\\\1'
+            \\\1
+            $ echo "\\\1"
+            \\1
+            $ echo $(echo \1'\\\1')
+            1\\\1
+            $ echo $(echo \1"\\\1")
+            1\\1
+
+            # todo: 没有完全搞明白，目前懵逼状态
+            $ echo `echo \\\1`
+            \1
+            $ echo `echo '\\\1'`
+            \\1
+            $ echo `echo "\\\1"`
+            \1
+            
+            $ echo `echo \\\\1`
+            \1
+            $ echo `echo \\\\\1`
+            \1
+            $ echo `echo \\\\\\1`
+            \1
+            $ echo `echo \\\\\\\1`
+            \\1
+            $ echo `echo \\\\\\\\1`
+            \\1
+            $ echo `echo \\\\\\\\\1`
+            \\1
+            $ echo `echo \\\\\\\\\\1`
+            \\1
+            $ echo `echo \\\\\\\\\\\1`
+            \\\1
+
+            $ echo `echo '\\\1'`
+            \\1
+            $ echo `echo '\\\\1'`
+            \\1
+            $ echo `echo '\\\\\1'`
+            \\\1
+
+            $ echo `echo "\\\\1"`
+            \1
+            $ echo `echo "\\\\\1"`
+            \\1
+            $ echo `echo "\\\\\\1"`
+            \\1
+            $ echo `echo "\\\\\\\1"`
+            \\1
+            $ echo `echo "\\\\\\\\1"`
+            \\1
+            $ echo `echo "\\\\\\\\\1"`
+            \\\1
+
+
+
+
+* `echo`命令必知必会，要不然你会蒙圈。关于echo命令后跟部分的语法，可以包含在双引号内、单引号内，也可以没有单引号或双引号：
+
+    1. `双引号`内部仅支持少数几个特殊字符( 目前所知为`4个` )的反斜线转义，分别为：`\``, `$`, `"`, `\\`
+
+            $ echo "\`\$\"\\"
+            `$"\
+
+        也就是说，双引号内部的`命令替换`、`变量替换`、`双引号自包含`、`反斜线`是支持的，其他皆不支持转义：
+
+            $ echo "\t\v\r\n\a\b\f\0123\x66\!\&\^\(\)\{\}\[\]\'\,\;\-\=\@\*\|\?\~\%"
+            \t\v\r\n\a\b\f\0123\x66\!\&\^\(\)\{\}\[\]\'\,\;\-\=\@\*\|\?\~\%
+
+    2. `单引号`内部不支持`所有反斜线转义`，所以单引号内部还要包含单引号，是不支持的，比如以下命令不支持
+
+            # 进入多行字符串输入模式
+            $ echo '\''
+
+        只能包含在双引号中：
+
+            $ echo "'"
+            '
+
+    3. 双引号字符串能`自包含`，单引号字符串不能自包含
+
+            $ echo "\""
+            "
+
+    4. 没有单引号或双引号的情况，会先参与命令解析过程，具体可参考上方。
+
+            $ echo \a
+            a
+            $ echo \\a
+            \a
+            $ echo \\\a
+            \a
+            $ echo \\\\a
+            \\a
+            $ echo \\\\\a
+            \\a
+
+    5. 输入单引号或双引号包围的字符串，在输入过程中键入回车，可以支持`多行字符串`的输入
+
+            $ echo "1
+            > 2
+            > 3
+            > "
+            1
+            2
+            3
+
+            $ echo '1
+            > 2
+            > 3
+            > '
+            1
+            2
+            3
+
+            $ echo hu '
+            > d
+            > a
+            > min
+            > '
+            hu 
+            d
+            a
+            min
+
+* 命令行解析
+
+        $ echo mm `echo $\D` mm '\D' "\D" \D $(echo $\D)
+        mm $D mm \D \D D $D
+
+
+
+
+
+
+## PS1 - PS4变量
+
+* PS ( `Prompt Sign` )，命令行提示符的简称，共有`4个`环境变量
+* PS1 - PS4用于设置不同场景下的命令行提示符
+* 最常用的是`PS1`
+* 参考：
+    1. <https://ss64.com/bash/syntax-prompt.html>
+    2. <https://blog.csdn.net/echo42/article/details/29654939>
+
+
+
+### PS1
+
+> 默认交互提示符
+
+#### 默认设置
+
+    # linux default
+    $ echo $PS1
+    [\u@\h \W]\$
+
+    # mac default
+    $ echo $PS1
+    \u@local \W $
+
+
+
+#### 特殊转义字符
+
+    转义字符        含义
+    =====================================================================
+    \h              主机名
+    \u              用户名
+    \w              当前工作目录的绝对路径 如：/usr/bin
+    \W              当前工作目录的基址名 如上例中的bin
+    \t              当前的系统时间：HH:MM:SS（24小时制）
+    \@              当前的系统时间，12小时制， 如：07:14 PM
+    \d              如“Wed May 28”格式的日期
+    \n              换行符
+    \$?             上以命令执行后的返回值，成功执行返回0，否则返回一个非零的数
+    \!              该条命令在历史命令中的编号
+    \#              该条命令在这个shell中的编号
+
+#### 例子
+
+    # Right: 运行时执行
+    $ export PS1='\u@`ifconfig | grep inet | grep -v inet6 | grep -v "inet 127" | awk "{print \\\$2}"` \W$ '
+    # or
+    $ export PS1='\u@$(ifconfig | grep inet | grep -v inet6 | grep -v "inet 127" | awk "{print \$2}") \W$ '
+
+    # Right: 静态执行
+    $ export PS1="\\u@`ifconfig | grep inet | grep -v inet6 | grep -v \"inet 127\" | awk \"{print \\\$2}\"` \\W$ "
+    # or
+    $ export PS1="\\u@$(ifconfig | grep inet | grep -v inet6 | grep -v 'inet 127' | awk '{print $2}') \\W$ "
+
+    # Error: "{print $2}"命令包含在``以及内层双引号中，会进行两次变量替换，导致最终执行awk时，实际上执行的是"{print}"
+    $ export PS1='\u@`ifconfig | grep inet | grep -v inet6 | grep -v "inet 127" | awk "{print $2}"` \W $ '
+
+
+
+> `Tips：`
+
+* 以上例子获得的命令行提示为：
+
+        hudamin@172.22.152.2 tmp$
+
+* `运行时执行`的方式，`PS1`的内容为：
+
+        \u@`ifconfig | grep inet | grep -v inet6 | grep -v "inet 127" | awk "{print \\\$2}"` \W$ 
+        
+    此种方式，其IP字段是在命令行中每次Prompt时`重新计算`。
+
+* `编译时执行`的方式，`PS1`的内容为：
+
+        \u@IP \W$ 
+
+    此种方式，其IP字段是固定的，不会重新计算。
+
+
+
+
+
 ## 关于批处理
 
 * `for`循环中的命令序列，能保证上一命令执行完成后再启动下一命令，它支持使用vim`人工批量编辑文件`，比如：
@@ -920,30 +1190,37 @@ todo
     
 
 
-## echo带颜色文本
+
+## 显示带样式的文本
 
 > 参考：<http://www.cnblogs.com/lr-ting/archive/2013/02/28/2936792.html>
 
 ### 格式说明
 
-    $ echo -e "\033[<background-color>;<font-color>m <string> \033[0m"
-    $ echo -e "\033[<font-color>m <string> \033[0m"
-    $ echo -e "\033[<font-color>m\033[4m <string> \033[0m"
+    $ echo -e "\033[<background-color>;<font-color>m<string>\033[0m"
+    $ echo -e "\033[<font-color>m<string>\033[0m"
+    $ echo -e "\033[<font-color>m\033[4m<string>\033[0m"
 
 * `<font-color>`后面带`m`
-* `<string>`为字符串，其间的`空格保留`
+* `<string>`为字符串
 * 控制字段的格式为：`\033[*m`
     * 同时设置背景色与前景色： `\033[<background-color>;<font-color>m`
     * 只设置前景色： `\033[<font-color>m`
-    * 同时设置前景色与下划线：`\033[<font-color>m\033[4m`
+    * 同时设置前景色与下划线：`\033[<font-color>;4m`
 * 属性生效范围在`\033[*m`开始到`\033[0m`结束
 * `Mac`下，`echo -e`在命令行中正常，但在脚本文件中，不能加`-e`选项，否则直接输出`-e`
+* `Linux`下，`\033`还可以用`\e`表示
+* `PS1 - PS4`变量，可以直接使用样式文本语法，比如：
 
-例如：
+        $ export PS1='\u@local \033[33m\W\033[0m \$ '
 
-    $ echo -e "\033[47;30m 白底黑字 \033[0m"
-    $ echo -e "\033[31m 红字 \033[0m"
-    $ echo -e "\033[33m\033[4m 下划线黄字 \033[0m"
+
+### 简单例子
+
+    $ echo -e "\033[47;30m白底黑字\033[0m"
+    $ echo -e "\033[31m红字\033[0m"
+    $ echo -e "\033[33m\033[4m下划线黄字\033[0m"
+    $ echo -e "\033[33;4m下划线黄字\033[0m"
 
 
 ### 色值及其他选项
@@ -2212,6 +2489,30 @@ sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://.
 
 
 
+## cut
+
+> todo
+
+### Syntax
+
+    cut -b list [-n] [file ...]
+    cut -c list [file ...]
+    cut -f list [-s] [-d delim] [file ...] 
+
+### Examples
+
+    cut -d : -f 1,7 /etc/passwd
+    who | cut -c 1-16,26-38
+
+### Tips
+
+* 与`awk`命令类似，可以对文件行按指定字段格式输出
+* 支持字节位置、字符位置以及自定义分隔符的方式对行进行切分
+* 相比于awk，cut在`自定义分隔符方面不够强大`，但是`对字节和字符级的分割方式`方面，cut更强
+
+
+
+
 
 ## find
 
@@ -2866,7 +3167,7 @@ output：
 * wdmycloud备份程序出了问题
 * 正常情况下，同名文件如果内容不同，则通过增加`(n)`后缀，表示不同文件
 * 出问题后，`(n)`后缀的文件可能是同一文件
-* 使用`近似的解决方案`简单处理，认为`字节数`一样，且出了后缀之外同名的文件，则为相同文件
+* 使用`近似的解决方案`简单处理，认为`字节数`一样，且除了后缀之外同名的文件，则为相同文件
 
 > 相关代码
 
@@ -2874,6 +3175,15 @@ output：
     11448
     $ ls -l | grep -v '_tmp' | wc -l
     14957
+
+
+### 获取本机ip
+
+    # 兼容Linux & Mac
+    $ ifconfig | grep inet | grep -v inet6 | grep -v 'inet 127' | awk '{print $2}'
+
+    # 仅Linux
+    $ hostname -i
 
 
 
