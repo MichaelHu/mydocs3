@@ -45,12 +45,12 @@
 
 
 
-## 常见问题
+## Tips
 
 * Mac SecureCRT无法保存密码？ 参考：<http://jingyan.baidu.com/article/915fc414fda5fb51394b20bd.html>
     
     `Preference` -> <input type="checkbox">`Use Keychain`
 
-* Tip: 用`rz -b`代替`rz -be`，或许能解决上传报错问题
-
+* 用`rz -bye`，或许能解决`上传报错`问题
+* 关闭Tab标题文本自动变化，勾选`Terminal - Emulation - Advanced - Other - Innore window title change requests`
 
