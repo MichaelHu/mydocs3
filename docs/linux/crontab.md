@@ -66,4 +66,6 @@ todo
     # list specified user
     crontab -u USERNAME
 
+    # 重启crontab服务
+    sudo systemctl restart crond
 
