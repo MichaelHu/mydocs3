@@ -798,6 +798,7 @@ While this sounds confusing, the advantage of rebasing is that it can be used to
 
 > 使不同功能的提交历史形成串式，通常在需要`往父分支合并前`进行rebase操作。
 
+
 <style type="text/css">
 img.c3 {
     width: 30%;
@@ -975,6 +976,15 @@ Cons: Rebasing modifies the (apparent) history of the commit tree.
 For example, commit C1 can be rebased past C3. It then appears that the work for C1' came after C3 when in reality it was completed beforehand.
 
 > 取决与`个人喜好`，是喜欢提交树的清晰可见，还是喜欢保留原汁原味的提交历史。团队最好确定一种方式。
+
+### Tips
+
+* 现实当中，能完全理解rebase使用的同学并不多，因为它是锦上添花的功能，为merge提供了一种特定情况下新的选择，但不能完全取代merge
+* 一个比较容易遵守的`准则`是（参考<https://segmentfault.com/q/1010000007704573/>）待验证：
+
+    1. 当你从 remote 去 pull 的时候，使用 rebase（有一个例外）
+    2. 当你完成了一个功能（假定你是单独开本地分支去做的）后打算合并到主干分支的时候，使用 merge
+
 
 
 

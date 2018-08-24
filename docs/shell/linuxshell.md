@@ -359,6 +359,40 @@ changelog: 2018, 2017, 2016, 2015, 2014
         # Right
         $ sh run.sh &>run.log &
 
+* 常用的`2>&1`，将stderr重定向至stdout，注意如下用法的差别：
+
+        # 标准错误和标准输出都导向屏幕输出
+        $ sh run.sh
+
+        # 标准错误和标准输出都导向run.log，屏幕输出没有内容
+        $ sh run.sh >> run.log
+
+        # 标准错误导向标准输出，标准输出导向run.log，屏幕输出标准错误的内容
+        $ sh run.sh 2>&1 >> run.log
+
+        # 标准错误和标准输出都导向run.log，屏幕输出没有内容
+        $ sh run.sh >> run.log 2>&1
+
+        # 全部输出被run.log截获，b文件没有内容
+        $ sh run.sh >> run.log | cat - > b
+
+        # 全部输出被run.log截获，b文件没有内容
+        $ sh run.sh >> run.log 2>&1 | cat - > b
+
+        # run.log截获第一个命令的标准输出内容，b文件截获第一个命令的标准错误内容
+        $ sh run.sh 2>&1 >> run.log | cat - > b
+
+        # b文件截获第一个命令的标准错误和标准输出的内容
+        $ sh run.sh 2>&1 | cat - > b
+
+    使用文件描述符重定向和文件重定向的`不同顺序`，来影响文件重定向的内容和管道输出的内容。达到`分流`的目的。
+
+        # out.log标准输出，error.log标准错误
+        $ sh run.sh 2>&1 > out.log | cat - > error.log
+
+        # 把标准错误和标准输出都通过管道传递给后续命令，默认情况下，只有标准输出会传递下去
+        $ sh run.sh 2>&1 | grep error
+
 
 
 ### Examples
@@ -385,17 +419,17 @@ changelog: 2018, 2017, 2016, 2015, 2014
         
 2. `[j]<>filename` 
 
-    打开文件用于读写，并将该文件赋值给描述符j。如果filename不存在，则创建之。
-    如果没有提供描述符j，则默认使用0，即stdin
+    打开文件用于`读写`，并将该文件`赋值给描述符j`。如果filename不存在，则创建之。如果没有提供描述符j，则`默认使用0`，即stdin
 
-        echo 1234567890 > File
-        exec 3<>File
-        read -n 4<&3
-        echo -n . >&3
-        exec 3>&-
-        cat File
+        $ echo 1234567890 > File
+        $ exec 3<>File
+        $ read -n 4 <&3
+        $ echo -n . >&3
+        $ exec 3>&-
+        $ cat File
+        1234.67890
     
-3. 关闭文件描述符
+3. `关闭`文件描述符
 
         # 关闭输入描述符n
         n<&-
@@ -424,7 +458,7 @@ changelog: 2018, 2017, 2016, 2015, 2014
 
         ls -yz >> command.log 2>&1
             
-    以上代码可将错误信息也输出到command.log。但是，以下代码却不可以，`注意区别`：
+    以上代码可将`错误信息`也输出到`command.log`。但是，以下代码却不可以，`注意区别`：
 
         ls -yz 2>&1 >> command.log
 
@@ -438,10 +472,9 @@ changelog: 2018, 2017, 2016, 2015, 2014
 
     说白了，就是`重定向`和`管道`的区别。
 
-6. `Child processes inherit open file descriptors. This is why pipes work`. To prevent 
-    an fd from being inherited, close it.
+6. `Child processes inherit open file descriptors. This is why pipes work`. To prevent an fd from being inherited, close it.
 
-    以下代码`只重定向`stderr到pipe：
+    以下代码`只重定向stderr到pipe`：
 
         exec 3>&1
         ls -l 2>&1 >&3 3>&- | grep bad 3>&-
@@ -1150,6 +1183,32 @@ todo
     < 3e123731b40c4515e7c607d3e4476519dbff8079
     ---
     > f8158b05b053083125ae7f98635546aada5ca620
+
+
+## read
+
+> todo
+
+### Syntax
+
+    read [-ers] [-a aname] [-p prompt] [-t timeout] [-n nchars] [-d delim] [name...]
+
+### Examples
+
+    $ read -n 10
+    $ echo $REPLY
+
+    $ read -p "name: "
+    $ echo $REPLY
+
+    $ read -p "name: " name
+    $ echo $name
+
+### Resources
+
+* read - <https://ss64.com/bash/read.html>
+* read命令 -  <http://man.linuxde.net/read>
+
 
 
 ## printf
