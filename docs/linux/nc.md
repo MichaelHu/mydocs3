@@ -32,8 +32,8 @@
     -v              verbose
     -z              只做端口扫描，不发送数据
     -w <seconds>    超时秒数
-    --send-only     只发送，Linux下有效   
-    --recv-only     只接收，Linux下有效
+    --send-only     只发送，新版本nc支持
+    --recv-only     只接收，新版本nc支持
     ...
 
 
@@ -49,26 +49,26 @@
 
     # 文件传输
     # A
-    $ nc -l 9876 > a.json
-    # Linux
-    $ nc -l --send-only 9876 < a.json
+    $ nc -l 9876 < a.json
 
     # B
     $ nc -v A 9876 > a.json
-    # Linux
-    $ nc -v --recv-only A 9876 > a.json
 
 
     # 文件传输，通过管道，支持目录传输
     # A
-    $ nc -l 9876 | tar zxf -
-    # Linux
-    $ nc -l --send-only 9876 | tar zxf -
+    $ tar zcf - dir | nc -l 9876
 
     # B
-    $ tar zcf - dir | nc -v A 9876
-    # Linux
-    $ tar zcf - dir | nc -v --recv-only  A 9876
+    $ nc B 9876 | tar zxf -
+
+* 默认情况下接收或发送完EOF后，自动退出
+* 对于支持`--send-only`, `--recv-only`的版本，碰到EOF后，仍然不会退出，需要显式设置
+
+        # 发送
+        $ tar zcvf - * | nc --send-only -l 9876
+        # 接收
+        $ nc --recv-only 123.78.99.25 9876 | tar zxvf -
 
 
 ### 其他 - todo
