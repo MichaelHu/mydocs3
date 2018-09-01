@@ -100,6 +100,28 @@
     }
 
 
+### 字符串转义字符
+
+同RegExp，支持`\ooo`, `\xhh`, `\uhhhh`，如下所示：
+
+    // %的三种表示方法
+    console.log( '\045\x25\u0025' )
+    %%%
+
+    // HTML字符 - 上角标数字字符
+    console.log( '\xb9\xb2\xb3' )
+    ¹²³
+
+    // HTML字符 - 比例字符
+    console.log( '\xbc\xbd\xbe' )
+    ¼½¾
+
+    // HTML字符 - 其他一些特殊字符
+    console.log( '\x99\xa5\xa7\xa9\xae\xb1' )
+    ¥§©®±
+
+
+
 
 ### js escape
 

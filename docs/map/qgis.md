@@ -9,6 +9,7 @@
 
 ## Resources
 
+* downloads: <http://download.qgis.org>
 * docs: <https://docs.qgis.org/2.14/en/docs/index.html>
 
 
@@ -22,8 +23,46 @@
 * `手绘地图`，可以将地图边界数据制作成svg，并通过`SVG Annotation`将该SVG添加到地图，就可以进行`描边绘制`了。描边绘制不受层级影响，即使描边层在图片下方，也可以进行描边
 * 层的编辑模式，只有进入到`编辑模式`，才能对层进行修改。默认为只读模式
 * 通过Feature的各类操作，支持`修改、删除、合并`等操作
+* Feature的添加，通过`右键`点击完成图形的添加
+* 升级到3.2.2版本后，默认地图区没有占满工作区，可以通过添加panel，并拖动panel和地图去边界，触发地图区自适应布局，再关闭panel，地图区就可以占满工作区了
 * 可以在地图上显示label，自行选择显示的字段
-* `QGIS3`，要求系统安装`Python 3`
+* `QGIS3`，要求系统安装`Python 3`，而且必须是从`python.org`官方下载的安装包
+
+
+
+## Install
+
+### QGIS 3.2.2安装
+
+#### 安装提示
+
+    QGIS 3 / Mac OS X
+
+    3.2.2-1	2018-8-25
+
+    This is QGIS built for Yosemite, El Capitan, Sierra and High Sierra.
+
+    Requirements - Very important!
+
+    This distribution requires my GDAL Complete 2.2 framework package (included
+    on the QGIS disk image) and Python 3.6 (only python.org Python 3 is
+    supported, another python 3 installation can't be substituted).
+    Python must be installed before GDAL.  Some Python modules are
+    required and installed using pip from files in the installer.
+    Modules will be installed but not upgraded if already installed, in
+    case you are holding onto an old version for some reason.  Installed
+    modules include (plus any dependencies):
+
+    owslib, PyYaml, psycopg2, jinja2, pygments, numpy, plotly
+
+#### Tips
+
+* 必须`Python 3.6.5+`，而且只能是安装从<http://python.org>下载安装的版本，必须在`GDAL`和`QGIS`前安装好
+* 依赖`GDAL Complete 2.2`，在安装QGIS前安装好，在同一个安装包里
+
+
+
+
 
 
 ## Expression Examples
