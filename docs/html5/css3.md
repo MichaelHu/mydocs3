@@ -452,6 +452,8 @@ todo
     2. 在flex container上使用`justify-content`, `align-items`
     3. 在flex item上使用`align-self`
 
+* `flex-flow`如果是row，那么默认在高度上是占满的，如果是column，则默认在宽度上是占满的
+
 
 ### 可用属性
 
