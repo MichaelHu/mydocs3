@@ -331,6 +331,16 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
 
 到提供的站点<https://www.npmjs.com/email-edit>，进行邮箱验证，验证通过后即可正常发布npm package。看来以前不需要验证，现在需要强制进行验证了。
 
+> 180906, 提示未登录
+
+    $ npm adduser
+
+输入用户名、密码以及注册的Email，完成登录。可以使用：
+
+    $ npm whami
+
+查看当前登录账户。
+
 
 
 
@@ -380,18 +390,18 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
 
 1. 测试`全局安装`：
 
-        npm install . -g
+        $ npm install . -g
 
     或者只用
 
-        npm link
+        $ npm link
 
     创建全局可用的包的符号链接。然后用`npm ls -g`查看是否存在。
 
 2. 测试`本地安装`：
 
-        cd ../some-other-folder
-        npm install ../my-package
+        $ cd ../some-other-folder
+        $ npm install ../my-package
 
 
 
@@ -616,6 +626,13 @@ npm获取配置信息，来自`六个来源，优先级如下，由高到低`：
 > 方便`开发调试`，可将另一个包链接到本包的`node_modules`下，另一个包的任意改动，可以直接反映出来。
 
 注意pkgname不是目录名，而是包名，其在`package.json`中定义。
+
+
+#### Tips
+
+* 当某个package目录下执行`npm link`命令是一个`全局操作`命令，需要有`全局操作权限`
+* 通常在发布前，本地进行测试时使用npm link命令进行全局链接，等同于`npm install -g .`命令
+* 解除link，需要用`npm unlink` 或 `npm uninstall`命令
 
 
 #### 包链接
