@@ -772,6 +772,91 @@ todo
 
 
 
+## 滚动条样式
+
+### Resources
+
+* div隐藏滚动条仍保留滚动效果，兼容IE，FF，Webkit 和 O <https://blog.csdn.net/qq_2842405070/article/details/70238829>
+* Demo - CSS3自定义滚动条 <http://www.xuanfengge.com/demo/201311/scroll/css3-scroll.html>
+* [ 131103 ] CSS3自定义滚动条样式 -webkit-scrollbar <https://www.xuanfengge.com/css3-webkit-scrollbar.html>
+
+
+### Examples
+
+#### 隐藏滚动条
+
+    /* Webkit */
+    .scroll-container::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+    }
+
+    /* Opera */
+    .scroll-containter .-o-scrollbar{
+        -moz-appearance: none !important;
+        background: rgba(0,255,0,0) !important;
+    }
+
+    /* IE10, IE11, IE12 */
+    .scroll-container {
+        -ms-scroll-chaining: chained;
+        -ms-overflow-style: none;
+        -ms-content-zooming: zoom;
+        -ms-scroll-rails: none;
+        -ms-content-zoom-limit-min: 100%;
+        -ms-content-zoom-limit-max: 500%;
+        -ms-scroll-snap-type: proximity;
+        -ms-scroll-snap-points-x: snapList(100%, 200%, 300%, 400%, 500%);
+        -ms-overflow-style: none;
+        overflow: auto;
+    }
+
+FF下，用JS实现：
+
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/jquery.nicescroll.min.js"></script>
+    <script>
+    $( function() {
+        // FF下用JS实现自定义滚动条
+        $( ".scroll-container" ).niceScroll(
+            {
+                cursorborder: ""
+                , cursorcolor: "rgba(0,0,0,0)"
+                , boxzoom: true 
+            }
+        );
+    } );
+    </script>
+
+
+#### 自定义滚动条
+
+    /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+    ::-webkit-scrollbar
+    {
+        width: 16px;
+        height: 16px;
+        background-color: #F5F5F5;
+    }
+     
+    /*定义滚动条轨道 内阴影+圆角*/
+    ::-webkit-scrollbar-track
+    {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 10px;
+        background-color: #F5F5F5;
+    }
+     
+    /*定义滑块 内阴影+圆角*/
+    ::-webkit-scrollbar-thumb
+    {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+        background-color: #555;
+    }
+
+
+
 
 ## CSS3 case
 

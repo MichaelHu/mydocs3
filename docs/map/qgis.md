@@ -27,6 +27,8 @@
 * 升级到3.2.2版本后，默认地图区没有占满工作区，可以通过添加panel，并拖动panel和地图去边界，触发地图区自适应布局，再关闭panel，地图区就可以占满工作区了
 * 可以在地图上显示label，自行选择显示的字段
 * `QGIS3`，要求系统安装`Python 3`，而且必须是从`python.org`官方下载的安装包
+* `Layers Panel`右键点击`Open Attribute Table`，打开Edit开关，可以通过Expression方式为Feature计算AREA字段：
+        AREA = $area
 
 
 
