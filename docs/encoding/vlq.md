@@ -12,7 +12,7 @@
         10                              U
         1234567890123456789012345       ggggggC
 * 是一种`通用编码`( universal code )，MIDI音乐就使用该编码
-* js中的sourcemap，也是使用vlq来进行位置编码
+* js中的`sourcemap`，也是使用vlq来进行`位置编码`
 
 
 ## Resources
