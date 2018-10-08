@@ -76,7 +76,8 @@
     import * as utils from './a';
     import utils from './a';
     import { sex, echo as ECHO } from './a';
-    import React, {Component, PropTypes} from 'react';
+    import React, { Component, PropTypes } from 'react';
+    import { default as React, Component, PropTypes } from 'react';
 
 
     // Export Directly
@@ -172,6 +173,15 @@
     简写成 =>
 
         export { default } from './a';
+
+    又如：
+
+        import A from './a';
+        export { Container: A };
+
+    可简写成 =>
+
+        export { default as Container } from './a';
 
 * `function, class`支持`default export`，`var/const/let`则不支持
 

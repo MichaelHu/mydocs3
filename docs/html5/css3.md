@@ -36,6 +36,41 @@
 
 
 
+## border-edge & padding-edge
+
+* `static`定位的内容从`padding-edge-inner`开始排布
+* `absolute`定位的内容从`border-edge-inner`开始排布
+
+代码验证如下：
+
+    @[data-script="html editable"]<style type="text/css">
+        .be-pe-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            padding: 30px;
+            border: 30px solid #000;
+            background-color: #ddd;
+        }
+
+        .be-pe-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100px;
+            height: 100px;
+            background-color: #666;
+            opacity: .5;
+        }
+    </style>
+    <div class="be-pe-container">
+        这里是文本内容
+        <div class="be-pe-content"></div>
+    </div>
+
+
+
+
 ## 文本处理相关
 
 ### white-space

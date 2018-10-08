@@ -46,7 +46,7 @@ changelog: 2018, 2017, 2016, 2015, 2014
 
         1
 
-    * 命令解析过程，`反斜线`会作为转义字符前缀进行解析，有特殊含义的转义字符为：`\``, `$`, `"`, `'`, `\\`，其他的字符即使放在反斜线后面，也仅仅是输出原字符。
+    * 命令解析过程，`反斜线`会作为转义字符前缀进行解析，有特殊含义的转义字符为：`\``, `$`, `"`, `'`, `\ `，其他的字符即使放在反斜线后面，也仅仅是输出原字符。
 
             $ echo `echo 1`
             1
@@ -125,7 +125,7 @@ changelog: 2018, 2017, 2016, 2015, 2014
 
 * `echo`命令必知必会，要不然你会蒙圈。关于echo命令后跟部分的语法，可以包含在双引号内、单引号内，也可以没有单引号或双引号：
 
-    1. `双引号`内部仅支持少数几个特殊字符( 目前所知为`4个` )的反斜线转义，分别为：`\``, `$`, `"`, `\\`
+    1. `双引号`内部仅支持少数几个特殊字符( 目前所知为`4个` )的反斜线转义，分别为：`\``, `$`, `"`, `\ `
 
             $ echo "\`\$\"\\"
             `$"\
@@ -247,14 +247,14 @@ changelog: 2018, 2017, 2016, 2015, 2014
 #### 例子
 
     # Right: 运行时执行
-    $ export PS1='\u@`ifconfig | grep inet | grep -v inet6 | grep -v "inet 127" | awk "{print \\\$2}"` \W$ '
+    $ export PS1='\u@`ifconfig | grep inet | grep -v inet6 | grep -v "inet 127.0" | grep -v "\-\->" | awk "{print \\\$2}"` \W$ '
     # or
-    $ export PS1='\u@$(ifconfig | grep inet | grep -v inet6 | grep -v "inet 127" | awk "{print \$2}") \W$ '
+    $ export PS1='\u@$(ifconfig | grep inet | grep -v inet6 | grep -v "inet 127.0" | grep -v "\-\->" | awk "{print \$2}") \W$ '
 
     # Right: 静态执行
-    $ export PS1="\\u@`ifconfig | grep inet | grep -v inet6 | grep -v \"inet 127\" | awk \"{print \\\$2}\"` \\W$ "
+    $ export PS1="\\u@`ifconfig | grep inet | grep -v inet6 | grep -v \"inet 127.0\" | grep -v \"\\-\\->\" | awk \"{print \\\$2}\"` \\W$ "
     # or
-    $ export PS1="\\u@$(ifconfig | grep inet | grep -v inet6 | grep -v 'inet 127' | awk '{print $2}') \\W$ "
+    $ export PS1="\\u@$(ifconfig | grep inet | grep -v inet6 | grep -v 'inet 127.0' | grep -v '\-\->' | awk '{print $2}') \\W$ "
 
     # Error: "{print $2}"命令包含在``以及内层双引号中，会进行两次变量替换，导致最终执行awk时，实际上执行的是"{print}"
     $ export PS1='\u@`ifconfig | grep inet | grep -v inet6 | grep -v "inet 127" | awk "{print $2}"` \W $ '
@@ -2294,7 +2294,7 @@ for `MAC`
 
 需要弄清楚`hold space`和`pattern space`的概念。可参考<http://www.lai18.com/content/1404242.html>
 
-`Pattern Space`相当于`车间`，也称为`临时缓存区`，sed把流内容在这里进行处理，而不改变原文件的内容，`Hold Space`相当于`仓库`，加工的`半成品`在这里进行临时存储。
+`Pattern Space ( 模式空间 )`相当于`车间`，也称为`临时缓存区`，sed把流内容在这里进行处理，而不改变原文件的内容，`Hold Space ( 储存空间 )`相当于`仓库`，加工的`半成品`在这里进行临时存储。
 
 由于各种原因，比如用户希望在某个条件下脚本中的某个命令被执行，或者希望`模式空间`得到保存以便下一次处理，都有可能使得sed在处理文件的时候不按照正常的流程来进行。这个时候，sed设置了一些`高级命令`来满足用户的要求。
 
@@ -2327,7 +2327,7 @@ for `MAC`
 
 #### 对换行符的处理
 
-`处理过程`为获取一行，`去掉换行符`，放入模式空间，处理完以后再将换行符添加回去，放到标准输出中。
+`处理过程`中，每获取一行，`去掉换行符`，放入模式空间，处理完以后再将换行符添加回去，放到标准输出中。
 
     sed -e 's/\n/a/g' file
 

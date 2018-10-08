@@ -176,6 +176,13 @@
             index index.html;
         }
 
+* 配置启用文件压缩，nginx配置可以根据文件的mime类型决定是否启用压缩。比如针对`css/js/json`文件启用`gzip压缩`，可以如下配置：
+
+        http {
+            gzip on;
+            gzip_types text/css application/javascript application/json;
+        }
+
 
 
 
