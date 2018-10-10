@@ -29,13 +29,13 @@
 
 * 版本历史：
 
-    2.16
-    2.15
-    ...
-    2.0.x
-    1.9.x
-    ...
-    1.5.x
+        2.16
+        2.15
+        ...
+        2.0.x
+        1.9.x
+        ...
+        1.5.x
 
 * 查看详细版本更新历史：`git/Documentation/RelNotes/*.txt`
 
@@ -1028,6 +1028,34 @@ For example, commit C1 can be rebased past C3. It then appears that the work for
     git remote rm origin
 
 
+### git remote prune
+
+`清理（修剪）`所有废弃的远程分支。远程分支已经删除，但本地仍然能看到该远程分支，此时可以通过两种方式清理该分支：
+
+    # 空转运行
+    git remote prune --dry-run origin
+
+    # 运行以清理所有origin仓库中的废弃分支
+    git remote prune origin
+
+    # 单独清理某个废弃的远程分支
+    git branch -r -d <remote-branch-name>
+
+
+实际运行：
+
+    $ git remote prune --dry-run origin
+    Pruning origin
+    URL: git@172.22.1.99:abc/def.git
+     * [would prune] origin/release/xyz_v180716-b180625
+
+    $ git remote prune origin
+    Pruning origin
+    URL: git@172.22.1.99:abc/def.git
+     * [pruned] origin/release/xyz_v180716-b180625
+
+
+
 ### push问题
 
 问题解决：在某些机器（比如测试机或机房机器）使用git时，可以正常clone、fetch，但是`push`的时候出现以下错误提示：
@@ -1072,6 +1100,10 @@ Push URL需要`身份验证`。
     $ unset SSH_ASKPASS
 
 参考<http://blog.163.com/hevensun@126/blog/static/2015336320143413148101/>
+
+
+
+
 
 
 ## git fetch

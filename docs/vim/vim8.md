@@ -5,7 +5,7 @@
 ## Resources
 
 * github: <https://github.com/vim/vim>
-* latest version: `v8.0.0651`
+* latest version: `v8.1.0468`
 
 
 
@@ -29,6 +29,17 @@
         set backspace=indent,eol,start
 
 
+### 版本更新特性
+        
+* `8.1`: The main new feature of Vim 8.1 is support for running a `terminal in a Vim window`.
+    * The `Terminal debugging plugin` can be used to debug a program with gdb and view the source code in a Vim window.
+    * 常用命令：
+            :help :term
+            :term
+            :term bash
+            :term make myprogram
+            :term gdb vim
+
 
 
 
@@ -39,7 +50,7 @@
 
 ### 编译过程
 
-`源码`安装，毕竟是一个轻量级的编辑器，编译速度也很快。
+`源码`安装，毕竟是一个`轻量级`的编辑器，编译速度也很快。
 
     git clone https://github.com/vim/vim.git
     cd vim
