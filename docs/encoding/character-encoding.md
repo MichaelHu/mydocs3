@@ -1,6 +1,21 @@
 # character encoding
 
+## Resources
+
+* Unicode - <https://baike.baidu.com/item/Unicode/750500>
+
+
 ## unicode
+
+    # todo
+    > escape( '𠮷' )
+    < "%uD842%uDFB7"
+    > escape( '吉' )
+    < "%u5409"
+
+
+
+
 
 ## unicode 9
 
