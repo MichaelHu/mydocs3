@@ -31,6 +31,8 @@
 
     其中`__webpack_require__(610).locals`为`undefined`
 
+* `空规则`不会生成对应的local id，但规则内`只包含注释`，不会被认为空规则
+
 
 
 ## :global 与 :local
