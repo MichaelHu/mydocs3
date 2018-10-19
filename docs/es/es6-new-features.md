@@ -77,6 +77,7 @@
     import utils from './a';
     import { sex, echo as ECHO } from './a';
     import React, { Component, PropTypes } from 'react';
+    import React, * as ReactAll from 'react';
     import { default as React, Component, PropTypes } from 'react';
 
 
@@ -165,6 +166,23 @@
 * export`不支持`此种类型的输出：`export { name: varB, sex: varA };`，
     但支持：`export { varB, varA };`或`export { varB as name, varA as sex };`
 * import`不支持`此种类型的解构：`import { name, sex: varA } from './a';`
+* `* as ABC`不能与解构一起使用：
+
+        // Error
+        import { a }, * as ABC from './abc';
+
+        // Error
+        import { default as DA }, * as ABC from './abc';
+
+    与Default方式并用时，`必须放在后面`：
+
+        // OK
+        import React, * as ReactAll from 'react';
+
+        // Error
+        import * as ReactAll, React from 'react';
+
+
 * 直接export语法可以达到`简写`效果：
 
         import A from './a';
