@@ -14,6 +14,8 @@
 * `OpenGL ES 2.0`: <ref://./doc/opengl_es_full_spec_2.0.pdf> 中文翻译版：<http://www.docin.com/p-324551367.html>
 * `WebGL Fundamentals`: <https://webglfundamentals.org> github: <https://github.com/greggman/webgl-fundamentals>
 * 并不是`w3c`出specs，也可以理解，毕竟WebGL来自`OpenGL`
+* `webgl-utils.js`: <https://webglfundamentals.org/webgl/resources/webgl-utils.js> local-version: <ref://./js/webgl-utils.js>
+* `m3.js`: <https://webglfundamentals.org/webgl/resources/m3.js> local-version: <ref://./js/m3.js>
 
 
 <style type="text/css">
@@ -24,6 +26,7 @@
 </style>
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 <script src="http://258i.com/static/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="./js/m3.js"></script>
 
 
 ## Keywords
@@ -45,6 +48,7 @@
 ## Tips
 
 * WebGL只是一个`光栅化引擎`，提供通过`GPU`来绘制`点、线、三角形`的基础API
+* `光栅化引擎`，含义就是`像素绘制引擎`，只关注像素相关的信息：位置和颜色，并进行绘制
 * 要让GPU运行代码，需要使用一种和C或C++类似的`强类型`语言`GLSL`
 * 用`GLSL`创建着色器对，由`着色器对组成Program`，并编译、链接和执行
 * 顶点着色器 - pointerShader和片段着色器 - fragmentShader，前者负责计算顶点位置，后者负责图元像素颜色值的计算
@@ -52,6 +56,7 @@
 * 画布和图片一样，有`两种尺寸`，一种是确定其包含多少像素的尺寸，一种是确定其显示大小的尺寸，后者一般用css来设置
 * WebGL的`裁剪空间`范围总是`[ -1, 1 ]`，通过`gl.viewport()`方法将屏幕空间映射到裁剪空间
 * 对于配置并传输数据给GPU绘制的WebGL来说，其操作的对象非常简单，只有`位置`和`颜色`，只做纯粹的`栅格化`操作。但通过编写复杂的着色器，可以获得非常复杂的三维效果
+* WebGL会将同名的可变量( `varyings` )从顶点着色器输入到片段着色器中，片段着色器会自动进行`差值计算`
 
 
 
@@ -442,7 +447,7 @@ Rendering with OpenGL ES 2.0 requires the use of shaders, written in OpenGL ES's
 
 
 
-### The Basic Example
+### 基础绘制 - 纯色三角形
 
 #### 顶点着色器定义( GLSL代码 )
 
@@ -522,7 +527,7 @@ Rendering with OpenGL ES 2.0 requires the use of shaders, written in OpenGL ES's
         var positions = [
             0, 0
             , 0, 0.5
-            , 0.7, 0
+            , 0.5, 0
         ];
         gl.bufferData( gl.ARRAY_BUFFER, new Float32Array( positions ), gl.STATIC_DRAW );
 
@@ -570,6 +575,298 @@ Rendering with OpenGL ES 2.0 requires the use of shaders, written in OpenGL ES's
 <div class="test-panel">
 </div>
 </div>
+
+
+
+### 基础绘制 - 使用屏幕坐标
+
+#### 顶点着色器定义( GLSL代码 )
+
+    @[id="basic_screen_coords_vertex_shader"]attribute vec2 a_position;
+    uniform vec2 u_resolution;
+
+    void main() {
+        // 从像素坐标转换到[ 0.0, 1.0 ]
+        vec2 zeroToOne = a_position / u_resolution;
+
+        // 再转换成[ 0.0, 2.0 ]
+        vec2 zeroToTwo = zeroToOne * 2.0;
+
+        // 最后转换成裁剪空间范围[ -1.0, 1.0 ]
+        vec2 clipSpace = zeroToTwo - 1.0;
+
+        gl_Position = vec4( clipSpace * vec2( 1, -1 ), 0, 1 );
+    }
+
+
+#### 片段着色器定义( GLSL代码 )
+
+以下为`片段着色器`( fragment-shader )的GLSL代码：
+
+    @[id="basic_screen_coords_fragment_shader" contenteditable="true"]// 片段着色器没有默认精度，需要设置一个精度
+    // mediump是一个不错的默认值，代表 medium precision - 中等精度
+    precision mediump float;
+
+    void main() {
+
+        // 预定义变量gl_FragColor是片段着色器主要设置的变量
+        gl_FragColor = vec4( 1, 0, 0.5, 1 );
+    }
+
+
+#### WebGL API调用( JS代码 )
+
+<div id="test_basic_screen_coords" class="test">
+<div class="canvas-cont"><canvas></canvas></div>
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_basic_screen_coords');
+        var $cont = $( '#test_basic_screen_coords .canvas-cont' );
+        var canvas = $cont.find( 'canvas' )[ 0 ]; 
+        var gl = canvas.getContext( 'webgl' );
+
+        s.show( 'testing webgl ...' );
+
+        if ( ! gl ) {
+            s.append_show( 'WebGLRenderingContext not support' );
+        }
+
+        var dpr = window.devicePixelRatio || 1;
+        canvas.width = $cont.width() * dpr;
+        canvas.height = $cont.height() * dpr;
+        canvas.style.width = $cont.width() + 'px';
+        canvas.style.height = $cont.height() + 'px';
+        gl.viewport( 0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight );
+
+        s.show( 'testing webgl viewport ...' );
+        s.append_show( gl.drawingBufferWidth, gl.drawingBufferHeight );
+
+        var vertexShaderSource = document.querySelector( '#basic_screen_coords_vertex_shader code' ).innerText;
+        var fragmentShaderSource = document.getElementById( 'basic_screen_coords_fragment_shader' ).innerText;
+
+        // console.log( vertexShaderSource );
+        // console.log( fragmentShaderSource );
+
+        var vertexShader = createShader( gl, gl.VERTEX_SHADER, vertexShaderSource );
+        var fragmentShader = createShader( gl, gl.FRAGMENT_SHADER, fragmentShaderSource );
+
+        var program = createProgram( gl, vertexShader, fragmentShader );
+
+        var positionAttributeLocation = gl.getAttribLocation( program, 'a_position' );
+        var positionBuffer = gl.createBuffer();
+        gl.bindBuffer( gl.ARRAY_BUFFER, positionBuffer );
+
+        var resolutionUniformLocation = gl.getUniformLocation( program, 'u_resolution' );
+
+        // 3个二维点坐标
+        var positions = [
+            0, 0
+            , 0, 50
+            , 50, 0
+        ];
+        gl.bufferData( gl.ARRAY_BUFFER, new Float32Array( positions ), gl.STATIC_DRAW );
+
+        // 清空画布
+        gl.clearColor( 0, 0, 0, 0 );
+        gl.clear( gl.COLOR_BUFFER_BIT );
+
+        // 配置所使用的着色程序
+        gl.useProgram( program );
+
+        // 设置代表分辨率的全局变量
+        gl.uniform2f( resolutionUniformLocation, gl.canvas.width, gl.canvas.height );
+
+        // 开启对应属性
+        gl.enableVertexAttribArray( positionAttributeLocation );
+
+        // gl.bindBuffer( gl.ARRAY_BUFFER, positionBuffer );
+
+        /**
+         * 配置属性如何从positionBuffer中读取数据( ARRAY_BUFFER )
+         */
+        var size = 2;               // 每次迭代运行提取两个单位数据
+        var type = gl.FLOAT;        // 每个单位的数据类型是32位浮点数
+        var normalize = false;      // 不需要归一化数据
+        var stride = 0;             // 步幅：0 = 移动单位数量 * 每个单位占用内存( sizeof( type ) )
+                                    // ，每次迭代运行移动多少内存到下一个数据开始点
+        var offset = 0;             // 读取缓冲数据的起始位置
+
+        gl.vertexAttribPointer( 
+            positionAttributeLocation
+            , size
+            , type
+            , normalize
+            , stride
+            , offset
+        );
+
+        var primitiveType = gl.TRIANGLES;
+        var offset = 0;
+        var count = 3;
+        gl.drawArrays( primitiveType, offset, count );
+
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
+
+
+
+### 基础绘制 - 动态颜色的三角形
+
+#### 顶点着色器定义( GLSL代码 )
+
+    @[id="basic_dynamic_color_vertex_shader"]attribute vec2 a_position;
+    uniform mat3 u_matrix;
+    varying vec4 v_color;
+
+    void main() {
+        // multiply the position by the matrix
+        // gl_Position = vec4( ( u_matrix * vec3( a_position, 1 ) ).xy, 0, 1 );
+        gl_Position = vec4( a_position, 0, 1 );
+
+        /**
+         * convert from clipspace to colorspace
+         * 1. clipspace: [ -1.0, 1.0 ]
+         * 2. colorspace: [ 0.0, 1.0 ]
+         */
+        v_color = gl_Position * 0.5 + 0.5;
+    }
+
+
+#### 片段着色器定义( GLSL代码 )
+
+    @[id="basic_dynamic_color_fragment_shader" contenteditable="true"]precision mediump float;
+    varying vec4 v_color;
+
+    void main() {
+        gl_FragColor = v_color;
+    }
+
+
+#### WebGL API调用( JS代码 )
+
+<div id="test_basic_dynamic_color" class="test">
+<div class="canvas-cont"><canvas></canvas></div>
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_basic_dynamic_color');
+        var $cont = $( '#test_basic_dynamic_color .canvas-cont' );
+        var canvas = $cont.find( 'canvas' )[ 0 ]; 
+        var gl = canvas.getContext( 'webgl' );
+
+        s.show( 'testing webgl ...' );
+
+        if ( ! gl ) {
+            s.append_show( 'WebGLRenderingContext not support' );
+        }
+
+        var dpr = window.devicePixelRatio || 1;
+        canvas.width = $cont.width() * dpr;
+        canvas.height = $cont.height() * dpr;
+        canvas.style.width = $cont.width() + 'px';
+        canvas.style.height = $cont.height() + 'px';
+        gl.viewport( 0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight );
+
+        s.show( 'testing webgl viewport ...' );
+        s.append_show( gl.drawingBufferWidth, gl.drawingBufferHeight );
+
+        var vertexShaderSource = document.querySelector( '#basic_dynamic_color_vertex_shader code' ).innerText;
+        var fragmentShaderSource = document.getElementById( 'basic_dynamic_color_fragment_shader' ).innerText;
+
+        // console.log( vertexShaderSource );
+        // console.log( fragmentShaderSource );
+
+        var vertexShader = createShader( gl, gl.VERTEX_SHADER, vertexShaderSource );
+        var fragmentShader = createShader( gl, gl.FRAGMENT_SHADER, fragmentShaderSource );
+
+        var program = createProgram( gl, vertexShader, fragmentShader );
+
+        var positionAttributeLocation = gl.getAttribLocation( program, 'a_position' );
+        var matrixLocation = gl.getUniformLocation( program, 'u_matrix' );
+
+        var positionBuffer = gl.createBuffer();
+        gl.bindBuffer( gl.ARRAY_BUFFER, positionBuffer );
+
+        // 3个二维点坐标
+        var positions = [
+            0, 0
+            , 0, 0.5
+            , 0.5, 0
+        ];
+        gl.bufferData( gl.ARRAY_BUFFER, new Float32Array( positions ), gl.STATIC_DRAW );
+
+        // 清空画布
+        gl.clearColor( 0, 0, 0, 0 );
+        gl.clear( gl.COLOR_BUFFER_BIT );
+
+        // 配置所使用的着色程序
+        gl.useProgram( program );
+
+        // 开启对应属性
+        gl.enableVertexAttribArray( positionAttributeLocation );
+
+        // gl.bindBuffer( gl.ARRAY_BUFFER, positionBuffer );
+
+        /**
+         * 配置属性如何从positionBuffer中读取数据( ARRAY_BUFFER )
+         */
+        var size = 2;               // 每次迭代运行提取两个单位数据
+        var type = gl.FLOAT;        // 每个单位的数据类型是32位浮点数
+        var normalize = false;      // 不需要归一化数据
+        var stride = 0;             // 步幅：0 = 移动单位数量 * 每个单位占用内存( sizeof( type ) )
+                                    // ，每次迭代运行移动多少内存到下一个数据开始点
+        var offset = 0;             // 读取缓冲数据的起始位置
+
+        gl.vertexAttribPointer( 
+            positionAttributeLocation
+            , size
+            , type
+            , normalize
+            , stride
+            , offset
+        );
+
+        var translation = [ 0.1, 0.1 ];
+        var angleInRadians = 0;
+        var scale = [ 1, 1 ];
+
+        var matrix = m3.projection( gl.canvas.clientWidth, gl.canvas.clientHeight );
+        matrix = m3.translate( matrix, translation[ 0 ], translation[ 1 ] );
+        matrix = m3.rotate( matrix, angleInRadians );
+        matrix = m3.scale( matrix, scale[ 0 ], scale[ 1 ] );
+
+        s.append_show( matrix );
+
+        gl.uniformMatrix3fv( matrixLocation, false, matrix );
+
+        var primitiveType = gl.TRIANGLES;
+        var offset = 0;
+        var count = 3;
+        gl.drawArrays( primitiveType, offset, count );
+
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
+
 
 
 
