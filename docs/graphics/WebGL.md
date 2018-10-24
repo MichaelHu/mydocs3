@@ -5,17 +5,28 @@
 ## Resources
 
 * wikipedia: <https://en.wikipedia.org/wiki/WebGL>
-* specs latest: <https://www.khronos.org/registry/webgl/specs/latest/>
-* specs 1.0: <https://www.khronos.org/registry/webgl/specs/latest/1.0/>
 * WebIDL 1.0: <https://www.khronos.org/registry/webgl/specs/latest/1.0/webgl.idl>
-* specs 2.0: <https://www.khronos.org/registry/webgl/specs/latest/2.0/>
 * WebIDL 2.0: <https://www.khronos.org/registry/webgl/specs/latest/2.0/webgl2.idl>
 * WebGL框架列表：<https://en.wikipedia.org/wiki/List_of_WebGL_frameworks>
-* `OpenGL ES 2.0`: <ref://./doc/opengl_es_full_spec_2.0.pdf> 中文翻译版：<http://www.docin.com/p-324551367.html>
-* `WebGL Fundamentals`: <https://webglfundamentals.org> github: <https://github.com/greggman/webgl-fundamentals>
 * 并不是`w3c`出specs，也可以理解，毕竟WebGL来自`OpenGL`
+
+
+### Specs
+
+* specs latest: <https://www.khronos.org/registry/webgl/specs/latest/>
+* specs 1.0: <https://www.khronos.org/registry/webgl/specs/latest/1.0/>
+* specs 2.0: <https://www.khronos.org/registry/webgl/specs/latest/2.0/>
+* `OpenGL ES 2.0`: <ref://./doc/opengl_es_full_spec_2.0.pdf> 中文翻译版：<http://www.docin.com/p-324551367.html>
+
+
+### WebGL教程
+
+* `WebGL Fundamentals`: <https://webglfundamentals.org> github: <https://github.com/greggman/webgl-fundamentals>
 * `webgl-utils.js`: <https://webglfundamentals.org/webgl/resources/webgl-utils.js> local-version: <ref://./js/webgl-utils.js>
 * `m3.js`: <https://webglfundamentals.org/webgl/resources/m3.js> local-version: <ref://./js/m3.js>
+* 关于`二维矩阵`: <https://webglfundamentals.org/webgl/lessons/zh_cn/webgl-2d-matrices.html>
+
+
 
 
 <style type="text/css">
@@ -31,6 +42,7 @@
 
 ## Keywords
 
+    GLSL            Graphics Library Shader Language - 图形库着色器语言
     shaders         着色器
     blending mode   图像混合模式
     VBO             Vertex Buffer Objects
@@ -57,6 +69,81 @@
 * WebGL的`裁剪空间`范围总是`[ -1, 1 ]`，通过`gl.viewport()`方法将屏幕空间映射到裁剪空间
 * 对于配置并传输数据给GPU绘制的WebGL来说，其操作的对象非常简单，只有`位置`和`颜色`，只做纯粹的`栅格化`操作。但通过编写复杂的着色器，可以获得非常复杂的三维效果
 * WebGL会将同名的可变量( `varyings` )从顶点着色器输入到片段着色器中，片段着色器会自动进行`差值计算`
+
+
+### GLSL Tips
+
+* 支持`矢量调制`
+        调制格式    等价于
+        ==============================================
+        v.yyyy      vec4( v.y, v.y, v.y, v.y )
+        v.bgra      vec4( v.b, v.g, v.r, v.a )
+* 当构造一个矢量或矩阵时可以一次提供多个分量
+        合并格式            等价于
+        ==============================================
+        vec4( v.rgb, 1 )    vec4( v.r, v.g, r.b, 1 )
+        vec4( 1 )           vec4( 1, 1, 1, 1 )
+* 是一种`强类型`语言
+        // error
+        float f = 1;
+
+        // ok
+        float f = 1.0;
+        float f = float( 1 );
+
+        // ok，因为vec4内部做了自动的float转换
+        vec4 v = vec4( 1, 1, 1, 1 );
+* 大多数运算同时支持多种数据类型，比如sin运算：`T sin( T angle )`
+        float f1 = sin( f );
+        vec2 v2_1 = sin( v2 );
+        vec3 v3_1 = sin( v3 );
+        vec4 v4_1 = sin( v4 );
+* 有时一个参数是浮点型而剩下的都是 T ，意思是那个浮点数据会作为所有其他参数的一个新分量
+        vec4 m = mix(v1, v2, f);
+
+    等价于
+
+        vec4 m = vec4(
+            mix(v1.x, v2.x, f),
+            mix(v1.y, v2.y, f),
+            mix(v1.z, v2.z, f),
+            mix(v1.w, v2.w, f)
+        );
+
+
+### m3.js
+
+* `m3.rotate()`，进行的是`逆时针`旋转，其输出的旋转矩阵是：
+
+        cos     -sin    0
+        sin     cos     0
+        0       0       1
+
+* m3的矩阵作为`左乘矩阵`，按`行向量`来解析
+
+        // js
+        var matrix = m3.translation( 100, 200 );
+        ...
+        var matrixLocation = gl.getUniformLocation( program, 'u_matrix' );
+        gl.uniformMatrix3fv( matrixLocation, false, matrix );
+
+        // glsl
+        gl_Position = vec4( ( u_matrix * vec3( a_position, 1 ) ).xy, 0, 1 );
+
+* `m3.multiply( a, b )`，实际上是`b * a`
+
+
+
+### 矩阵变换
+
+* 矩阵变换，有两种理解的视角：`对象变换`视角和`坐标轴变换`视角。具体可查看关于`二维矩阵`的文章: <https://webglfundamentals.org/webgl/lessons/zh_cn/webgl-2d-matrices.html>
+* 我们从更易于理解的视角 - 对象变换视角来理解
+* 为便于理解，需要区分`对象的( 0, 0 )点`，和`坐标轴的( 0, 0 )点`
+* 对象的( 0, 0 )点，在未做`translate变换`之前，总是与`坐标轴`的( 0, 0 )点重合
+* `scale`, `rotate`变换总是基于对象的`( 0, 0 )`点
+* `变换顺序`很重要：不同的变换顺序，最终变换效果也不同
+* 关于`物体变形`：先scale，再rotate不会产生物体变形；先rotate，再scale会产生物体变形
+
 
 
 
@@ -382,6 +469,38 @@ Rendering with OpenGL ES 2.0 requires the use of shaders, written in OpenGL ES's
 
     void disableVertexAttribArray( GLuint index )
     ...
+
+
+#### 全局变量设置方法
+
+    gl.uniform1f (floatUniformLoc, v);                 // float
+    gl.uniform1fv(floatUniformLoc, [v]);               // float 或 float array
+    gl.uniform2f (vec2UniformLoc,  v0, v1);            // vec2
+    gl.uniform2fv(vec2UniformLoc,  [v0, v1]);          // vec2 或 vec2 array
+    gl.uniform3f (vec3UniformLoc,  v0, v1, v2);        // vec3
+    gl.uniform3fv(vec3UniformLoc,  [v0, v1, v2]);      // vec3 或 vec3 array
+    gl.uniform4f (vec4UniformLoc,  v0, v1, v2, v4);    // vec4
+    gl.uniform4fv(vec4UniformLoc,  [v0, v1, v2, v4]);  // vec4 或 vec4 array
+
+    gl.uniformMatrix2fv(mat2UniformLoc, false, [  4x element array ])  // mat2 或 mat2 array
+    gl.uniformMatrix3fv(mat3UniformLoc, false, [  9x element array ])  // mat3 或 mat3 array
+    gl.uniformMatrix4fv(mat4UniformLoc, false, [ 16x element array ])  // mat4 或 mat4 array
+
+    gl.uniform1i (intUniformLoc,   v);                 // int
+    gl.uniform1iv(intUniformLoc, [v]);                 // int 或 int array
+    gl.uniform2i (ivec2UniformLoc, v0, v1);            // ivec2
+    gl.uniform2iv(ivec2UniformLoc, [v0, v1]);          // ivec2 或 ivec2 array
+    gl.uniform3i (ivec3UniformLoc, v0, v1, v2);        // ivec3
+    gl.uniform3iv(ivec3UniformLoc, [v0, v1, v2]);      // ivec3 or ivec3 array
+    gl.uniform4i (ivec4UniformLoc, v0, v1, v2, v4);    // ivec4
+    gl.uniform4iv(ivec4UniformLoc, [v0, v1, v2, v4]);  // ivec4 或 ivec4 array
+
+    gl.uniform1i (sampler2DUniformLoc,   v);           // sampler2D (textures)
+    gl.uniform1iv(sampler2DUniformLoc, [v]);           // sampler2D 或 sampler2D array
+
+    gl.uniform1i (samplerCubeUniformLoc,   v);         // samplerCube (textures)
+    gl.uniform1iv(samplerCubeUniformLoc, [v]);         // samplerCube 或 samplerCube array
+
 
 
 ### Writing to the drawing buffer
@@ -725,14 +844,13 @@ Rendering with OpenGL ES 2.0 requires the use of shaders, written in OpenGL ES's
 
 #### 顶点着色器定义( GLSL代码 )
 
-    @[id="basic_dynamic_color_vertex_shader"]attribute vec2 a_position;
+    @[id="basic_dynamic_color_vertex_shader" contenteditable="true"]attribute vec2 a_position;
     uniform mat3 u_matrix;
     varying vec4 v_color;
 
     void main() {
         // multiply the position by the matrix
-        // gl_Position = vec4( ( u_matrix * vec3( a_position, 1 ) ).xy, 0, 1 );
-        gl_Position = vec4( a_position, 0, 1 );
+        gl_Position = vec4( ( u_matrix * vec3( a_position, 1 ) ).xy, 0, 1 );
 
         /**
          * convert from clipspace to colorspace
@@ -802,8 +920,8 @@ Rendering with OpenGL ES 2.0 requires the use of shaders, written in OpenGL ES's
         // 3个二维点坐标
         var positions = [
             0, 0
-            , 0, 0.5
-            , 0.5, 0
+            , 0, 100
+            , 100, 0
         ];
         gl.bufferData( gl.ARRAY_BUFFER, new Float32Array( positions ), gl.STATIC_DRAW );
 
@@ -838,14 +956,22 @@ Rendering with OpenGL ES 2.0 requires the use of shaders, written in OpenGL ES's
             , offset
         );
 
-        var translation = [ 0.1, 0.1 ];
-        var angleInRadians = 0;
+        var translation = [ 100, 100 ];
+        var angleInRadians = 2 * Math.PI / 1 ;
         var scale = [ 1, 1 ];
 
+        /**
+         * 矩阵变换顺序
+         * 1. 顺序非常重要，决定不同的变换结果
+         * 2. 下方的变换顺序与代码调用刚好相反
+         * 3. 实际的变换顺序：scale - rotate - translate - projection
+         * 4. 如果：rotate - scale，物体会变形
+         */
         var matrix = m3.projection( gl.canvas.clientWidth, gl.canvas.clientHeight );
+
         matrix = m3.translate( matrix, translation[ 0 ], translation[ 1 ] );
-        matrix = m3.rotate( matrix, angleInRadians );
         matrix = m3.scale( matrix, scale[ 0 ], scale[ 1 ] );
+        matrix = m3.rotate( matrix, angleInRadians );
 
         s.append_show( matrix );
 
