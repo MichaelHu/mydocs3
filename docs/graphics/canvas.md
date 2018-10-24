@@ -1177,16 +1177,31 @@ android 2.3.3的原生浏览器是不支持的，虽然该函数可以正常调�
 
 #### 旋转
 
-> `逆时针`旋转θ，更多参考三角函数：<ref://../math/basics.md.html>
+> `顺时针`旋转θ，更多参考三角函数：<ref://../math/basics.md.html>
 
-    matrix(cosθ, sinθ, -sinθ, cosθ, 0, 0)
+    matrix( cosθ, -sinθ, sinθ, cosθ, 0, 0 )
 
-    x' = x * cosθ - y * sinθ + 0 = x * cosθ - y * sinθ
-    y' = x * sinθ + y * cosθ + 0 = x * sinθ + y * cosθ
+    x'  = x * cosθ + y * sinθ + 0  
+        = x * cosθ + y * sinθ
+    y'  = x * -sinθ + y * cosθ + 0 
+        = y * cosθ - x * sinθ
 
 等价于：
 
-    rotate(θ)
+    rotate( θ )
+
+若是`逆时针`旋转θ，相当于顺时针旋转`-θ`，此时：
+
+    matrix( cos( -θ ), -sin( -θ ), sin( -θ ), cos( -θ ), 0, 0 )
+        = matrix( cosθ, sinθ, -sinθ, cosθ, 0, 0 )
+
+    x'  = x * cosθ - y * sinθ
+    y'  = y * cosθ + x * sinθ
+
+
+等价于：
+
+    rotate( -θ )
 
 
 #### 切变

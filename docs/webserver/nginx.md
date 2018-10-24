@@ -387,6 +387,17 @@
             proxy_pass http://127.0.0.1:8000/;
         }
 
+* 代理过程中，两个Header不会透传，分别是：Host和X-Real-IP，默认情况下会设置成代理服务器的Host和IP，如果需要透传，则需要如下设置：
+
+        location /some/path/ {
+
+            # 新增以下两行，透传所有Headers
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+
+            proxy_pass http://localhost:8000;
+        }
+
 
 
 ### Examples
