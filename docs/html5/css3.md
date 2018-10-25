@@ -812,6 +812,8 @@ todo
 ### Resources
 
 * The Shapes of CSS - <https://css-tricks.com/the-shapes-of-css/>
+* [ 181009 ] CSS BORDER-RADIUS CAN DO THAT? 使用css的`border-radius`，可以达到意想不到的效果 <https://9elements.com/io/css-border-radius/>
+
 
 
 ### Tips

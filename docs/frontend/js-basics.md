@@ -8,11 +8,14 @@
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 
 
-## references
+## Resources
 
 * ECMA-262: <ref://../ecma/ecma-262.md.html>
 * MDN: <https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide>
 * `awesome-javascript`: 「大而全」的各类js库集合 <https://github.com/sorrycc/awesome-javascript> <iframe src="http://258i.com/gbtn.html?user=sorrycc&repo=awesome-javascript&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>  
+* [ 181025 ] `33-js-concepts` - 33个js开发者们需要了解的概念 <https://github.com/leonardomso/33-js-concepts> <iframe src="http://258i.com/gbtn.html?user=leonardomso&repo=33-js-concepts&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+
+
 
 ## 算符优先级
 
