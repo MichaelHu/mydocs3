@@ -7,10 +7,16 @@
 ## Description
 
 * 优秀编辑器`Atom`是使用`electron`的主要代表，还有MS的`Visual Studio Code`
-* 你建立的站点，都可以搬到桌面应用里
 * `electron-prebuild`是electron的核心产出
 * `Microsoft`, `Facebook`, `Slack`, and `Docker`等公司都在使用
 
+
+
+## Features
+
+* 使用Electron，你建立的站点，都可以搬到桌面应用里
+* 一处编写，跨平台部署。对于Windows系统来说，Electron不支持XP系统，将来也不会支持
+* 同类应用`nwjs`，可以参考 <ref://./nwjs.md.html>
 
 
 
@@ -22,6 +28,13 @@
 * 使用Electron构建的APP（有头有脸的`120+`）：<http://electron.atom.io/apps/>
 * [ 180404 ] New in Electron 2: In-App Purchases <https://electronjs.org/blog/in-app-purchases>
 
+
+
+## Tips
+
+* 本质是一个`node应用`，node相关topic都适用
+* `渲染进程`可以直接用Chromium的`开发者工具`；`主进程`可以用node的`--inspect`开启调试
+* Electron不支持XP平台，将来也不会支持。若你的桌面应用必须要支持XP平台，那么或许可以选择`NW.js` <ref://./nwjs.md.html>
 
 
 
@@ -73,6 +86,22 @@
 
     # older versions
     $ npm install electron-prebuild -g
+
+
+
+## Command Line Usage
+
+    $ ./node_modules/.bin/electron --help
+    $ ./node_modules/.bin/electron -v
+
+    # run app
+    $ ./node_modules/.bin/electron app/main.js
+
+    # debugger mode
+    $ ./node_modules/.bin/electron --inspect app/main.js
+
+
+
 
 
 
@@ -436,7 +465,56 @@
 
 
 
-## Installer
+## 应用打包
+
+### Resources
+
+* electron-packager <https://github.com/electron-userland/electron-packager> <iframe src="http://258i.com/gbtn.html?user=electron-userland&repo=electron-packager&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+
+
+### electron-packager
+
+    # build an app for windows target, if you are on mac os, wine 1.6 or later should be installed
+    $ brew install wine
+
+    $ ./node_modules/.bin/electron-packager <sourcedir> <appname> --platform=<platform> --arch=<arch> [optional flags...]
+
+    # use package.json
+    $ cd /path/to/app/source
+    $ npm install electron-packager --save-dev
+    
+    # 生成windows平台32位版本 
+    $ ./node_modules/.bin/electron-packager . --platform=win32 --arch=ia32
+
+    # 生成windows平台64位版本 
+    $ ./node_modules/.bin/electron-packager . --platform=win32 --arch=ia64
+
+
+### electron-forge
+
+### electron-builder
+
+### asar
+
+* 缓解Windows下路径名过长
+* 略微加快一下require的速度
+* 隐藏源代码
+
+
+## 应用安装包
+
+### windows-installer
+
+> electron/windows-installer
+
+#### Features
+
+* 帮助跨平台地构建electron app的`windows安装包`
+* 依赖`mono` <ref://../tools/mono.md.html>
+
+
+
+
 
 ### MAS发布相关
 
