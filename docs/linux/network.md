@@ -30,6 +30,68 @@
 * Wingate(8010) 
 * 代理端口(8080)
 
+
+
+## 域名解析
+
+### Resources
+
+* Linux学习之域名解析命令 <https://www.cnblogs.com/sunfie/p/5138065.html>
+
+
+### Tips
+
+* 通过命令，可以查到域名的解析记录，但不表明该域名是可以访问的
+
+
+
+
+### host命令
+
+    $ host 172.17.10.61
+    61.10.17.172.in-addr.arpa has address 61.10.17.172
+
+    $ host -a 172.17.10.61
+    Trying "61.10.17.172.in-addr.arpa"
+    ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 5659
+    ;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+
+    ;; QUESTION SECTION:
+    ;61.10.17.172.in-addr.arpa.	IN	PTR
+
+    ;; ANSWER SECTION:
+    61.10.17.172.in-addr.arpa. 10	IN	A	61.10.17.172
+
+    Received 59 bytes from 114.114.114.114#53 in 3 ms
+
+
+### dig命令
+
+    dig [@server] [FQDN] [type]
+
+    $ dig www.baidu.com
+
+    # 指定使用192.168.8.1作为域名解析服务器
+    $ dig @192.168.8.1 www.baidu.com
+
+    # 查询从根域名服务器开始，各级返回的解析结果
+    $ dig www.baidu.com +trace
+
+
+
+### nslookup命令
+
+    $ nslookup www.258i.com
+    Server:		192.168.8.1
+    Address:	192.168.8.1#53
+
+    Non-authoritative answer:
+    Name:	www.258i.com
+    Address: 123.56.89.145
+
+
+
+
 ## ping 
 
 > send ICMP ECHO_REQUEST packets to network hosts
@@ -50,31 +112,32 @@
 
 显示传输和接收字节数
 
-    netstat -b
+    $ netstat -b
 
 > inet, for AF_INET, inet6, for AF_INET6 and unix, for AF_UNIX
 
-    netstat -f inet
+    $ netstat -f inet
 
 查看tcp协议的信息：
 
-    netstat -Ab -p tcp
+    $ netstat -Ab -p tcp
 
 查看路由表：
 
-    netstat -r
+    $ netstat -r
 
 查看路由表，只显示ipv4：
 
-    netstat -r -f inet
+    # -f: address family ( inet, ipv6 )
+    $ netstat -r -f inet
 
 查看路由表，只显示ipv6：
 
-    netstat -r -f inet6
+    $ netstat -r -f inet6
 
-查看路由表，网络地址用数字（IP地址）展示：
+查看路由表，`网络地址`用`数字`（IP地址）展示：
 
-    netstat -rn
+    $ netstat -rn
 
 
 ### Examples
