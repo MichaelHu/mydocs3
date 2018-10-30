@@ -8,6 +8,12 @@
 * 支持`API调用`
 
 
+## Tips
+
+* 默认使用`babylon`解析器 <ref://./babylon.md.html>
+* 使用`--parser`选项，设置使用的解析器
+
+
 ## Resources
 
 * `site`: <https://prettier.io/>
@@ -16,6 +22,10 @@
 * options: <https://prettier.io/docs/en/options.html>
 * configuration file: <https://prettier.io/docs/en/configuration.html>
 * `API`: <https://prettier.io/docs/en/api.html>
+
+## Versions
+
+todo
 
 
 ## Install
