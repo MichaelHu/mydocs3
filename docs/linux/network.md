@@ -32,6 +32,68 @@
 
 
 
+## 网络配置
+
+### ifconfig命令
+
+#### mac
+
+    # 列出所有网络接口
+    $ ifconfig -l
+    lo0 gif0 stf0 XHC20 en0 p2p0 awdl0 en1 en2 bridge0 utun0 utun1 en6
+
+    # 列出所有网络接口的详细信息
+    $ ifconfig
+    $ ifconfig -a
+
+    # 列出所有可用网络接口的详细信息
+    $ ifconfig -u
+
+    # 列出所有关闭的网络接口的详细信息
+    $ ifconfig -d
+
+    # 列出特定网络接口的详细信息
+    $ ifconfig en0
+
+    # 列出特定网络接口、特定网络地址的详细信息
+    $ ifconfig en0 inet
+
+    # 配置en0接口，ipv4网址以及子网掩码
+    $ ifconfig en0 inet 192.0.2.10 netmask 255.255.255.0
+
+#### linux
+
+    ifconfig [interface]
+    ifconfig interface [aftype] options | address ...
+
+    # 列出所有网络接口的详细信息
+    $ ifconfig
+
+    # 列出特定网络接口的详细信息
+    $ ifconfig eth0
+
+##### Tips
+
+* Linux下，ifconfig已经被`ip命令`所取代，建议使用ip命令
+
+
+
+### scutil
+
+> mac专有
+
+    # 查看dns配置
+    $ scutil --dns
+    # 以下命令也可查看dns配置
+    $ cat /etc/resolv.conf
+
+    # 查看代理配置
+    $ scutil --proxy
+
+
+
+
+
 ## 域名解析
 
 ### Resources

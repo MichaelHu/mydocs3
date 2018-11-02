@@ -378,3 +378,28 @@
 		  Welcome to my awesome homepage.
 		</p>
 	{% endblock %}
+
+
+
+## Squirrelly
+
+### Resources
+
+* site: <https://squirrelly.js.org>
+* benchmarks: <https://github.com/nebrelbug/squirrelly-benchmarks>
+* Introducing Squirrelly: a fast, lightweight, and simple JS template engine <https://hackernoon.com/introducing-squirrelly-a-fast-lightweight-and-simple-js-template-engine-70a873d765c9>
+
+### Features
+
+* `2.62KB`
+* 使用预编译正则，而不是使用tokenizer的方式，性能显著提升
+
+### Install
+
+    $ npm install --save squirrelly
+
+
+
+
+
+
