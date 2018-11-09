@@ -5,7 +5,8 @@
 ## Resources
 
 * github: <https://github.com/vim/vim>
-* latest version: `v8.1.0468`
+* latest version ( 2018-11-05 ): `v8.1.0513`
+* releases: <https://github.com/vim/vim/releases>
 
 
 
@@ -33,12 +34,108 @@
         
 * `8.1`: The main new feature of Vim 8.1 is support for running a `terminal in a Vim window`.
     * The `Terminal debugging plugin` can be used to debug a program with gdb and view the source code in a Vim window.
-    * 常用命令：
-            :help :term
-            :term
-            :term bash
-            :term make myprogram
-            :term gdb vim
+
+
+
+
+## Terminal
+
+### Tips
+
+* 支持在vim窗口中使用终端
+* 支持两种模式，`Job模式`用于命令运行；`Normal模式`，可浏览命令输出，相当于将命令输出读取到vim中，并开启`只读模式`。此功能对于捕获命令输出非常有用
+* 通过配置，可以支持在vim中进行`多窗口程序调试`
+* 可通过`[range]`方便地将编辑窗口的内容传送到将要在term中运行的命令
+
+
+### 常用命令
+
+    # syntax
+    :[range]ter[minal] [options] [command]
+
+    # 常用命令
+    :help :term
+    :term
+    :term bash
+    :term make myprogram
+    :term gdb vim
+
+### 常用操作
+
+    操作                功能
+    ======================================================
+    CTRL-w CTRL-c       关闭term窗口
+    or CTRL-d
+
+
+
+### Command Options
+
+> Command Options，使用`++`作为前缀
+    
+    ++close         The terminal window will close
+                    automatically when the job terminates.
+    ++noclose       The terminal window will NOT close
+                    automatically when the job terminates.
+    ++open          When the job terminates and no window
+                    shows it, a window will be opened.
+                    Note that this can be interruptive.
+                    The last of ++close, ++noclose and ++open
+                    matters and rules out earlier arguments.
+
+    ++curwin        Open the terminal in the current
+                    window, do not split the current
+                    window.  Fails if the current buffer
+                    cannot be |abandon|ed.
+    ++hidden        Open the terminal in a hidden buffer,
+                    no window will be used.
+    ++norestore     Do not include this terminal window
+                    in a session file.
+    ++kill={how}    When trying to close the terminal
+                    window kill the job with {how}.  See
+                    |term_setkill()| for the values.
+    ++rows={height} Use {height} for the terminal window
+                    height.  If the terminal uses the full
+                    Vim height (no window above or below
+                    the terminal window) the command line
+                    height will be reduced as needed.
+    ++cols={width}  Use {width} for the terminal window
+                    width. If the terminal uses the full
+                    Vim width (no window left or right of
+                    the terminal window) this value is
+                    ignored.
+    ++eof={text}    when using [range]: text to send after
+                    the last line was written. Cannot
+                    contain white space.  A CR is
+                    appended.  For MS-Windows the default
+                    is to send CTRL-D.
+                    E.g. for a shell use "++eof=exit" and
+                    for Python "++eof=exit()".  Special
+                    codes can be used like with `:map`,
+                    e.g. "<C-Z>" for CTRL-Z.
+
+
+
+### Setting Options
+
+> Setting Options，使用`:set`命令可get或set
+
+    termwinsize
+    termwinkey
+    termwinscroll
+
+
+
+### 模式
+
+* 有两种模式：`Terminal Job`模式和`Terminal Normal`模式
+* 模式切换：
+
+        操作                目标模式        只读模式  
+        =========================================================================
+        CTRL-w N            Normal Mode     Yes
+        or CTRL-\ CTRL-n   
+        i, a                Job Mode        实时显示命令输出的内容，可认为写模式
 
 
 
