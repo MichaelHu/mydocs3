@@ -25,6 +25,9 @@
 
     <img src="./img/git-learnbranch-success.png" style="max-height:400px">
 
+* Git飞行规则(Flight Rules) - <https://github.com/k88hudson/git-flight-rules/blob/master/README_zh-CN.md>
+
+
 ## Versions
 
 * 版本历史：

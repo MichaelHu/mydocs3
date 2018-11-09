@@ -9,7 +9,15 @@
 
     <img src="./img/chrome-platform-status.png" style="max-height:500px">
 * `github: Google Chrome Samples`: <https://github.com/GoogleChrome/samples>
-* Google将在Chrome56中停止支持SHA-1: <http://www.wosign.com/news/Google-Chrome-SHA1.htm>
+* Google将在`Chrome56`中停止支持SHA-1: <http://www.wosign.com/news/Google-Chrome-SHA1.htm>
+
+
+
+## crash调试
+
+* Where is Google Chrome Crash Dump Located? -  <https://superuser.com/questions/624/where-is-google-chrome-crash-dump-located>
+* How to enable logging - <https://www.chromium.org/for-testers/enable-logging>
+
 
 
 ## XP平台上的最后版本

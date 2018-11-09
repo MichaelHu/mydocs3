@@ -21,6 +21,7 @@
 
 ## Tips
 
+* `0.14.7`版本是一个`lts ( long-term supported )`版本，构建时总是使用lts版本
 * `0.13.x`版本，是支持XP的最后一个版本，也是一个`分水岭`的版本。0.13.x及以后的版本，与更低的版本有不同的文档地址，需要区分查看文档
 * Your profile cannot be used because it is from a newer version of NW.js some features may be unavailable <https://github.com/nwjs/nw.js/issues/6188>
 

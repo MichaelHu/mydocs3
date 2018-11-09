@@ -71,6 +71,14 @@
 * WebGL会将同名的可变量( `varyings` )从顶点着色器输入到片段着色器中，片段着色器会自动进行`差值计算`
 
 
+### Texture Tips
+
+* 空间坐标范围总是`[ 0.0, 1.0 ]`
+* 使用`varyings`，将纹理坐标从顶点着色器传到片段着色器，在片段着色器中通过`texture2D()`方法获取差值后的像素值颜色
+* 使用图片资源方面，WebGL比Canvas2D具有更加严格的限制，必须同源，而且不能从本地读取，本地使用通常需要构建简易的web服务器来访问
+
+
+
 ### GLSL Tips
 
 * 支持`矢量调制`
@@ -518,7 +526,7 @@ Rendering with OpenGL ES 2.0 requires the use of shaders, written in OpenGL ES's
 
 
 
-## Examples
+## 基础例子
 
 ### 通用封装函数
 
@@ -991,6 +999,171 @@ Rendering with OpenGL ES 2.0 requires the use of shaders, written in OpenGL ES's
 </div>
 </div>
 
+
+
+## 图像例子
+
+### Resources
+
+* webgl-texture: <https://codepen.io/pen/?&editors=101>
+
+
+### Tips
+
+* 图像展示使用纹理Texture
+* `严格的同域限制` - 读取图像并渲染，需要图像与页面`同域`，且必须使用Web服务器。此限制比`canvas-2d`更加严格
+
+
+### 显示图像 
+
+#### 顶点着色器定义( GLSL代码 )
+
+    @[id="image_show_vertex_shader" contenteditable="true"]attribute vec2 a_position;
+    attribute vec2 a_texCoord;
+    uniform mat3 u_matrix;
+    varying vec2 v_texCoord;
+
+    void main() {
+        // multiply the position by the matrix
+        gl_Position = vec4( ( u_matrix * vec3( a_position, 1 ) ).xy, 0, 1 );
+
+        v_texCoord = a_texCoord;
+    }
+
+
+#### 片段着色器定义( GLSL代码 )
+
+    @[id="image_show_fragment_shader" contenteditable="true"]precision mediump float;
+    // texture
+    uniform samper2D u_image;
+
+    // the texCoords passed in from the vertex shader
+    varying vec4 v_texCoord;
+
+    void main() {
+        gl_FragColor = texture2d( u_image, v_texCoord );
+    }
+
+
+#### WebGL API调用( JS代码 )
+
+<div id="test_image_show" class="test">
+<div class="canvas-cont"><canvas></canvas></div>
+<div class="test-container">
+
+    @[data-script="javascript editable"](function(){
+
+        var s = fly.createShow('#test_image_show');
+        var $cont = $( '#test_image_show .canvas-cont' );
+        var canvas = $cont.find( 'canvas' )[ 0 ]; 
+        var gl = canvas.getContext( 'webgl' );
+
+        s.show( 'testing webgl ...' );
+
+        if ( ! gl ) {
+            s.append_show( 'WebGLRenderingContext not support' );
+        }
+
+        var dpr = window.devicePixelRatio || 1;
+        canvas.width = $cont.width() * dpr;
+        canvas.height = $cont.height() * dpr;
+        canvas.style.width = $cont.width() + 'px';
+        canvas.style.height = $cont.height() + 'px';
+        gl.viewport( 0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight );
+
+        s.show( 'testing webgl viewport ...' );
+        s.append_show( gl.drawingBufferWidth, gl.drawingBufferHeight );
+
+        var vertexShaderSource = document.querySelector( '#image_show_vertex_shader code' ).innerText;
+        var fragmentShaderSource = document.getElementById( 'image_show_fragment_shader' ).innerText;
+
+        // console.log( vertexShaderSource );
+        // console.log( fragmentShaderSource );
+
+        var vertexShader = createShader( gl, gl.VERTEX_SHADER, vertexShaderSource );
+        var fragmentShader = createShader( gl, gl.FRAGMENT_SHADER, fragmentShaderSource );
+
+        var program = createProgram( gl, vertexShader, fragmentShader );
+
+        var positionAttributeLocation = gl.getAttribLocation( program, 'a_position' );
+        var matrixLocation = gl.getUniformLocation( program, 'u_matrix' );
+
+        var positionBuffer = gl.createBuffer();
+        gl.bindBuffer( gl.ARRAY_BUFFER, positionBuffer );
+
+        // 3个二维点坐标
+        var positions = [
+            0, 0
+            , 0, 100
+            , 100, 0
+        ];
+        gl.bufferData( gl.ARRAY_BUFFER, new Float32Array( positions ), gl.STATIC_DRAW );
+
+        // 清空画布
+        gl.clearColor( 0, 0, 0, 0 );
+        gl.clear( gl.COLOR_BUFFER_BIT );
+
+        // 配置所使用的着色程序
+        gl.useProgram( program );
+
+        // 开启对应属性
+        gl.enableVertexAttribArray( positionAttributeLocation );
+
+        // gl.bindBuffer( gl.ARRAY_BUFFER, positionBuffer );
+
+        /**
+         * 配置属性如何从positionBuffer中读取数据( ARRAY_BUFFER )
+         */
+        var size = 2;               // 每次迭代运行提取两个单位数据
+        var type = gl.FLOAT;        // 每个单位的数据类型是32位浮点数
+        var normalize = false;      // 不需要归一化数据
+        var stride = 0;             // 步幅：0 = 移动单位数量 * 每个单位占用内存( sizeof( type ) )
+                                    // ，每次迭代运行移动多少内存到下一个数据开始点
+        var offset = 0;             // 读取缓冲数据的起始位置
+
+        gl.vertexAttribPointer( 
+            positionAttributeLocation
+            , size
+            , type
+            , normalize
+            , stride
+            , offset
+        );
+
+        var translation = [ 100, 100 ];
+        var angleInRadians = 2 * Math.PI / 1 ;
+        var scale = [ 1, 1 ];
+
+        /**
+         * 矩阵变换顺序
+         * 1. 顺序非常重要，决定不同的变换结果
+         * 2. 下方的变换顺序与代码调用刚好相反
+         * 3. 实际的变换顺序：scale - rotate - translate - projection
+         * 4. 如果：rotate - scale，物体会变形
+         */
+        var matrix = m3.projection( gl.canvas.clientWidth, gl.canvas.clientHeight );
+
+        matrix = m3.translate( matrix, translation[ 0 ], translation[ 1 ] );
+        matrix = m3.scale( matrix, scale[ 0 ], scale[ 1 ] );
+        matrix = m3.rotate( matrix, angleInRadians );
+
+        s.append_show( matrix );
+
+        gl.uniformMatrix3fv( matrixLocation, false, matrix );
+
+        var primitiveType = gl.TRIANGLES;
+        var offset = 0;
+        var count = 3;
+        gl.drawArrays( primitiveType, offset, count );
+
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
 
 
 

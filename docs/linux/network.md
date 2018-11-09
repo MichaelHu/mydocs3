@@ -165,7 +165,10 @@
 
 > user interface to the TELNET protocol
 
-    telnet [-468EFKLNacdfruxy] [-S tos] [-X authtype] [-e escapechar] [-k realm] [-l user] [-n tracefile] [-s src_addr] [host [port]]
+    telnet [-468EFKLNacdfruxy] [-S tos] [-X authtype] \
+        [-e escapechar] [-k realm] [-l user] \
+        [-n tracefile] [-s src_addr] \
+        [host [port]]
 
 
 
