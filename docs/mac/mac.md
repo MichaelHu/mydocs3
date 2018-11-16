@@ -113,6 +113,27 @@ pre.special-chars code {
 * 需要了解Airpod的交互原理，不同于触摸屏的双击，Airpod需要`用力敲打两次`，估计它是`通过震动`来判断用户操作
 
 
+## 磁盘占用
+
+### Resources
+
+* Mac空间越来越少了怎么办？ <https://www.jianshu.com/p/f27f235ed125>
+
+
+### 脚本方案
+
+    $ find / -type d -maxdepth 1 -mindepth 1 -exec sudo du -sh {} \; > \
+        ~/projects/sophon/inter-docs/lvwan/disk-usage/root-`date +%y%m%d`.lst
+
+    $ find /Users -type d -maxdepth 1 -mindepth 1 -exec sudo du -sh {} \; > \
+        ~/projects/sophon/inter-docs/lvwan/disk-usage/users-`date +%y%m%d`.lst
+
+    $ find /Applications -type d -maxdepth 1 -mindepth 1 -exec sudo du -sh {} \; > \
+        ~/projects/sophon/inter-docs/lvwan/disk-usage/root-applications-`date +%y%m%d`.lst
+
+    $ find /Users/hudamin -type d -maxdepth 1 -mindepth 1 -exec sudo du -sh {} \; > \
+        ~/projects/sophon/inter-docs/lvwan/disk-usage/users-hudamin-`date +%y%m%d`.lst
+
 
 
 

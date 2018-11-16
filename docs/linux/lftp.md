@@ -2,8 +2,8 @@
 
 ## Features
 
-* a sophisticated file transfer program
-* supporting ftp, http, sftp, fish, torrent
+* A sophisticated `file transfer` program
+* Supporting `ftp`, `http`, `sftp`, `fish`, `torrent`
 
 
 ## Resources

@@ -108,6 +108,31 @@
 
 ## screen
 ## history
+
+### Resouces
+
+* History-API MDN: <https://developer.mozilla.org/zh-CN/docs/Web/API/History_API>
+* Live Standards: <https://html.spec.whatwg.org/multipage/history.html#history>
+
+
+### APIs
+
+    // methods
+    back()
+    forward()
+    go()
+    pushState( state, title, url )
+    replaceState( state, title, url )
+
+    // events
+    window.onpopstate
+
+
+
+
+
+
+
 ## location
 
 各字段关系图：
