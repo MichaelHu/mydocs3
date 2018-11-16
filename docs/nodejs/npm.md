@@ -299,28 +299,33 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
 
 ### 包发布
 
+#### Syntax
+
     npm publish <tarball> [--tag <tag>]
     npm publish <folder> [--tag <tag>]
 
-> Once a package is published with a given name and version, that specific 
-> name and version combination can never be used again, even if it is removed with `npm-unpublish`.
 
-一旦发布，不可再用。
+#### Tips
 
-包发布需要先注册`npm账号`，没有提供网页注册，需要`命令行注册`，使用`npm adduser`命令：
+* Once a package is published with a given name and version, that specific name and version combination can never be used again, even if it is removed with `npm-unpublish`. 一旦发布，不可再用。
+* 包发布需要先注册`npm账号`，没有提供网页注册，需要`命令行注册`，使用`npm adduser`命令：
 
-    hudamin@local beat-command-release $ npm adduser
-    Username: MichaelHu
-    npm WARN Username must be lowercase 
-    Username: michaelhu
-    Password: 
-    Email: (this IS public) hdm0571@163.com
-    hudamin@local beat-command-release $ git push origin master
-    Everything up-to-date
-    hudamin@local beat-command-release $ npm whoami
-    michaelhu
-    hudamin@local beat-command-release $ npm publish
-    + beat-command-release@0.0.1
+        hudamin@local beat-command-release $ npm adduser
+        Username: MichaelHu
+        npm WARN Username must be lowercase 
+        Username: michaelhu
+        Password: 
+        Email: (this IS public) hdm0571@163.com
+        hudamin@local beat-command-release $ git push origin master
+        Everything up-to-date
+        hudamin@local beat-command-release $ npm whoami
+        michaelhu
+        hudamin@local beat-command-release $ npm publish
+        + beat-command-release@0.0.1
+
+* 该命令运行时，如果不带任何参数，那么当前目录必须包含`package.json`文件
+
+        $ npm publish
 
 
 #### 一些问题
@@ -531,6 +536,9 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
     npm get <key>
     npm set <key> <value> [--global]
 
+
+#### 配置信息优先级
+
 npm获取配置信息，来自`六个来源，优先级如下，由高到低`：
 
 1. 命令行参数
@@ -554,7 +562,9 @@ npm获取配置信息，来自`六个来源，优先级如下，由高到低`：
     * 全局配置文件（`$PREFIX/npmrc`）
     * npm内建配置文件（`/path/to/npm/npmrc`）
 
-4. 默认配置
+4. 默认配置，以下命令列出所有默认配置
+        $ npm config ls -l
+
 
 5. 以下简写形式会被自动扩展：
 

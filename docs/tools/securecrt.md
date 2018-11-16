@@ -53,4 +53,5 @@
 
 * 用`rz -bye`，或许能解决`上传报错`问题
 * 关闭Tab标题文本自动变化，勾选`Terminal - Emulation - Advanced - Other - Innore window title change requests`
+* [ 181111 ] 升级macOS `Mojave`后，SecureCRT的`Sessions`列表的中文显示为`乱码`，目前暂未找到解决办法，只能将中文改为英文。如果不记得乱码部分的原始中文，可以在以下目录中找回：`~/Library/Application Support/VanDyke/SecureCRT/Config/Sessions/`
 
