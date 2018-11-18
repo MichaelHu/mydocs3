@@ -1014,6 +1014,21 @@ For example, commit C1 can be rebased past C3. It then appears that the work for
 
 
 
+## git prune
+
+    git prune --dry-run
+
+todo
+
+
+## git gc
+
+    git gc --prune=<date>
+
+todo
+
+
+
 ## git remote
 
 
