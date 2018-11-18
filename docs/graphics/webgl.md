@@ -7,7 +7,7 @@
 * wikipedia: <https://en.wikipedia.org/wiki/WebGL>
 * WebIDL 1.0: <https://www.khronos.org/registry/webgl/specs/latest/1.0/webgl.idl>
 * WebIDL 2.0: <https://www.khronos.org/registry/webgl/specs/latest/2.0/webgl2.idl>
-* WebGL框架列表：<https://en.wikipedia.org/wiki/List_of_WebGL_frameworks>
+* ` WebGL框架列表`：<https://en.wikipedia.org/wiki/List_of_WebGL_frameworks>
 * 并不是`w3c`出specs，也可以理解，毕竟WebGL来自`OpenGL`
 
 
