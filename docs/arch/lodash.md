@@ -2,25 +2,6 @@
 
 > A modern JavaScript utility library delivering modularity, performance, & extras. 
 
-<https://lodash.com>
-
-<https://github.com/lodash/lodash/>
-
-<https://lodash.com/docs>
-
-数组，集合，日期，常用函数，类型，数学，字符串等常用操作的封装。
-
-和underscore定位类似。
-
-<http://www.infoq.com/cn/news/2015/06/underscore-lodash-merging?utm_campaign=infoq_content&>
-
-
-
-
-
-
-
-
 <style type="text/css">
 @import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
 </style>
@@ -29,11 +10,25 @@
 <script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
 
 
+## Resources
 
-## 二、Collection操作
+* site: <https://lodash.com>
+* github: <https://github.com/lodash/lodash/> <iframe src="http://258i.com/gbtn.html?user=lodash&repo=lodash&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+* docs: <https://lodash.com/docs>
 
 
-### 2.1 _.countBy()
+## Features
+
+* 数组，集合，日期，常用函数，类型，数学，字符串等常用操作的封装。
+* 和underscore定位类似
+* [ 150619 ] Underscore 和 Lodash 商讨合并事宜 <http://www.infoq.com/cn/news/2015/06/underscore-lodash-merging?utm_campaign=infoq_content&>
+
+
+
+## Collection操作
+
+
+###  _.countBy()
 
 
 <div id="test_10" class="test">
@@ -59,7 +54,7 @@
 
 
 
-### 2.2 _.every()
+### _.every()
 
     _.every(collection [, predicate=_.identity])
 
@@ -99,7 +94,7 @@
 
 
 
-### 2.3 _.filter()
+### _.filter()
 
     _.filter(collection [, predicate=_.identity])
 
@@ -146,7 +141,7 @@
 
 
 
-### 2.4 _.partition()
+### _.partition()
 
     _.partition(collection [, predicate=_.identity])
 
@@ -193,7 +188,7 @@
 
 
 
-### 2.5 _.reduce()
+### _.reduce()
 
     _.reduce(collection [, iteratee=_.identity [, accumulator]])
 
@@ -239,7 +234,7 @@
 
 
 
-### 2.6 _.sortBy()
+### _.sortBy()
 
     _.sortBy(collection [,iteratees=_.identity [, ...]])
 
@@ -291,10 +286,10 @@
 
 
 
-## 三、Function工具
+## Function工具
 
 
-### 3.1 _.throttle()
+### _.throttle()
 
     _.throttle(func [, wait=0 [, options={} ]])
 

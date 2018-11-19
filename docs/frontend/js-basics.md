@@ -181,6 +181,7 @@
 * 严格模式 - MDN <https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Strict_mode>
 * Strict Mode Code - ES6 <https://www.ecma-international.org/ecma-262/6.0/#sec-strict-mode-code>
 * Static Semantics: Early Errors - ES6 <https://www.ecma-international.org/ecma-262/6.0/#sec-identifiers-static-semantics-early-errors>
+* [ 180530 ] 什么是“use strict”，好处和坏处 <https://blog.csdn.net/weixin_40387601/article/details/80514358>
 
 
 ### Tips
@@ -250,8 +251,16 @@
             })();
 
 * 简化变量的使用
-    * 禁用with
-    * eval不再为上层作用域引入变量
+    * 禁用`with`
+    * `eval`不再为`上层作用域`引入变量
+
+            eval( 'function sum( a, b ) { return a + b; }' )
+            // loose
+            sum  => function sum( a, b )
+            // strict
+            sum  => undefined
+
+
     * 禁止删除声明变量
 
             "use strict";
