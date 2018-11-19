@@ -1522,6 +1522,7 @@ idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文
     [count]gt
     :tabp[revious]
     :tabN[ext]
+    ## 不同于gt，gT的count是回退count个page
     [count]gT
     :tabr[ewind]
     :tabfir[st]
