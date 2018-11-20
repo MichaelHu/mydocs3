@@ -1917,6 +1917,10 @@ command line模式的`行注释`。
 
 ### 快速查找特定文件的buffer id
 
+    " 不用`//`包围，可直接使用`/`
+    :filt _show/index.js ls
+
+    " 用`//`包围，`/`需要转义
     :filt /search.*\.md/ ls
 
 
