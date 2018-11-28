@@ -12,6 +12,7 @@
 
 * 默认使用`babylon`解析器 <ref://./babylon.md.html>
 * 使用`--parser`选项，设置使用的解析器
+        --parser <flow|babylon|typescript|css|less|scss|json|graphql|markdown>
 
 
 ## Resources

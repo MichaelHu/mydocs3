@@ -961,9 +961,76 @@ js文件可能有`es2015`或者`react`的语法，这些情况都可以通过配
     ]
     ...
     
-`3. 异步复用模块`：
+`3. 自定义minChunks`：
+
+    ...
+    // 第一步从所有module中将通用部分抽出到commons chunk中
+    new webpack.optimize.CommonsChunkPlugin({
+        name: 'commons'
+        , minChunks: function( module, count ) {
+            return (
+                module.resource
+                && /\.js$/.test( module.resource )
+                && (
+                    module.resource.indexOf(
+                        path.join( __dirname, './node_modules' )
+                    ) === 0
+                    || module.resource.indexOf(
+                        path.join( __dirname, './src/lib' )
+                    ) === 0
+                    || module.resource.indexOf(
+                        path.join( __dirname, './src/components' )
+                    ) === 0
+                )
+            )
+        }
+    })
+    // 第二步从commons chunk中抽出node_modules和src/lib部分到lib chunk中
+    , new webpack.optimize.CommonsChunkPlugin({
+        name: 'lib'
+        , chunks: [ 'commons' ]
+        , minChunks: function( module, count ) {
+            return (
+                module.resource
+                && /\.js$/.test( module.resource )
+                && (
+                    module.resource.indexOf(
+                        path.join( __dirname, './node_modules' )
+                    ) === 0
+                    || module.resource.indexOf(
+                        path.join( __dirname, './src/lib' )
+                    ) === 0
+                )
+            )
+        }
+    })
+    // 第三步，从lib chunk中抽出node_modules部分到vender chunk中
+    , new webpack.optimize.CommonsChunkPlugin({
+        name: 'vender'
+        , chunks: [ 'lib' ]
+        , minChunks: function( module, count ) {
+            return (
+                module.resource
+                && /\.js$/.test( module.resource )
+                && module.resource.indexOf(
+                        path.join( __dirname, './node_modules' )
+                    ) === 0
+            )
+        }
+    })
+    ...
+
+`Tips`:
+
+1. 每一步之间是`逐步抽取`的过程
+2. 越晚抽取的部分，其通用性越强，在代码中越早加载
+
+
+`4. 异步复用模块`：
 
 todo
+
+
 
 
 
