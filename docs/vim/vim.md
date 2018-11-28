@@ -390,9 +390,9 @@ todo
 
     :[range]s/{pattern}/{substitute}/[modifier] 
 
-对于`回车 - carriage return`(0x0c)、`换行 - newline`(0x0a)的处理：
-* 换行符在pattern中用`\n`表示，在substitute中用`\r`或`<CR>`表示，用`C-V <Enter>`输入`<CR>`，命令行上显示`^M`，这与`sed`的`s命令`存在区别，sed中换行符使用`\n`
-* 回车符在pattern中用`\%x0d`表示，在sutstitute中用`\<CR>`表示，用`C-V <Enter>`输入`<CR>`，命令行上显示`\^M`
+对于`回车 - carriage return`(0x0d)、`换行 - newline`(0x0a)的处理：
+* 换行符在pattern中用`\n`表示，在substitute中用`\r`或`<CR>`表示，用`C-V <Enter>`输入`<CR>`，命令行上显示`^M`，vim中无显示，这与`sed`的`s命令`存在区别，sed中换行符使用`\n`
+* 回车符在pattern中用`\%x0d`表示，在sutstitute中用`\<CR>`表示，用`C-V <Enter>`输入`<CR>`，命令行上显示`\^M`，vim中显示`^M`
 * substitute中的`\n`实际上是`<NL>`，代表0x00, vim中显示`^@`
 
 
@@ -1571,6 +1571,18 @@ idea来自`Manx's Aztec C`编译器，可以将编译的错误信息保存到文
 todo
 
 
+
+
+### Examples
+
+#### 批量关闭指定范围的tab 
+
+* tabc不支持`[range]`，通过编程扩展其能力
+* 参考`执行Ex Commands - Examples`部分
+
+
+
+
 ## VimGrep
 
 > 全文检索，`:vimgrep`，简写`:vim`
@@ -1809,6 +1821,23 @@ command line模式的`行注释`。
 * `:norm`后直接输入`命令`，而不同于`:exe`，输入的是命令`字符串`
 * `:norm`允许在Command-line模式下运行Normal模式下的命令；`:exe`允许在将字符串表示的命令作为Ex Commands执行
 * [ maybe ]，`:norm`在函数内无法使用，但`:exe`可在函数种使用
+
+
+
+### 执行Ex Commands
+
+#### execute
+
+    :exe <command-string>
+
+
+#### Examples
+
+    " 关闭序号为5, 4, 4的tab 
+    :for i in [5,4,3] | let c = printf( "tabc %d", i ) | exec c | endfor
+
+* 使用`printf()`函数拼装命令字符串
+* 使用`exec`执行命令字符串提供的命令
 
 
 

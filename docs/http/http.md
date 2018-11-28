@@ -96,4 +96,14 @@ HTTP 2.0 相比 1.1 的更新大部分集中于：
 
 
 
+## HTTP 3
+
+> HTTP over `QUIC`
+
+### Resources
+
+* [ 181111 ] `HTTP/3` <https://daniel.haxx.se/blog/2018/11/11/http-3/> HTTP/3 is the coming new HTTP version that uses QUIC for transport! The QUIC Working Group in the IETF works on creating the QUIC transport protocol. QUIC is a TCP replacement done over UDP. Originally, QUIC was started as an effort by Google and then more of a "HTTP/2-encrypted-over-UDP" protocol.
+
+
+
 

@@ -35,6 +35,10 @@
 
 * 使用`cmd /v:on /k string`命令
 * `/k`或`/c`选项，使得该选项`后方的部分`全部作为`一个命令行`执行
+* 一个实际应用的案例：
+
+        > cmd.exe /c start chrome.exe [URL]
+
 
 #### cli 直接执行
 

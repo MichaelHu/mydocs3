@@ -30,6 +30,8 @@
 
 ## 技术会议
 
+* React Conf
+* Chrome Dev Summit <https://developer.chrome.com/devsummit/>
 * QCon
 * D2
 * 中国CSS开发者大会
@@ -37,6 +39,7 @@
 
 ## 技术站点
 
+* `infoQ` - 促进软件开发领域知识与创新的传播 <https://www.infoq.cn>
 * `html5-tricks` - <http://www.html5tricks.com>
 * `css-tricks` - 权威的css技术站点，bootstrap推荐  <https://css-tricks.com>
 * love2.io - 开源技术文档分享平台 <http://love2.io>
