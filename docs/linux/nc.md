@@ -2,6 +2,12 @@
 
 > `nc` -- arbitrary TCP and UDP connections and listens
 
+## Resources
+
+* `ncat` - site: <http://nmap.org/ncat>
+* nc命令用法举例： <https://www.cnblogs.com/nmap/p/6148306.html>
+
+
 ## Features
 
 * 支持`TCP`和`UDP`协议
@@ -20,13 +26,23 @@
 * 只需要`单向连通`即可，比如在vpn环境下，本地机器能ping通远端机器，但远端机器无法ping通本地机器，这种情况可以`让远端机器监听端口`
 * 一开始容易误解，监听端总是发送数据，连接端接受数据，但实际上，监听端和连接端的`数据都可以是双向的`
 * 新版本（`比如v6.40`）的nc能更好的`支持双向传输`，目前mac默认自带的版本以及CentOS默认自带的版本可能都比较低，同时双向传输时，存在问题
+* 不同版本，`选项参数不尽相同`，使用前最好仔细阅读命令行帮助：`nc -h`
+
+        # listen mode on port
+        # v1.10-40
+        nc -l -p 9876
+
+        # v6.40 
+        nc --recv-only -l 9876
+
+        # connect to listener
+        # v1.10-40
+        nc -q 1 123.5.17.8 9876
+
+        # v6.40 
+        nc 123.5.17.8 9876
 
 
-
-## Resources
-
-* `ncat` - site: <http://nmap.org/ncat>
-* nc命令用法举例： <https://www.cnblogs.com/nmap/p/6148306.html>
 
 
 ## Usage
@@ -41,8 +57,9 @@
     -v              verbose
     -z              只做端口扫描，不发送数据
     -w <seconds>    超时秒数
-    --send-only     只发送，新版本nc支持
-    --recv-only     只接收，新版本nc支持
+    -q <seconds>    quit after EOF on stdin and delay of secs [ version 1.10-40 ]
+    --send-only     只发送，新版本nc支持 [ version 6.40 on linux ]
+    --recv-only     只接收，新版本nc支持 [ version 6.40 on linux ]
     ...
 
 

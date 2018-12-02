@@ -148,9 +148,12 @@
 * 我们从更易于理解的视角 - 对象变换视角来理解
 * 为便于理解，需要区分`对象的( 0, 0 )点`，和`坐标轴的( 0, 0 )点`
 * 对象的( 0, 0 )点，在未做`translate变换`之前，总是与`坐标轴`的( 0, 0 )点重合
-* `scale`, `rotate`变换总是基于对象的`( 0, 0 )`点
+* `scale`, `rotate`, `translate`变换总是基于`坐标轴的( 0, 0 )点`
 * `变换顺序`很重要：不同的变换顺序，最终变换效果也不同
-* 关于`物体变形`：先scale，再rotate不会产生物体变形；先rotate，再scale会产生物体变形
+* `rotate`, `translate`不会导致物体形变；`scale`会导致物体形变
+* 变换顺序组：`rotate - scale`，调整rotate参数，可以产生不同的形变效果
+* 变换顺序组：`scale - rotate`，调整rotate参数，形变效果不变
+* 最利于理解的变换顺序组为：`scale - rotate - translate`
 
 
 
@@ -722,6 +725,8 @@ Rendering with OpenGL ES 2.0 requires the use of shaders, written in OpenGL ES's
         // 最后转换成裁剪空间范围[ -1.0, 1.0 ]
         vec2 clipSpace = zeroToTwo - 1.0;
 
+        // 像素坐标的y轴与裁剪空间的y轴正好相反，使用vec2( 1, -1 )来调整
+        // 。其中（猜测），clipSpace会自动变成对角矩阵
         gl_Position = vec4( clipSpace * vec2( 1, -1 ), 0, 1 );
     }
 
@@ -887,6 +892,22 @@ Rendering with OpenGL ES 2.0 requires the use of shaders, written in OpenGL ES's
 
     @[data-script="javascript editable"](function(){
 
+        // 坐标变换参数
+        var translation = [ 100, 100 ];
+        var angleInRadians = 2 * Math.PI / 8;
+        var scale = [ 2, 1 ];
+
+        // 默认坐标变换顺序：scale - rotate - translate
+        // ，可通过调整transformOrder数组的顺序，查看不同变换顺序的差异
+        // ，空数组`[]`表示不进行坐标变换
+        var transformOrder = [ 's', 'r', 't' ];
+
+        /**
+         * 关于矩阵变换顺序
+         * 1. 顺序非常重要，决定不同的变换结果
+         * 2. 根据m3-matrix的特征，实际变换顺序与代码调用刚好相反
+         */
+
         var s = fly.createShow('#test_basic_dynamic_color');
         var $cont = $( '#test_basic_dynamic_color .canvas-cont' );
         var canvas = $cont.find( 'canvas' )[ 0 ]; 
@@ -928,8 +949,8 @@ Rendering with OpenGL ES 2.0 requires the use of shaders, written in OpenGL ES's
         // 3个二维点坐标
         var positions = [
             0, 0
-            , 0, 100
-            , 100, 0
+            , 0, 50
+            , 50, 0
         ];
         gl.bufferData( gl.ARRAY_BUFFER, new Float32Array( positions ), gl.STATIC_DRAW );
 
@@ -942,8 +963,6 @@ Rendering with OpenGL ES 2.0 requires the use of shaders, written in OpenGL ES's
 
         // 开启对应属性
         gl.enableVertexAttribArray( positionAttributeLocation );
-
-        // gl.bindBuffer( gl.ARRAY_BUFFER, positionBuffer );
 
         /**
          * 配置属性如何从positionBuffer中读取数据( ARRAY_BUFFER )
@@ -964,22 +983,34 @@ Rendering with OpenGL ES 2.0 requires the use of shaders, written in OpenGL ES's
             , offset
         );
 
-        var translation = [ 100, 100 ];
-        var angleInRadians = 2 * Math.PI / 1 ;
-        var scale = [ 1, 1 ];
-
-        /**
-         * 矩阵变换顺序
-         * 1. 顺序非常重要，决定不同的变换结果
-         * 2. 下方的变换顺序与代码调用刚好相反
-         * 3. 实际的变换顺序：scale - rotate - translate - projection
-         * 4. 如果：rotate - scale，物体会变形
-         */
         var matrix = m3.projection( gl.canvas.clientWidth, gl.canvas.clientHeight );
 
-        matrix = m3.translate( matrix, translation[ 0 ], translation[ 1 ] );
-        matrix = m3.scale( matrix, scale[ 0 ], scale[ 1 ] );
-        matrix = m3.rotate( matrix, angleInRadians );
+        function doScale() {
+            matrix = m3.scale( matrix, scale[ 0 ], scale[ 1 ] );
+        }
+
+        function doRotate() {
+            matrix = m3.rotate( matrix, angleInRadians );
+        }
+
+        function doTranslate() {
+            matrix = m3.translate( matrix, translation[ 0 ], translation[ 1 ] );
+        }
+
+        var transforms = { s: doScale, r: doRotate, t: doTranslate };
+
+        function transform( orderList ) {
+            var list = orderList.slice().reverse();
+            var i = 0;
+            while( i < list.length ) {
+                typeof transforms[ list[ i ] ] == 'function'
+                    && transforms[ list[ i ] ].call()
+                    ;
+                i++;
+            } 
+        }
+
+        transform( transformOrder );
 
         s.append_show( matrix );
 
