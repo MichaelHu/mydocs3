@@ -1423,15 +1423,17 @@ When we start mixing branches and commits, we will see how these two features co
     git stash 
     git stash push -- [<pathspec>...]
     git stash -- [<pathspec>...]
+    git stash push -m <message>
     git stash save [<message>]
 
 
 ### 创建stash
 
     $ git stash                                 # 暂存当前所有修改
-    $ git stash save 'bugfix: 1. ..., 2. ...'   # 暂存当前所有修改，自定义修改描述
-    $ git stash -- file1 path2                  # 暂存当前指定文件、路径下的修改
-    $ git stash push -- file1 path2             # 同上
+    $ git stash save 'bugfix: 1. ..., 2. ...'   # 暂存当前所有修改，自定义修改描述，@deprecated
+                                                # 建议使用push，支持路径指定
+    $ git stash push -- file1 path2 -m '...'    # 暂存当前指定文件、路径下的修改，自定义修改描述
+    $ git stash -- file1 path2                  # 同上，push可省略
 
 
 ### 应用stash
