@@ -150,7 +150,7 @@
 * 对象的( 0, 0 )点，在未做`translate变换`之前，总是与`坐标轴`的( 0, 0 )点重合
 * `scale`, `rotate`, `translate`变换总是基于`坐标轴的( 0, 0 )点`
 * `变换顺序`很重要：不同的变换顺序，最终变换效果也不同
-* `rotate`, `translate`不会导致物体形变；`scale`会导致物体形变
+* `rotate`, `translate`不会导致物体形变；非等比例的`scale`会导致物体形变
 * 变换顺序组：`rotate - scale`，调整rotate参数，可以产生不同的形变效果
 * 变换顺序组：`scale - rotate`，调整rotate参数，形变效果不变
 * 最利于理解的变换顺序组为：`scale - rotate - translate`

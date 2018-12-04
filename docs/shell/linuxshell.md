@@ -2290,6 +2290,12 @@ for `MAC`
     sed -n -e '5,8p;9q' file
 
 
+### Tips
+
+* `sed -ne '5p' file`正确，`sed -en '5p' file`则会报错。也就是选项合并时，如果遇到key-value类型的选项，需要`确保key-value靠近`
+
+
+
 ### 理解两个spaces
 
 需要弄清楚`hold space`和`pattern space`的概念。可参考<http://www.lai18.com/content/1404242.html>
@@ -2475,6 +2481,11 @@ sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://.
 
 ## awk
 
+### 命令格式
+
+    awk [ -F fs ] [ -v var=value ] [ 'prog' | -f progfile ] [ file ... ] 
+
+
 ### 常用语法
 
 	# 取特定字段
@@ -2488,6 +2499,9 @@ sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://.
 
     # 外部变量传入
     $ awk -v var1=value1 '{printf "-%s-", var1}'
+
+    # 执行awk脚本
+    $ awk -f program file
 
 
 ### pattern格式
@@ -2544,6 +2558,266 @@ sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://.
     :'<,'>!awk '{printf("\%s \%.2f\n", $0, $2*0.6+$3*0.2+$4*0.1+$5*0.1 )}' 
 
 > 在vim中调用外部命令，`%`具有特殊含义，会替换成文件名；如果不希望被替换，则需要使用`反斜线转义`
+
+
+### awk脚本编程
+
+#### Features
+
+* `类JS`的语法风格，比较容易上手
+
+
+#### Tips
+
+* file部分使用`-`，代表从标准输入获取内容，可支持`交互式正则测试`，比如：
+
+        $ awk '/a{5}/{ print "OK"; }' - 
+
+* 包含`3个Section`，分别为`BEGIN, MAIN, END`
+
+        BEGIN {
+            ...
+        }
+
+        {
+            ...
+        }
+
+        END {
+            ...
+        }
+
+    以上三个部分皆为可选。
+
+* 每个Section使用`{}`包围；注释使用`#`开始；语句使用`;`结束；字符串使用`双引号`而不支持单引号
+* awk的数组实际上是`关联数组`，赋值需`逐项进行`，不支持批量进行
+
+        # 正确的赋值
+        arr[ 1 ] = 1;
+        arr[ 2 ] = 2;
+        arr[ 'a1' ] = 'b1';
+        arr[ 'a2' ] = 'b2';
+
+        # 不支持的赋值方式
+        arr = [ 1, 2 ]; 
+
+* `数组下标`从`1`开始，`字符串`字符起始position也是从`1`开始
+
+        # 查找t在s中的起始位置
+        if ( index( s, t ) == 0 ) {
+            print "no match";
+        }
+
+* 从外部传入变量给awk程序，有两种方式：
+    1. 命令行选项`-v var=value`传入
+    2. 通过环境变量传入，内部通过`ENVIRON`环境变量数组获取 
+
+
+#### 支持的控制语句
+
+    if( expression ) statement [ else statement ]
+    while( expression ) statement
+    for( expression ; expression ; expression ) statement
+    for( var in array ) statement
+    do statement while( expression )
+    break
+    continue
+    { [ statement ... ] }
+    expression              # commonly var = expression
+    print [ expression-list ] [ > expression ]
+    printf format [ , expression-list ] [ > expression ]
+    return [ expression ]
+    next                    # skip remaining patterns on this input line
+    nextfile                # skip rest of this file, open next, start at top
+    delete array[ expression ]# delete an array element
+    delete array            # delete all elements of array
+    exit [ expression ]     # exit immediately; status is expression
+
+
+#### 内建函数
+
+    # 数学函数
+    exp()
+    log()
+    sqrt()
+    sin()
+    cos()
+    atan2()
+
+    # 其他内建函数
+    length()
+    rand()
+    srand()
+    int()
+    substr( s, m, n )
+    index( s, t )
+    match( s, r )
+    split( s, a, fs )
+    sub( r, t, s )
+    gsub( r, t, s )
+    sprintf( fmt, expr, ... )
+    system( cmd )
+    tolower( str )
+    toupper( str )
+
+    # 特殊函数，设置$0的下一个值
+    getline
+        getline
+        getline < file
+        getline x
+        cmd | getline
+
+
+
+
+#### 预定义变量
+
+    CONVFMT     conversion format used when converting numbers (default %.6g)
+    FS          regular expression used to separate fields; also settable by option -Ffs.
+    NF          number of fields in the current record
+    NR          ordinal number of the current record
+    FNR         ordinal number of the current record in the current file
+    FILENAME    the name of the current input file
+    RS          input record separator (default newline)
+    OFS         output field separator (default blank)
+    ORS         output record separator (default newline)
+    OFMT        output format for numbers (default %.6g)
+    SUBSEP      separates multiple subscripts (default 034)
+    ARGC        argument count, assignable
+    ARGV        argument array, assignable; non-null members are taken as filenames
+    ENVIRON     array of environment variables; subscripts are names.
+
+
+
+#### 打印环境变量
+
+    # env.awk
+    BEGIN {
+        for ( i in ENVIRON ) {
+            print i, ENVIRON[ i ];
+        }
+    }
+
+执行以下命令：
+
+    $ awk -f env.awk
+ 
+
+
+#### 通过额外列表查找，扩充列表字段
+
+    # main.awk
+    BEGIN {
+
+        FS = " +";
+
+        # districts
+        districts[ "110228" ] = "密云区";
+        districts[ "110116" ] = "怀柔区";
+        districts[ "110111" ] = "房山区";
+        districts[ "110229" ] = "延庆区";
+        districts[ "110101" ] = "东城区";
+        districts[ "110109" ] = "门头沟区";
+        districts[ "110108" ] = "海淀区";
+        districts[ "110112" ] = "通州区";
+        districts[ "110117" ] = "平谷区";
+        districts[ "110113" ] = "顺义区";
+        districts[ "110114" ] = "昌平区";
+        districts[ "110105" ] = "朝阳区";
+        districts[ "110106" ] = "丰台区";
+        districts[ "110107" ] = "石景山区";
+        districts[ "110102" ] = "西城区";
+        districts[ "110115" ] = "大兴区";
+
+    }
+
+    {
+        district = "";
+        for ( i in districts ) {
+            # print i, $1;
+            if ( index( $1, i ) > 0 ) {
+                district = districts[ i ];
+            }
+        }
+
+        print $1, district, $2;
+    }
+
+    # villages.lst 
+    110101009 东直门街道
+    110107002 老山街道
+    110111110 张坊镇
+    110111010 琉璃河镇
+    110117005 马坊镇
+    110114116 兴寿镇
+    110101010 和平里街道
+    110112105 张家湾
+
+执行以下代码：
+
+    $ awk -f main.awk villages.lst
+
+输出：
+
+    110101009 东城区 东直门街道
+    110107002 石景山区 老山街道
+    110111110 房山区 张坊镇
+    110111010 房山区 琉璃河镇
+    110117005 平谷区 马坊镇
+    110114116 昌平区 兴寿镇
+    110101010 东城区 和平里街道
+    110112105 通州区 张家湾
+
+
+#### 简单字符统计
+
+    # char-stat.awk
+    {
+        split( $0, arr, "" );
+        for( c in arr ) {
+            if ( cArr[ arr[ c ] ] ) {
+                cArr[ arr[ c ] ]++;
+            }
+            else {
+                cArr[ arr[ c ] ] = 1;
+            }
+
+            # 注意以下JS的实现方式不支持
+            # cArr[ arr[ c ] ] = ( cArr[ arr[ c ] ] || 0 ) + 1;
+        }
+    }
+
+    END {
+        for ( ch in cArr ) {
+            print ch, cArr[ ch ];
+        }
+    }
+
+    # e.lst
+    110101009
+    110107002
+    110111110
+    110111010
+    110117005
+    110114116
+    110101010
+
+执行以下命令：
+
+    $ awk -f char-stat.awk e.lst
+    2 2
+    4 1
+    5 2
+    6 1
+    7 2
+    9 1
+    0 23
+    1 40
+
+注：以上代码只支持ASCII字符的统计，如果需要支持多字节字符，需要再行扩展。- todo
+
+
+
 
 
 
