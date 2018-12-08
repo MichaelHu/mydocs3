@@ -2267,6 +2267,11 @@ for `MAC`
 
 > sed是一个`流编辑`工具。
 
+### Syntax
+
+    sed [-Ealn] command [file ...]
+    sed [-Ealn] [-e command] [-f command_file] [-i extension] [file ...]
+
 ### 常用命令
 
     # 执行编辑命令，输出到标准输出
@@ -2292,6 +2297,11 @@ for `MAC`
 
 ### Tips
 
+* 各函数处于同一行时，需使用`分号( ; )`分隔；如果不在同一行，使用`换行符( \n )`分隔即可
+* 函数前，可选择性的指定地址范围，注意其包含的隐含意义：
+        1p          输出第一行，隐含其他行都不输出
+        1,20p       输出1-20行，隐含其他行都不输出
+        1!p         第一行不输出，隐含其他行都输出
 * `sed -ne '5p' file`正确，`sed -en '5p' file`则会报错。也就是选项合并时，如果遇到key-value类型的选项，需要`确保key-value靠近`
 
 
@@ -2302,7 +2312,7 @@ for `MAC`
 
 `Pattern Space ( 模式空间 )`相当于`车间`，也称为`临时缓存区`，sed把流内容在这里进行处理，而不改变原文件的内容，`Hold Space ( 储存空间 )`相当于`仓库`，加工的`半成品`在这里进行临时存储。
 
-由于各种原因，比如用户希望在某个条件下脚本中的某个命令被执行，或者希望`模式空间`得到保存以便下一次处理，都有可能使得sed在处理文件的时候不按照正常的流程来进行。这个时候，sed设置了一些`高级命令`来满足用户的要求。
+由于各种原因，比如用户希望在某个条件下脚本中的某个函数被执行，或者希望`模式空间`得到保存以便下一次处理，都有可能使得sed在处理文件的时候不按照正常的流程来进行。这个时候，sed设置了一些`高级函数`来满足用户的要求。
 
  <img src="./img/sed-flow.png">
 
@@ -2317,8 +2327,7 @@ for `MAC`
     d: 删除pattern中的所有行，并开始下一行
     D: 删除multiline pattern中的第一行，并开始下一行
 
-* 命令对中，`小写命令`执行覆盖操作，`大写命令`执行追加操作
-* 各命令之间使用`分号( ; )`分隔。
+* 函数对中，`小写函数`执行覆盖操作，`大写函数`执行追加操作
 
 
 ### 示例
@@ -2431,7 +2440,7 @@ sed的`正则（使用-E( mac )或-r( linux )）`接近`perl`的正则，比如�
     222
     111
 
-使用`sed`命令来实现：
+使用`sed`命令来实现（`第一种实现方式`，第二种见后文）：
 
     sed '1!G;h;$!d' file
 
@@ -2459,6 +2468,229 @@ sed的`正则（使用-E( mac )或-r( linux )）`接近`perl`的正则，比如�
 `Tips`：
 * `1!H`，隐含第一行不执行H命令，其他行都执行H命令
 * `$!d`，隐含除了最后一行，都执行d命令
+
+
+
+### sed脚本编程
+
+#### sed函数
+
+> 28种函数
+
+     [2addr] function-list
+             Execute function-list only when the pattern space is selected.
+
+     [1addr]a\
+     text    Write text to standard output immediately before each attempt to
+             read a line of input, whether by executing the ``N'' function or
+             by beginning a new cycle.
+
+     [2addr]b[label]
+             Branch to the ``:'' function with the specified label.  If the
+             label is not specified, branch to the end of the script.
+
+     [2addr]c\
+     text    Delete the pattern space.  With 0 or 1 address or at the end of a
+             2-address range, text is written to the standard output.
+
+     [2addr]d
+             Delete the pattern space and start the next cycle.
+
+     [2addr]D
+             Delete the initial segment of the pattern space through the first
+             newline character and start the next cycle.
+
+     [2addr]g
+             Replace the contents of the pattern space with the contents of
+             the hold space.
+
+     [2addr]G
+             Append a newline character followed by the contents of the hold
+             space to the pattern space.
+
+     [2addr]h
+             Replace the contents of the hold space with the contents of the
+             pattern space.
+
+     [2addr]H
+             Append a newline character followed by the contents of the pat-
+             tern space to the hold space.
+
+     [1addr]i\
+     text    Write text to the standard output.
+
+     [2addr]l
+             (The letter ell.)  Write the pattern space to the standard output
+             in a visually unambiguous form.  This form is as follows:
+
+                   backslash          \\
+                   alert              \a
+                   form-feed          \f
+                   carriage-return    \r
+                   tab                \t
+                   vertical tab       \v
+
+             Nonprintable characters are written as three-digit octal numbers
+             (with a preceding backslash) for each byte in the character (most
+             significant byte first).  Long lines are folded, with the point
+             of folding indicated by displaying a backslash followed by a new-
+             line.  The end of each line is marked with a ``$''.
+
+     [2addr]n
+             Write the pattern space to the standard output if the default
+             output has not been suppressed, and replace the pattern space
+             with the next line of input.
+
+     [2addr]N
+             Append the next line of input to the pattern space, using an
+             embedded newline character to separate the appended material from
+             the original contents.  Note that the current line number
+             changes.
+
+     [2addr]p
+             Write the pattern space to standard output.
+
+     [2addr]P
+             Write the pattern space, up to the first newline character to the
+             standard output.
+
+     [1addr]q
+             Branch to the end of the script and quit without starting a new
+             cycle.
+
+     [1addr]r file
+             Copy the contents of file to the standard output immediately
+             before the next attempt to read a line of input.  If file cannot
+             be read for any reason, it is silently ignored and no error con-
+             dition is set.
+
+     [2addr]s/regular expression/replacement/flags
+             Substitute the replacement string for the first instance of the
+             regular expression in the pattern space.  Any character other
+             than backslash or newline can be used instead of a slash to
+             delimit the RE and the replacement.  Within the RE and the
+             replacement, the RE delimiter itself can be used as a literal
+             character if it is preceded by a backslash.
+
+             An ampersand (``&'') appearing in the replacement is replaced by
+             the string matching the RE.  The special meaning of ``&'' in this
+             context can be suppressed by preceding it by a backslash.  The
+             string ``\#'', where ``#'' is a digit, is replaced by the text
+             matched by the corresponding backreference expression (see
+             re_format(7)).
+
+             A line can be split by substituting a newline character into it.
+             To specify a newline character in the replacement string, precede
+             it with a backslash.
+
+             The value of flags in the substitute function is zero or more of
+             the following:
+
+                   N       Make the substitution only for the N'th occurrence
+                           of the regular expression in the pattern space.
+
+                   g       Make the substitution for all non-overlapping
+                           matches of the regular expression, not just the
+                           first one.
+
+                   p       Write the pattern space to standard output if a
+                           replacement was made.  If the replacement string is
+                           identical to that which it replaces, it is still
+                           considered to have been a replacement.
+
+                   w file  Append the pattern space to file if a replacement
+                           was made.  If the replacement string is identical
+                           to that which it replaces, it is still considered
+                           to have been a replacement.
+
+     [2addr]t [label]
+             Branch to the ``:'' function bearing the label if any substitu-
+             tions have been made since the most recent reading of an input
+             line or execution of a ``t'' function.  If no label is specified,
+             branch to the end of the script.
+
+     [2addr]w file
+             Append the pattern space to the file.
+
+     [2addr]x
+             Swap the contents of the pattern and hold spaces.
+
+     [2addr]y/string1/string2/
+             Replace all occurrences of characters in string1 in the pattern
+             space with the corresponding characters from string2.  Any char-
+             acter other than a backslash or newline can be used instead of a
+             slash to delimit the strings.  Within string1 and string2, a
+             backslash followed by an ``n'' is replaced by a newline charac-
+             ter.  A pair of backslashes is replaced by a literal backslash.
+             Finally, a backslash followed by any other character (except a
+             newline) is that literal character.
+
+     [2addr]!function
+     [2addr]!function-list
+             Apply the function or function-list only to the lines that are
+             not selected by the address(es).
+
+     [0addr]:label
+             This function does nothing; it bears a label to which the ``b''
+             and ``t'' commands may branch.
+
+     [1addr]=
+             Write the line number to the standard output followed by a new-
+             line character.
+
+     [0addr]
+             Empty lines are ignored.
+
+     [0addr]#
+             The ``#'' and the remainder of the line are ignored (treated as a
+             comment), with the single exception that if the first two charac-
+             ters in the file are ``#n'', the default output is suppressed.
+             This is the same as specifying the -n option on the command line.
+
+
+#### sed脚本
+
+##### 每6行合并成一行
+
+脚本文件`~/snippets/sed/join-every-6-lines.sed`，内容如下: 
+
+    {
+        N
+        N
+        N
+        N
+        N
+        s/\n//g
+        p
+    }
+
+可执行命令：
+
+    $ sed -f ~/snippets/sed/join-every-6-lines.sed
+
+
+##### 将文件行逆序输出
+
+> `第二种`实现方式，第一种见上文
+
+脚本文件`~/snippets/sed/reverse-lines.sed`，内容如下: 
+
+    $!{
+        G
+        h
+        d
+    }
+    ${
+        G
+    }
+
+
+可执行命令：
+
+    $ sed -f ~/snippets/sed/reverse-lines.sed
+
+
+
 
 
     
@@ -2506,7 +2738,8 @@ sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://.
 
 ### pattern格式
 
-功能较全的`Perl正则`表达式，强于`vim`和`sed`默认情况下的`magic正则`。
+* 功能较全的`Perl正则`表达式，强于`vim`和`sed`默认情况下的`magic正则`。
+* `fs`部分支持`正则`，比如`-F' +'`
 
 
 ### 各类函数
