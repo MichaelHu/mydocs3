@@ -120,8 +120,13 @@ changelog: 2018-05, 2017-10, 2017-02-10, 2016-10-22, 2016-07-23
 8. `normal`模式，`CTRL-L`刷新屏幕
 9. 一些`特殊字符`的展示：
 
-        ^M      x0d，也就是carriage-return，回车符
+        ^M      x0d，也就是carriage-return，回车符，一般dos格式文档的换行符为x0d x0a
+                ，而unix格式文档的行结束符为x0a ( newline )
         ^@      x00
+        ^H      x08，控制台文本样式字符( 猜测 )，比如命令：man sed > sed-help.txt，那么文件
+                sed-help.txt在vim种打开，会出现^H字符。可以通过两次替换完成转换：
+                :%s/_\%x08//g
+                :%s/\%x08.//g
 
 
 
