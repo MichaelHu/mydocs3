@@ -4,6 +4,7 @@
 
 * site - <https://dust3d.org> 
 * github - <https://github.com/huxingyi/dust3d> <iframe src="http://258i.com/gbtn.html?user=huxingyi&repo=dust3d&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
+* docs - shortcuts - <http://docs.dust3d.org/en/latest/shortcuts.html>
 
 
 ## Features
