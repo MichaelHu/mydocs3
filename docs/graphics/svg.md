@@ -43,6 +43,99 @@ SVG于`2003年1月14日`成为W3C推荐标准。目前最新推荐标准为`2011
 SVG 的主要竞争者是`Flash`。与 Flash 相比，SVG 最大的优势是与其他标准（比如 XSL 和 DOM）相兼容。而 Flash 则是未开源的私有技术。
 
 
+## Basics
+
+todo
+
+### Properties
+
+* Property列表 <https://www.w3.org/TR/SVG11/propidx.html>
+
+
+
+### Styles
+
+* styles - <https://www.w3.org/TR/SVG11/styling.html#StyleAttribute>
+* 部分与CSS2共享的属性，部分特有属性
+
+#### 共享属性
+
+    Font properties:
+        ‘font’
+        ‘font-family’
+        ‘font-size’
+        ‘font-size-adjust’
+        ‘font-stretch’
+        ‘font-style’
+        ‘font-variant’
+        ‘font-weight’
+    Text properties:
+        ‘direction’
+        ‘letter-spacing’
+        ‘text-decoration’
+        ‘unicode-bidi’
+        ‘word-spacing’
+    Other properties for visual media:
+        ‘clip’, only applicable to outermost svg element.
+        ‘color’, used to provide a potential indirect value (currentColor) for the ‘fill’, ‘stroke’, ‘stop-color’, ‘flood-color’ and ‘lighting-color’ properties. (The SVG properties which support color allow a color specification which is extended from CSS2 to accommodate color definitions in arbitrary color spaces. See Color profile descriptions.)
+        ‘cursor’
+        ‘display’
+        ‘overflow’, only applicable to elements which establish a new viewport.
+        ‘visibility’
+
+#### 特有属性
+
+    Clipping, Masking and Compositing properties:
+        ‘clip-path’
+        ‘clip-rule’
+        ‘mask’
+        ‘opacity’
+    Filter Effects properties:
+        ‘enable-background’
+        ‘filter’
+        ‘flood-color’
+        ‘flood-opacity’
+        ‘lighting-color’
+    Gradient properties:
+        ‘stop-color’
+        ‘stop-opacity’
+    Interactivity properties:
+        ‘pointer-events’
+    Color and Painting properties:
+        ‘color-interpolation’
+        ‘color-interpolation-filters’
+        ‘color-profile’
+        ‘color-rendering’
+        ‘fill’
+        ‘fill-opacity’
+        ‘fill-rule’
+        ‘image-rendering’
+        ‘marker’
+        ‘marker-end’
+        ‘marker-mid’
+        ‘marker-start’
+        ‘shape-rendering’
+        ‘stroke’
+        ‘stroke-dasharray’
+        ‘stroke-dashoffset’
+        ‘stroke-linecap’
+        ‘stroke-linejoin’
+        ‘stroke-miterlimit’
+        ‘stroke-opacity’
+        ‘stroke-width’
+        ‘text-rendering’
+    Text properties:
+        ‘alignment-baseline’
+        ‘baseline-shift’
+        ‘dominant-baseline’
+        ‘glyph-orientation-horizontal’
+        ‘glyph-orientation-vertical’
+        ‘kerning’
+        ‘text-anchor’
+        ‘writing-mode’
+
+
+
 ## viewBox & perserveAspectRatio 
 
 ### Tips
@@ -2186,7 +2279,58 @@ svg的text标签没有以下类似的属性（<http://stackoverflow.com/question
 
 ## 滤镜
 
-> 滤镜效果( `Filter Effects` )
+> 滤镜效果 fe - ( `Filter Effects` )
+
+### Tips
+
+* 滤镜效果使用`filter`标签来定义，滤镜可以包含多个孩子元素，每个孩子元素代表一个`滤镜原语`( filter primitive )，比如blur或光照效果等
+* 可以在`graphics element`或`container element`的`filter`属性中应用滤镜效果
+* 如果在container element，比如`g`上应用filter，则是对整个group应用滤镜效果
+* 滤镜原语实际上是某种`图片处理算法`，一个原语的处理输出可以作为另一个的输入。通过`in`属性指定输入，通过`result`属性指定输出
+* 通过关键词`SourceGraphic`或`SourceAlpha`指定输入为原始图形或原始的Alpha
+* 通过对滤镜原语的`顺次组合`，使用`in`, `result`进行输入输出对接，达到不同的滤镜效果
+
+
+
+
+### filter
+
+<div id="test_filter" class="test">
+<div class="test-container">
+
+    @[data-script="html editable"]<svg width="100%" height="100%">
+    <defs>
+        <filter id="filter">
+            <!--feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur" /-->
+            <feOffset in="SourceGraphic" dx="2" dy="2" result="offset1" />
+            <feOffset in="SourceGraphic" dx="4" dy="4" result="offset2" />
+            <!--feOffset in="SourceGraphic" dx="6" dy="6" result="offset3" /-->
+            <feMerge>
+                <!--feMergeNode in="offset3" /-->
+                <feMergeNode in="offset2" />
+                <feMergeNode in="offset1" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+    <circle 
+        cx="100" 
+        cy="50" 
+        r="40" 
+        stroke="#ff7f0e" 
+        stroke-width="5" 
+        fill="#2ca02c"
+        filter="url(#filter)"
+        />
+    </svg>
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
+
+
 
 ### 滤镜指令
 
