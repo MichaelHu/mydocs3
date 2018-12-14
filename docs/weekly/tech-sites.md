@@ -39,6 +39,7 @@
 
 ## 技术站点
 
+* 腾讯云社区 - `开发者手册` <https://cloud.tencent.com/developer/devdocs> 各类技术文档
 * `infoQ` - 促进软件开发领域知识与创新的传播 <https://www.infoq.cn>
 * `html5-tricks` - <http://www.html5tricks.com>
 * `css-tricks` - 权威的css技术站点，bootstrap推荐  <https://css-tricks.com>
