@@ -1,12 +1,14 @@
 # vim8
 
-> changelog: 1706, 1703, 1612, 1610
+> changelog: 1812, 1706, 1703, 1612, 1610
 
 ## Resources
 
 * github: <https://github.com/vim/vim>
-* latest version ( 2018-11-05 ): `v8.1.0513`
+* latest version ( 2018-12-17 ): `v8.1.0606`
 * releases: <https://github.com/vim/vim/releases>
+* vim7: <ref://./vim7.md.html>
+* vim: <ref://./vim.md.html>
 
 
 
