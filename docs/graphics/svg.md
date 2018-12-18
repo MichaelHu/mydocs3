@@ -16,6 +16,8 @@
 ## Resources
 
 * w3c: <https://www.w3.org/TR/SVG11/>
+* mdn: <https://developer.mozilla.org/zh-CN/docs/Web/SVG>
+* svg-dom: <https://www.w3.org/TR/SVG11/svgdom.html>
 * 理解SVG viewport, viewBox, preserveAspectRatio缩放 <https://www.zhangxinxu.com/wordpress/2014/08/svg-viewport-viewbox-preserveaspectratio/>
 
 
@@ -2289,39 +2291,41 @@ svg的text标签没有以下类似的属性（<http://stackoverflow.com/question
 * 滤镜原语实际上是某种`图片处理算法`，一个原语的处理输出可以作为另一个的输入。通过`in`属性指定输入，通过`result`属性指定输出
 * 通过关键词`SourceGraphic`或`SourceAlpha`指定输入为原始图形或原始的Alpha
 * 通过对滤镜原语的`顺次组合`，使用`in`, `result`进行输入输出对接，达到不同的滤镜效果
+* 应用滤镜，可以直接设置`filter属性`，也可以通过在`style属性`中设置
 
 
 
-
-### filter
+### 立体投影
 
 <div id="test_filter" class="test">
 <div class="test-container">
 
     @[data-script="html editable"]<svg width="100%" height="100%">
-    <defs>
-        <filter id="filter">
-            <!--feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur" /-->
-            <feOffset in="SourceGraphic" dx="2" dy="2" result="offset1" />
-            <feOffset in="SourceGraphic" dx="4" dy="4" result="offset2" />
-            <!--feOffset in="SourceGraphic" dx="6" dy="6" result="offset3" /-->
-            <feMerge>
-                <!--feMergeNode in="offset3" /-->
-                <feMergeNode in="offset2" />
-                <feMergeNode in="offset1" />
-                <feMergeNode in="SourceGraphic" />
-            </feMerge>
-        </filter>
-    </defs>
-    <circle 
-        cx="100" 
-        cy="50" 
-        r="40" 
-        stroke="#ff7f0e" 
-        stroke-width="5" 
-        fill="#2ca02c"
-        filter="url(#filter)"
-        />
+        <defs>
+            <filter id="filter">
+                <!--feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur" /-->
+                <feOffset in="SourceGraphic" dx="2" dy="2" result="offset1" />
+                <feOffset in="SourceGraphic" dx="4" dy="4" result="offset2" />
+                <feOffset in="SourceGraphic" dx="6" dy="6" result="offset3" />
+                <!--feColorMatrix type="matrix" values="..." in="offsetOutput" result="colorMatrixOutput" /-->
+                <feMerge>
+                    <feMergeNode in="offset3" />
+                    <feMergeNode in="offset2" />
+                    <feMergeNode in="offset1" />
+                    <feMergeNode in="SourceGraphic" />
+                </feMerge>
+            </filter>
+        </defs>
+        <g filter="url(#filter)">
+            <circle 
+                cx="100" 
+                cy="50" 
+                r="40" 
+                stroke="#ff7f0e" 
+                stroke-width="5" 
+                fill="#2ca02c"
+                />
+        </g>
     </svg>
 
 </div>
@@ -2350,6 +2354,7 @@ svg的text标签没有以下类似的属性（<http://stackoverflow.com/question
     feSpecularLighting
     feTile
     feTurbulence
+    ...
 
 
 

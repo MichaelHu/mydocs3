@@ -8,7 +8,7 @@
 
 ## Installation
 
-通过SecureCRT在Linux主机上安装vim74，使其支持X11-Server，可以和本地进行剪贴板交互
+通过SecureCRT在Linux主机上安装vim74，使其支持`X11-Server`，可以和本地进行`剪贴板`交互
     
     $ git clone https://github.com/vim/vim.git
     $ cd vim

@@ -2,6 +2,13 @@
 
 > Write less, do more! A great js library - <img src="./img/jquery-logo.png" style="background-color:#333; border-radius:3px;height: 20px"> 
 
+<style type="text/css">
+@import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
+</style>
+<script src="http://258i.com/static/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="http://258i.com/static/bower_components/snippets/js/mp/fly.js"></script>
+
+
 ## Features
 
 * 前端`基础库`
@@ -111,4 +118,47 @@ or `download`: <https://jquery.com/download/>
                         semantics. See the selector-native.js file for details.
 
 
+## Examples
 
+### find()
+
+> `find( selector )`方法仅用于查找`子孙节点`中匹配selector的元素，`不包含当前元素本身`（即使当前元素匹配selector）。
+
+以下为测试所用的DOM结构：
+
+    @[data-script="html"]<style type="text/css">
+        .test-content {
+            margin-bottom: 20px;
+        }
+
+        .test-content, .test-content-inner {
+            padding: 10px;
+            border: 1px dashed #999;
+        }
+    </style>
+    <div id="test_find_dom" class="test-content">
+        .test-content
+        <div class="test-content-inner">.test-content-inner</div>
+    </div>
+
+
+以下代码用于测试`find()`方法：
+
+<div id="test_find" class="test">
+<div class="test-container">
+
+    @[data-script="javascript"](function(){
+
+        var s = fly.createShow('#test_find');
+        s.show( 'find( selector )方法仅用于查找子孙节点中匹配selector的元素' );
+
+        s.append_show( $( '#test_find_dom' ).find( '.test-content' ).length );
+        s.append_show( $( '#test_find_dom' ).find( '.test-content-inner' ).length );
+
+    })();
+
+</div>
+<div class="test-console"></div>
+<div class="test-panel">
+</div>
+</div>
