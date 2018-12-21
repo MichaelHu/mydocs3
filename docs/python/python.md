@@ -23,6 +23,35 @@
 * `Jupyter`: <ref://./jupyter.md.html>
 
 
+## Tips
+
+* 布尔值使用`True/False`；null使用`None`
+* 注释使用`#`为前缀后跟注释内容
+* 字符串可以使用`单引号`或者`双引号`
+* 命令行参数获取，在`sys`模块，sys.argv[ 0 ], sys.argv[ 1 ], ...；`没有sys.argc属性`，可以用`len( sys.argv )`代替
+* 获取`管道输入`，可以使用`sys.stdin.read()`，获取的值为`块文本`
+* python默认编码如果是ascii，那么如果处理非ascii编码时，可能出现以下错误提示：
+        UnicodeEncodeError: 'ascii' codec can't encode character u'\u53c8' in position 358: ordinal not in range(128)
+
+
+
+
+
+## 命令行工具
+
+### python & pip
+
+    python [option] ... [-c cmd | -m mod | file | -] [arg] ...
+    pip command [options]
+
+
+### 常用命令
+
+    $ python main.py
+    $ python -m jieba ...
+
+
+
 ## Built-in Types
 
     str

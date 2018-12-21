@@ -1021,6 +1021,13 @@ For example, commit C1 can be rebased past C3. It then appears that the work for
 todo
 
 
+## git clean
+
+    git clean [-d] [-f] [-i] [-n] [-q] [-e <pattern>] [-x | -X] [--] <path>...
+
+todo
+
+
 ## git gc
 
     git gc --prune=<date>

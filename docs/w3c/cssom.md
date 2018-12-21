@@ -3,6 +3,46 @@
 ## Resources
 
 * `w3`: <http://www.w3.org/TR/cssom-view-1/>
+* [ 181210 ] An Introduction and Guide to the CSS Object Model (CSSOM) <https://css-tricks.com/an-introduction-and-guide-to-the-css-object-model-cssom/>
+    * Getting Computed Styles of `Pseudo-Elements`
+            .box::before {
+                content: 'Example';
+                display: block;
+                width: 50px;
+            }
+
+            let box = document.querySelector('.box');
+            window.getComputedStyle(box, '::before').width;
+    * The `CSSStyleDeclaration` API
+    * The `CSSStyleSheet` Interface
+        * Accessing `@media` Rules with the CSSOM
+
+                let myRules = document.styleSheets[0].cssRules,
+                    p = document.querySelector(".output");
+
+                for (i of myRules) {
+                    if (i.type === 4) {
+                        for (j of i.cssRules) {
+                            p.innerHTML += `<c​ode>${j.selectorText}</c​ode><br>`;
+                        }
+                    }
+                }
+
+        * Accessing `@keyframes` Rules with the CSSOM
+
+                let myRules = document.styleSheets[0].cssRules,
+                    p = document.querySelector(".output");
+
+                for (i of myRules) {
+                    if (i.type === 7) {
+                        for (j of i.cssRules) {
+                            p.innerHTML += `<c​ode>${j.keyText}</c​ode><br>`;
+                        }
+                    }
+                }
+
+        * Setting @keyframes Rules
+
 
 <style type="text/css">
 @import "http://258i.com/static/bower_components/snippets/css/mp/style.css";
