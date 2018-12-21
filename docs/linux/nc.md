@@ -6,6 +6,9 @@
 
 * `ncat` - site: <http://nmap.org/ncat>
 * nc命令用法举例： <https://www.cnblogs.com/nmap/p/6148306.html>
+* `rsync` - <ref://./rsync.md.html>
+* `lrzsz` - <ref://./lrzsz.md.html>
+* `lftp` - <ref://./lftp.md.html>
 
 
 ## Features
