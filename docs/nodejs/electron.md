@@ -16,7 +16,7 @@
 
 * 使用Electron，你建立的站点，都可以搬到桌面应用里
 * 一处编写，跨平台部署。对于Windows系统来说，Electron不支持XP系统，将来也不会支持
-* 同类应用`nwjs`，可以参考 <ref://./nwjs.md.html>
+* 同类应用`nwjs`，支持XP系统，具体可参考 <ref://./nwjs.md.html>
 
 
 
@@ -27,6 +27,7 @@
 * 文档：<http://electron.atom.io/docs/>
 * 使用Electron构建的APP（有头有脸的`120+`）：<http://electron.atom.io/apps/>
 * [ 180404 ] New in Electron 2: In-App Purchases <https://electronjs.org/blog/in-app-purchases>
+* [ 181225 ] Electron 4.0 稳定版发布，集成 Node 10 和 Chromium 69 <https://www.infoq.cn/article/5*2be4HwRdesZcsFuTjv>
 
 
 
@@ -46,6 +47,7 @@
 
 ### 4.x
 
+    2018-12-21 4.0.0
     2018-10-19 4.0.0-beta.4
     ...
     2018-10-11 4.0.0-beta.1
