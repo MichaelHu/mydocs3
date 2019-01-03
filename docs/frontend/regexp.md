@@ -141,18 +141,73 @@ JavaScript正则表达式语法是`Perl5`正则的`大型子集`，在字符串�
 
 ## AWK正则
 
+### Tips
+
+> todo
+
+* 属于`比较全面`的正则表达式支持，但相比扩展正则表达式，存在一些不支持的特性
+* `不支持`常用字符类：`\s`, `\d`等
+* 支持：`+`, `*`
+
+
+
+
 ## FIND正则
 
     $ find . -type f -iregex
     $ find . -type f -regex
 
+
+
+
 ## VIM正则
 
 具体参考 <ref://../vim/vim.md.html> 的`Searching and Replacing`节的`pattern`部分。
 
+### Tips
+
+* 分两种模式，分别为`magic模式`以及`nomagic模式`
+
+### magic mode
+
+跟在以下字符后面的表达式，启用某种特定字符模式，在vim中可以通过`:help magic`获取相关帮助
+
+        \v       \m         \M         \V        matches 
+    'magic'   'nomagic'
+    ============================================================================
+        $       $           $         \$        matches end-of-line
+        .       .           \.         \.        matches any character
+        *       *           \*         \*        any number of the previous atom
+        ~       ~           \~         \~        latest substitute string
+        ()       \(\)       \(\)     \(\)    grouping into an atom
+        |       \|          \|         \|        separating alternatives
+        \a       \a         \a         \a        alphabetic character
+        \\       \\         \\         \\        literal backslash
+        \.       \.         .         .        literal dot
+        \{       {          {         {        literal '{'
+        a       a           a         a        literal 'a'
+
+
+
 
 
 ## SED正则 
+
+### Tips
+
+* 同`grep`，`find`等，支持`两种正则`，普通正则以及扩展正则
+
+        sed -e 'command'
+
+        # mac
+        sed -Ee 'command'
+
+        # linux
+        sed -re 'command'
+
+* sed的普通正则，与vim的magic正则类似，但也存在一些小的差别。vim的magic正则更强大一些
+* 比如sed的普通正则，不支持`\+`，而需要使用`\{1,\}`来替代
+
 
 
 ## PHP正则
