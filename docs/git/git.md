@@ -225,6 +225,12 @@ todo:
     git diff --staged <file>
     git diff --cached <file>
 
+    # 只查看特定更改的文件差异
+    git diff --diff-filter=M
+    git diff --diff-filter=A
+    git diff --diff-filter=MA
+    git diff --diff-filter=ma
+
 其他`options`，列举部分如下：
 
     option                          desc
@@ -240,6 +246,32 @@ todo:
     --ignore-blank-lines
     --name-only                     只显示变化的文件
     --name-status                   显示变化文件及其变化状态
+
+
+### 关于--diff-filter
+
+    --diff-filter=[(A|C|D|M|R|T|U|X|B)...[*]]
+
+选项说明：
+
+    类型及说明
+    ========================================================================
+    Added (A)
+    Copied (C)
+    Deleted (D)
+    Modified (M)
+    Renamed (R)
+    have their type (i.e. regular file, symlink, submodule, ...) changed (T)
+    Unmerged (U)
+    Unknown (X)
+    have had their pairing Broken (B).
+
+#### Tips
+
+* 以上选项字母可以组合，组合字母MA表明包含修改或新增文件
+* 选项字母对应的小写格式，表示exclude
+
+
 
 
 ### Tips
