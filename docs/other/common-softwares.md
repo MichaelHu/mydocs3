@@ -48,6 +48,11 @@ UE效果图制作，通常用于查看UE输出稿。
 `$5`，实际上免费版也已经够用了。可以直接在Apple Store上下载安装。
 
 
+### Loopback
+
+> 虚拟音频设备应用，具体查看<ref://../tools/loopback.md.md>
+
+
 
 
 
