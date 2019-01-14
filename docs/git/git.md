@@ -1048,7 +1048,10 @@ For example, commit C1 can be rebased past C3. It then appears that the work for
 
 ## git prune
 
+    git prune -v
     git prune --dry-run
+    git prune --verbose
+    git prune -v --progress
 
 todo
 

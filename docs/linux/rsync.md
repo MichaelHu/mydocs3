@@ -165,7 +165,7 @@
 ## Tips
 
 * `必须`提供SRC参数，DEST为`可选`参数
-* 只提供SRC参数的情况下，如`rsync dest`，则等同于`ls -la dest`。mac下，dest如果为`本地目录`，则需要加`-r`选项，否则会被自动跳过
+* 只提供SRC参数的情况下，如`rsync dest`，则等同于`ls -la dest`，如果是`rsync -r dest`，则等同于`find dest -type f -exec ls -la {} \;`，将列出所有文件。mac下，dest如果为`本地目录`，则需要加`-r`选项，否则会被自动跳过
 * SRC或DEST参数的末尾`/`具有特殊含义：
 
         # 列出文件本身 
