@@ -488,6 +488,7 @@ todo
     3. 在flex item上使用`align-self`
 
 * `flex-flow`如果是row，那么默认在高度上是占满的，如果是column，则默认在宽度上是占满的
+* `flex: none`也是有其使用场景的，不进行grow，也不进行shrink
 
 
 ### 可用属性

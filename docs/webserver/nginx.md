@@ -675,6 +675,31 @@ resources:
     }
 
 
+
+### Charset
+
+> module: `ngx_http_charset_module` <https://nginx.org/en/docs/http/ngx_http_charset_module.html>
+
+    charset <charset> | off;        # default: off
+    charset $charset;               # 可用变量
+    source_charset <charset>;       # 设置原始字符集
+    charset_types <mime-type> ...;  # 设定在哪些mime类型上应用charset指令
+        # default: charset_types text/html text/xml text/plain text/vnd.wap.wml application/javascript application/rss+xml;
+
+#### Tips
+
+* charset指令用于在`Content-Type`响应头中添加charset字段
+* 设置charset后，如果对应资源的`source_charset`与charset不一致，则会执行`编码转换`
+
+#### Examples
+
+    server {
+        charset_types text/css application/javascript application/json;
+        charset utf-8;
+    }
+
+
+
         
 
 ## Headers
