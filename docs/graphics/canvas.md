@@ -371,9 +371,21 @@ APIs:
 * `createRadialGradient`: <https://www.w3.org/TR/2dcontext/#dom-context-2d-createradialgradient>
 
 
-#### Examples
+#### createRadialGradient()
 
-> `createRadialGradient()`尚未搞明白，todo
+> 以下重要tips有助于理解
+
+ <img src="./svg/canvas-radial-gradient-190127.svg" style="max-height: 260px">
+
+* `6个`参数，分别代表`起始圆(x0, y0, r0)`和`终止圆(x1, y1, r1)`
+* 起始圆与终止圆相同，则不进行绘制
+* x0到x1进行差值，y0到y1进行差值，r0到r1进行差值，颜色在color stop的配置上，根据w的值从0到1进行差值，分别绘制`( x(w), y(w), r(w) )`指定的颜色为c(w)的`圆周`
+* 满足`r(w) > 0`的所有圆周都会被绘制，也就是说，并不仅仅绘制w为0到1的部分，只要保证r(w)为正，都会绘制。绘制过程中，w小于0的部分，颜色同c(0)；w大于1的部分，颜色同c(1)
+* `绘制圆周`的过程中，`已经绘制过的部分不再绘制`
+* 最终绘制的是一个`渐变的圆锥体`，圆周绘制（untouched）不到的地方为透明黑色
+
+
+#### Examples
 
 <div id="test_fill_and_stroke_style" class="test">
 <div class="test-container">
