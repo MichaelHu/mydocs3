@@ -559,12 +559,13 @@ APIs:
 
 
 ### clip region
+
 > 剪辑区
 
     // Further constrains the clipping region to the current path.
     context.clip();
 
-* 默认剪辑区为`矩形区域( 0, 0, w, h )`
+* 默认`剪辑区`为`矩形区域( 0, 0, w, h )`
 * `context.save()`恢复默认剪辑区，`context.clip()`创建新的剪辑区，创建新的剪辑区后，无法通过再次调用context.clip()修改剪辑区，也就是说clip()只能在准备path后`调用一次`，后续的多次调用不生效
 * 剪辑区从`路径`创建
 
