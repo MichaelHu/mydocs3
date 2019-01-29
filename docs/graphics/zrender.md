@@ -5,14 +5,16 @@
 ## Resources
 
 * github: <https://github.com/ecomfe/zrender> <iframe src="http://258i.com/gbtn.html?user=ecomfe&repo=zrender&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
-* docs: <https://ecomfe.github.io/zrender-doc/public/>
+* `get started`: <https://ecomfe.github.io/zrender-doc/public/>
+* `api-docs`: <https://ecomfe.github.io/zrender-doc/public/api.html>
 * `zrender-insights`: <ref://./zrender-insights.md.html>
 
 
 ## Features
 
+* 一种二维Web绘图引擎
+* 支持`Canvas 2D/WebGL/SVG/VML`等多种渲染方式
 * `MVC`模式
-* 支持`Canvas 2D/WebGL/SVG/VML`
 
 
 ## Versions 

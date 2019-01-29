@@ -2,7 +2,11 @@
 
 > A `package manager` for the web.
 
-Web sites are made of lots of things -- frameworks, libraries, assets, and utilities. Bower manage all these things for you.
+
+## Features
+
+* 是一个`web包管理器`，由`twitter`推出
+* Web sites are made of lots of things -- frameworks, libraries, assets, and utilities. Bower manage all these things for you. 网站由很多东西组成，比如`框架、库、资源以及实用库`等，bower将为你管理这些东西 
 
 
 ## Resources
@@ -13,7 +17,7 @@ Web sites are made of lots of things -- frameworks, libraries, assets, and utili
 ## Tips
 
 * github的package都可通过`bower register`先发布到`http://registry.bower.io`
-* 发布成功以后，遵守`semver`规范的`tag`都将作为bower的安装package
+* 发布成功以后，遵守`semver`规范的`tag`都将作为bower的安装package，semver参考<ref://../arch/semver.md.html>
 * `bower install`的package下会有一个`隐藏`的`.bower.json`文件，该文件记录当前包的详细信息，内容与bower.json不一样
 
 
