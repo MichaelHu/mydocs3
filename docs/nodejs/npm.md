@@ -401,7 +401,7 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
 
         $ npm link
 
-    创建全局可用的包的符号链接。然后用`npm ls -g`查看是否存在。
+    创建`全局可用`的包的符号链接。然后用`npm ls -g`查看是否存在。
 
 2. 测试`本地安装`：
 
@@ -640,9 +640,10 @@ npm获取配置信息，来自`六个来源，优先级如下，由高到低`：
 
 #### Tips
 
-* 当某个package目录下执行`npm link`命令是一个`全局操作`命令，需要有`全局操作权限`
-* 通常在发布前，本地进行测试时使用npm link命令进行全局链接，等同于`npm install -g .`命令
+* 当在某个package目录下执行`npm link`命令时，该命令实际上是一个`全局操作`命令，等同于`npm install -g .`，此时需要有`全局操作权限`
+* 通常在某个package发布前，在本地进行开发测试时，会使用在当前包目录下执行`npm link`命令进行全局链接，方便全局测试
 * 解除link，需要用`npm unlink` 或 `npm uninstall`命令
+* `包链接`必然包含`全局链接`
 
 
 #### 包链接
@@ -666,7 +667,7 @@ npm获取配置信息，来自`六个来源，优先级如下，由高到低`：
     cd ~/projects/node-bloggy
     npm link redis
 
-也可以简写成：
+也可以`简写`成：
 
     cd ~/projects/node-bloggy
     npm link ../node-redis

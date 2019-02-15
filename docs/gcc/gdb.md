@@ -22,6 +22,28 @@
 * GDB支持的语言：Ada, Assembly, C, C++, D, Fortran, Go, Objective-C, OpenCL, Modula-2, Pascal, Rust
 
 
+## Installation
+
+$ brew install gdb
+
+
+## Mac平台问题
+
+* [ 171112 ] MAC上使用gdb(完美解决) <https://blog.csdn.net/github_33873969/article/details/78511733>
+* mac上使用`brew`安装gdb，会有以下提示：
+
+        gdb requires special privileges to access Mach ports.
+        You will need to codesign the binary. For instructions, see:
+
+          https://sourceware.org/gdb/wiki/BuildingOnDarwin
+
+        On 10.12 (Sierra) or later with SIP, you need to run this:
+
+          echo "set startup-with-shell off" >> ~/.gdbinit
+
+    需要对gdb程序进行`代码签名`，具体参考：<https://sourceware.org/gdb/wiki/BuildingOnDarwin>
+
+
 ## Versions
 
 * 8.1

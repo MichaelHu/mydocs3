@@ -5,6 +5,7 @@
 ## Features
 
 * 使用web技术支持3d地球与3d地图的js库
+* 支持用户自行建模，室外过渡到室内3D
 
 
 ## Resources
@@ -16,3 +17,7 @@
 * demos: <https://cesiumjs.org/demos/>
 * 3d tiles: <https://cesium.com/blog/2017/07/12/the-next-generation-of-3d-tiles/>
 
+
+## Demos
+
+* mago3D: <https://cesiumjs.org/demos/mago3D/>
