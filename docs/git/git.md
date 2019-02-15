@@ -1419,6 +1419,13 @@ When we start mixing branches and commits, we will see how these two features co
     git tag -n3 
     git tag -n5 
 
+    # 推送标签
+    git push --tags
+    git push origin <tagname>
+
+    # 删除远程标签
+    git push origin :refs/tags/<tagname>
+
 
 
 

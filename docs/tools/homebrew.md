@@ -41,6 +41,7 @@
     $ brew help <COMMAND>
 
     $ brew update
+    $ brew update --verbose
 
     # 安装ruby 2.3
     $ brew search ruby
