@@ -716,7 +716,7 @@ todo
 
 ### formatoptions
 
-简写为`fo`，自动换行，支持中文自动换行。可以使用`gq`启动自动格式化。
+简写为`fo`，`自动换行`，支持中文自动换行。可以使用`gq`启动自动格式化。
 
     # default
     :set fo=tcq
@@ -737,6 +737,21 @@ todo
     J
     {Visual}gJ
     gJ
+
+
+### bomb
+
+> BOM - `Byte Order Mark` 字节序标识
+
+    'bomb'	boolean	(default off)
+			local to buffer
+			{not in Vi}
+			{only available when compiled with the |+multi_byte| feature}
+
+* 是一个boolean选项，可以通过`set nobomb`关闭，通过`set bomb`打开
+* 默认是关闭状态
+* 但是，若读入的文件本身是big endian格式，则vim打开时会将开头的`ef bb bf`去掉后再展示，同时将bomb选项打开，这样vim写入时，仍然是big endian格式
+
 
 
 
