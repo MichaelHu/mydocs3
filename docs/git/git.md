@@ -1677,6 +1677,27 @@ It's a very straightforward way of saying that you would like to `copy a series 
 windows机器上添加`sshkey`，可以使用`git bash`来生成。
 
 
+## 常见问题
+
+### 文件名显示乱码
+
+* 包含非ASCII字符的文件名，在`git status`、`git ls-files`命令输出中显示成八进制转义方式，不利于查看差异
+* 从`Git 1.7.10`开始已经引入了对Unicode编码文件名的支持，只是默认情况下会将非ASCII字符文件名显示成八进制转义方式
+* 解决方式为：
+
+        git config core.quotepath off
+        git config --global core.quotepath off
+
+    或者在`.git/config`中的`[core]`段区增加以下行：
+
+        [core]
+            quotepath = false
+
+* 需要注意的是，需提前`排查控制台本身的Font设置`
+
+
+
+
 
 
 

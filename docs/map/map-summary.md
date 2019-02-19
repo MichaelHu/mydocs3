@@ -454,10 +454,10 @@ Google Maps、Virtual Earth等网络地理所使用的`地图投影`，常被称
 
 #### Polygon与MultiPolygon
 
-* `Polygon`是一组闭合的多边形；`MultiPolygon`是多组闭合的多边形
-* `Polygon`在进行区域填充时，其包含的一组闭合多边形中，若只有一个Polygon，其内部会被填充上色；若包含多个Polygon，则会存在空洞( with holes )，第一个Polygon作为外圈( exterior ring )，后续的Polygon作为内圈（或者holes）。如下图所示：
+* `Polygon`包含一组闭合的多边形，可包含0或多个空洞；`MultiPolygon`包含多个Polygon
+* `Polygon`在进行`区域填充`时，其包含的一组闭合多边形中，若只有一个Polygon，其内部会被填充上色；若包含多个Polygon，则会存在`空洞( with holes )`，第一个Polygon作为`外圈( exterior ring )`，后续的Polygon作为`内圈（或者holes）`。如下图所示：
 
-        <img src="./img/multipolygon-180621.png" style="max-height:400px">
+    <img src="./img/multipolygon-180621.png" style="max-height:400px">
 
 * `MultiPolygon`是多组Polygon坐标形成的数组，比Polygon多一个数组层级
 * `Polygon`的coordinates表达形式：
