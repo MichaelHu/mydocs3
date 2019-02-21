@@ -18,8 +18,8 @@
     2. 使程序在特定条件下暂停运行
     3. 当程序暂停运行使，查看发生了什么 
     4. 改变程序，调试bug
-* GDB支持的平台：UNIX/Windows/Mac OS X
-* GDB支持的语言：Ada, Assembly, C, C++, D, Fortran, Go, Objective-C, OpenCL, Modula-2, Pascal, Rust
+* GDB支持的`平台`：UNIX/Windows/Mac OS X
+* GDB支持的`语言`：Ada, Assembly, C, C++, D, Fortran, Go, Objective-C, OpenCL, Modula-2, Pascal, Rust
 
 
 ## Installation
@@ -47,3 +47,12 @@ $ brew install gdb
 ## Versions
 
 * 8.1
+
+
+## Usage
+
+
+
+
+
+
