@@ -23,6 +23,12 @@
 * openssl - <ref://../linux/openssl.md.html>
 
 
+## Versions
+
+    1.13.8
+    0.7.24
+
+
 ## Installation
 
     # mac
@@ -176,13 +182,21 @@
             index index.html;
         }
 
-* 配置启用文件压缩，nginx配置可以根据文件的mime类型决定是否启用压缩。比如针对`css/js/json`文件启用`gzip压缩`，可以如下配置：
+* 配置`启用文件压缩`，nginx配置可以根据文件的`mime类型`决定是否启用压缩。比如针对`css/js/json`文件启用`gzip压缩`，可以如下配置：
 
         http {
             gzip on;
             gzip_types text/css application/javascript application/json;
         }
 
+* 配置`完全关闭`web服务器的`缓存`，要求关闭etag、开启no-cache、设置expires、关闭Last-Modified响应头、忽略客户端If-Modified-Since请求头：
+
+        server {
+            etag off;
+            expires epoch;
+            if_modified_since off;
+            add_header Last-Modified '';
+        }
 
 
 
@@ -609,6 +623,19 @@ resources:
 * Default: `etag on;`
 * Context: `http, server, location`
 
+
+### If-Modified-Since
+
+    if_modified_since off | exact | before;
+
+* Default: `if_modified_since exact;`
+* Context: `http, server, location`
+* `off`: 设置服务器忽略客户端发送的`If-Modified-Since`请求头
+* `exact`：根据客户端发送的`If-Modified-Since`进行精确匹配文件修改时间
+* `before`：进行范围匹配，匹配是否小于或等于`If-Modified-Since`时间
+* 关闭响应头`Last-Modified`，没有特殊指令，只能用`add_header`指令`重写`，具体查看`「  Headers -  add_header指令 」`: <ref://#anchor_98775>
+
+
 ### Expires
 
 通过`expires`指令，添加或者修改`Expires`、`Cache-Control`响应头。
@@ -658,6 +685,7 @@ resources:
             expires epoch;
             rewrite ^\/abc(.*) /apollo$1;
         }
+
 
 
 
@@ -738,6 +766,14 @@ resources:
     uwsgi_ignore_headers
     uwsgi_pass_header
     uwsgi_pass_request_headers
+
+
+### add_header指令
+
+* `add_header`指令可能有多个，分布在不同层级上下文
+* 层级间`可以继承`，但是，继承的条件比较特殊，需要注意，否则很`容易掉入其陷阱`
+* `当且仅当`当前层级内`没有任何add_header指令`时，上级的add_header指令配置才会被继承
+* `add_header`指令的继承`不支持合并继承`
     
         
 

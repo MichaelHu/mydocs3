@@ -13,6 +13,7 @@
 * site: <https://maptalks.org>
 * github: <https://github.com/maptalks/maptalks.js> <iframe src="http://258i.com/gbtn.html?user=maptalks&repo=maptalks.js&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe> 
 * examples: <https://maptalks.org/examples/en/map/load/#map_load>
+* [ 171012 ] 我开发的开源 JS 地图引擎`maptalks.js`, 请大家不吝赐教! - fuzhenn <https://www.v2ex.com/t/397193>
 
 ## 通用插件
 
