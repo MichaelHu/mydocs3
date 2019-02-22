@@ -10,6 +10,12 @@
 
 ## Features
 
+* `query string extensions`:
+
+        print-pdf       include pdf-style to export pdf
+        showNotes       include speaker notes in exported pdf
+        transition      none|fade|slide|convex|concave|zoom
+
 * Transition Modes
 * Themes
 * Speaker Mode: `S` key
@@ -28,11 +34,6 @@
     
 * Multiplexing
 * Code Highlight
-* query string extensions:
-
-        print-pdf       include pdf-style to export pdf
-        showNotes       include speaker notes in exported pdf
-        transition      none|fade|slide|convex|concave|zoom
 
 
 
