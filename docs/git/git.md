@@ -1635,6 +1635,13 @@ It's a very straightforward way of saying that you would like to `copy a series 
 
 
 
+## git symbolic-ref
+
+    # 获取当前分支名
+    git symbolic-ref --short -q HEAD
+
+
+
 ## git rm
 
     git rm -r --cached node_modules

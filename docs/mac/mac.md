@@ -38,6 +38,36 @@ pre.special-chars code {
 * `Caps lock`按钮默认用于中英文输入法切换；`长按`用于大小写切换
 
 
+## macOS 启动u盘制作
+
+### 操作步骤
+
+* 可在App Store上下载macOS Mojave系统安装文件，默认下载位置为：``
+* U盘大小不能低于8G
+* 制作前先将U盘格式化成`MacOS扩展格式`，参考<https://support.apple.com/zh-cn/HT208496>
+* 使用以下命令，制作启动u盘，假设u盘命名为`Mojave`
+
+        sudo /Applications/Install\ macOS\ Mojave.app/Contents/Resources/createinstallmedia \
+            --volume /Volumes/Mojave /Applications/Install\ macOS\ Mojave.app \
+            —nointeraction
+
+* todo...
+
+### 参考文章
+
+* [ 180925 ] macOS Mojave 10.14 U盘USB启动安装盘方法教程 (全新安装 Mac 系统) <https://www.jianshu.com/p/1acb3e5f405f>
+* 如何通过 macOS 恢复功能重新安装 macOS <https://support.apple.com/zh-cn/HT204904>
+* 如何创建可引导的 macOS 安装器 <https://support.apple.com/zh-cn/HT201372>
+* 如何选择另一个启动磁盘 <https://support.apple.com/zh-cn/HT202796>
+* 如何抹掉 Mac 磁盘 <https://support.apple.com/zh-cn/HT208496>
+
+
+
+
+
+
+
+
 ## CTRL-H
 
 `H` - `Hide`: `窗口隐藏`，注意与`窗口最小化`的区别
