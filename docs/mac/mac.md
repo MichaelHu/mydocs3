@@ -42,14 +42,15 @@ pre.special-chars code {
 
 ### 操作步骤
 
-* 可在App Store上下载macOS Mojave系统安装文件，默认下载位置为：``
+* 可在App Store上下载macOS Mojave系统安装文件，默认下载位置为：`/Applications/Install macOS Mojave.app`
 * U盘大小不能低于8G
 * 制作前先将U盘格式化成`MacOS扩展格式`，参考<https://support.apple.com/zh-cn/HT208496>
 * 使用以下命令，制作启动u盘，假设u盘命名为`Mojave`
 
         sudo /Applications/Install\ macOS\ Mojave.app/Contents/Resources/createinstallmedia \
-            --volume /Volumes/Mojave /Applications/Install\ macOS\ Mojave.app \
-            —nointeraction
+            --volume /Volumes/Mojave
+
+        # 非此中划线 —nointeraction
 
 * todo...
 
