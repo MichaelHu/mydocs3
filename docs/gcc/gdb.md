@@ -8,6 +8,8 @@
 * docs: 
     1. debug with gdb <ref://./docs/gdb/index.html>
     2. gdb annotate <ref://./docs/gdb-annotate/index.html>
+* 推荐书籍：`Using GDB: A Guide to the GNU Source-Level Debugger`, by Richard M. Stallman and Roland H. Pesch.
+
 
 
 ## Features
@@ -22,9 +24,39 @@
 * GDB支持的`语言`：Ada, Assembly, C, C++, D, Fortran, Go, Objective-C, OpenCL, Modula-2, Pascal, Rust
 
 
+## Tips
+
+* gdb命令行格式：
+
+        gdb [options] [executable-file [core-file or process-id]]
+        gdb [options] --args executable-file [inferior-arguments ...]
+
+* 在调试程序时，可以指定`core文件`或者`进程id`
+* 若要给可执行程序同时提供运行参数列表，需要使用`--args`选项。也可以进入gdb交互命令模式后，使用`run [arguments]`来运行程序。
+
+
+
 ## Installation
 
-$ brew install gdb
+### homebrew
+
+> macos mojave下总出现`During startup program terminated with signal ?, Unknown signal.`问题，暂无法解决
+
+    $ brew install gdb
+
+
+### 源码编译安装
+
+* 获取最新代码：<ftp://sourceware.org/pub/gdb/snapshots/current/gdb-weekly-8.2.50.20190212.tar.xz>，也可以从以下获取：
+
+        git clone git://sourceware.org/git/binutils-gdb.git
+
+* 源码安装：
+
+        ./configure
+        make
+        make install
+
 
 
 ## Mac平台问题
@@ -41,7 +73,14 @@ $ brew install gdb
 
           echo "set startup-with-shell off" >> ~/.gdbinit
 
-    需要对gdb程序进行`代码签名`，具体参考：<https://sourceware.org/gdb/wiki/BuildingOnDarwin>
+    需要对gdb程序进行`代码签名`，具体参考：<https://sourceware.org/gdb/wiki/BuildingOnDarwin> 及 <https://sourceware.org/gdb/wiki/PermissionsDarwin>
+
+* 未进行gdb程序代码签名前，执行gbd程序进行其他程序调试，会有以下提示：
+
+        Starting program: /Users/hudamin/projects/git/markdown-slides/src/markdown.out ../test/api.md
+        Unable to find Mach task port for process-id 33994: (os/kern) failure (0x5).
+         (please check gdb is codesigned - see taskgated(8))
+
 
 
 ## Versions
@@ -122,6 +161,40 @@ $ brew install gdb
     For more information, type "help" from within GDB, or consult the
     GDB manual (available as on-line info or a printed manual).
     Report bugs to "<http://www.gnu.org/software/gdb/bugs/>".
+
+
+## Commands
+
+    break [file:]function
+        Set a breakpoint at function (in file).
+ 
+    run [arglist]
+        Start your program (with arglist, if specified).
+ 
+    bt  Backtrace: display the program stack.
+ 
+    print expr
+        Display the value of an expression.
+ 
+    c   Continue running your program (after stopping, e.g. at a breakpoint).
+ 
+    next
+        Execute next program line (after stopping); step over any function calls in the line.
+ 
+    edit [file:]function
+        look at the program line where it is presently stopped.
+ 
+    list [file:]function
+        type the text of the program in the vicinity of where it is presently stopped.
+ 
+    step
+        Execute next program line (after stopping); step into any function calls in the line.
+ 
+    help [name]
+        Show information about GDB command name, or general information about using GDB.
+ 
+    quit
+        Exit from GDB.
 
 
 
