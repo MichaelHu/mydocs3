@@ -24,6 +24,9 @@
 ## 考察代码能力
 
 
+### 实现对数组随机打乱
+
+
 ### 实现trim函数
 
 `要求`：
@@ -153,8 +156,7 @@
                     a;
             }
             else {
-                return 
-                    b;
+                return b;
             }
         }
 
@@ -187,8 +189,8 @@
 
         a.splice(1, 0, 1.5);
 
-2. sort
-3. slice, concat
+2. 读写操作：sort, reverse, splice
+3. 只读操作：slice, concat
 4. 实现函数，获取给定数组的总层次。
     
         层次    示例
