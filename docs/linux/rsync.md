@@ -193,7 +193,7 @@
         $ rsync -r --port=8730 ./ admin@172.17.10.41::tmp-data
         $ rsync -r ./ rsync://admin@172.17.10.41:8730/tmp-data
 * `daemon`模式，需要特定的配置文件`rsyncd.conf`，具体查看后文针对`rsyncd.conf`相关章节
-* `modt file`文件，用于用户连接服务时，显示给用户
+* `motd file`文件，用于用户连接服务时，显示给用户
 * 非常有用的配置项还很多，可慢慢研究
 
 

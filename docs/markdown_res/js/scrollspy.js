@@ -505,7 +505,7 @@
             }
             
             $li.append(
-                    '<a href="#' + id
+                    '<a class="navbar-auto-link" href="#' + id
                     + '" data-rel-id="' + id + '">'
                     + $(item).text() + "</a>"
                 )
@@ -518,6 +518,7 @@
             $ul.append($li);
         });
         
+        var isShiftKey = false;
         var $navbar = $("<div></div>").attr("id", "navbar-auto")
             .append($ul)
             .append(
@@ -530,26 +531,61 @@
             )
             .on('click', function(e){
                 var $target = $(e.target)
-                    , $link
-                    , categoryIndex
-                    , contextText
+                    , $link = $target.closest( 'a' )
                     , anchorId
                     ;
-                if($target.closest('a').length){
+
+                if(e.shiftKey){
+                    isShiftKey = true;
+                }
+                else{
+                    isShiftKey = false;
+                }
+
+                if($link.length){
                     e.preventDefault();
                     $link = $target.closest('a'); 
                     if($link[0].protocol == 'file:'){
                         anchorId = $link.data('rel-id');
                         $('#' + anchorId)[0].scrollIntoView();
-                        categoryIndex = $link.parent().data( 'category-index' );
-                        contextText = contextTextList[ categoryIndex ] || $link.text();
-                        console.log( '`「 ' + contextText + ' 」`: ' + '<ref://#' + anchorId + '>' );
                         return;
                     }
                     location.replace($link.attr('href'));
                 }
             });
         
+        /**
+         * 1. shift + click 点击导航链接时，自动将链接信息文本设置到clipboard
+         * 2. isShiftKey用于传递当前是否按下shift按键
+         * 3. ClipboardJS的API不提供event对象，需要isShiftKey来传递事件信息
+         */
+        if ( window.ClipboardJS ) {
+            new ClipboardJS( '.navbar-auto-link', {
+                text: function( trigger ) {
+                    var $target = $(trigger)
+                        , $link = $target.closest( 'a' )
+                        , categoryIndex
+                        , contextText
+                        , anchorId
+                        ;
+
+                    if($link.length){
+                        anchorId = $link.data('rel-id');
+                        categoryIndex = $link.parent().data( 'category-index' );
+                        contextText = contextTextList[ categoryIndex ] || $link.text();
+                        var infoText = '`「 ' + contextText + ' 」`: ' + '<ref://#' + anchorId + '>';
+
+                        console.log( infoText );
+
+                        // 无返回值，则不设置clipboard
+                        if ( isShiftKey ) {
+                            isShiftKey = false;
+                            return infoText;
+                        }
+                    }
+                }
+            } );
+        }
 
         var activeScrolling = 0
             , deltaY = 0
