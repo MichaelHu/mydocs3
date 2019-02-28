@@ -3,15 +3,15 @@
 ## Resources
 
 * github: <https://github.com/spritejs/spritejs> <iframe src="http://258i.com/gbtn.html?user=spritejs&repo=spritejs&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe> 
-* `SpriteJS` —— Canvas动画从未如此简单 <https://www.h5jun.com/post/spritejs.html> 奇舞团团长月影亲自操刀，360开源又一力作。
+* `SpriteJS` - Canvas动画从未如此简单 <https://www.h5jun.com/post/spritejs.html> 奇舞团团长月影亲自操刀，360开源又一力作。
 * Demo - <http://spritejs.org/demo/>
 
 
 ## Features
 
-* 轻量级2D渲染引擎
+* `轻量级`2D渲染引擎
 * 基于canvas绘制的文档对象模型
-* 四种基本精灵类型：Sprite、Path、Label、Group
+* `4种`基本精灵类型：Sprite、Path、Label、Group
 * 支持基础和高级的精灵属性，精灵盒模型、属性与CSS3具有高度一致性。
 * 简便而强大的Transition、Animation API
 * 支持雪碧图和资源预加载
