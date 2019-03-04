@@ -36,7 +36,8 @@
 ### Commands
 
     $ brew install yarn
-    # 若使用nvm，则添加`--without-node`选项
+
+    # brew 2以下，若使用nvm，可添加`--without-node`选项
     $ brew install yarn --without-node
 
     # 更新
