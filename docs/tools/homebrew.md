@@ -20,6 +20,20 @@
 
 
 
+## Tips
+
+* 安装方式为在线安装，安装前会拉取最新版本安装
+* 不提供回到旧版本功能，也不提供安装指定版本的功能
+* `2018年9月`左右开始，新版的brew开始`关闭安装选项`的支持，而将安装选项较优formula本身来管理。具体参考<https://github.com/Homebrew/homebrew-core/issues/31510>
+
+        # 以下在新版的brew中会提示`invalid options`而无法安装
+        $ brew install yarn --without-node
+        $ brew install fontforge --with-python
+
+    新版brew中，只能把额外的options去掉才能正常安装。但如果formula没有更新的话，可能就无法安装了
+
+
+
 
 ## Usage
 
