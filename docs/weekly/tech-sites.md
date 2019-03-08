@@ -8,6 +8,7 @@
 
 * FEX: <http://fex.baidu.com>
 * JDC: <http://jdc.jd.com>
+* 前端九部: <https://www.yuque.com/fe9>
 * PKU Visualization Blog: <http://vis.pku.edu.cn/blog/>
 * EUX: <http://eux.baidu.com>
 * ISUX: <http://isux.tencent.com>
