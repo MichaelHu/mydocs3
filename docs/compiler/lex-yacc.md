@@ -62,10 +62,14 @@
         /* Location data for the look-ahead symbol.  */
         YYLTYPE yylloc;
 
-* `接口`方法，需由外部定义：
+* `接口`方法，需由`外部定义`：
 
         extern void yyerror(char *s);
         extern int yywrap (void );
+
+* `YYERROR_VERBOSE`宏可以打开详细错误提示，打开方式为在`.y`文件定义该宏即可：
+
+        #define YYERROR_VERBOSE 
 
 
 ## yylloc 和 yylval
@@ -112,6 +116,205 @@
 * `yylex()`函数体是由flex`自动`生成的
 * 在`.lex.c`中定义
 * 包含各类`状态转移`相关的逻辑
+
+
+
+
+## Lexer
+
+### Tips
+
+* 变量或者函数多以`yy_`或`yy`为前缀
+
+
+
+### 整型定义
+
+    /* Limits of integral types. */
+    #ifndef INT8_MIN
+    #define INT8_MIN               (-128)
+    #endif
+    #ifndef INT16_MIN
+    #define INT16_MIN              (-32767-1)
+    #endif
+    #ifndef INT32_MIN
+    #define INT32_MIN              (-2147483647-1)
+    #endif
+    #ifndef INT8_MAX
+    #define INT8_MAX               (127)
+    #endif
+    #ifndef INT16_MAX
+    #define INT16_MAX              (32767)
+    #endif
+    #ifndef INT32_MAX
+    #define INT32_MAX              (2147483647)
+    #endif
+    #ifndef UINT8_MAX
+    #define UINT8_MAX              (255U)
+    #endif
+    #ifndef UINT16_MAX
+    #define UINT16_MAX             (65535U)
+    #endif
+    #ifndef UINT32_MAX
+    #define UINT32_MAX             (4294967295U)
+    #endif
+
+
+### 所需类型
+
+    typedef unsigned char YY_CHAR;
+    typedef int yy_state_type;
+
+
+### 所需变量
+
+    FILE *yyin, *yyout;         // 输入输出文件句柄
+    int lineno;                 // 当前行号
+    char *yytext;               // 当前token文本
+    int yy_flex_debug;          // 是否开启调试，使用yyset_debug( int debug_flag )来设置
+
+    // 状态迁移数组
+    yy_acclist
+    yy_accept
+    yy_ec
+    yy_meta
+    yy_base
+    yy_def
+    yy_nxt
+    yy_chk
+
+
+    // 静态全局变量
+    static yy_state_type *yy_state_buf=0, *yy_state_ptr=0;
+    static char *yy_full_match;
+    static int yy_lp;
+    static int yy_looking_for_trail_begin = 0;
+    static int yy_full_lp;
+    static int *yy_full_state;
+
+
+### 所需函数
+
+    // 静态函数
+    static yy_state_type yy_get_previous_state (void );
+    static yy_state_type yy_try_NUL_trans (yy_state_type current_state  );
+    static int yy_get_next_buffer (void );
+    static void yy_fatal_error (yyconst char msg[]  );
+
+    static int yy_init_globals (void );
+
+    // 提供全部变量存取函数
+    /* Accessor methods to globals.
+       These are made visible to non-reentrant scanners for convenience. */
+    int yylex_destroy (void );
+    int yyget_debug (void );
+    void yyset_debug (int debug_flag  );
+    YY_EXTRA_TYPE yyget_extra (void );
+    void yyset_extra (YY_EXTRA_TYPE user_defined  );
+    FILE *yyget_in (void );
+    void yyset_in  (FILE * in_str  );
+    FILE *yyget_out (void );
+    void yyset_out  (FILE * out_str  );
+    yy_size_t yyget_leng (void );
+    char *yyget_text (void );
+    int yyget_lineno (void );
+    void yyset_lineno (int line_number  );
+
+
+### yy_buffer_state
+
+* 使用宏`YY_BUFFER_STATE`来表示buffer状态所需的`数据类型`
+* 包含以下字段：
+
+        yy_input_file       FILE *          输入文件引用
+        yy_ch_buf           char *          输入buffer
+        yy_buf_pos          char *          输入buffer当前位置
+        yy_buf_size         yy_size_t       输入buffer的字节尺寸
+        yy_n_chars          yy_size_t       读入yy_ch_buf的字符数，不包含EOB字符
+        yy_is_our_buffer    int             是否为该buffer的所有者
+        yy_is_interactive   int             是否为一个交互式输入源，确保能在遇到换行后暂停获取输入
+        yy_at_bol           int             是否应该在行首( beginning of a line )，是的话，`^`规则将会生效
+        yy_bs_lineno        int             行号
+        yy_bs_column        int             列号
+        yy_fill_buffer      int             到达buffer末尾时，是否尝试填充
+        yy_buffer_status    int             
+
+* `EOB` - End Of Buffer?
+
+
+> 相关代码如下：
+
+    #ifndef YY_STRUCT_YY_BUFFER_STATE
+    #define YY_STRUCT_YY_BUFFER_STATE
+    struct yy_buffer_state
+    	{
+    	FILE *yy_input_file;
+    
+    	char *yy_ch_buf;		/* input buffer */
+    	char *yy_buf_pos;		/* current position in input buffer */
+    
+    	/* Size of input buffer in bytes, not including room for EOB
+    	 * characters.
+    	 */
+    	yy_size_t yy_buf_size;
+    
+    	/* Number of characters read into yy_ch_buf, not including EOB
+    	 * characters.
+    	 */
+    	yy_size_t yy_n_chars;
+    
+    	/* Whether we "own" the buffer - i.e., we know we created it,
+    	 * and can realloc() it to grow it, and should free() it to
+    	 * delete it.
+    	 */
+    	int yy_is_our_buffer;
+    
+    	/* Whether this is an "interactive" input source; if so, and
+    	 * if we're using stdio for input, then we want to use getc()
+    	 * instead of fread(), to make sure we stop fetching input after
+    	 * each newline.
+    	 */
+    	int yy_is_interactive;
+    
+    	/* Whether we're considered to be at the beginning of a line.
+    	 * If so, '^' rules will be active on the next match, otherwise
+    	 * not.
+    	 */
+    	int yy_at_bol;
+    
+        int yy_bs_lineno; /**< The line count. */
+        int yy_bs_column; /**< The column count. */
+    
+    	/* Whether to try to fill the input buffer when we reach the
+    	 * end of it.
+    	 */
+    	int yy_fill_buffer;
+    
+    	int yy_buffer_status;
+    
+    #define YY_BUFFER_NEW 0
+    #define YY_BUFFER_NORMAL 1
+    	/* When an EOF's been seen but there's still some text to process
+    	 * then we mark the buffer as YY_EOF_PENDING, to indicate that we
+    	 * shouldn't try reading from the input source any more.  We might
+    	 * still have a bunch of tokens to match, though, because of
+    	 * possible backing-up.
+    	 *
+    	 * When we actually see the EOF, we change the status to "new"
+    	 * (via yyrestart()), so that the user can continue scanning by
+    	 * just pointing yyin at a new input file.
+    	 */
+    #define YY_BUFFER_EOF_PENDING 2
+    
+    	};
+    #endif /* !YY_STRUCT_YY_BUFFER_STATE */
+
+    #ifndef YY_TYPEDEF_YY_BUFFER_STATE
+    #define YY_TYPEDEF_YY_BUFFER_STATE
+    typedef struct yy_buffer_state *YY_BUFFER_STATE;
+    #endif
+
+
 
 
 ## Parser
