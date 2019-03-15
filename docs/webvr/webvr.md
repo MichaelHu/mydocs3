@@ -8,6 +8,20 @@
 
 ## tips
 
+### 190315
+
+`Mozilla`工程师在WebXR上做了一些有意思的试验，展示了WebXR的运行原理，从设备采集，服务中转到可视化渲染的过程。
+
+* [ 190307 ] Real virtuality: connecting real things to virtual reality using web technologies <https://hacks.mozilla.org/2019/03/connecting-real-things-to-virtual-worlds-using-web/> Mozilla工程师在WebXR的一些试验性成果
+    * 从IoT( 物联网 )到WoT( 物联Web )
+    * 从WoT到WebXR
+    * 针对WebVR的Web框架 - `A-Frame`
+    * WebVR Demo - 设备识别颜色，反馈在Web界面上
+    * WebAR Demo  
+* [ 190315 ] A-Frame <https://aframe.io/> A `web framework` for building virtual reality experiences: Make WebVR with HTML and Entity-Component Works on Vive, Rift, Daydream, GearVR, desktop. `Docs`: <https://aframe.io/docs/0.9.0/introduction/>
+
+
+
 ### 180330
 
 > WebVR/AR当前进展摘要
