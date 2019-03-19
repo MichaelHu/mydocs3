@@ -7,6 +7,8 @@
 * flex: <ref://./pdf/flex.pdf>
 * bison: <ref://./pdf/bison.pdf>
 * LexAndYaccTutorial: <ref://./pdf/LexAndYaccTutorial.pdf>
+* site: <http://dinosaur.compilertools.net> 
+* gnu bison page: <https://www.gnu.org/software/bison/>
 
 
 ## Features
@@ -62,14 +64,43 @@
         /* Location data for the look-ahead symbol.  */
         YYLTYPE yylloc;
 
-* `接口`方法，需由`外部定义`：
+* `接口`方法，必须由`外部定义`：
 
         extern void yyerror(char *s);
         extern int yywrap (void );
 
+    `yyerror()`错误提示以后，解析器会进行`错误恢复`。
+
 * `YYERROR_VERBOSE`宏可以打开详细错误提示，打开方式为在`.y`文件定义该宏即可：
 
         #define YYERROR_VERBOSE 
+
+* `错误处理`相关宏：
+
+        yyerrok;
+        yyclearin;
+        YYABORT;
+        YYACCEPT;
+        YYERROR;
+
+        YYEMPTY
+        YYEOR
+
+        YYRECOVERING()
+
+* 错误处理`相关token`：`error`，该token是一个`预定义`的token，当归约过程发生错误时，Parser会`自动产生`一个`名为error`的token，并可以使用已定义的包含error token的归约规则进行规约。这样就可以`精细化控制`各种可能发生的错误情况下的处理方式。比如markdown解析器对于`BACKTICK`相关归约规则的错误处理，如下：
+
+        ...
+        | BACKTICK codespan error  {
+                blocknode_create(TAG_EOF, -2, 1, str_concat( "`", $2 ));
+                blocklist_parse();
+                YYABORT;
+            }
+        ...
+
+        
+
+
 
 
 ## yylloc 和 yylval
@@ -122,9 +153,78 @@
 
 ## Lexer
 
+> lex/flex
+
 ### Tips
 
+* `输入文件格式`（3段）：定义段、规则段、用户代码段，段与段之间用`单行首列`开始的`%%`分隔
+
+         definitions
+         %%
+         rules
+         %%
+         user code
+
+* `定义段`和`规则段`中，任何缩进文本或者包含在`%{`和`%}`内的文本都会直接复制到输出中。需要注意的是，其中的`%{`和`%}`必须行首开始。
+* 前两个段中，可以使用`%{`和`%}`包含的文本，用于直接拷贝至生成的代码文件（`*.lex.c`）中
+* `最简单`的flex输入文件，只包含一个段分隔符：
+        %%
+    该输入生成的词法分析器，只是简单的将`输入拷贝至输出`。
+* 规则的格式：
+
+        pattern action
+
+    每一条规则由`模式-行为对`组成。
+* 规则模式，支持`扩展正则`（extended regular expression），正则功能非常完善，提供了`强大`的文本匹配能力，其他正则参考这里<ref://../frontend/regexp.md.html>
+* `规则匹配方式`：
+    1. 任何未匹配规则的文本`默认复制`到输出，不管是否在特定开始条件下，未匹配问呗照样直接复制到输出。认为在扫描过程中，`存在扫描死锁`的情况，是一种理解误区，这是使用者非常容易犯的错误
+    2. `最长匹配优先`，匹配文本最多的规则优先选中，与规则先后定义的`顺序无关`
+    3. 达到`最长匹配`的规则`有多条`的情况下，定义顺序优先，`先定义的规则优先`选中
+* 表示文件结束的规则，使用`<<EOF>>`
+
+        <<EOF>>                 文件结束符
+        <s1, s2><<EOF>>         条件s1或s2下的文件结束符
+
+* `r/s`，前向匹配
+* trailing context( `/`或者`$` )，在一条规则中`至多出现一次`，比如：
+
+        foo/bar         前向匹配规则，匹配后跟bar的foo
+        foo/bar$        尾部上下文/和$同时出现，是不合法的！要求两者至多只出现一次
+
+    同时，两者都`不能包含在组合`中，否则将`只表示其字面意义`，比如：
+
+        (foo/bar)
+        foo|(bar$)
+
+* 开始条件`<s>`、行首`^`、文件结束符`<<EOF>>`只能出现在pattern首部，行尾`$`只能出现在末尾，否则都将只表示其字面意义
+
+        a<s>
+        foo|^abc
+        foo<<EOF>>
+        (foo$)
+
+    以上例子中，`<s>`, `^`, `<<EOF>>`, `$`只表示其字面意义，而不是开始条件、行首、文件结束符、行尾。只能如下用法：
+
+        <s>a
+        ^abc|foo
+        <<EOF>>
+        foo$
+
+* `|`可以支持pattern跨行，表示两个规则有一个满足即可执行对应action
+
+        foo     |
+        bar$            action
+
+    以上使用`多条复杂规则跨行`编写。但如果规则不复杂，可以直接写成正则表达式的方式：
+
+        foo|bar$        action
+
 * 变量或者函数多以`yy_`或`yy`为前缀
+
+
+
+
+
 
 
 
@@ -203,7 +303,7 @@
 
     static int yy_init_globals (void );
 
-    // 提供全部变量存取函数
+    // 提供全部变量的存取函数
     /* Accessor methods to globals.
        These are made visible to non-reentrant scanners for convenience. */
     int yylex_destroy (void );

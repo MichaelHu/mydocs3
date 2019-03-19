@@ -1461,5 +1461,15 @@ FF下，用JS实现：
 
 
 
+## 平滑滚动相关 
+
+
+
+    scroll-behavior: smooth（滑动丝滑）
+    history.scrollRestoration（记录滚动位置）
+
+
+
+
 
 > 不要把`一知半解`当作你的认知成就。 —— iRice
