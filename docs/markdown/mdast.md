@@ -218,7 +218,7 @@
 
 > 使用`remark-parse` <https://github.com/wooorm/remark/tree/master/packages/remark-parse>
 
-`remark-parse`是`unified`的解析器之一。unified是一个使用语法数的文本解析器，支持remark， retext以及rehype解析器（parser）。
+`remark-parse`是`unified`的解析器之一。unified是一个使用语法树的文本解析器，支持remark， retext以及rehype解析器（parser）。
 
     npm install remark-parse
 
