@@ -10,6 +10,15 @@
 Less是一个CSS预处理器，扩展了CSS语言，添加了新的特性：允许`变量`、`mixin`、
 `函数`以及其他使得css更加容易维护和扩展的技术。
 
+
+## Tips
+
+* `2.7.0`版本修复了一个重要bug，解决了2.7.0以前版本对`Node 6+`的兼容性问题 <https://github.com/less/less.js/blob/master/CHANGELOG.md#270>
+* 其中对`package.json`的修改，将`less`的版本变为`>=2.7.0`，解决原来使用`2.6.0`版本，在`Node 6+`下不兼容的问题 <https://github.com/MichaelHu/gitbook-plugin-theme-sophon/blob/1.0.4/package.json>
+
+
+
+
 ## 安装和使用
 
 1. nodejs命令行方式
