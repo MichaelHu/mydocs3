@@ -13,6 +13,7 @@
 ### Resources
 
 * c语言中static关键字用法详解 <https://blog.csdn.net/guotianqing/article/details/79828100>
+* Segmentation Fault错误原因总结 <https://blog.csdn.net/u010150046/article/details/77775114>
 
 ### 使用场景
 

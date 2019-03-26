@@ -21,6 +21,25 @@
 
 ## Tips
 
+> 语法规则相关
+
+* `语法规则`的解析过程，从起始规则开始演进，一开始状态栈是空的。每一条语法规则`可用于归约`，其`前提是`从起始规则开始演进，在某一输入条件下，栈顶出现该规则的右侧模式
+* 某一语法规则，`不能脱离`从起始规则开始`演进`的`路径或上下文`，也就是说语法规则不会凭空出现在状态栈顶，而是需要在特定上下文满足后才会出现，比如：
+
+        line:
+            H headertext LINEBREAK  { ... }
+
+        headertext:
+            headertext TEXT         { ... }
+            | headertext link       { ... }
+            | %empty                { ... }
+            ;
+
+    根据语法演进规则，`headertext`不会凭空出现在栈顶，其出现的栈顶的`前提条件`是通过演化，栈中已经存在`H`。也就是`不能`脱离语法规则的演进，而`孤立`的来`看待`每一条语法规则。
+
+
+> 实现细节相关
+
 * `flex`生成`Scanner`，`bison`生成`Parser`
 * 相关文件扩展名：`.lex` - 词法分析配置文件，`.y` - 语法分析配置文件
 * 旧版本是`lex-yacc`工具集，新版本是`flex-bison`工具集
@@ -99,7 +118,6 @@
         ...
 
         
-
 
 
 
@@ -907,6 +925,68 @@
     int yyparse ();
     #endif
     #endif /* ! YYPARSE_PARAM */
+
+
+
+## shift/reduce conflicts
+
+> 移进/归约冲突
+
+### 典型移进/规约冲突
+
+    if_stmt:
+        "if" expr "then" stmt
+        | "if" expr "then" stmt "else" stmt
+        ;
+
+以上两条规则，存在以下冲突：
+
+    rule 1: "if" expr "then" stmt .
+    rule 2: "if" expr "then" stmt . "else" stmt
+
+`.`表示当前所处位置，此时栈顶为`stmt`。根据语法规则，按`rule 1`归约，或按`rule 2`移进下一个token，都是合法的选择。
+
+对于以上可规约也可移进的情况，我们称之为`移进规约冲突`。
+
+
+### Tips
+
+* 对于`移进归约冲突`，bison的默认解决方式是`选择移进`
+* 除非指定算符优先级：
+
+        %left           yacc定义
+        %righ           yacc定义
+        %nonassoc       yacc定义
+        %precedence     bison新增
+
+* 同一行优先级一样，后定义的行比先定义的行优先级更高 
+* 将一个算符的优先级赋予一条语法规则
+
+        ...
+        %left '+' '-'
+        %left '*'
+        %left UMINUS
+
+        exp:
+            ...
+            | exp '-' exp
+                ...
+            | '-' exp %prec UMINUS
+
+
+
+## reduce/reduce conflicts
+
+> 归约/归约冲突
+
+### Tips
+
+* `归约/归约冲突`，需要避免，通常预示语法规则存在问题
+* 对于此类冲突，bison的默认解决方式是`选择先出现的规则`进行归约
+* 可以通过指定规则优先级（`%prec`）的方式来明确指出`规约优先级`
+
+
+
 
 
 

@@ -1052,15 +1052,44 @@ For example, commit C1 can be rebased past C3. It then appears that the work for
     git prune --dry-run
     git prune --verbose
     git prune -v --progress
+    git remote prune origin
+
+
+### Examples
+
+    # 修剪远程分支，以与远程同步
+    $ git remote prune origin
+
 
 todo
+
+
 
 
 ## git clean
 
     git clean [-d] [-f] [-i] [-n] [-q] [-e <pattern>] [-x | -X] [--] <path>...
 
+### Examples
+
+    $ git clean --force
+
 todo
+
+
+## git blame
+
+> 查看文件`逐行修改`记录
+
+    git blame <file>
+    git blame --incremental -- <file>
+
+
+### Examples
+
+    $ git blame <file>
+
+
 
 
 ## git gc
