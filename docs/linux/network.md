@@ -103,7 +103,51 @@
 
 ### Tips
 
-* 通过命令，可以查到域名的解析记录，但不表明该域名是可以访问的
+* 通过命令，可以查到域名的解析记录，但`不表明`该域名是可以访问的
+* 通过dig命令能查到解析记录，但不确保nslookup能成功，比如：
+
+        # dig成功
+        $ dig web.pre21.lk
+
+        ; <<>> DiG 9.10.6 <<>> web.pre21.lk
+        ;; global options: +cmd
+        ;; Got answer:
+        ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 59371
+        ;; flags: qr aa rd; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+        ;; WARNING: recursion requested but not available
+
+        ;; OPT PSEUDOSECTION:
+        ; EDNS: version: 0, flags:; udp: 4096
+        ;; QUESTION SECTION:
+        ;web.pre21.lk.			IN	A
+
+        ;; ANSWER SECTION:
+        web.pre21.lk.		60	IN	A	172.17.6.75
+
+        ;; Query time: 84 msec
+        ;; SERVER: 172.17.10.78#53(172.17.10.78)
+        ;; WHEN: Wed Mar 27 16:56:18 CST 2019
+        ;; MSG SIZE  rcvd: 69
+
+
+        # ping成功
+        $ ping web.pre21.lk
+        PING web.pre21.lk (172.17.6.75): 56 data bytes
+        64 bytes from 172.17.6.75: icmp_seq=0 ttl=60 time=31.504 ms
+        64 bytes from 172.17.6.75: icmp_seq=1 ttl=60 time=36.663 ms
+        ^C
+        --- web.pre21.lk ping statistics ---
+        2 packets transmitted, 2 packets received, 0.0% packet loss
+        round-trip min/avg/max/stddev = 31.504/34.084/36.663/2.579 ms
+
+
+        # nslookup失败
+        $ nslookup web.pre21.lk
+        ;; Got recursion not available from 172.17.10.78, trying next server
+        Server:		1.1.1.1
+        Address:	1.1.1.1#53
+
+        ** server can't find web.pre21.lk: NXDOMAIN
 
 
 

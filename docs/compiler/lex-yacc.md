@@ -23,7 +23,7 @@
 
 > 语法规则相关
 
-* `语法规则`的解析过程，从起始规则开始演进，一开始状态栈是空的。每一条语法规则`可用于归约`，其`前提是`从起始规则开始演进，在某一输入条件下，栈顶出现该规则的右侧模式
+* `语法规则`的解析过程，`从起始规则开始演进`，一开始状态栈是空的。每一条语法规则`可用于归约`，其`前提是`从起始规则开始演进，在某一输入条件下，栈顶出现该规则的右侧模式
 * 某一语法规则，`不能脱离`从起始规则开始`演进`的`路径或上下文`，也就是说语法规则不会凭空出现在状态栈顶，而是需要在特定上下文满足后才会出现，比如：
 
         line:
@@ -972,6 +972,47 @@
             | exp '-' exp
                 ...
             | '-' exp %prec UMINUS
+
+
+### output文件解析
+
+    state 39
+
+        7 block: block_p .
+       18 block_p: block_p . line_p
+
+        TEXT              shift, and go to state 6
+        SPECIALCHAR       shift, and go to state 7
+        LINK              shift, and go to state 16
+        BACKTICK          shift, and go to state 17
+        EXCLAMATION       shift, and go to state 24
+        LEFTSQUARE        shift, and go to state 25
+        UNDERSCORE        shift, and go to state 26
+        STAR              shift, and go to state 27
+        DOUBLESTAR        shift, and go to state 30
+        DOUBLEUNDERSCORE  shift, and go to state 31
+
+        TEXT              [reduce using rule 7 (block)]
+        SPECIALCHAR       [reduce using rule 7 (block)]
+        LINK              [reduce using rule 7 (block)]
+        BACKTICK          [reduce using rule 7 (block)]
+        EXCLAMATION       [reduce using rule 7 (block)]
+        LEFTSQUARE        [reduce using rule 7 (block)]
+        UNDERSCORE        [reduce using rule 7 (block)]
+        STAR              [reduce using rule 7 (block)]
+        DOUBLESTAR        [reduce using rule 7 (block)]
+        DOUBLEUNDERSCORE  [reduce using rule 7 (block)]
+        $default          reduce using rule 7 (block)
+
+        line_p          go to state 109
+        inlineelements  go to state 60
+        inlineelement   go to state 61
+        link            go to state 62
+
+* 当前状态为`state 39`
+* `规则7`和`规则18`发生移进/归约冲突
+* 冲突后，`默认`采取`移进`措施
+
 
 
 
