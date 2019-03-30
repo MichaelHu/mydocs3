@@ -1538,8 +1538,10 @@ todo
     # 普适
     lsb_release -a
     cat /etc/issue
-    # 适用于redhat
+
+    # 适用于redhat, centos
     cat /etc/redhat-release
+    CentOS Linux release 7.3.1611 (Core)
 
 
 
