@@ -6,13 +6,16 @@
 ## Tips
 
 * 注意`声明和定义`的区别
+* `开发模式`相关概念：static关键字模块化，可变参数列表，函数指针
 
 
 ## static关键字
 
 ### Resources
 
+* C语言 数组初始化的三种常用方法（{0}, memset, for循环赋值）以及原理 <http://www.cnblogs.com/fnlingnzb-learner/p/8057257.html>
 * c语言中static关键字用法详解 <https://blog.csdn.net/guotianqing/article/details/79828100>
+* 对C语言 static作用——修饰 变量（全局变量/局部变量）、函数 <https://blog.csdn.net/weixin_42167759/article/details/80287748>
 * Segmentation Fault错误原因总结 <https://blog.csdn.net/u010150046/article/details/77775114>
 
 ### 使用场景
@@ -52,6 +55,34 @@
     7. extern的使用方法是直接了当的，想引用哪个函数就用extern声明哪个函数。这大概是kiss原则的一种体现。这样做的一个明显的好处是，会加速程序的编译(确切地说是预处理)的过程，节省时间。在大型C程序编译过程中，这种差异是非常明显的。
 * 可用于指示C或者C++函数的`调用规范`。比如在`C++中调用C库函数`，就需要在C++程序中用`extern "C"`声明要引用的函数
 * `extern "C"`是给链接器使用的，告诉链接器在链接的时候用`C函数规范`来链接。主要原因是C++和C程序编译完成后在`目标代码中命名规则不同`。
+
+
+
+## 可变参数列表
+
+    #include <stdarg.h>
+
+    t_node *node_create(t_node_type type, t_tag tag, int level, int nops, va_list args) {
+        ...
+        for (i = 0; i < nops; i++){
+            p->ops[i] = va_arg(args, char*);
+        }
+        ...
+    }
+
+    t_node *block_node_create(t_tag tag, int level, int nops, ...) {
+        ...
+        va_list args;
+        va_start(args, nops);
+        p = node_create(NODE_TYPE_BLOCK, tag, level, nops, args);
+        va_end(args);
+        ...
+    }
+
+
+
+
+## 函数指针
 
 
 
