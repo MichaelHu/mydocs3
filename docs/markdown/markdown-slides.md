@@ -1,16 +1,16 @@
 # markdown-slides
 
-## Resources
-
-* github: <https://github.com/MichaelHu/markdown-slides> <iframe src="http://258i.com/gbtn.html?user=MichaelHu&repo=markdown-slides&type=star&count=true" frameborder="0" scrolling="0" width="105px" height="20px"></iframe>
-* turbo-markdown: <ref://./turbo-markdown.md.html>
-
-
 ## Features
 
 * 基于`lex/yacc`编写的markdown编译器
 * 支持`@s, @vs, @[...]`语法，能输出`reveal.js`兼容的代码
 * 为`trubo-markdown` ( <ref://./turbo-markdown.md.html> ) 以及`fast-slides` ( <ref://../ppt-tools/fast-slides.md.html> ) 提供解析器
+
+
+## Resources
+
+* github: <https://github.com/MichaelHu/markdown-slides>
+* turbo-markdown: <ref://./turbo-markdown.md.html>
 
 
 ## Todo
@@ -30,10 +30,12 @@
             Hn支持链接、图片
             blockquote支持多级
     v1.0
-        支持更多语法，如table等
+        支持更多语法，如table, ```等
         增强错误处理和恢复能力
     v0.1.x
         支持部分语法
+
+
 
 ## 原理
 
@@ -41,8 +43,8 @@
     行组成块(block)
     根据行的indent-level对块进行修正分拆
 
-    第一次扫描，生成块标签
-    块标签同属于一个级别，所有块标签构成根标签的孩子列表
+    第一次扫描生成节点树，以TAG_ROOT为根，块节点为根节点的一级孩子节点
+    块标签同属于一个级别，所有块标签构成根标签的一级孩子列表
         tag: TAG_ROOT; level: 0
         tag: TAG_H; level: 0;
         tag: TAG_BLOCK_BLANK; level: 0
@@ -118,10 +120,11 @@
 
 #### Tips
 
-* 由于没有按缩进级别生成特定的token，`不同缩进级别`的标签可能划归同一个块。上述标签中，`行12-行13`的缩进级别不同，但划归了同一个块；`行15-行23`有`3种`不同缩进级别，但都划归了同一个块。
+* 由于没有按缩进级别生成特定的token，`不同缩进级别`的标签可能`划归同一个块`。上述标签中，`行12-行13`的缩进级别不同，但划归了同一个块；`行15-行23`有`3种`不同缩进级别，但都划归了同一个块。
 * 解释一下，如果`按缩进级别生成特定的token`，能解决标签划归的问题，但是由于特定token是固定集合，对于`支持无限缩进层级`的特性，就不好实现了。
 * 实际实现的时候，采取不安缩进级别生成特定token的方案，以便`支持无限缩进层级`
 * 语法解析`粗分类`，必然导致生成的节点树存在`层级混乱`的问题，我们需要在拿到节点树后，对其进行`二次修正`
+* 不同缩进级别划归同一块的问题，通常出现的标签为：`TAG_INDENT_UL`, `TAG_INDENT_OL`, `TAG_INDENT_TEXT`；而`TAG_INDENT_PRE`则不会出现（`重要`）
 
 
 ### 二次修正
@@ -132,9 +135,90 @@
 * `补全块节点`，需要扫描行节点列表，兄弟行节点间如果出现level不一致，则需新增一个块节点
 * 语法解析得到的节点树，所有块节点都是同一个级别的，都作为根节点的孩子节点。但对于缩进的情况，块节点可能成为其他节点的孩子节点。还需要对`块节点列表进行分级`。
 
+
 #### 补全块节点
 
+##### 算法
+
+    遍历节点树
+        记遍历过程的当前节点为node，node的父亲节点为parent
+        若node为非块节点
+            若node.level与parent.level不匹配
+                新建一个与node.level匹配的对应类型的block节点，记为new_uncle，并追加在parent后面
+                将node挂载到last_uncle下，注：只更新node的prev及parent链接，保持其next和children链接不变
+
+##### Tips
+
+* 只针对`非块节点`组成的`兄弟列表`，目前需要修正的`非块节点`为以上提到的`三类`
+* 列表中，level不匹配的节点，需要挂载到`新创建`的块节点下
+* 挂载过程，会将`节点及其后接兄弟节点`一起挂载到新的块节点下
+* `重要`：补全块节点在第一次生成节点树后执行，此时所有的块节点都作为`TAG_ROOT节点`的`一级孩子节点`，`不存在`块节点作为行节点的孩子节点的情况
+* `但是`，进行后续的块节点分级以后，是存在块节点作为行节点孩子节点的情况的
+* 补全块节点的过程中，会`实时更新树结构`，新创建的块节点会在后续遍历过程中被访问到
+
+
 #### 块节点分级
+
+以下为补全块节点后的节点遍历输出：
+
+    01 tag: TAG_BLOCK_UL; level: 0
+    02 tag: TAG_UL; level: 0
+    03     tag: TAG_BLOCK_INDENT_OL; level: 1
+    04     tag: TAG_INDENT_OL; level: 1
+    05         tag: TAG_BLOCK_INDENT_UL; level: 2
+    06         tag: TAG_INDENT_UL; level: 2
+    07             tag: TAG_BLOCK_INDENT_UL; level: 3
+    08             tag: TAG_INDENT_UL; level: 3
+    09                 tag: TAG_BLOCK_INDENT_OL; level: 4
+    10                 tag: TAG_INDENT_OL; level: 4
+    11                     tag: TAG_BLOCK_INDENT_OL; level: 5
+    12                     tag: TAG_INDENT_OL; level: 5
+    13                     tag: TAG_INDENT_OL; level: 5
+    14                     tag: TAG_INDENT_OL; level: 5
+    15                         tag: TAG_BLOCK_INDENT_OL; level: 6
+    16                         tag: TAG_INDENT_OL; level: 6
+    17                         tag: TAG_INDENT_OL; level: 6
+    18                             tag: TAG_BLOCK_INDENT_TEXT; level: 7
+    19                             tag: TAG_INDENT_TEXT; level: 7
+    20                         tag: TAG_BLOCK_INDENT_TEXT; level: 6
+    21                         tag: TAG_INDENT_TEXT; level: 6
+    22                     tag: TAG_BLOCK_INDENT_TEXT; level: 5
+    23                     tag: TAG_INDENT_TEXT; level: 5
+    24                 tag: TAG_BLOCK_INDENT_TEXT; level: 4
+    25                 tag: TAG_INDENT_TEXT; level: 4
+    26             tag: TAG_BLOCK_INDENT_TEXT; level: 3
+    27             tag: TAG_INDENT_TEXT; level: 3
+    28             tag: TAG_BLOCK_INDENT_PRE; level: 3
+    29             tag: TAG_INDENT_PRE; level: 3
+    30             tag: TAG_INDENT_PRE; level: 3
+    31             tag: TAG_INDENT_PRE; level: 3
+    32             tag: TAG_BLOCK_INDENT_UL; level: 3
+    33             tag: TAG_INDENT_UL; level: 3
+    34                 tag: TAG_BLOCK_INDENT_OL; level: 4
+    35                 tag: TAG_INDENT_OL; level: 4
+    36                 tag: TAG_INDENT_OL; level: 4
+
+* 到目前为止，节点树中，块级节点总是作为`TAG_ROOT`的`一级孩子节点`存在，并`没有`真正体现节点之间的`层次关系`
+* `但是`，块节点与其下属的行级节点之间的层次关系已经在前一步补全块节点中完成
+* `所以`，调整过程`只需考虑块节点`，将其`挂载`至对应的父级节点（一般为行级节点）即可
+* 针对以上遍历输出，需作出以下调整：
+
+        原始行      原父节点        新父节点 
+        ==================================================
+        03          TAG_ROOT        02
+        05          TAG_ROOT        04
+        07          TAG_ROOT        06
+        09          TAG_ROOT        08
+        11          TAG_ROOT        10
+        15          TAG_ROOT        14
+        18          TAG_ROOT        17
+        20          TAG_ROOT        14
+        22          TAG_ROOT        10
+        24          TAG_ROOT        08
+        26          TAG_ROOT        06
+        28          TAG_ROOT        06
+        32          TAG_ROOT        06
+        34          TAG_ROOT        33
 
 
 
