@@ -84,6 +84,20 @@
 
 ## 函数指针
 
+    typedef struct {
+        char *(*pre_parse)(t_node *);
+        char *(*post_parse)(t_node *);
+    } t_parser;
+
+    typedef t_link *(*t_visitor)(t_node *);
+
+    static t_visitor get_visitor(t_node *node) {
+        ...
+    }
+
+* 函数指针类型类型定义
+* 定义返回函数指针的函数时，需要用到`typedef`
+
 
 
 ## time.h
