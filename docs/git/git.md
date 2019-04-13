@@ -487,6 +487,12 @@ commit log按`时间逆序`排列，但是最近的commit不一定比较远的co
     # 更改上一次提交的日志
     git commit --amend -m "COMMENT MESSAGE"
 
+    # 支持多行日志
+    git commit --amend -m "COMMENT MESSAGE" \
+        -m "COMMENT MESSAGE 2" \
+        -m "COMMENT MESSAGE 3"
+
+
 
 
 ## git push
