@@ -28,10 +28,10 @@
             blockquote支持多级
 
         todo:
-            代码空行保留
+            增加支持标准a/img/hr/em/strong
+            table支持缩进
             blockquote全系支持
             @s/@vs支持
-            增加支持标准a/img/hr/em/strong
             增加支持``
             支持JSON格式输出
             内存优化
@@ -343,7 +343,7 @@
                 若p1暂无孩子节点，则将node作为p1的孩子节点列表首节点（注意：只移动node节点，其后面为其他块级节点需要与node前方的节点拼接）
                 若p1存在孩子节点，则将node移动到p1孩子节点列表的末尾（注意：同上，只移动node节点）
             若node为空行块级节点
-                查找离prev_node节点最近的祖先块级节点，记为p2
+                查找离prev_node节点最近的祖先块级节点或者行级列表节点，记为p2
                 若p2无孩子节点（比如TAG_H），则不执行任何操作
                 若p2存在孩子节点，则将node移动到p2孩子节点列表的末尾（同上，只移动node节点），同时修正node的level
 
@@ -456,7 +456,7 @@
         记遍历过程的当前节点为node，节点遍历顺序的上一节点为prev_node
         若node为块节点（因为该算法只需调整块节点，而且是部分块节点）
             若node.tag与node.prev.tag相同
-                若node为B类块节点，或node为C类块节点且prev_node不为空行节点
+                若node为B类块节点，或node为C类块节点且prev_node不为空行节点，或node为C类块节点且prev_node为唯一空行节点
                     将node.children移出并追加到node.prev.children尾部
                     移除node节点
 
@@ -483,13 +483,21 @@
     06         printf("Hello, World!\n");
     07     }
 
-> 案例3：行01和行04`不合并`，空行03属于list之间的空行
+> 案例3：行01和行04`合并`，空行03属于list之间的`唯一空行`
 
     01 * list 1
     02     test 1 
     03 
     04 * list 2
 
+
+> 案例4：行01和行04`不合并`，list之间存在`多于一个的空行`
+
+    01 * list 1
+    02     test 1 
+    03 
+    04
+    05 * list 2
 
 
 
