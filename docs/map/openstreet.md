@@ -31,7 +31,7 @@
 
 ### 关于OSM瓦片数据
 
-使用瓦片： <https://switch2osm.org/using-tiles/>，没有直接下载可用的瓦片数据，需要根据OSM的数据自己生成瓦片。
+使用瓦片： <https://switch2osm.org/using-tiles/>，没有直接下载可用的瓦片数据，需要根据`OSM的数据`自己生成瓦片。
 
 提供瓦片服务： <https://switch2osm.org/serving-tiles/>，貌似瓦片数据是可以在服务端生成的。需要自行搭建服务器。
 

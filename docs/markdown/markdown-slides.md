@@ -9,8 +9,9 @@
 
 ## Resources
 
-* github: <https://github.com/MichaelHu/markdown-slides>
-* turbo-markdown: <ref://./turbo-markdown.md.html>
+* **github**: <https://github.com/MichaelHu/markdown-slides>
+* **turbo-markdown**: <ref://./turbo-markdown.md.html>
+* **lex-yacc**: <ref://../compiler/lex-yacc.md.html>
 
 
 ## Versions
@@ -25,13 +26,15 @@
         更强的错误处理和恢复能力
         支持更多语法
             Hn支持链接、图片
-            blockquote支持多级
+            增加支持标准a/img/em/strong
+            table支持缩进
+            支持会车转义，反斜线后跟实体换行符，会在文本中插入<br>
 
         todo:
-            增加支持标准a/img/hr/em/strong
-            table支持缩进
-            blockquote全系支持
+            blockquote支持多级
             @s/@vs支持
+            支持hr
+            blockquote全系支持
             增加支持``
             支持JSON格式输出
             内存优化
@@ -45,6 +48,8 @@
 
 
 ## 原理概述
+
+    词法分析器，封装状态栈以提供复杂上下文词法
 
     逐行(line)处理
     行组成块(block)
@@ -65,6 +70,10 @@
 
     节点树的多次二次修正，得到正确描述文档结构的语法树
     对语法树进行解析输出
+
+    语法错误恢复及处理是一个非常重要的专题
+        根据逐行处理逻辑，错误恢复会在行级增加一条语法规则 block: error
+        在该语法规则中会生成块级节点TAG_ERROR
 
 
 ## 数据结构
@@ -171,7 +180,7 @@
 
 ### 修正标签level
 
-语法解析过程中，`TAG_INLINE_*`类型节点，其缩进级别取决于其所在的上下文，所要在二次修正中做调整。所以在语法解析时，将其level设置为99999，以便在修正过程中识别。
+语法解析过程中，`TAG_INLINE_*`或`TAG_TD`等类型节点，其缩进级别取决于其所在的上下文，所要在二次修正中做调整。所以在语法解析时，将其level设置为99999，以便在修正过程中识别。
 
 #### 算法
 
@@ -288,10 +297,10 @@
 
 #### 块节点分级需求
 
-* 到目前为止，节点树中，块级节点总是作为`TAG_ROOT`的`一级孩子节点`存在，并`没有`真正体现节点之间的`层次关系`
+* 到目前为止，节点树中，**块级节点**总是作为`TAG_ROOT`的`一级孩子节点`存在，并`没有`真正体现节点之间的`层次关系`
 * `但是`，块节点与其下属的行级节点之间的层次关系已经在前一步补全块节点中完成
 * `所以`，调整过程`只需考虑块节点`，将其`挂载`至对应的父级节点（一般为行级节点）即可
-* 实际上，除特殊的空行块节点外，`0级块节点`是不需要调整的，只需针对`1级及以上`的块节点进行调整。空行节点相关的层级调整，参考`「  基于语法树的二次修正 -  块节点分级 -  关于空行节点 」`: <ref://#anchor_bbc35>
+* 实际上，除特殊的**空行块节点**以及**错误节点**外，`0级块节点`是不需要调整的，只需针对`1级及以上`的块节点进行调整。空行节点相关的层级调整，参考`「  基于语法树的二次修正 -  块节点分级 -  关于空行节点 」`: <ref://#anchor_bbc35>
 
 
 #### 关于空行节点
@@ -301,9 +310,9 @@
 * `空行节点`是一个非常特殊的节点，在`不同上下文`有不同作用
 * 语法解析过程中，`较难判断空行所属的父级节点`，所以一次解析后的语法树中，所有的空行块节点的level都`默认设为0`
 * 空行节点主要有`两个作用`：`分隔块节点`或`表示实体空行`
-* 作为块节点分隔时，空行节点不输出，只用于决定是否开启新的块级节点
-* 作为实体内容时，空行节点需要输出，比如`缩进代码行之间的空行`
-* 可以通过`块节点分级`，对`空行块节点`进行层级归属修正，修正的原则为：`「空行块节点归属于离其最近的块级节点」`，并相应的`修正缩进级别`
+* 作为**块节点分隔**时，空行节点不输出，只用于决定是否开启新的块级节点
+* 作为__实体内容__时，空行节点需要输出，比如`缩进代码行之间的空行`
+* 可以通过`块节点分级`，对`空行块节点`进行层级归属修正，修正的原则为：__「空行块节点归属于离其最近的块级节点」__，并相应的`修正缩进级别`
 
 
 > 综合以上分级需求，针对上述遍历输出，我们需作出以下调整：
@@ -328,12 +337,45 @@
         45          TAG_ROOT        40
         47          TAG_ROOT        40
 
+#### 关于错误节点
+
+> *逐行错误恢复规则*中，会生成`TAG_ERROR`节点，该节点正常情况下不做任何输出，但需要对其层级所属进行调整
+
+    TAG_UL; level: 0; parent: TAG_BLOCK_UL; parent-level: 0
+        TAG_INLINE_ELEMENTS; level: 1; parent: TAG_UL; parent-level: 0
+            TAG_INLINE_TEXT; level: 2; parent: TAG_INLINE_ELEMENTS; parent-level: 1
+        TAG_BLOCK_INDENT_UL; level: 1; parent: TAG_ROOT; parent-level: -100
+        TAG_INDENT_UL; level: 1; parent: TAG_BLOCK_INDENT_UL; parent-level: 1
+            TAG_INLINE_ELEMENTS; level: 2; parent: TAG_INDENT_UL; parent-level: 1
+                TAG_INLINE_TEXT; level: 3; parent: TAG_INLINE_ELEMENTS; parent-level: 2
+            TAG_TABLE; level: 2; parent: TAG_ROOT; parent-level: -100
+                TAG_TR; level: 3; parent: TAG_TABLE; parent-level: 2
+                    TAG_TD; level: 4; parent: TAG_TR; parent-level: 3
+                        TAG_INLINE_ELEMENTS; level: 5; parent: TAG_TD; parent-level: 4
+                            TAG_INLINE_CODE; level: 6; parent: TAG_INLINE_ELEMENTS; parent-level: 5
+                    TAG_TD; level: 4; parent: TAG_TR; parent-level: 3
+                        TAG_INLINE_ELEMENTS; level: 5; parent: TAG_TD; parent-level: 4
+                            TAG_INLINE_ELEMENTS; level: 6; parent: TAG_INLINE_ELEMENTS; parent-level: 5
+                                TAG_INLINE_TEXT; level: 7; parent: TAG_INLINE_ELEMENTS; parent-level: 6
+    TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
+    TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
+    TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
+    TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
+    TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
+    TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
+    TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
+    TAG_BLOCK_BLANK; level: 0; parent: TAG_ROOT; parent-level: -100
+    TAG_BLANK; level: 0; parent: TAG_BLOCK_BLANK; parent-level: 0
+
+
 
 
 
 
 
 #### 算法
+
+> `static void rearrange_block_nodes(t_node *root)`
 
     深度先序遍历节点树
         记遍历过程的当前节点为node，上一节点为prev_node（一般为行级或行内节点）
@@ -342,10 +384,11 @@
                 查找离prev_node节点最近的且level为node.level-1的祖先行级列表节点，记为p1
                 若p1暂无孩子节点，则将node作为p1的孩子节点列表首节点（注意：只移动node节点，其后面为其他块级节点需要与node前方的节点拼接）
                 若p1存在孩子节点，则将node移动到p1孩子节点列表的末尾（注意：同上，只移动node节点）
-            若node为空行块级节点
-                查找离prev_node节点最近的祖先块级节点或者行级列表节点，记为p2
+            若node为空行块级节点或者错误节点
+                查找离prev_node节点最近的祖先块级节点、行级列表节点或单元格节点，记为p2
                 若p2无孩子节点（比如TAG_H），则不执行任何操作
                 若p2存在孩子节点，则将node移动到p2孩子节点列表的末尾（同上，只移动node节点），同时修正node的level
+
 
 #### Tips
 
