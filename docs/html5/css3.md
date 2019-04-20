@@ -1472,4 +1472,41 @@ FF下，用JS实现：
 
 
 
+
+## filter
+
+> css3滤镜
+
+### Resources
+
+* CSS3中强大的filter(滤镜)属性 <https://blog.csdn.net/weixin_42703239/article/details/81843093>
+* [ 190415 ] `instagram.css` <https://github.com/picturepan2/instagram.css> [ from 思源 ]
+
+### filters
+
+    filter: blur(4px);
+    filter: brightness(2);
+    filter: contrast(50%);
+    filter: drop-shadow(2px 10px 0 rgba(255,0,0,0.5));
+    filter: grayscale(0.5);
+    filter: hue-rotate(125deg);
+    filter: invert(100%);
+    filter: saturate(200%);
+    filter: sepia(100%);
+    filter: opacity(50%);
+    filter: invert(100%) sepia(100%) saturate(300%);
+
+### Tips
+
+* 支持百分比的属性，同时**可以支持纯数字**，这时1代表100%，2代表200%
+* 直接对body本身设置滤镜可能会有兼容性问题，解决方案可以是单独对body设置样式，再对`body *`设置滤镜
+        body { ... }
+        body * {
+            filter: invert(90%);
+        }
+
+
+
+
+
 > 不要把`一知半解`当作你的认知成就。 —— iRice
