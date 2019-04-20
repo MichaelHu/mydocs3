@@ -5,6 +5,7 @@
 * 基于`lex/yacc`编写的markdown编译器
 * 支持`@s, @vs, @[...]`语法，能输出`reveal.js`兼容的代码
 * 为`trubo-markdown` ( <ref://./turbo-markdown.md.html> ) 以及`fast-slides` ( <ref://../ppt-tools/fast-slides.md.html> ) 提供解析器
+* 只支持`utf-8编码`的文件
 
 
 ## Resources
@@ -339,37 +340,33 @@
 
 #### 关于错误节点
 
-> *逐行错误恢复规则*中，会生成`TAG_ERROR`节点，该节点正常情况下不做任何输出，但需要对其层级所属进行调整
+> **逐行错误恢复规则**中，会生成`TAG_ERROR`节点，该节点正常情况下不做任何输出，但需要对其层级所属进行调整
 
-    TAG_UL; level: 0; parent: TAG_BLOCK_UL; parent-level: 0
-        TAG_INLINE_ELEMENTS; level: 1; parent: TAG_UL; parent-level: 0
-            TAG_INLINE_TEXT; level: 2; parent: TAG_INLINE_ELEMENTS; parent-level: 1
-        TAG_BLOCK_INDENT_UL; level: 1; parent: TAG_ROOT; parent-level: -100
-        TAG_INDENT_UL; level: 1; parent: TAG_BLOCK_INDENT_UL; parent-level: 1
-            TAG_INLINE_ELEMENTS; level: 2; parent: TAG_INDENT_UL; parent-level: 1
-                TAG_INLINE_TEXT; level: 3; parent: TAG_INLINE_ELEMENTS; parent-level: 2
-            TAG_TABLE; level: 2; parent: TAG_ROOT; parent-level: -100
-                TAG_TR; level: 3; parent: TAG_TABLE; parent-level: 2
-                    TAG_TD; level: 4; parent: TAG_TR; parent-level: 3
-                        TAG_INLINE_ELEMENTS; level: 5; parent: TAG_TD; parent-level: 4
-                            TAG_INLINE_CODE; level: 6; parent: TAG_INLINE_ELEMENTS; parent-level: 5
-                    TAG_TD; level: 4; parent: TAG_TR; parent-level: 3
-                        TAG_INLINE_ELEMENTS; level: 5; parent: TAG_TD; parent-level: 4
-                            TAG_INLINE_ELEMENTS; level: 6; parent: TAG_INLINE_ELEMENTS; parent-level: 5
-                                TAG_INLINE_TEXT; level: 7; parent: TAG_INLINE_ELEMENTS; parent-level: 6
-    TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
-    TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
-    TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
-    TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
-    TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
-    TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
-    TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
-    TAG_BLOCK_BLANK; level: 0; parent: TAG_ROOT; parent-level: -100
-    TAG_BLANK; level: 0; parent: TAG_BLOCK_BLANK; parent-level: 0
-
-
-
-
+    01 TAG_UL; level: 0; parent: TAG_BLOCK_UL; parent-level: 0
+    02     TAG_INLINE_ELEMENTS; level: 1; parent: TAG_UL; parent-level: 0
+    03         TAG_INLINE_TEXT; level: 2; parent: TAG_INLINE_ELEMENTS; parent-level: 1
+    04     TAG_BLOCK_INDENT_UL; level: 1; parent: TAG_ROOT; parent-level: -100
+    05     TAG_INDENT_UL; level: 1; parent: TAG_BLOCK_INDENT_UL; parent-level: 1
+    06         TAG_INLINE_ELEMENTS; level: 2; parent: TAG_INDENT_UL; parent-level: 1
+    07             TAG_INLINE_TEXT; level: 3; parent: TAG_INLINE_ELEMENTS; parent-level: 2
+    08         TAG_TABLE; level: 2; parent: TAG_ROOT; parent-level: -100
+    09             TAG_TR; level: 3; parent: TAG_TABLE; parent-level: 2
+    10                 TAG_TD; level: 4; parent: TAG_TR; parent-level: 3
+    11                     TAG_INLINE_ELEMENTS; level: 5; parent: TAG_TD; parent-level: 4
+    12                         TAG_INLINE_CODE; level: 6; parent: TAG_INLINE_ELEMENTS; parent-level: 5
+    13                 TAG_TD; level: 4; parent: TAG_TR; parent-level: 3
+    14                     TAG_INLINE_ELEMENTS; level: 5; parent: TAG_TD; parent-level: 4
+    15                         TAG_INLINE_ELEMENTS; level: 6; parent: TAG_INLINE_ELEMENTS; parent-level: 5
+    16                             TAG_INLINE_TEXT; level: 7; parent: TAG_INLINE_ELEMENTS; parent-level: 6
+    17 TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
+    18 TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
+    19 TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
+    20 TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
+    21 TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
+    22 TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
+    23 TAG_ERROR; level: 0; parent: TAG_ROOT; parent-level: -100
+    24 TAG_BLOCK_BLANK; level: 0; parent: TAG_ROOT; parent-level: -100
+    25 TAG_BLANK; level: 0; parent: TAG_BLOCK_BLANK; parent-level: 0
 
 
 
@@ -392,7 +389,9 @@
 
 #### Tips
 
-* markdown中，能`容纳其他块级节点`的节点主要有：`列表节点`、`引用节点`等，所以上方算法当node.level大于0时，需查找前一节点的`祖先行级列表节点`
+* markdown中，能`容纳其他块级节点`的节点主要有：`列表节点`、`引用节点`等，所以上方算法当**node.level大于0**时，需查找前一节点的`祖先行级列表节点`
+* 对于空行块节点（**TAG_BLOCK_BLANK**）和错误节点（**TAG_ERROR**），在层级调整的时候，与其他常规块级节点是存在差别的，其可以放置到其前序遍历顺序的前一节点的最近`祖先块级节点、行级列表节点或者单元格节点`
+* `TAG_H`及其同族节点, 与`TAG_ERROR`是两类**特殊**的块级节点，它们是__没有孩子节点的块级节点__
 * 经过块节点分级修正以后，与之前最大的差别就是，这一步后
     1. 块级节点`按层级挂载`
     2. `空行块节点及其子节点`从默认的level 0调整到`合适的level`
