@@ -157,7 +157,7 @@
 * 实际实现的时候，采取不按缩进级别生成特定token的方案，以便`支持无限缩进层级`
 * 语法解析`粗分类`，必然导致生成的节点树存在`层级混乱`的问题，我们需要在拿到节点树后，对其进行`二次修正`
 * 不同缩进级别划归同一块的问题，通常出现在`缩进型`节点（也就是level大于0的节点）组成的列表中
-* 目前`缩进型节点`主要为：`TAG_INDENT_UL`, `TAG_INDENT_OL`, `TAG_INDENT_TEXT`, `TAG_INDENT_PRE`
+* 目前**缩进型节点**主要为：`TAG_INDENT_UL`, `TAG_INDENT_OL`, `TAG_INDENT_TEXT`, `TAG_INDENT_PRE`, `TAG_QUOTE_P`(_indent level大于0时_)
 * 另外很重要的一点需要注意的是，实际场景中，作为缩进型节点的`TAG_INDENT_PRE`，是不会出现划归问题的
 * `行29-行36`中，出现了level为`99999`的标签，这就是前文提到的`TAG_INLINE_*`类型标签，因为他们是行内元素，所以他们`最终的level需要由上下文来决定`
 
