@@ -111,8 +111,7 @@ changelog: 2018-05, 2017-10, 2017-02-10, 2016-10-22, 2016-07-23
 1. 主要编辑模式搞清楚，记住`normal, insert, visual, command-line`
 2. `normal`模式下，`单引号'`用于访问bookmark，`双引号"`用于设置下一delete，yank或者put操作使用的寄存器
 3. `normal`以及`command-line`模式下，`@`用于访问寄存器
-4. 带`g前缀`的命令原来功能这么强大，比如：`g0, g^, g$, gm, gp, gP, gJ, ge, gE, 
-    ga, g8, g CTRL-G, gk, gj, gq, gqq, CTRL-W gf, CTRL-W gF, [N]gt, [N]gT`，
+4. 带`g前缀`的命令原来功能这么强大，比如：`g0, g^, g$, gm, gp, gP, gJ, ge, gE, ga, g8, g CTRL-G, gk, gj, gq, gqq, CTRL-W gf, CTRL-W gF, [N]gt, [N]gT`，
     你知道几个？会用几个？
 5. `insert`模式下，`CTRL-N`或者`CTRL-P`能用于输入`补全`提示
 6. `command line`模式下，`CTRL-V`能用于输入特殊字符，比如`<C-V><Enter> `将输入`回车符<CR>`，命令行上显示`^M`

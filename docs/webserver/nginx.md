@@ -18,7 +18,15 @@
 * nginx blog: <https://www.nginx.com/blog/>
 * docs: <http://nginx.org/en/docs/>
 * `指令`列表：<http://nginx.org/en/docs/dirindex.html>
-* `变量`列表：<http://nginx.org/en/docs/varindex.html>
+* `变量`列表：<http://nginx.org/en/docs/varindex.html> 
+    | 变量              | 含义                              |
+    | $args             | 同`$query_string`                 |
+    | $arg\_name        | 名为*name*的*query_string*的值\
+                            例如，对于*/info?name=Michael&age=30*：\
+                            *$arg_name* 为 Michael\
+                            *$arg_age* 为 30\
+                                                            |
+    | ....              | ....                              |
 * pcre - <ref://../linux/pcre.md.html>
 * openssl - <ref://../linux/openssl.md.html>
 
@@ -124,13 +132,13 @@
 
 
 
-## Tips
+##  Tips
 
 * 配置命令必须以`;`结束，或者以`}`结束；若`正则表达式`包含它们，需要用`单引号`或`双引号`包围；注释使用`#`
 * `location`和`rewrite`指令所使用正则表达式，不需要对`/`进行转义
 * `多虚拟机`可通过获取请求头的`Host`字段，并基于`server_name`进行路由；如果不含该字段，或者该字段没有匹配到任何server，则会使用`listen <port> default_server;`的server，如果不存在，则使用第一个server。
 
-* 可以多个虚拟机，监听`同一端口`，使用`不同server_name`进行路由
+* 可以**多个虚拟机**，监听`同一端口`，使用`不同server_name`进行路由
 
 * `error_log`是全局配置，`access_log`是server级别的配置
 
@@ -141,9 +149,10 @@
 * `root`未配置情况下，默认为`root html;`，也就是默认nginx程序根目录下的`html`目录；
     `相对路径`配置的root，会接在程序根目录后；`绝对路径`配置的root，则不会以程序根目录作为前缀
 
-* `rewrite`是对uri进行修改，前缀匹配过程中将`额外URI部分`进行`append`的操作在rewrite中是不使用的，文档参考 <http://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite>
+* `rewrite`是对uri进行修改，前缀匹配过程中将`额外URI部分`进行`append`的操作在rewrite中是**不使用的**，
+    文档参考 <http://nginx.org/en/docs/http/ngx_http_rewrite_module.html#rewrite>
     * `rewrite`和`proxy_pass`同处于一个location下，若rewrite匹配，则`proxy_pass`将被忽略
-    * `rewrite`至`本地地址`，默认`不作重定向`，除非设置redirect或permanent flag；rewrite至`远程地址`，会进行重定向
+    * `rewrite`至`本地地址`，默认`不作重定向`，除非设置redirect或permanent flag；rewrite至`远程地址`，会进行**客户端重定向**
 
 *  `proxy_pass`配置时，需要注意location uri与proxed uri`尾部保持一致`，除非所有请求都导向一个具体文件：
 
@@ -165,7 +174,29 @@
             proxy_pass http://127.0.0.1:8000/index.html;
         }
 
-* 配置一个使用`Push-State-History`特性的SPA，通常有以下方法：
+* `rewrite`和`proxy_pass`的差异和联系：
+    * 两者都`支持变量`
+
+            location /proxy_request {
+                rewrite ^/proxy_request.* http://$arg_target break;
+            }
+
+            location /proxy_request {
+                resolver 114.114.114.114;
+                proxy_pass $arg_target?;
+            }
+
+        以上例子，*rewrite*和*proxy_pass*都是用了变量`$arg_target`，也就是query\_string `target`
+
+    * 两者都支持在末尾添加`?`来阻止将原始请求的参数跟在最后面
+    * rewrite在*replacement*中使用变量时，总是`rewrite至本地`，即使变量是以*http://*开头也不例外
+    * *proxy_pass*在使用变量作为*proxied-server-address*时，需要`配置地址解析服务`，如上例子中`resolver 114.114.114.114;`
+        ，具体可参考<https://bbs.csdn.net/topics/390965560>，大概意思是如果在*proxied-server-address*中使用变量，则必须使用
+        resolver指令（`nginx0.6.18+`）指定DNS服务器来解析地址
+
+
+
+* 配置一个使用`Push-State-History`特性的**SPA**，通常有以下方法：
 
         # 1. 使用try_files指令
         location ~^/favicon\.ico {
@@ -189,7 +220,7 @@
             gzip_types text/css application/javascript application/json;
         }
 
-* 配置`完全关闭`web服务器的`缓存`，要求关闭etag、开启no-cache、设置expires、关闭Last-Modified响应头、忽略客户端If-Modified-Since请求头：
+* 配置`完全关闭`web服务器的`缓存`，要求**关闭etag、开启no-cache、设置expires、关闭Last-Modified响应头、忽略客户端If-Modified-Since请求头**：
 
         server {
             etag off;
@@ -313,7 +344,7 @@
 
 ## Rewrite
 
-`rewrite`指令对`URI`进行`正则匹配`和`更改`
+`rewrite`指令对`URI`进行`正则匹配`和`更改`。URI的含义，可参考`「 Reverse Proxy -  Tips 」`: <ref://#anchor_a7a44>
 
 ### Syntax
 
@@ -389,7 +420,7 @@
             proxy_pass http://127.0.0.1:8000/index.html;
         }
 
-    因为proxy_pass的path部分包含了URI: `/index.html`，所以是错误的。这一限制可以理解为：使用正则匹配的proxy_pass在路径处理时，`只允许`使用`append方式`。另外，虽然不能包含URI，但可以接`变量`：
+    因为 *proxy_pass* 的path部分包含了URI: `/index.html`，所以是错误的。这一限制可以理解为：使用正则匹配的 *proxy_pass* 在路径处理时，`只允许`使用`append方式`。另外，虽然不能包含URI，但可以接`变量`：
 
         location ~ / {
             proxy_pass http://127.0.0.1:8000/$request_uri;
@@ -401,7 +432,7 @@
             proxy_pass http://127.0.0.1:8000/;
         }
 
-* 代理过程中，两个Header不会透传，分别是：Host和X-Real-IP，默认情况下会设置成代理服务器的Host和IP，如果需要透传，则需要如下设置：
+* 代理过程中，两个Header不会`透传`，分别是：**Host**和**X-Real-IP**，默认情况下会设置成代理服务器的Host和IP，如果需要透传，则需要如下设置：
 
         location /some/path/ {
 
@@ -434,7 +465,7 @@
 
 
 
-### proxy_pass规则
+### proxy\_pass规则
 
 充分理解`proxy_pass`规则是`反向代理`的关键
 
@@ -444,7 +475,7 @@
             ...
         }
 
-2. `proxy_pass`指令后面跟的被代理服务器地址( proxied server address )，可以是`域名方式`，也可以是`IP方式`，两者都可以包含端口。也就是对应`location.origin`的部分
+2. `proxy_pass`指令后面跟的被代理服务器地址( **proxied server address** )，可以是`域名方式`，也可以是`IP方式`，两者都可以包含端口。也就是对应`location.origin`的部分
 3. 被代理服务器的地址还可以`后跟URI`，记`proxy_pass`里包含的URI参数为`URI-r` ( URI replacement )
         
         proxy_pass http://www.example.com/link/
@@ -479,7 +510,7 @@
         }
 
 
-### proxy_set_header
+### proxy\_set\_header
 
     # 添加Host, X-Real-IP头信息
     location /some/path/ {
@@ -591,7 +622,7 @@ todo
     client_body_timeout
     client_max_body_size
 
-#### client_max_body_size
+#### client\_max\_body\_size
 
     # Sets the maximum allowed size of the client request body, specified in the “Content-Length”
     # request header field. If the size in a request exceeds the configured value, the 413 (Request
@@ -768,11 +799,11 @@ resources:
     uwsgi_pass_request_headers
 
 
-### add_header指令
+### add\_header指令
 
 * `add_header`指令可能有多个，分布在不同层级上下文
 * 层级间`可以继承`，但是，继承的条件比较特殊，需要注意，否则很`容易掉入其陷阱`
-* `当且仅当`当前层级内`没有任何add_header指令`时，上级的add_header指令配置才会被继承
+* `当且仅当`当前层级内`没有任何add_header指令`时，上级的*add_header*指令配置才会被继承
 * `add_header`指令的继承`不支持合并继承`
     
         
@@ -867,7 +898,7 @@ resources:
 
 ## Modules
 
-### ngx_http_proxy_module
+### ngx\_http\_proxy\_module
 
     proxy_bind
     proxy_buffer_size
@@ -936,7 +967,7 @@ resources:
     proxy_temp_path
 
 
-### ngx_http_fastcgi_module
+### ngx\_http\_fastcgi\_module
 
     fastcgi_bind
     fastcgi_buffer_size
@@ -989,7 +1020,7 @@ resources:
     fastcgi_temp_path
 
 
-### ngx_http_spdy_module
+### ngx\_http\_spdy\_module
 
     spdy_chunk_size
     spdy_headers_comp
