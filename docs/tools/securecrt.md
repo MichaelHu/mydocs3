@@ -19,8 +19,21 @@
 
 <http://bbs.feng.com/read-htm-tid-6939481.html>
 
+### 8.5.2安装及破解过程
 
-### 破解过程
+> 注意：该版本由于*macabc.com*站点暂时无法访问，建议先用`8.1.1版本`：`「 安装破解版 -  8.1.1安装及破解过程 」`: <ref://#anchor_8c8c7>
+
+1. 下载破解文件<http://macabc.com/detail.htm?app_id=24>
+2. 打开允许使用任何来源的应用，通过在终端中执行`sudo spctl --master-disable`即可
+3. 输入以下信息完成破解，不需要额外下载破解文件
+        Name: macabc   
+        Company: macabc.com
+        Serial Number: 03-18-368172
+        License Key: ADJ8YD BJHZ3W F5T6SM H79N17 ADVMW4 XECWHZ 6ZW56V 8M7N3U
+        Issue Date: 01-02-2018
+
+
+### 8.1.1安装及破解过程
 
 1. 下载安装文件和破解文件：<https://pan.baidu.com/s/1mi4XHQo>，破解文件可能会有浏览器下载拦截，最好使用百度网盘桌面客户端下载，下载后包含两个文件：
     * 安装文件：`scrt-8.1.1-1319.osx_x64.dmg`

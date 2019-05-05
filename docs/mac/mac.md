@@ -87,7 +87,23 @@ pre.special-chars code {
 鼠标点击主屏，让主屏获得焦点，再从主屏底部中间往上快速`移动1-3次`，即可回到主屏。也可用该方法把docker移到扩展屏。
 
 
+
+## 切换历史命令
+
+> 以下按键可以逐个切换历史命令
+
+* 上一个历史命令：`CTRL+P`
+* 下一个历史命令：`CTRL+N`
+* 上一个历史命令，且支持前缀匹配：UP arrow
+* 下一个历史命令，且支持前缀匹配：DOWN arrow
+
+其中**CTRL+P**和**CTRL+N**快捷键，能一定程度上解决**HHKB键盘方向键不容易按**的问题
+
+
+
 ## 外接显示器注意
+
+> `10.13+`版本已经解决该问题
 
 `黑屏`情况下，拔下外接显示器，会导致机器`死机`，除了硬重启外，无法再次点亮屏幕。该问题截至目前版本`macOS Sierra 10.12.6 (16G29)`未解决。安全做法是确保拔下外接显示器的时候，主显示器是`点亮`的。
 
@@ -172,7 +188,6 @@ pre.special-chars code {
 
     $ find /Users/hudamin -type d -maxdepth 1 -mindepth 1 -exec sudo du -sh {} \; > \
         ~/projects/sophon/inter-docs/lvwan/disk-usage/users-hudamin-`date +%y%m%d`.lst
-
 
 
 

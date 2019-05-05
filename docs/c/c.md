@@ -9,13 +9,100 @@
 * `开发模式`相关概念：static关键字模块化，可变参数列表，函数指针
 
 
+## 数据类型
+
+### Resources
+* C数据类型 <https://www.runoob.com/cprogramming/c-data-types.html>
+
+### 4种数据类型 
+
+| 类型        | 描述                                                                |
+| 基本类型    | 属于**算术类型**，包括**整数类型**和**浮点类型**                    |
+| 枚举类型    | 也属于算术类型，被用来定义在程序中只能赋予其一定的离散整数值的变量  |
+| void类型    |                                                                     |
+| 派生类型    | 包括指针类型、数组类型、结构类型、共用体类型和函数类型              |
+
+### 基本类型
+
+> 其中windows平台下，32位系统和64位系统基本类型字节数是一样的
+
+| 类型              | win32&x64 \
+                        vc 12    | i686 \
+                                    gcc-5.3.1   | x86\_64 \
+                                                    gcc-5.3.1   |
+| char              | 1          | 1            | 1             |
+| unsigned char     | 1          | 1            | 1             |
+| short             | 2          | 2            | 2             |
+| unsigned short    | 2          | 2            | 2             |
+| int               | 4          | 4            | 4             |
+| unsigned int      | 4          | 4            | 4             |
+| long              | 4          | 4            | 8             |
+| unsigned long     | 4          | 4            | 8             |
+| float             | 4          | 4            | 4             |
+| double            | 8          | 8            | 8             |
+| long int          | 4          | 4            | 8             |
+| long long         | 8          | 8            | 8             |
+| long double       | 8          | 12           | 16            |
+
+todo
+
+
+## printf format
+
+### format
+
+| 格式字符  | 含义                                              |
+| d         | 以十进制形式输出带符号整数(正数不输出符号)        |
+| o         | 以八进制形式输出无符号整数(不输出前缀0)           |
+| x,X       | 以十六进制形式输出无符号整数(不输出前缀Ox)        |
+| u         | 以十进制形式输出无符号整数                        |
+| f         | 以小数形式输出单、双精度实数                      |
+| e,E       | 以指数形式输出单、双精度实数                      |
+| g,G       | 以%f或%e中较短的输出宽度输出单、双精度实数        |
+| c         | 输出单个字符                                      |
+| s         | 输出字符串                                        |
+| p         | 输出指针地址                                      |
+| ld        | 输出`long`类型整数                                |
+| lld       | 输出`long long`类型整数                           |
+| lu        | 输出`unsigned long`类型整数                       |
+| llu       | 输出`unsigned long long`类型整数                  |
+
+
+### flags
+
+| flags（标识）   | 描述                                                                                          |
+| -               | 在给定的字段宽度内左对齐，默认是右对齐（参见 width 子说明符）。                               |
+| +               | 强制在结果之前显示加号或减号（+ 或 -），即正数前面会显示 + 号。\
+                      默认情况下，只有负数前面会显示一个 - 号。                                                   |
+| 空格            | 如果没有写入任何符号，则在该值前面插入一个空格。                                              |
+| #               | 1. 与 o、x 或 X 说明符一起使用时，非零值前面会分别显示 0、0x 或 0X。\
+                    2. 与 e、E 和 f 一起使用时，会强制输出包含一个小数点，即使后边没有数字时也会显示小数点。\
+                      默认情况下，如果后边没有数字时候，不会显示显示小数点。\
+                    3. 与 g 或 G 一起使用时，结果与使用 e 或 E 时相同，但是尾部的零不会被移除。                   |
+| 0               | 在指定填充 padding 的数字左边放置零（0），而不是空格（参见 width 子说明符）。                 |
+
+
+
+## fflush()
+
+> GNU Flushing Buffers: <https://www.gnu.org/software/libc/manual/html_node/Flushing-Buffers.html>
+
+    fflush(stdout);
+    fflush(stderr);
+
+* 输出输出通常会有**缓存**，如果**程序报错**，比如段错误（Segmentation Fault），缓存内的输出可能**来不及同步到IO设备**
+* 以上情况，使得使用**fprintf**方式输出的信息**无法准确提供程序报错的具体位置**
+* 这时候，使用**fflush()**将输入输出与IO设备进行同步，就很有必要
+
+
+
 ## static关键字
 
 ### Resources
 
 * C语言 数组初始化的三种常用方法（{0}, memset, for循环赋值）以及原理 <http://www.cnblogs.com/fnlingnzb-learner/p/8057257.html>
 * c语言中static关键字用法详解 <https://blog.csdn.net/guotianqing/article/details/79828100>
-* 对C语言 static作用——修饰 变量（全局变量/局部变量）、函数 <https://blog.csdn.net/weixin_42167759/article/details/80287748>
+* 对C语言 static作用 —— 修饰 变量（全局变量/局部变量）、函数 <https://blog.csdn.net/weixin_42167759/article/details/80287748>
 * Segmentation Fault错误原因总结 <https://blog.csdn.net/u010150046/article/details/77775114>
 
 ### 使用场景
@@ -107,7 +194,7 @@
 
 ### 概念
 
-UTC（世界标准时间），Calendar Time（日历时间），epoch（时间点），clock tick（时钟计时单元）
+**UTC**（世界标准时间），**Calendar Time**（日历时间），**epoch**（时间点），**clock tick**（时钟计时单元）
 
 
 ### 计时
@@ -121,7 +208,7 @@ UTC（世界标准时间），Calendar Time（日历时间），epoch（时间�
     clock_t clock( void );
 
 
-### tm & time_t
+### tm & time\_t
 
     #ifndef _TM_DEFINED 
     struct tm { 
@@ -139,7 +226,7 @@ UTC（世界标准时间），Calendar Time（日历时间），epoch（时间�
     #endif
 
     #ifndef _TIME_T_DEFINED 
-    typedef long time_t; /* 时间值 */ 
+    typedef long time_t; /* 时间值，单位为秒 */ 
     #define _TIME_T_DEFINED /* 避免重复定义 time_t */ 
     #endif
 
