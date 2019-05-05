@@ -174,7 +174,8 @@
             proxy_pass http://127.0.0.1:8000/index.html;
         }
 
-* `rewrite`和`proxy_pass`的差异和联系：
+* `rewrite`和`proxy_pass`的联系和区别：
+
     * 两者都`支持变量`
 
             location /proxy_request {
@@ -191,10 +192,9 @@
     * 两者都支持在末尾添加`?`来阻止将原始请求的参数跟在最后面
     * rewrite在*replacement*中使用变量时，总是`rewrite至本地`，即使变量是以*http://*开头也不例外
     * *proxy_pass*在使用变量作为*proxied-server-address*时，需要`配置地址解析服务`，如上例子中`resolver 114.114.114.114;`
-        ，具体可参考<https://bbs.csdn.net/topics/390965560>，大概意思是如果在*proxied-server-address*中使用变量，则必须使用
+        否则，会出现类似`" ... no resolver defined to resolve ... "`的错误，
+        具体可参考<https://bbs.csdn.net/topics/390965560>，大概意思是如果在*proxied-server-address*中使用变量，则必须使用
         resolver指令（`nginx0.6.18+`）指定DNS服务器来解析地址
-
-
 
 * 配置一个使用`Push-State-History`特性的**SPA**，通常有以下方法：
 
