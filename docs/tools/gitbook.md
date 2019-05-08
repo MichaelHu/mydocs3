@@ -24,7 +24,13 @@
 * 可以在gitbook站点编写自己的在线书籍、API文档、帮助手册等
 * 也可以离线安装，用于本地撰写和发布，适合于团队协作编写文档
 * 有一些免费书籍可查看
-* 使用`gitbook-cli + versions`架构，cli与engines分离，可以使用不同版本的引擎编译不同书籍。根据书籍配置，采用适合的引擎。versions目录在`~/.gitbook/versions`目录下。
+* 使用`gitbook-cli + versions`架构，**cli与engines分离**，可以使用不同版本的引擎编译不同书籍。根据书籍配置，采用适合的引擎。**versions**目录在`~/.gitbook/versions`目录下。
+
+
+## Tips
+
+* 最新的命令行版本**3.2.3**，最近一次版本发布在**2017年8月4日**，gitbook团队成员已经将关注点转向gitbook.com站点
+
 
 
 ## getting started
@@ -236,7 +242,7 @@ editor本地book的目录存放在`~/GitBook/Library/Import/`目录下，假如�
 
 #### 模板语法
 
-* Nunjucks: <https://mozilla.github.io/nunjucks/>
+* **Nunjucks**: <https://mozilla.github.io/nunjucks/>
 * docs: <https://toolchain.gitbook.com/templating/>
 * gitbook相关扩展： <https://github.com/GitbookIO/gitbook/tree/master/docs/templating>
 
