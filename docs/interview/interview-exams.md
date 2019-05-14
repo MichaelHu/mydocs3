@@ -180,6 +180,16 @@
         str.split( /(a|b)*?/ );
 
     详细可参考 <ref://../frontend/regexp.md.html>
+6. 手机号的正则表达式
+7. Email的正则表达式
+8. replace()方法的参数
+8. 将一个字符串中的阿拉伯数字替换成对应的中文大写，也就是：
+        阿拉伯数字          中文大写
+        ===============================================
+        1                   一
+        2                   二
+        ...                 ...
+        9                   九
 
 
 
@@ -472,8 +482,15 @@
     * 文本性能低
     * 矩形比圆形性能高
 7. `svg`相关
-8. webpack, fis, grunt, gulp
-9. 调试技术：gdb, chrome devtools, node bebug
+8. 调试技术：gdb, chrome devtools, node bebug
+
+
+## 前端工程化
+
+1. webpack
+2. fis
+3. grunt
+4. gulp
 
 
 
@@ -507,6 +524,9 @@
 3. flex-box
 4. css-grid
 5. `start / end`与`left / right`的区别
+6. **flex-box**与**css-grid**的区别
+7. sass / less
+8. css modules
 
 
 
@@ -527,6 +547,7 @@
 6. 动态规划 - DP （ Dynamic Programming )
     * 问题：一个10级的台阶，每次只能上1级或2级，问题共有几种上法？
             F( n ) = F( n - 1 ) + F( n - 2 )
+7. 双向链表的插入和删除
 
 
 
@@ -543,6 +564,9 @@
 
     * 需要用到哪些前端技术，需要发起哪些技术调研？
     * 前端程序架构上，有什么考虑，怎样去推进？
+
+
+
 
 ## 团队管理能力
 

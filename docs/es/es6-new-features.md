@@ -2,7 +2,7 @@
 
 > `2015年初`发布ES6( ES2015 )
 
- <img src="./img/Ecma_RVB-003.jpg" height="60">
+ <img src="./img/Ecma\_RVB-003.jpg" height="60">
 
 ## Resources
 
@@ -84,6 +84,7 @@
     // Export Directly
     export * from './abc';
     export { sex } from './abc';
+    export { default as A } from './abc';
 
     // VARDECLARATION
     export var a = 12306;
