@@ -548,12 +548,123 @@
 
 
 
+### quote块节点合并
+
+* 到目前为止，我们没有深入讨论过quote节点的处理
+* 对于 **TAG_QUOTE_P , TAG_QUOTE_UL , TAG_QUOTE_OL , TAG_QUOTE_PRE , TAG_QUOTE_BLANK** 等类型的节点，我们通过在语法解析阶段，会将相邻的节点合并成对应的块节点，包括 **TAG_QUOTE_H , TAG_BLOCK_QUOTE_BLANK , TAG_BLOCK_QUOTE_UL , TAG_BLOCK_QUOTE_OL , TAG_BLOCK_QUOTE_P**
+* quote节点的特殊之处在于：**多个相邻的兄弟quote块节点，不管是否为同类型块节点，也需要合并**
+
+以下是经历过**块节点合并**后获得的语法树：
+
+    01 tag: TAG_ROOT; level: -100
+    02 tag: TAG_BLOCK_QUOTE_P; level: 0
+    03 tag: TAG_QUOTE_P; level: 0
+    04     tag: TAG_INLINE_ELEMENTS; level: 1
+    05         tag: TAG_INLINE_TEXT; level: 2
+    06 tag: TAG_QUOTE_P; level: 0
+    07     tag: TAG_INLINE_ELEMENTS; level: 1
+    08         tag: TAG_INLINE_TEXT; level: 2
+    09 tag: TAG_BLOCK_QUOTE_BLANK; level: 0
+    10 tag: TAG_QUOTE_BLANK; level: 0
+    11 tag: TAG_BLOCK_QUOTE_P; level: 0
+    12 tag: TAG_QUOTE_P; level: 0
+    13     tag: TAG_INLINE_ELEMENTS; level: 1
+    14         tag: TAG_INLINE_TEXT; level: 2
+    15 tag: TAG_BLOCK_QUOTE_BLANK; level: 0
+    16 tag: TAG_QUOTE_BLANK; level: 0
+    17 tag: TAG_BLOCK_QUOTE_UL; level: 0
+    18 tag: TAG_QUOTE_UL; level: 0
+    19     tag: TAG_INLINE_ELEMENTS; level: 1
+    20         tag: TAG_INLINE_TEXT; level: 2
+    21 tag: TAG_QUOTE_UL; level: 0
+    22     tag: TAG_INLINE_ELEMENTS; level: 1
+    23         tag: TAG_INLINE_TEXT; level: 2
+    24 tag: TAG_BLOCK_QUOTE_BLANK; level: 0
+    25 tag: TAG_QUOTE_BLANK; level: 0
+    26 tag: TAG_BLOCK_QUOTE_OL; level: 0
+    27 tag: TAG_QUOTE_OL; level: 0
+    28     tag: TAG_INLINE_ELEMENTS; level: 1
+    29         tag: TAG_INLINE_TEXT; level: 2
+    30 tag: TAG_QUOTE_OL; level: 0
+    31     tag: TAG_INLINE_ELEMENTS; level: 1
+    32         tag: TAG_INLINE_TEXT; level: 2
+    33 tag: TAG_BLOCK_QUOTE_BLANK; level: 0
+    34 tag: TAG_QUOTE_BLANK; level: 0
+    35 tag: TAG_QUOTE_H; level: 0
+    36     tag: TAG_INLINE_ELEMENTS; level: 1
+    37         tag: TAG_INLINE_TEXT; level: 2
+    38 tag: TAG_QUOTE_H; level: 0
+    39     tag: TAG_INLINE_ELEMENTS; level: 1
+    40         tag: TAG_INLINE_TEXT; level: 2
+
+以上语法树中，`TAG_BLOCK_QUOTE_P, TAG_BLOCK_QUOTE_BLANK, TAG_BLOCK_QUOTE_UL, TAG_BLOCK_QUOTE_OL, TAG_QUOTE_H`是相邻的兄弟quote块节点。需要将它们一起放到`TAG_BLOCK_QUOTE`节点下。
+
+    01 tag: TAG_ROOT; level: -100
+    02 tag: TAG_BLOCK_QUOTE; level: 0
+    03 tag: TAG_BLOCK_QUOTE_P; level: 0
+    04 tag: TAG_QUOTE_P; level: 0
+    05     tag: TAG_INLINE_ELEMENTS; level: 1
+    06         tag: TAG_INLINE_TEXT; level: 2
+    07 tag: TAG_QUOTE_P; level: 0
+    08     tag: TAG_INLINE_ELEMENTS; level: 1
+    09         tag: TAG_INLINE_TEXT; level: 2
+    10 tag: TAG_BLOCK_QUOTE_BLANK; level: 0
+    11 tag: TAG_QUOTE_BLANK; level: 0
+    12 tag: TAG_BLOCK_QUOTE_P; level: 0
+    13 tag: TAG_QUOTE_P; level: 0
+    14     tag: TAG_INLINE_ELEMENTS; level: 1
+    15         tag: TAG_INLINE_TEXT; level: 2
+    16 tag: TAG_BLOCK_QUOTE_BLANK; level: 0
+    17 tag: TAG_QUOTE_BLANK; level: 0
+    18 tag: TAG_BLOCK_QUOTE_UL; level: 0
+    19 tag: TAG_QUOTE_UL; level: 0
+    20     tag: TAG_INLINE_ELEMENTS; level: 1
+    21         tag: TAG_INLINE_TEXT; level: 2
+    22 tag: TAG_QUOTE_UL; level: 0
+    23     tag: TAG_INLINE_ELEMENTS; level: 1
+    24         tag: TAG_INLINE_TEXT; level: 2
+    25 tag: TAG_BLOCK_QUOTE_BLANK; level: 0
+    26 tag: TAG_QUOTE_BLANK; level: 0
+    27 tag: TAG_BLOCK_QUOTE_OL; level: 0
+    28 tag: TAG_QUOTE_OL; level: 0
+    29     tag: TAG_INLINE_ELEMENTS; level: 1
+    30         tag: TAG_INLINE_TEXT; level: 2
+    31 tag: TAG_QUOTE_OL; level: 0
+    32     tag: TAG_INLINE_ELEMENTS; level: 1
+    33         tag: TAG_INLINE_TEXT; level: 2
+    34 tag: TAG_BLOCK_QUOTE_BLANK; level: 0
+    35 tag: TAG_QUOTE_BLANK; level: 0
+    36 tag: TAG_QUOTE_H; level: 0
+    37     tag: TAG_INLINE_ELEMENTS; level: 1
+    38         tag: TAG_INLINE_TEXT; level: 2
+    39 tag: TAG_QUOTE_H; level: 0
+    40     tag: TAG_INLINE_ELEMENTS; level: 1
+    41         tag: TAG_INLINE_TEXT; level: 2
+
+其中`第02行`的**TAG_BLOCK_QUOTE**节点为新增节点，所有的相邻兄弟quote块节点作为**TAG_BLOCK_QUOTE**节点的孩子节点
+
+#### 算法
+
+    深度先序遍历节点树
+        记遍历过程的当前节点为node
+        若node为quote块节点
+            从node开始，往后顺次查找其最长兄弟quote块节点列表，记最后一个兄弟quote块节点为node_end
+            创建TAG_BLOCK_QUOTE节点new_node，取代node的位置
+            并将node..node_end从当前链表中移出，作为new_node的孩子节点列表
+            通过返回t_link节点，指示遍历器：node孩子节点不再访问，开始访问new_node的下一个兄弟节点
+
+
+
+
+
 
 ## 语法树遍历
 
-经过前面的语法解析以及语法树的二次修正
+* 经过前面的语法解析以及语法树的二次修正，我们得到一棵真实表达语法结构的语法树
+* 语法树以**TAG_ROOT**节点为根，根节点只有一个
+* 节点分为块级节点、行级节点、行内姐弟三类
+* 通过语法树的遍历，我们可以进行不同格式（HTML、JSON等）的输出
 
-###   
 
 
 
