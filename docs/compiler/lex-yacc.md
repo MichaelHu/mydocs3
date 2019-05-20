@@ -13,18 +13,18 @@
 
 ## Features
 
-* `lex, flex`: A fast scanner generator，是快速`扫描器`的生成器
-* `yacc`: yacc ( Yet Another Compiler Compiler )，是一个经典的生成`语法分析器`的工具
-* `bison`: The Yacc-compatible Parser Generator，`yacc兼容的`解析器生成器，能取代yacc
-* 是一种`高阶`编译器，编译器的编译器
+* `lex, flex`: **A fast scanner generator**，是快速**扫描器的生成器**
+* `yacc`: **yacc ( Yet Another Compiler Compiler )**，是一个经典的**生成语法分析器的工具**
+* `bison`: The Yacc-compatible Parser Generator，**yacc兼容的解析器生成器**，能取代yacc
+* 是一种**高阶编译器**，编译器的编译器
 
 
 ## Tips
 
 > 语法规则相关
 
-* `语法规则`的解析过程，`从起始规则开始演进`，一开始状态栈是空的。每一条语法规则`可用于归约`，其`前提是`从起始规则开始演进，在某一输入条件下，栈顶出现该规则的右侧模式
-* 某一语法规则，`不能脱离`从起始规则开始`演进`的`路径或上下文`，也就是说语法规则不会凭空出现在状态栈顶，而是需要在特定上下文满足后才会出现，比如：
+* `语法规则`的解析过程：**从起始规则开始演进，一开始状态栈是空的**。每一条语法规则`可用于归约的前提`是**从起始规则开始演进，在某一输入条件下，栈顶出现该规则的右侧模式**
+* 某一语法规则，**不能脱离从起始规则开始演进的“路径或上下文”**，也就是说语法规则不会凭空出现在状态栈顶，而是需要在特定上下文满足后才会出现，比如：
 
         line:
             H headertext LINEBREAK  { ... }
@@ -35,54 +35,55 @@
             | %empty                { ... }
             ;
 
-    根据语法演进规则，`headertext`不会凭空出现在栈顶，其出现的栈顶的`前提条件`是通过演化，栈中已经存在`H`。也就是`不能`脱离语法规则的演进，而`孤立`的来`看待`每一条语法规则。
+    根据语法演进规则，`headertext`不会凭空出现在栈顶，其出现的栈顶的**前提条件是通过演化，栈中已经存在"H"**。也就是说，**不能脱离语法规则的演进，而孤立的来看待每一条语法规则**。
 
-* `语法错误`的相关处理
-    1. bison提供了以下宏：
-            yyerrok;        // 立即恢复显示语法错误信息
-            yyclearin;      // 将yychar设置为YYEMPTY，要求解析器放弃当前token而开始读取下一个token
-    2. `根rule不宜添加error规则`，例如以下添加方式不可取：
+> `语法错误`的相关处理
+1. bison提供了以下宏：
+        yyerrok;        // 立即恢复显示语法错误信息
+        yyclearin;      // 将yychar设置为YYEMPTY，要求解析器放弃当前token而开始读取下一个token
+2. **根rule不宜添加error规则**，例如以下添加方式不可取：
 
-            markdownfile: 
-                blocks { 
-                        show_rule("markdownfile: blocks");
-                        ...
-                    }
-                | error { 
-                        show_rule("markdownfile: error");
-                        ...
-                    }
-                ;
+        markdownfile: 
+            blocks { 
+                    show_rule("markdownfile: blocks");
+                    ...
+                }
+            | error { 
+                    show_rule("markdownfile: error");
+                    ...
+                }
+            ;
 
-        可能出现以下*规约顺序*：
-            markdownfile: blocks
-            markdownfile: error
-            markdownfile: error
-            ...
-            markdownfile: error
+    可能出现以下**规约顺序**：
+        markdownfile: blocks
+        markdownfile: error
+        markdownfile: error
+        ...
+        markdownfile: error
 
-    3. `error`是预定义的特殊token，当发生语法错误，解析器就会产生一个名为error的terminal token
-    4. 解析器会`自动进行错误恢复`，若包含error的规则被匹配到，则可以执行该错误处理规则定义的action
-    5. 发生语法错误时的输入token会在当前错误处理规则中被吃掉，错误恢复后，会从输入流中`读取下一个输入token`
-    6. 编译器会`不断丢弃`状态栈中的`状态`，直到其遇到包含error的规则，找到后，error token就可以执行shift操作。然后读取下一个输入token，如果不符合，则会被丢弃，`直到找到下一个可以执行shift操作的token`。这样`完成一次错误恢复`过程
-    7. 一个语法错误恢复过程中，可能导致新的错误发生，错误如果是紧接着出现的话，默认其错误信息会被隐藏，但可以通过`yyerrok;`立即打开
-    8. 可以通过在error后面添加指定token，指示解析器在出现error后，一直读取新的token直到指定token被读入，如：
+3. error是**预定义的特殊token**，假如当前token为*TOKEN_A*，此时发生语法错误，解析器会**自动进行错误恢复**，它会**自动插入**一个新的**名为error的terminal token**，若包含error的规则被匹配到，则可以执行该错误处理规则所定义的action
+4.  插入error token，并执行对应的错误处理规则后，我们可以选择如何处理发生错误时的token。默认情况下，error token被吃掉以后，*TOKEN_A*将继续作为下一个输入token，直到被匹配为止；也可以通过调用宏`yyclearin`来立即清理导致错误的token（*TOKEN_A*）
+5. 编译器会**不断丢弃状态栈中的状态，直到其遇到包含error的规则**，找到后，error token就可以执行shift操作。然后读取下一个输入token，如果不符合，则会被丢弃，**直到找到下一个可以执行shift操作的token**。这样`完成一次错误恢复`过程
+6. 一个语法错误恢复过程中，可能导致新的错误发生，错误如果是紧接着出现的话，默认其错误信息会被隐藏，但可以通过`yyerrok;`立即打开
+7. 可以通过**在error后面添加指定token**，指示解析器在出现error后，一直读取新的token直到指定token被读入，如：
 
-            tablerow:
-                TABLEROWSTART tableceils LINEBREAK {
-                        show_rule("tablerows: TABLEROWSTART tableceils LINEBREAK");
-                        $$ = $2;
-                    }
-                | TABLEROWSTART tableceils error LINEBREAK {
-                        show_rule("tablerows: TABLEROWSTART tableceils error LINEBREAK");
-                        $$ = $2;
-                        yyerrok;
-                    }
-                ;
+        tablerow:
+            TABLEROWSTART tableceils LINEBREAK {
+                    show_rule("tablerows: TABLEROWSTART tableceils LINEBREAK");
+                    $$ = $2;
+                }
+            | TABLEROWSTART tableceils error LINEBREAK {
+                    show_rule("tablerows: TABLEROWSTART tableceils error LINEBREAK");
+                    $$ = $2;
+                    yyerrok;
+                }
+            ;
 
-        以上第二条规则 *TABLEROWSTART tableceils error LINEBREAK*，当出现错误后，往后读取token直到读取到LINEBREAK，然后进行shift。
+    以上第二条规则 *TABLEROWSTART tableceils error LINEBREAK*，当出现错误后，往后读取token直到读取到LINEBREAK，然后进行shift。
 
-        但是，`切忌对这种规则的滥用`。如果是一个行内语法错误，如果也执行以上丢弃的话，会导致行内语法把行语法需要的LINEBREAK多吃掉一个，从而出现更多的错误。
+    > 但是，
+    > 1. `切忌对这种规则的滥用`。如果是一个行内语法错误，如果也执行以上丢弃的话，会导致行内语法把行语法需要的LINEBREAK多吃掉一个，从而出现更多的错误；
+    > 2. **inline_element**行内语法规则发生错误，通常是由于`非LINEBREAK token`导致，**需要使用yyclearin立即清理当前错误token**，否则会陷入无限的错误循环中。可具体参考**markdown-slides**的实现
 
 
 
