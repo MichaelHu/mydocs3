@@ -42,6 +42,7 @@
 
 ## 技术站点
 
+* tc39 proposals <https://github.com/tc39/proposals>
 * Github Release Radar <https://github.blog/2019-02-05-release-radar-january-2019/>
 * 腾讯云社区 - `开发者手册` <https://cloud.tencent.com/developer/devdocs> 各类技术文档
 * `infoQ` - 促进软件开发领域知识与创新的传播 <https://www.infoq.cn>
