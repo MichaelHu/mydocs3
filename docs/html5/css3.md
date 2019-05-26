@@ -254,7 +254,7 @@ todo
     page-break-after        设置元素后的分页行为，取值: auto, always, avoid, left, right, inherit
     page-break-before       设置元素前的分页行为，取值: auto, always, avoid, left, right, inherit
     page-break-inside       设置元素内部的分页行为，取值: auto, avoid, inherit
-    windows                 设置当元素内部发生分页时必须在页面顶部保留的最少行数
+    widows                  设置当元素内部发生分页时必须在页面顶部保留的最少行数，注意是widows而不是windows
 
 ### Resources
 
