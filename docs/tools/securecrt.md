@@ -17,21 +17,7 @@
 
 ### 参考文章
 
-<http://bbs.feng.com/read-htm-tid-6939481.html>
-
-### 8.5.2安装及破解过程
-
-> 注意：该版本由于*macabc.com*站点暂时无法访问，建议先用`8.1.1版本`：`「 安装破解版 -  8.1.1安装及破解过程 」`: <ref://#anchor_8c8c7>
-
-1. 下载破解文件<http://macabc.com/detail.htm?app_id=24>
-2. 打开允许使用任何来源的应用，通过在终端中执行`sudo spctl --master-disable`即可
-3. 输入以下信息完成破解，不需要额外下载破解文件
-        Name: macabc   
-        Company: macabc.com
-        Serial Number: 03-18-368172
-        License Key: ADJ8YD BJHZ3W F5T6SM H79N17 ADVMW4 XECWHZ 6ZW56V 8M7N3U
-        Issue Date: 01-02-2018
-
+<http://bbs.feng.com/read-htm-tid-6939481.html> 由于版权问题，文章提供的链接已经无法下载到可破解版本。8.1.1版本的安装文件已经放到网盘，可从网盘下载。
 
 ### 8.1.1安装及破解过程
 
@@ -50,11 +36,13 @@
         Issue Date:     06-21-2015 
 5. 出现`The license information shown below has been accepted.` 完成破解。
 
+
 ### About信息
 
 看以下About信息，也是一年期的Update License，目前时间是`2017-3-16`。看来可以放心使用。
 
  <img src="./img/securecrt.png" style="max-height:560px;">
+
 
 
 
