@@ -1198,6 +1198,11 @@ FF下，用JS实现：
     -webkit-transform: matrix3d(0.984807753012208, 0, 0.17364817766693, 0, 0, 1, 0, 0, -0.17364817766693, 0, 0.984807753012208, 0, 0, 0, 0, 1);
 
 
+### Resources
+
+* [ 190520 ] Folding the DOM <https://www.joshwcomeau.com/posts/folding-the-dom/> 用CSS 3D效果来达到DOM折叠的效果。比如翻书效果，表达折叠成信封发送等。
+
+
 ## JSAPI: RequestAnimationFrame
 
 
