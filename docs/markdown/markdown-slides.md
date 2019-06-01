@@ -42,6 +42,7 @@
             blockquote全系支持
             增加支持``
             支持JSON格式输出
+            <ruby> 快狗打车<rt>kuaigoudache</rt> </ruby>
 
     v1.0
         支持更多语法，如table, ```等
