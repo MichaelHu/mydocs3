@@ -11,9 +11,9 @@
 
 ## Features
 
-* 前端`基础库`
-* 分模块设计开发，支持`自定义`构建
-* `UMD`输出：支持`CommonJS`, `AMD`和`Global`多种模块类型输出，`AMD`在文件末尾实现
+* 前端**基础库**
+* 分模块设计开发，支持**自定义**构建
+* **UMD**输出：支持**CommonJS**, **AMD**和**Global**多种模块类型输出，**AMD**在文件末尾实现
 
 
 ## Resources
@@ -25,15 +25,20 @@
     * <http://jquery.cuishifeng.cn>
     * <http://www.css88.com/jqapi-1.9/>
 * `zeptojs` - <ref://./zepto.md.html>
+* browser-support: <https://jquery.com/browser-support/>
 
 
 ## Versions
 
-latest: `3.2.1` <https://github.com/jquery/jquery/releases>
+latest: `3.4.1` <https://github.com/jquery/jquery/releases>
 
-* `3.x`: 3.2.1 - 2017-03-21
-* `2.x`
-* `1.x`
+* **3.x**
+    * 3.4.1 - 2019-05-02
+    * ...
+    * 3.2.1 - 2017-03-21
+* **2.x**
+    * 不再支持 *IE6/IE7/IE8* 浏览器
+* **1.x**
 
 
 ## Installation
