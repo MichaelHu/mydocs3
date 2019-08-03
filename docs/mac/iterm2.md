@@ -30,4 +30,5 @@
         2. Select Full Disk Access on the left.
         3. Add iTerm2 to the list of apps on the right.
     该权限还是非常敏感的，暂时关闭，后续如果需要使用crontab，可以再行打开
+* **Python API** <https://iterm2.com/python-api/>
 
