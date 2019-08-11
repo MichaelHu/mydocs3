@@ -4,7 +4,7 @@
 
 * 基于`lex/yacc`编写的markdown编译器
 * 支持`@s, @vs, @[...]`语法，能输出`reveal.js`兼容的代码
-* 为`trubo-markdown` ( <ref://./turbo-markdown.md.html> ) 以及`fast-slides` ( <ref://../ppt-tools/fast-slides.md.html> ) 提供解析器
+* 为`turbo-markdown` ( <ref://./turbo-markdown.md.html> ) 以及`fast-slides` ( <ref://../ppt-tools/fast-slides.md.html> ) 提供解析器
 * 只支持`utf-8编码`的文件
 
 

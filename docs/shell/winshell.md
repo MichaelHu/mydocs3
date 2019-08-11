@@ -635,11 +635,11 @@ else子句`必须出现在if子句结束的同一行上面`。
 
 ### 判断语句FAQ
 
-1. 多个条件表达式如何表示？
+1. **多个条件表达式**如何表示？
 
-    http://stackoverflow.com/questions/2143187/logical-operators-and-or-in-dos-batch
+    <http://stackoverflow.com/questions/2143187/logical-operators-and-or-in-dos-batch>
 
-    DOS的if语句`不支持and 和 or的逻辑表达式，只能用嵌套if来模拟`。
+    DOS的if语句**不支持and 和 or的逻辑表达式**，只能用**嵌套if**来模拟。
 
     比如与、或等条件表达式。
 
