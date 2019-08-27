@@ -25,7 +25,7 @@
 
 
 ## Tips 
-* 所有的绝对路径都是**以cygwin的安装目录为root**
+* 所有的**绝对路径**都是**以cygwin的安装目录为root**
 * 使用`/cygdrive/c/`表示C:盘，`/cygdrive/d/`表示D:盘
 * 默认HOME为`/home/Administrator`，可以通过**export**命令临时修改，比如：
         export HOME=/cygdrive/d
