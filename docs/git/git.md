@@ -1738,6 +1738,11 @@ windows机器上添加`sshkey`，可以使用`git bash`来生成。
 * 需要注意的是，需提前`排查控制台本身的Font设置`
 
 
+### svn迁移至git
+> 同时保留历史提交的信息
+* 将代码库从 SVN 迁移至 Git 并保留所有 commit 记录 <https://www.lovelucy.info/codebase-from-svn-to-git-migration-keep-commit-history.html>
+
+
 
 
 

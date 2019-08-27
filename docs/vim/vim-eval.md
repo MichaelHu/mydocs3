@@ -355,6 +355,10 @@
         echo 'copy ' . lineCount .' lines successfully'
     endfu
 
+注：
+* 如果是windows系统，将`pbcopy`命令替换成`clip`命令即可。
+* windows中文系统的默认文本编码为GBK编码，所以如果发现**剪贴板内容乱码**，可以修改系统默认文本编码为`utf-8`。因为目前大部分的文件默认编码都已经采用utf-8编码
+
 
 
 ##### 将选中文本增量复制到mac剪贴板
