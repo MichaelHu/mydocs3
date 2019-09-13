@@ -178,3 +178,15 @@
     PATH=~/softwares/vim8.0.0402/bin:$PATH
     export PATH
 
+
+
+
+## Tips
+
+> **CentOS 6.5** ( my ecs )安装的问题
+1. CentOS 7.6 编译vim8.1报错no terminal library found <https://www.jianshu.com/p/0ae0747a2d04>
+2. Error: expecting string instruction after 'rep' 问题解决 <https://blog.csdn.net/hongweigg/article/details/72956992>
+
+
+
+
