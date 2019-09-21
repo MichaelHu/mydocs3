@@ -1,18 +1,19 @@
 # git
 
-
-170204,
-170119,
-170118,
-170111,
-161202,
-161105,
-160728,
-16-03,
-2015,
-2014,
-2013,
-2012
+190921
+, 2018
+, 170204
+, 170119
+, 170118
+, 170111
+, 161202
+, 161105
+, 160728
+, 16-03
+, 2015
+, 2014
+, 2013
+, 2012
 
 ## Resources
 
@@ -1743,7 +1744,39 @@ windows机器上添加`sshkey`，可以使用`git bash`来生成。
 * 将代码库从 SVN 迁移至 Git 并保留所有 commit 记录 <https://www.lovelucy.info/codebase-from-svn-to-git-migration-keep-commit-history.html>
 
 
+### git+ssh方式的push问题
 
+    hudamin@175.29.15.66 weekly$ git push
+    Enumerating objects: 5, done.
+    Counting objects: 100% (5/5), done.
+    Delta compression using up to 4 threads
+    Compressing objects: 100% (3/3), done.
+    Writing objects: 100% (3/3), 3.03 KiB | 3.03 MiB/s, done.
+    Total 3 (delta 2), reused 0 (delta 0)
+    remote: error: refusing to update checked out branch: refs/heads/weekly
+    remote: error: By default, updating the current branch in a non-bare repository
+    remote: error: is denied, because it will make the index and work tree inconsistent
+    remote: error: with what you pushed, and will require 'git reset --hard' to match
+    remote: error: the work tree to HEAD.
+    remote: error:
+    remote: error: You can set 'receive.denyCurrentBranch' configuration variable to
+    remote: error: 'ignore' or 'warn' in the remote repository to allow pushing into
+    remote: error: its current branch; however, this is not recommended unless you
+    remote: error: arranged to update its work tree to match what you pushed in some
+    remote: error: other way.
+    remote: error:
+    remote: error: To squelch this message and still keep the default behaviour, set
+    remote: error: 'receive.denyCurrentBranch' configuration variable to 'refuse'.
+    To git+ssh://129.55.9.16:/home/irice/projects/sophon/docs/weekly
+     ! [remote rejected] weekly -> weekly (branch is currently checked out)
+
+1. **场景**：在远程云主机存放weekly仓库，本地使用git+ssh方式连接远程
+2. **问题**：
+    * 可按推送到远程新分支
+    * 但推送到远程的上游分支，出现以上提示，远程拒绝合并
+    * 从提示内容，拒绝的原因是可能导致索引及工作树不一致（具体尚未明确），但可以通过配置*receive.denyCurrentBranch* 为`ignore`或`warn`。一种配置方法为，在 *.git/config* 文件中增加以下行：
+            [receive]
+                denyCurrentBranch = ignore
 
 
 
