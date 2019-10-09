@@ -54,6 +54,12 @@ pre.special-chars code {
 
 * todo...
 
+
+### 启动U盘的使用
+* 插上U盘
+* 按住`Option`键，再按电源键启动电脑
+
+
 ### 参考文章
 
 * [ 180925 ] macOS Mojave 10.14 U盘USB启动安装盘方法教程 (全新安装 Mac 系统) <https://www.jianshu.com/p/1acb3e5f405f>
