@@ -16,6 +16,7 @@ pre.special-chars code {
 
 ## Mac OS Versions
 
+    macOS Catalina              10.15       2019-6-5
     macOS Mojave                10.14       2018-6-5
     macOS High Sierra           10.13       2017-6-5
     macOS Sierra                10.12       2016-09-20
