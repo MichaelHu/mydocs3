@@ -5,8 +5,8 @@
 ## Resources
 
 * wikipedia: <https://en.wikipedia.org/wiki/WebGL>
-* WebIDL 1.0: <https://www.khronos.org/registry/webgl/specs/latest/1.0/webgl.idl>
-* WebIDL 2.0: <https://www.khronos.org/registry/webgl/specs/latest/2.0/webgl2.idl>
+* **WebIDL 1.0**: <https://www.khronos.org/registry/webgl/specs/latest/1.0/webgl.idl> 重要API参考
+* **WebIDL 2.0**: <https://www.khronos.org/registry/webgl/specs/latest/2.0/webgl2.idl>
 * ` WebGL框架列表`：<https://en.wikipedia.org/wiki/List_of_WebGL_frameworks>
 * 并不是`w3c`出specs，也可以理解，毕竟WebGL来自`OpenGL`
 
@@ -655,9 +655,12 @@ Rendering with OpenGL ES 2.0 requires the use of shaders, written in OpenGL ES's
 
         // 3个二维点坐标
         var positions = [
-            0, 0
-            , 0, 0.5
-            , 0.5, 0
+            0, 0        // x1, y1
+            , 0, 0.5    // x2, y2
+            , 0.5, 0    // x3, y3
+            , 0.5, -0.5   // x3, y3
+            , 0.5, -0.5    // x3, y3
+            , 0, -0.5   // x3, y3
         ];
         gl.bufferData( gl.ARRAY_BUFFER, new Float32Array( positions ), gl.STATIC_DRAW );
 
@@ -692,9 +695,10 @@ Rendering with OpenGL ES 2.0 requires the use of shaders, written in OpenGL ES's
             , offset
         );
 
-        var primitiveType = gl.TRIANGLES;
+        // var primitiveType = gl.TRIANGLES;
+        var primitiveType = gl.LINES;
         var offset = 0;
-        var count = 3;
+        var count = 6;
         gl.drawArrays( primitiveType, offset, count );
 
 
