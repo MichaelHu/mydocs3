@@ -3302,6 +3302,14 @@ sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://.
     # 递归查找src目录下的深度为2的*.js文件或修改时间为24小时内的.scss文件
     $ find ./src -type f \( -name '*.js' -depth 2 -or -name '*.scss' -mtime 0 \)
 
+    # 查找当前目录下的以.md结尾的文件，且文件路径不包含_book或node_modules，
+    # 对这些文件执行tm命令
+    $ find . -type f -name "*.md" \
+        -and -not -iregex '.*_book.*' \
+        -and -not -iregex '.*node_modules.*' \
+        -exec echo tm {} \; \
+        -exec tm {} \;
+
 
 
 
