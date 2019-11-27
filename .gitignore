@@ -6,5 +6,5 @@ _book/
 *.preview.html
 *.md.html
 *.tar.gz
-
+~*
 node_modules

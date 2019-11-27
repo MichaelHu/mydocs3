@@ -393,15 +393,15 @@ todo
 
 
 
-
 ### Replacing
 
     :[range]s/{pattern}/{substitute}/[modifier] 
 
 对于`回车 - carriage return`(0x0d)、`换行 - newline`(0x0a)的处理：
-* 换行符在pattern中用`\n`表示，在substitute中用`\r`或`<CR>`表示，用`C-V <Enter>`输入`<CR>`，命令行上显示`^M`，vim中无显示，这与`sed`的`s命令`存在区别，sed中换行符使用`\n`
-* 回车符在pattern中用`\%x0d`表示，在sutstitute中用`\<CR>`表示，用`C-V <Enter>`输入`<CR>`，命令行上显示`\^M`，vim中显示`^M`
-* substitute中的`\n`实际上是`<NL>`，代表0x00, vim中显示`^@`
+* **换行符**在pattern中用`\n`表示，在substitute中用`\r`或`<CR>`表示，用`C-V <Enter>`输入`<CR>`，命令行上显示`^M`，vim中无显示，这与`sed`的`s命令`存在区别，sed中换行符使用`\n`
+* **回车符**在pattern中用`\%x0d`表示，在sutstitute中用`\<CR>`表示，用`C-V <Enter>`输入`<CR>`，命令行上显示`\^M`，vim中显示`^M`
+* substitute中的`\n`实际上是`<NL>`，代表`0x00`, vim中显示`^@`
+* vim中直接输入回车符：`C-V <Enter>`
 
 
 #### pattern
