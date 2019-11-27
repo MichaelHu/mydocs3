@@ -15,6 +15,79 @@ Stick to the end.\
 自律才有自由，自由才有自信。
 
 
+## 2019-11-27
+
+### 巴菲特89岁生日采访
+
+> 2019年8月30日，巴菲特89岁生日，CNBC对他做了一次采访，让股神分享几条人生的建议。巴菲特给出了六条建议：
+
+* 1、Marry the right person 婚姻是一生最重要的决定
+* 2、Invest in yourself 最好的投资是投资自己
+* 3、Associate yourself with “high-grade people” 和高质量（高尚）的人交往
+* 4、Work for people you respect 为你尊敬的人工作
+* 5、Ignore the noise 忽视投资中的噪音
+* 6、Success isn’t measured by money 成功更关乎于爱，而不仅是金钱
+
+巴菲特**99%**的财富是**50岁之后**赚来的。巴菲特不认为金钱意味着成功。他表示，**“衡量成功的标准，是有多少人爱你”**
+
+
+#### Marry the right person
+
+婚姻是一生中最重要的决定。
+
+
+#### Invest in yourself
+
+“By far the best investment you can make is in yourself,” Buffett told Yahoo Finance editor-in-chief Andy Serwer earlier this year.
+
+First, “learn to communicate better **both in writing and in person**.” Honing that skill can increase your value by at least 50%, he said in a Facebook video posted in 2018.
+
+Next, take care of your body and mind — especially when you’re young. “If I gave you a car, and it’d be the only car you get the rest of your life, you would take care of it like you can’t believe. Any scratch, you’d fix that moment, you’d read the owner’s manual, you’d keep a garage and do all these things,” he said. “You get exactly one mind and one body in this world, and you can’t start taking care of it when you’re 50. By that time, you’ll rust it out if you haven’t done anything.”
+
+<div style="font-style: italic; font-size: 120%;">
+「 By far the best investment you can make is in yourself. 」
+</div>
+
+<div style="text-align: right">
+Warren Buffett\
+BERKSHIRE HATHAWAY CEO
+</div>
+
+#### Associate yourself with ‘high-grade people’
+
+Who you associate with matters, Buffett told author Gillian Zoe Segal in an interview for her 2015 book, “Getting There: A Book of Mentors.” “One of the best things you can do in life is to surround yourself with people who are better than you are,” he said.
+
+If you’re around what he calls “high-grade people,” you’ll start acting more like them. Conversely, “If you hang around with people who behave worse than you, pretty soon you’ll start being pulled in that direction. That’s just the way it seems to work.”
+
+#### Work for people you respect
+
+“Try to work for whomever you admire most,” Buffett told Segal. “It won’t necessarily be the job that you’ll have 10 years later, but you’ll have the opportunity to pick up so much as you go along.”
+
+While salary is an important factor when thinking about your career, “You don’t want to take a job just for the money,” said Buffett.
+
+He once accepted a job with his mentor and hero, Benjamin Graham, without even asking about the salary. “I found that out at the end of the month when I got my paycheck,” he said.
+
+#### Ignore the noise
+
+Investing can get emotional, and it doesn’t help that you can see how you’re doing throughout the day by checking a stock ticker or turning on the news.
+
+But no one can be certain which way the financial markets are going to move. The best strategy, even when the market seems to be tanking, is to keep a level head and stay the course, Buffett says.
+
+“I don’t pay any attention to what economists say, frankly,” he said in 2016. “If you look at the whole history of [economists], they don’t make a lot of money buying and selling stocks, but people who buy and sell stocks listen to them. I have a little trouble with that.”
+
+#### Success isn’t measured by money
+
+Buffett is consistently one of the richest people in the world, but he doesn’t use wealth as a measure of success. For him, it all boils down to if the people you’re closest to love you.
+
+“Being given unconditional love is the greatest benefit you can ever get,” Buffett told MBA students in a 2008 talk.
+
+“The incredible thing about love is that you can’t get rid of it. If you try to give it away, you end up with twice as much, but if you try to hold onto it, it disappears. It is an extraordinary situation, where the people who just absolutely push it out, get it back tenfold.”
+
+
+
+
+
+
 ## 2019-10-11
 
 > 摘：很多人也常问我，自己情商低，应该看什么书，我一般推荐三本书：一本是杜月笙传，一本是胡雪岩传，一本是曾国藩传。当官要读曾国藩，经商可读胡雪岩，混社会当然可以看一看杜月笙传。
