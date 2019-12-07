@@ -1745,11 +1745,74 @@ todo
 > 追踪系统调用和型号，这对于调试Web服务器和其他服务器非常有用
 
 ### /proc文件系统
-> 该目录下文件提供了很多不同硬件设备和内核的详细信息
+> 该目录下文件提供了很多不同硬件设备和内核的详细信息，以及进程信息
     $ cat /proc/cpuinfo
     $ cat /proc/meminfo
     $ cat /proc/zoneinfo
     $ cat /proc/mounts
+
+该目录下有至少两类目录：**进程号命名的目录**和**其他目录**，以下为非进程号命名的目录，也就是预置目录。
+    # linux
+    $ find . -type d -maxdepth 1 -mindepth 1 | grep -vP '\d+$'
+    ./ipmi
+    ./scsi
+    ./acpi
+    ./irq
+    ./sys
+    ./bus
+    ./tty
+    ./driver
+    ./fs
+    ./sysvipc
+
+以及一些**预置文件**：
+    # linux
+    $ find . -type f -maxdepth 1 -mindepth 1 | grep -vP '\d+$'
+    ./mtd
+    ./sysrq-trigger
+    ./partitions
+    ./diskstats
+    ./crypto
+    ./key-users
+    ./keys
+    ./kpageflags
+    ./kpagecount
+    ./kmsg
+    ./kcore
+    ./softirqs
+    ./version
+    ./uptime
+    ./stat
+    ./meminfo
+    ./loadavg
+    ./interrupts
+    ./devices
+    ./cpuinfo
+    ./cmdline
+    ./locks
+    ./filesystems
+    ./slabinfo
+    ./swaps
+    ./vmallocinfo
+    ./zoneinfo
+    ./vmstat
+    ./pagetypeinfo
+    ./buddyinfo
+    ./kallsyms
+    ./modules
+    ./dma
+    ./timer_stats
+    ./timer_list
+    ./iomem
+    ./ioports
+    ./execdomains
+    ./schedstat
+    ./sched_debug
+    ./mdstat
+    ./misc
+    ./fb
+    ./mtrr
+    ./cgroups
 
 查看系统`CPU核数`：
 
@@ -1758,9 +1821,64 @@ todo
     # mac
     $ sysctl -n hw.ncpu
 
+进程号命名的子目录，进入以后（`cd /proc/PID`），可查看**进程启动路径，以及执行文件路径**等：
+    # linux
+    $ ps aux | grep nginx
+    root     11576  0.0  0.0 103252   844 pts/1    S+   16:34   0:00 grep nginx
+    root     20944  0.0  0.2 110076  4444 ?        Ss   Sep19   0:00 nginx: master process nginx
+    nginx    21193  0.0  0.1 110448  3620 ?        S    Sep19   4:02 nginx: worker process
+    nginx    21194  0.0  0.1 110448  3620 ?        S    Sep19   3:10 nginx: worker process
+    $ ls -l /proc/20944
+    dr-xr-xr-x 2 root root 0 Dec  7 16:29 attr
+    -rw-r--r-- 1 root root 0 Dec  7 16:29 autogroup
+    -r-------- 1 root root 0 Dec  7 16:29 auxv
+    -r--r--r-- 1 root root 0 Dec  7 16:29 cgroup
+    --w------- 1 root root 0 Dec  7 16:29 clear_refs
+    -r--r--r-- 1 root root 0 Nov 19 15:45 cmdline
+    -rw-r--r-- 1 root root 0 Dec  7 16:29 comm
+    -rw-r--r-- 1 root root 0 Dec  7 16:29 coredump_filter
+    -r--r--r-- 1 root root 0 Dec  7 16:29 cpuset
+    lrwxrwxrwx 1 root root 0 Nov 19 16:54 cwd -> /var/log/nginx
+    -r-------- 1 root root 0 Dec  7 16:29 environ
+    lrwxrwxrwx 1 root root 0 Nov 19 14:56 exe -> /usr/sbin/nginx
+    dr-x------ 2 root root 0 Nov 19 14:56 fd
+    dr-x------ 2 root root 0 Dec  7 16:29 fdinfo
+    -r-------- 1 root root 0 Dec  7 16:29 io
+    -rw------- 1 root root 0 Dec  7 16:29 limits
+    -rw-r--r-- 1 root root 0 Dec  7 16:29 loginuid
+    -r--r--r-- 1 root root 0 Dec  7 16:29 maps
+    -rw------- 1 root root 0 Dec  7 16:29 mem
+    -r--r--r-- 1 root root 0 Dec  7 16:29 mountinfo
+    -r--r--r-- 1 root root 0 Dec  7 16:29 mounts
+    -r-------- 1 root root 0 Dec  7 16:29 mountstats
+    dr-xr-xr-x 4 root root 0 Dec  7 16:29 net
+    dr-x--x--x 2 root root 0 Dec  7 16:29 ns
+    -r--r--r-- 1 root root 0 Dec  7 16:29 numa_maps
+    -rw-r--r-- 1 root root 0 Dec  7 16:29 oom_adj
+    -r--r--r-- 1 root root 0 Dec  7 16:29 oom_score
+    -rw-r--r-- 1 root root 0 Dec  7 16:29 oom_score_adj
+    -r--r--r-- 1 root root 0 Dec  7 16:29 pagemap
+    -r--r--r-- 1 root root 0 Dec  7 16:29 personality
+    lrwxrwxrwx 1 root root 0 Nov 19 16:54 root -> /
+    -rw-r--r-- 1 root root 0 Dec  7 16:29 sched
+    -r--r--r-- 1 root root 0 Dec  7 16:29 schedstat
+    -r--r--r-- 1 root root 0 Dec  7 16:29 sessionid
+    -r--r--r-- 1 root root 0 Dec  7 16:29 smaps
+    -r--r--r-- 1 root root 0 Dec  7 16:29 stack
+    -r--r--r-- 1 root root 0 Nov 19 14:56 stat
+    -r--r--r-- 1 root root 0 Nov 19 16:54 statm
+    -r--r--r-- 1 root root 0 Nov 19 14:57 status
+    -r--r--r-- 1 root root 0 Dec  7 16:29 syscall
+    dr-xr-xr-x 3 root root 0 Dec  7 16:29 task
+    -r--r--r-- 1 root root 0 Dec  7 16:29 wchan
+
+其中`cwd, exe, root`等符号链接可以查看当前**启动路径、可执行文件路径、根目录**等
+
+
 
 
 ## pbcopy & pbpaste
+> mac专用
 
 这两个工具可以打通命令行和剪贴板。当然用鼠标操作复制粘贴也可以，但这两个工具的真正威力，发挥在将其用作Unix工具的时候。意思就是说：可以将这两个工具用作管道、IO重定向以及和其他命令的整合。例如：
 

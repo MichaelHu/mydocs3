@@ -4,14 +4,14 @@
 
 ## 深达威SW-M40说明书
 
- <img src="./img/laser-distance-meter-1.jpeg">
+ <img data-url="./img/laser-distance-meter-1.jpeg" class="lazy">
 
- <img src="./img/laser-distance-meter-2.jpeg">
+ <img data-url="./img/laser-distance-meter-2.jpeg" class="lazy">
 
- <img src="./img/laser-distance-meter-3.jpeg">
+ <img data-url="./img/laser-distance-meter-3.jpeg" class="lazy">
 
- <img src="./img/laser-distance-meter-4.jpeg">
+ <img data-url="./img/laser-distance-meter-4.jpeg" class="lazy">
 
- <img src="./img/laser-distance-meter-5.jpeg">
+ <img data-url="./img/laser-distance-meter-5.jpeg" class="lazy">
 
- <img src="./img/laser-distance-meter-6.jpeg">
+ <img data-url="./img/laser-distance-meter-6.jpeg" class="lazy">
