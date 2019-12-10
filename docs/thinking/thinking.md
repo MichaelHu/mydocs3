@@ -15,6 +15,22 @@ Stick to the end.\
 自律才有自由，自由才有自信。
 
 
+## 2019-12-10
+
+「人工智能， 第三次浪潮OR寒冬？ 」
+> 记录第一次上报，以人工智能技术领域访谈的形式
+* PC版北京商报网 <http://www.bbtnews.com.cn/2019/1016/321822.shtml> 2019-10-16
+* 移动版 <http://mini.eastday.com/mobile/191016132242598.html>
+
+| 数据杂志封面 | 文章内容页（左边中部） |
+| <img src="./img/data-201909-02.jpg" style="max-height:300px"> \
+    | <img src="./img/data-201909-01.jpg" style="max-height:300px"> |
+
+
+
+
+
+
 ## 2019-11-27
 
 ### 巴菲特89岁生日采访
