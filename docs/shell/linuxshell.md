@@ -3257,6 +3257,15 @@ sed的`s命令`如何在`replacement`部分添加`换行符`，参考：<ref://.
 
 
 
+#### 文件行数统计
+
+    $ find . -type f -exec wc -l {} \; \
+        | awk 'BEGIN{total=0;file_count=0;} \
+            {print $0; total += $1; file_count++;} \
+            END{print "files:", file_count, "total lines:", total;}'
+
+
+
 
 
 
