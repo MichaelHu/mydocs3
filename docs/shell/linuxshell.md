@@ -2427,6 +2427,9 @@ for `MAC`
 * 地址范围除了行号范围外，还可以是`正则表达式`，具体用例可查看`snippets/sed/replace-with-file-content.sed`
 * 正则表达式分两种级别，默认和高级两种，开启高级正则使用`-E( mac )`或`-r( linux )`
 * `sed -ne '5p' file`正确，`sed -en '5p' file`则会报错。也就是选项合并时，如果遇到key-value类型的选项，需要`确保key-value靠近`
+* `d`命令会删除当前pattern space，并启动下一行读取；`d`命令后的其他命令不会被执行
+* 如果要单纯删除当前pattern space，而不启动下一行读取，可以用g命令，将hold space的内容（若为空）覆盖过来
+
 
 
 
@@ -2482,6 +2485,21 @@ for `MAC`
     $ echo 123 | sed -e 'l'
     123$
     123
+
+
+#### 输出固定间隔的行
+
+输出**奇数行**：
+
+    sed -e 'p;N;d'
+
+每3行输出第一行：
+
+    sed -e 'p;N;N;d;'
+
+
+
+
 
 #### N命令 
 
@@ -2594,6 +2612,18 @@ sed的`正则（使用-E( mac )或-r( linux )）`接近`perl`的正则，比如�
 * `1!H`，隐含第一行不执行H命令，其他行都执行H命令
 * `$!d`，隐含除了最后一行，都执行d命令
 
+
+
+#### 每三行输出一个换行
+
+    sed -e 'N;p;g;N;s/\n//g;p;g;'
+
+`Tips`：
+* `g`命令，将空白的hold space内容覆盖到pattern space，达到删除pattern space的效果
+* `p`命令在`g`命令前，目的是在pattern space清空前，将其内容输出
+* 以上命令更容易理解，如果考虑命令数以及性能，还有更简单的方式：
+        sed -e 'N;p;g;N'
+    含义是在第二行和第三行之间，插入一个换行。
 
 
 ### sed脚本编程
