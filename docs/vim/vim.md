@@ -760,6 +760,11 @@ todo
     gqq
     gqgq
 
+    # text-align
+    :ce[nter]
+    :ri[ght]
+    :le[ft]
+
 
 ### 多行合并
 
