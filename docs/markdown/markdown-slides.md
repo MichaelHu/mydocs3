@@ -17,8 +17,10 @@
 
 ## Versions
 
-    v3.0
+    v3.0 - todo
         支持预处理器
+        blockquote支持多级
+        blockquote全系支持
 
     v2.0
         支持抽象语法树，以便支持多种格式输出
@@ -35,11 +37,10 @@
 
         todo:
             @s/@vs支持
+            解决blockquote不支持@[]语法的问题
             缩进引用的行间距样式
             去掉index.md页面的特殊处理逻辑
             支持hr
-            blockquote支持多级
-            blockquote全系支持
             增加支持``
             支持JSON格式输出
             <ruby> 快狗打车<rt>kuaigoudache</rt> </ruby>
