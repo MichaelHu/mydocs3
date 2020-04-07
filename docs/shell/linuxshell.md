@@ -4006,6 +4006,16 @@ output：
 
 
 
+### 打包时指定解压目录
+
+如何把**当前所有文件**，打成一个压缩包，并加一个**目录前缀**（解压的时候带目录）：
+
+    $ tar --exclude=target --transform "s/^./uni_interface/" -zcf target/uni_interface.tar.gz .
+
+如上命令，可以使用 `--transform "COMMAND"` 命令选项。Mac平台下不支持。
+
+
+
 
 
 
