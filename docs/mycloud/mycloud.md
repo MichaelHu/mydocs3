@@ -1,7 +1,7 @@
 # mycloud
 
-
-2017-02
+2020-04
+, 2017-02
 , 2015-05
 
 
@@ -13,8 +13,20 @@
 
  <img src="./img/mycloud.png" style="max-height:300px">
 
-服务器间进行同步，存在不少问题，比如如何增量备份、文件名带空格等特殊字符。这有一款精心编写的
-自动同步脚本工具：`wd-cloud-sync` <https://github.com/MichaelHu/wd-cloud-sync>
+
+## 服务器间同步
+> 使用过scp/nc等方式进行同步，并针对增量备份写了脚本，如以下的wd-cloud-sync。但实际上这些方式使用的命令本身不是支持增量备份的，**使用rsync方式比较理想**，具体可以查看<ref://../linux/rsync.md.html>
+
+### rsync同步
+> 推荐此种方式，其他方式不再使用
+比如在家庭局域网内，将笔记本电脑上当前目录下的文件同步到服务器的dest目录下，如下命令：
+    $ rsync -r ./ root@wdmycloud.local:'/DataVolume/shares/Public/Shared\ Pictures/dest'
+远程目录带有空格，可以使用**单引号**扩住，使用反斜线进行空格转义。
+
+
+
+### wd-cloud-sync
+服务器间进行同步，存在不少问题，比如如何增量备份、文件名带空格等特殊字符。这有一款精心编写的自动同步脚本工具：`wd-cloud-sync` <https://github.com/MichaelHu/wd-cloud-sync>
 
     sh sync.sh <sync-dir>
 

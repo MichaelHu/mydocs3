@@ -199,3 +199,84 @@ pre.special-chars code {
 
 
 
+
+
+
+## 关盖掉电的解决办法
+
+**电池模式**下，合上盖子后会继续掉电，在Majave、Catlina版本上比较普遍，以下是一种解决办法，原理是通过`pmset命令`更改休眠模式：
+
+> pmset - `power management settings`，电源管理设置
+
+    # 查看命令帮助
+    $ man pmset
+    # 查看休眠模式
+    $ pmset -g
+    System-wide power settings:
+    Currently in use:
+     lidwake              1
+     autopoweroff         1
+     standbydelayhigh     86400
+     autopoweroffdelay    28800
+     standbydelaylow      10800
+     standby              1
+     proximitywake        0
+     ttyskeepawake        1
+     hibernatemode        3
+     powernap             0
+     gpuswitch            2
+     hibernatefile        /var/vm/sleepimage
+     highstandbythreshold 50
+     displaysleep         2
+     sleep                1
+     acwake               0
+     halfdim              1
+     tcpkeepalive         1
+     disksleep            10
+
+其中的`hibernatemode`指示休眠模式，根据不同设置值，有不同的休眠模式，对应不同的电源管理方案，大体如下：
+
+* **hibernatemode = 0** by default on desktops. The system will not back memory up to persistent storage. The system must wake from the con-tents of memory; the system will lose context on power loss. This is, historically, plain old sleep.
+* **hibernatemode = 3** by default on portables. The system will store a copy of memory to persistent storage (the disk), and will power memory during sleep. The system will wake from memory, unless a power loss forces it to restore from hibernate image.
+* **hibernatemode = 25** is only settable via pmset. The system will store a copy of memory to persistent storage (the disk), and will remove power to memory. The system will restore from disk image. If you want "hibernation" - slower sleeps, slower wakes, and better battery life, you should use this setting.
+
+
+休眠模式*3*是**默认休眠模式**，此种模式会继续给内存供电，还是会耗电。如果要把耗电情况进一步降低，可以将**电池模式下**的休眠模式设置为25：
+
+    # 设置休眠模式为25，内存不供电
+    $ sudo pmset -b hibernatemode 25
+
+休眠模式设置为25以后，可能还会耗电，原因是网络连接还需要耗电。可以进一步将**电池模式下**网络连接关闭：
+
+    # 设置电池模式的休眠模式下，将网络连接关闭
+    $ sudo pmset -b tcpkeepalive 0
+    Password:
+    Warning: This option disables TCP Keep Alive mechanism
+    when sytem is sleeping. This will result in some
+    critical features like 'Find My Mac' not to function
+    properly.
+
+    $ pmset -g
+    System-wide power settings:
+    Currently in use:
+     lidwake              1
+     autopoweroff         1
+     standbydelayhigh     86400
+     autopoweroffdelay    28800
+     standbydelaylow      10800
+     standby              1
+     proximitywake        0
+     ttyskeepawake        1
+     hibernatemode        25
+     powernap             0
+     gpuswitch            2
+     hibernatefile        /var/vm/sleepimage
+     highstandbythreshold 50
+     displaysleep         2
+     sleep                1
+     acwake               0
+     halfdim              1
+     tcpkeepalive         0
+     disksleep            10
+
+
