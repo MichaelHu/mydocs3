@@ -43,17 +43,20 @@ pre.special-chars code {
 
 ### 操作步骤
 
-* 可在App Store上下载macOS Mojave系统安装文件，默认下载位置为：`/Applications/Install macOS Mojave.app`
-* U盘大小不能低于8G
-* 制作前先将U盘格式化成`MacOS扩展格式`，参考<https://support.apple.com/zh-cn/HT208496>
-* 使用以下命令，制作启动u盘，假设u盘命名为`Mojave`
+* **Mojave系统**启动U盘制作
+    * 可在App Store上下载macOS Mojave系统安装文件，默认下载位置为：`/Applications/Install macOS Mojave.app`
+    * U盘大小不能低于8G
+    * 制作前先将U盘格式化成`MacOS扩展格式`，参考<https://support.apple.com/zh-cn/HT208496>
+    * 使用以下命令，制作启动u盘，假设u盘命名为`Mojave`
 
-        sudo /Applications/Install\ macOS\ Mojave.app/Contents/Resources/createinstallmedia \
-            --volume /Volumes/Mojave
+            sudo /Applications/Install\ macOS\ Mojave.app/Contents/Resources/createinstallmedia \
+                --volume /Volumes/Mojave
 
-        # 非此中划线 —nointeraction
+            # 非此中划线 —nointeraction
 
-* todo...
+* **Catalina系统**的启动U盘制作不太一样，具体可参考 <https://jingyan.baidu.com/article/f71d603732ccbe5ab641d1b5.html>
+    * U盘大小不能低于16G 
+    * 不再需要用命令行，可界面操作
 
 
 ### 启动U盘的使用
