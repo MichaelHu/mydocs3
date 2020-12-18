@@ -309,6 +309,7 @@ scope与registry是多对一的关系。绑定还可以使用npm config来进行
 
 * Once a package is published with a given name and version, that specific name and version combination can never be used again, even if it is removed with `npm-unpublish`. 一旦发布，不可再用。
 * 包发布需要先注册`npm账号`，没有提供网页注册，需要`命令行注册`，使用`npm adduser`命令：
+* 注意**npm账号**不要与**github账号**混淆，需要到<https://www.npmjs.com>站点注册
 
         hudamin@local beat-command-release $ npm adduser
         Username: MichaelHu
