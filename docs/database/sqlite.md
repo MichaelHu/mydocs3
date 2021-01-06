@@ -98,11 +98,23 @@
     .mode tcl
     select * from t1;
 
+    -- dump数据库
+    .dump
+
 
 #### 操作
 
     # 复制以上命令，shell中执行以下语法
-    pbpaste | sqlite test.db
+    > pbpaste | sqlite test.db
+
+    # dump数据库
+    > sqlite test.db .dump
+    PRAGMA foreign_keys=OFF;
+    BEGIN TRANSACTION;
+    CREATE TABLE t1 ( id int primary key not null, name text not null, age int not null );
+    INSERT INTO t1 VALUES(1,'hudamin',38);
+    INSERT INTO t1 VALUES(2,'huyifan',6);
+    COMMIT;
 
 
 
