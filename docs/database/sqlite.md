@@ -205,5 +205,36 @@
             and c.dept = '智慧公安'
         order by b.daterange;
 
+    -- 某个部门的人员在某类项目的分阶段投入
+    select a.dept, b.project, a.name, b.daterange, sum(b.gs) as GS
+        from t_employees a, t_gs b, t_projects c 
+        where a.name = b.name 
+            and b.project = c.name
+            and ( 
+                a.dept like '智能%'
+                or a.dept = '大技术部'
+                )
+            and c.dept = '智慧公安'
+            and b.daterange like '21%'
+        group by a.dept, b.project, a.name, b.daterange
+        order by a.dept, b.project, a.name, b.daterange
+        ;
+
+    -- 某个部门的人员在某类项目的全部投入
+    select a.dept, b.project, a.name, sum(b.gs) as GS
+        from t_employees a, t_gs b, t_projects c 
+        where a.name = b.name 
+            and b.project = c.name
+            and ( 
+                a.dept like '智能%'
+                or a.dept = '大技术部'
+                )
+            and c.dept = '智慧公安'
+            and b.daterange like '21%'
+        group by a.dept, b.project, a.name
+        order by a.dept, b.project, a.name
+        ;
+
+
 
 
